@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "post-code"
+version = "0.1.0"
+description = ""
+authors = ["Evan Schultz <evan@postulate.llc>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.5.2"
+libcst = "^1.1.0"
+rich = "^13.7.0"
+typer = "^0.9.0"
+hypothesis = "^6.91.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
