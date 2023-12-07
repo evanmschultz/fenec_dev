@@ -13,6 +13,7 @@ class ImportNameModel(BaseModel):
 
     name: str
     as_name: str | None = None
+    local_block_id: str | None = None
 
 
 class ImportModel(BaseModel):
@@ -21,12 +22,13 @@ class ImportModel(BaseModel):
     import_names: list[ImportNameModel]
     imported_from: str | None = None
     import_module_type: ImportModuleType = ImportModuleType.STANDARD_LIBRARY
+    local_module_id: str | None = None
 
 
-class ModuleDependencyModel(BaseModel):
+class DependencyModel(BaseModel):
     """Class representing a module dependency."""
 
-    module_code_block_id: str
+    code_block_id: str
 
 
 class CommentModel(BaseModel):
@@ -78,7 +80,7 @@ class BaseCodeBlockModel(BaseModel):
     end_line_num: int
     code_content: str
     important_comments: list[CommentModel] | None = None
-    dependencies: list[ImportModel | ModuleDependencyModel] | None = None
+    dependencies: list[ImportModel | DependencyModel] | None = None
     summary: str | None = None
     children: list[
         Union[
