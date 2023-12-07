@@ -68,6 +68,47 @@ class ModuleModelBuilder(BaseModelBuilder):
         self.module_attributes.imports.append(import_model)
         return self
 
+    def update_import(
+        self, updated_import_model: ImportModel, old_import_model: ImportModel
+    ) -> "ModuleModelBuilder":
+        """
+        Update an import in the imports list.
+
+        Loops through the imports list and replaces the old import with the updated import.
+
+        Args:
+            updated_import_model (ImportModel): The updated import model.
+            old_import_model
+
+        Returns:
+            ModuleModelBuilder: The module model builder instance.
+
+        Raises:
+            Exception: If the import to be updated is not found.
+        """
+        if self.module_attributes.imports:
+            import_to_remove: ImportModel | None = None
+            for existing_import in self.module_attributes.imports:
+                if (
+                    existing_import.import_names == old_import_model.import_names
+                    and existing_import.imported_from == old_import_model.imported_from
+                    and existing_import.import_module_type
+                    == old_import_model.import_module_type
+                ):
+                    import_to_remove = existing_import
+                    break
+
+            if not import_to_remove:
+                raise Exception(f"Could not find import to remove: {old_import_model}")
+
+            self.module_attributes.imports.remove(import_to_remove)
+            self.module_attributes.imports.append(updated_import_model)
+        else:
+            raise Exception(
+                f"No imports in the builders imports list: {self.module_attributes.imports}"
+            )
+        return self
+
     def _get_module_specific_attributes(self) -> dict[str, Any]:
         """Get the module specific attributes."""
         return self.module_attributes.model_dump()
