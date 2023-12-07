@@ -4,7 +4,6 @@ from id_generation.id_generation_strategies import ModuleIDGenerationStrategy
 from model_builders.builder_factory import BuilderFactory
 from model_builders.module_model_builder import ModuleModelBuilder
 
-from models.models import ModuleModel
 from visitors.module_visitor import ModuleVisitor
 from models.enums import BlockType
 
@@ -43,21 +42,23 @@ class PythonParser:
         with open(self.file_path, "r") as file:
             return file.read()
 
-    def parse(self, code: str) -> ModuleModel | None:
+    def parse(self, code: str) -> ModuleModelBuilder | None:
         """
-        Parses the given Python code into a structured module model.
+        Parses the provided Python code into a structured module model.
 
-        Uses libcst to parse the code and constructs a module model using a ModuleVisitor and various model builders.
+        Uses libcst to parse the provided code using the ModuleVisitor class. A ModuleModelBuilder instance is returned
+        along with it hierarchy of child builders.
 
         Args:
-            code (str): The Python code to parse.
+            code (str): The Python code to be parsed.
 
         Returns:
-            ModuleModel | None: A structured module model if parsing is successful, otherwise None.
+            ModuleModelBuilder | None: The module model builder for the provided code.
 
         Example:
+            >>> code = python_parser.open_file()
             >>> module_model = python_parser.parse(code)
-            # Parses the provided code and returns a module model.
+            # Parses the provided code and returns a module model builder.
         """
 
         wrapper = MetadataWrapper(libcst.parse_module(code))
@@ -67,32 +68,7 @@ class PythonParser:
         module_builder: ModuleModelBuilder = BuilderFactory.create_builder_instance(
             block_type=BlockType.MODULE, id=module_id, file_path=self.file_path
         )
-
         visitor = ModuleVisitor(id=module_id, module_builder=module_builder)
         wrapper.visit(visitor)
-        module_model: ModuleModel = self.build_module_model(visitor)
 
-        return module_model if isinstance(module_model, ModuleModel) else None
-
-    def build_module_model(self, visitor: ModuleVisitor) -> ModuleModel:
-        """
-        Builds a module model from the ModuleVisitor's builder stack.
-
-        Extracts the ModuleModelBuilder from the visitor's builder stack and constructs the module model. Assumes that the first element in the builder stack is a ModuleModelBuilder.
-
-        Args:
-            visitor (ModuleVisitor): The visitor that has traversed the CST.
-
-        Returns:
-            ModuleModel: The constructed module model.
-
-        Example:
-            >>> module_model = python_parser.build_module_model(visitor)
-            # Builds and returns a module model from the visitor.
-        """
-
-        if not isinstance(visitor.builder_stack[0], ModuleModelBuilder):
-            raise TypeError("Expected the first builder to be a ModuleModelBuilder")
-
-        hierarchy: ModuleModelBuilder = visitor.builder_stack[0]
-        return hierarchy.build()
+        return visitor.builder_stack[0]  # type: ignore
