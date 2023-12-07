@@ -6,10 +6,11 @@ from abc import ABC, abstractmethod
 from models.models import (
     BaseCodeBlockModel,
     CommentModel,
-    BlockType,
     ImportModel,
-    ModuleDependencyModel,
+    DependencyModel,
 )
+
+from models.enums import BlockType
 
 if TYPE_CHECKING:
     from model_builders.class_model_builder import ClassModelBuilder
@@ -141,7 +142,7 @@ class BaseModelBuilder(ABC):
         return self
 
     def set_dependencies(
-        self, dependencies: list[ImportModel | ModuleDependencyModel] | None
+        self, dependencies: list[ImportModel | DependencyModel] | None
     ) -> Union[
         "BaseModelBuilder",
         "ModuleModelBuilder",
