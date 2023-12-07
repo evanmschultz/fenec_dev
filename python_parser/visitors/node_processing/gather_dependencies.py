@@ -5,7 +5,7 @@ from model_builders.class_model_builder import ClassModelBuilder
 from model_builders.function_model_builder import FunctionModelBuilder
 from model_builders.module_model_builder import ModuleModelBuilder
 from model_builders.standalone_block_model_builder import StandaloneBlockModelBuilder
-from models.models import ImportModel, ModuleDependencyModel
+from models.models import ImportModel, DependencyModel
 
 
 def gather_and_set_children_dependencies(module_builder: ModuleModelBuilder) -> None:
@@ -25,7 +25,7 @@ def gather_and_set_children_dependencies(module_builder: ModuleModelBuilder) -> 
     """
 
     for block_builder in module_builder.children_builders:
-        block_dependencies: list[ImportModel | ModuleDependencyModel] = []
+        block_dependencies: list[ImportModel | DependencyModel] = []
         code_content: str = block_builder.common_attributes.code_content
 
         import_dependencies: list[ImportModel] = _gather_import_dependencies(
@@ -34,7 +34,7 @@ def gather_and_set_children_dependencies(module_builder: ModuleModelBuilder) -> 
         block_dependencies.extend(import_dependencies)
 
         non_import_dependencies: list[
-            ModuleDependencyModel
+            DependencyModel
         ] = _gather_non_import_dependencies(
             module_builder.children_builders,
             block_builder,
@@ -81,8 +81,8 @@ def _gather_import_dependencies(
 def _get_standalone_block_dependency(
     builder: StandaloneBlockModelBuilder,
     code_content: str,
-    dependency_creator: Callable[[str], ModuleDependencyModel],
-) -> ModuleDependencyModel | None:
+    dependency_creator: Callable[[str], DependencyModel],
+) -> DependencyModel | None:
     """
     Identifies if the given standalone block is a dependency based on variable usage.
 
@@ -111,8 +111,8 @@ def _get_standalone_block_dependency(
 def _gather_standalone_block_dependency_for_standalone_block(
     builder: StandaloneBlockModelBuilder,
     code_content: str,
-    dependency_creator: Callable[[str], ModuleDependencyModel],
-) -> ModuleDependencyModel | None:
+    dependency_creator: Callable[[str], DependencyModel],
+) -> DependencyModel | None:
     """
     Determines if a given standalone block is a dependency for another standalone block.
 
@@ -154,8 +154,8 @@ def _gather_non_import_dependencies(
     | FunctionModelBuilder
     | StandaloneBlockModelBuilder,
     code_content: str,
-    dependency_creator: Callable[[str], ModuleDependencyModel],
-) -> list[ModuleDependencyModel]:
+    dependency_creator: Callable[[str], DependencyModel],
+) -> list[DependencyModel]:
     """
     Gather non-import dependencies from the given `children_builders` and `block_builder`
     based on the provided `code_content`.
@@ -169,7 +169,7 @@ def _gather_non_import_dependencies(
         list: List of dependencies.
     """
 
-    block_dependencies: list[ModuleDependencyModel] = []
+    block_dependencies: list[DependencyModel] = []
     for builder in children_builders:
         if _not_same_builder(builder, block_builder):
             if isinstance(builder, ClassModelBuilder):
@@ -185,7 +185,7 @@ def _gather_non_import_dependencies(
             elif isinstance(builder, StandaloneBlockModelBuilder) and isinstance(
                 block_builder, StandaloneBlockModelBuilder
             ):
-                module_dependency: ModuleDependencyModel | None = (
+                module_dependency: DependencyModel | None = (
                     _gather_standalone_block_dependency_for_standalone_block(
                         builder, code_content, dependency_creator
                     )
@@ -204,5 +204,5 @@ def _gather_non_import_dependencies(
     return block_dependencies
 
 
-def _create_module_dependency_model(module_code_block_id: str) -> ModuleDependencyModel:
-    return ModuleDependencyModel(module_code_block_id=module_code_block_id)
+def _create_module_dependency_model(module_code_block_id: str) -> DependencyModel:
+    return DependencyModel(code_block_id=module_code_block_id)
