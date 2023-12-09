@@ -137,9 +137,9 @@ class ImportUpdater:
         """Returns the import path for the given import model."""
 
         if import_model.imported_from:
-            return import_model.imported_from.replace(".", "/")
+            return import_model.imported_from.replace(".", ":")
         else:
-            return import_model.import_names[0].name.replace(".", "/")
+            return import_model.import_names[0].name.replace(".", ":")
 
     def should_skip_builder(
         self,
