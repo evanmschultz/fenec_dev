@@ -5,7 +5,7 @@ from utilities.logger.decorators import logging_decorator
 
 from parsers.python_parser import PythonParser
 from visitor_manager.import_and_dependency_update_functions import (
-    ImportAndDependencyUpdateFunctions,
+    ImportAndDependencyUpdater,
 )
 from models.models import ModuleModel
 
@@ -58,9 +58,7 @@ class VisitorManager:
             model_save_context[0] for model_save_context in model_save_context_list
         ]
 
-        import_and_dependency_updater = ImportAndDependencyUpdateFunctions(
-            model_builder_list
-        )
+        import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_list)
         import_and_dependency_updater.update_imports()
 
         for model_save_context in model_save_context_list:
