@@ -1,11 +1,13 @@
 import json
 import os
 from model_builders.module_model_builder import ModuleModelBuilder
-from models.enums import ImportModuleType
 from utilities.logger.decorators import logging_decorator
 
 from parsers.python_parser import PythonParser
-from models.models import ImportModel, ImportNameModel, ModuleModel
+from visitor_manager.import_and_dependency_update_functions import (
+    ImportAndDependencyUpdateFunctions,
+)
+from models.models import ModuleModel
 
 EXCLUDED_DIRECTORIES: set[str] = {".venv", "node_modules", "__pycache__", ".git"}
 
@@ -56,121 +58,10 @@ class VisitorManager:
             model_save_context[0] for model_save_context in model_save_context_list
         ]
 
-        for model_builder in model_builder_list:
-            current_builder: ModuleModelBuilder = model_builder
-            if module_imports := current_builder.module_attributes.imports:
-                for current_import_model in module_imports:
-                    if (
-                        current_import_model.import_module_type
-                        == ImportModuleType.LOCAL
-                    ):
-                        # print(
-                        #     f"Current Builder: {current_builder.id} Has local import: {current_import_model}"
-                        # )
-
-                        # local_import_updated: bool = False
-                        import_from_context: dict[str, str | list[str]] = {}
-
-                        # Improved import path and name extraction logic
-                        if current_import_model.imported_from:
-                            import_path: str = (
-                                current_import_model.imported_from.replace(".", "/")
-                            )
-                            import_names: list[str] = [
-                                name.name for name in current_import_model.import_names
-                            ]
-                            import_from_context = {
-                                "import_path_list": import_path,
-                                "import_names": import_names,
-                            }
-                        else:
-                            import_path: str = current_import_model.import_names[
-                                0
-                            ].name.replace(".", "/")
-                            print("\n\nNo 'imported_from' found\n\n")
-
-                        for external_builder in model_builder_list:
-                            if external_builder == current_builder:
-                                continue
-
-                            if import_path in external_builder.id:
-                                new_import_model: ImportModel = (
-                                    current_import_model.model_copy()
-                                )
-                                new_import_model.local_module_id = external_builder.id
-
-                                if not current_import_model.imported_from:
-                                    current_builder.update_import(
-                                        new_import_model, current_import_model
-                                    )
-                                    print("Updated import without 'imported_from'")
-                                    local_import_updated = True
-                                    break
-
-                                new_import_name_models: list = []
-                                for child_builder in external_builder.children_builders:
-                                    for import_name in import_from_context[
-                                        "import_names"
-                                    ]:
-                                        child_builder_id_split: list[
-                                            str
-                                        ] = child_builder.id.split("_")
-                                        # print(
-                                        #     f"Child builder id split [-1]: {child_builder_id_split[-1]}"
-                                        # )
-                                        if import_name == child_builder_id_split[-1]:
-                                            found_matching_import_name: bool = False
-                                            for (
-                                                import_name_model
-                                            ) in new_import_model.import_names:
-                                                if (
-                                                    import_name_model.name
-                                                    == import_name
-                                                ):
-                                                    new_import_name_model: ImportNameModel = (
-                                                        import_name_model.model_copy()
-                                                    )
-                                                    new_import_name_model.local_block_id = (
-                                                        child_builder.id
-                                                    )
-                                                    new_import_name_models.append(
-                                                        new_import_name_model
-                                                    )
-                                                    found_matching_import_name = True
-                                                    break
-                                            if not found_matching_import_name:
-                                                print("No matching import name found\n")
-                                print(
-                                    f"New name models length: {len(new_import_name_models)} vs current import names length: {len(current_import_model.import_names)} for {current_builder.id}"
-                                )
-                                print(f"{current_import_model.import_names}\n")
-                                if len(new_import_name_models) < len(
-                                    current_import_model.import_names
-                                ):
-                                    for (
-                                        import_name_model
-                                    ) in current_import_model.import_names:
-                                        if import_name_model.name not in [
-                                            name.name for name in new_import_name_models
-                                        ]:
-                                            new_import_name_models.append(
-                                                import_name_model
-                                            )
-                                    new_import_model.import_names = (
-                                        new_import_name_models
-                                    )
-                                # print(
-                                #     f"Updating import: {current_import_model} To {new_import_model} For {current_builder.id}"
-                                # )
-                                current_builder.update_import(
-                                    new_import_model, current_import_model
-                                )
-                                print("Updated import")
-                                break
-                                # else:
-                                #     print(
-                                #         "Warning: Import names do not match. Skipping this import."
-                                #     )
+        import_and_dependency_updater = ImportAndDependencyUpdateFunctions(
+            model_builder_list
+        )
+        import_and_dependency_updater.update_imports()
 
         for model_save_context in model_save_context_list:
             module_model: ModuleModel = self._build_module_model(model_save_context[0])
