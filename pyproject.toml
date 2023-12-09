@@ -12,6 +12,7 @@ libcst = "^1.1.0"
 rich = "^13.7.0"
 typer = "^0.9.0"
 hypothesis = "^6.91.0"
+python-arango = "^7.8.1"
 
 
 [build-system]
