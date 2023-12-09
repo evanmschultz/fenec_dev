@@ -13,7 +13,8 @@ EXCLUDED_DIRECTORIES: set[str] = {".venv", "node_modules", "__pycache__", ".git"
 
 
 class VisitorManager:
-    """Manages the visiting and processing of Python files in a given directory.
+    """
+    Manages the visiting and processing of Python files in a given directory.
 
     This class scans a specified directory, filters for Python files, parses them, and saves the parsed data in a structured JSON format. It also maintains a mapping of directories to the Python files they contain.
 
@@ -23,12 +24,12 @@ class VisitorManager:
         directory_modules (dict): A mapping of directories to their contained Python files.
 
     Example:
-        >>> vm = VisitorManager("/path/to/python/code", "output")
-        >>> vm.process_files()
+        >>> visitor_manager = VisitorManager("/path/to/python/code", "output")
+        >>> visitor_manager.process_files()
         # This will process all Python files in /path/to/python/code and save their parsed data in the output directory.
 
         # If you want to save a mapping of directories to Python files, you can call the save_visited_directories method.
-        >>> vm.save_visited_directories()
+        >>> visitor_manager.save_visited_directories()
     """
 
     @logging_decorator(message="Initializing VisitorManager")
@@ -39,12 +40,13 @@ class VisitorManager:
         self.directory_modules: dict[str, list[str]] = {}
 
     def process_files(self) -> None:
-        """Processes each Python file found in the specified directory.
+        """
+        Processes each Python file found in the specified directory.
 
         For each Python file, this method updates the directory_modules with the file's information, parses the file, and saves the parsed data as JSON.
 
         Example:
-            >>> vm.process_files()
+            >>> visitor_manager.process_files()
             # Processes all Python files and saves their parsed data.
         """
 
@@ -78,7 +80,7 @@ class VisitorManager:
             directory_mape_name (str): The name of the output file for the directory map.
 
         Example:
-            >>> vm.save_visited_directories("directory_map.json")
+            >>> visitor_manager.save_visited_directories("directory_map.json")
             # Saves a mapping of directories to Python files as JSON.
         """
 
