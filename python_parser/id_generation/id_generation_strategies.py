@@ -40,7 +40,21 @@ class ModuleIDGenerationStrategy(IDGenerationStrategy):
         Returns:
             str: The generated ID, incorporating the file path.
         """
-        return f"{file_path}__>__MODULE"
+        module_path: str = ModuleIDGenerationStrategy.converted_path_string(file_path)
+        return f"{module_path}__*__MODULE"
+
+    @staticmethod
+    def converted_path_string(file_path: str) -> str:
+        """
+        Converts a file path to a valid ID string.
+
+        Args:
+            file_path (str): The file path to convert.
+
+        Returns:
+            str: The converted ID string.
+        """
+        return file_path.replace("/", ":")
 
 
 class ClassIDGenerationStrategy(IDGenerationStrategy):
@@ -58,7 +72,7 @@ class ClassIDGenerationStrategy(IDGenerationStrategy):
         Returns:
             str: The generated ID, incorporating the parent ID and class name.
         """
-        return f"{parent_id}__>__CLASS-{class_name}"
+        return f"{parent_id}__*__CLASS-{class_name}"
 
 
 class FunctionIDGenerationStrategy(IDGenerationStrategy):
@@ -76,7 +90,7 @@ class FunctionIDGenerationStrategy(IDGenerationStrategy):
         Returns:
             str: The generated ID, incorporating the parent ID and function name.
         """
-        return f"{parent_id}__>__FUNCTION-{function_name}"
+        return f"{parent_id}__*__FUNCTION-{function_name}"
 
 
 class StandaloneCodeBlockIDGenerationStrategy(IDGenerationStrategy):
@@ -94,4 +108,4 @@ class StandaloneCodeBlockIDGenerationStrategy(IDGenerationStrategy):
         Returns:
             str: The generated ID, incorporating the parent ID and the count.
         """
-        return f"{parent_id}__>__STANDALONE_CODE_BLOCK-{count}"
+        return f"{parent_id}__*__STANDALONE_CODE_BLOCK-{count}"
