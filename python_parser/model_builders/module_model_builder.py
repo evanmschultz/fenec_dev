@@ -1,12 +1,14 @@
 from typing import Any
+
+from model_builders.base_model_builder import BaseModelBuilder
+
 from utilities.logger.decorators import logging_decorator
 from models.models import (
     ModuleModel,
     ImportModel,
-    BlockType,
     ModuleSpecificAttributes,
 )
-from model_builders.base_model_builder import BaseModelBuilder
+from models.enums import BlockType
 
 
 class ModuleModelBuilder(BaseModelBuilder):

@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from models.models import (
         ClassKeywordModel,
         DecoratorModel,
-        BlockType,
     )
 
 
