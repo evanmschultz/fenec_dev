@@ -1,5 +1,5 @@
 # TODO List
 
--   [ ] Refactor and optimize update import logic
--   [ ] Add update dependency from import logic
+-   [x] Refactor and optimize update import logic
+-   [x] Add update dependency from import logic
 -   [ ] Class Attribute logic
