@@ -153,6 +153,54 @@ class BaseModelBuilder(ABC):
         self.common_attributes.dependencies = dependencies
         return self
 
+    def update_import_dependency(
+        self,
+        new_import_model: ImportModel,
+        old_import_model: ImportModel,
+    ) -> Union[
+        "BaseModelBuilder",
+        "ModuleModelBuilder",
+        "ClassModelBuilder",
+        "FunctionModelBuilder",
+    ]:
+        """
+        Updates an import in the model instance.
+
+        Args:
+            new_import_model (ImportModel): The updated import model.
+            old_import_model
+
+        Returns:
+            BaseModelBuilder: The base model builder instance.
+        """
+
+        if self.common_attributes.dependencies:
+            import_model_to_remove: ImportModel | None = None
+            for existing_import_model in self.common_attributes.dependencies:
+                if isinstance(existing_import_model, DependencyModel):
+                    continue
+
+                if (
+                    existing_import_model.import_names == old_import_model.import_names
+                    and existing_import_model.imported_from
+                    == old_import_model.imported_from
+                    and existing_import_model.import_module_type
+                    == old_import_model.import_module_type
+                ):
+                    import_model_to_remove = existing_import_model
+                    break
+
+            if not import_model_to_remove:
+                raise Exception(f"Could not find import to remove: {old_import_model}")
+
+            self.common_attributes.dependencies.remove(import_model_to_remove)
+            self.common_attributes.dependencies.append(new_import_model)
+        else:
+            raise Exception(
+                f"No imports in the builders imports list: {self.common_attributes.dependencies}"
+            )
+        return self
+
     def build_and_set_children(self) -> None:
         if self.children_builders:
             self.common_attributes.children = [
