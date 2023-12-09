@@ -1,6 +1,5 @@
 # TODO List
 
--   [x] StandaloneCodeBlock logic
+-   [ ] Refactor and optimize update import logic
+-   [ ] Add update dependency from import logic
 -   [ ] Class Attribute logic
--   [x] Dependency logic
--   [x] ImportModuleType logic
