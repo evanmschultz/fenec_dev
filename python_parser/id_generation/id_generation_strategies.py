@@ -58,7 +58,7 @@ class ClassIDGenerationStrategy(IDGenerationStrategy):
         Returns:
             str: The generated ID, incorporating the parent ID and class name.
         """
-        return f"{parent_id}__>__CLASS_{class_name}"
+        return f"{parent_id}__>__CLASS-{class_name}"
 
 
 class FunctionIDGenerationStrategy(IDGenerationStrategy):
@@ -76,7 +76,7 @@ class FunctionIDGenerationStrategy(IDGenerationStrategy):
         Returns:
             str: The generated ID, incorporating the parent ID and function name.
         """
-        return f"{parent_id}__>__FUNCTION_{function_name}"
+        return f"{parent_id}__>__FUNCTION-{function_name}"
 
 
 class StandaloneCodeBlockIDGenerationStrategy(IDGenerationStrategy):
@@ -94,4 +94,4 @@ class StandaloneCodeBlockIDGenerationStrategy(IDGenerationStrategy):
         Returns:
             str: The generated ID, incorporating the parent ID and the count.
         """
-        return f"{parent_id}__>__STANDALONE_CODE_BLOCK_{count}"
+        return f"{parent_id}__>__STANDALONE_CODE_BLOCK-{count}"
