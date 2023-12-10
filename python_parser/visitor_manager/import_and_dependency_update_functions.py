@@ -37,7 +37,8 @@ class ImportAndDependencyUpdater:
             updater.update_imports()
         """
 
-        for model_builder in self.model_builder_list:
+        model_builders_tuple = tuple(self.model_builder_list)
+        for model_builder in model_builders_tuple:
             import_updater: ImportUpdater = ImportUpdater(self.model_builder_list)
             import_updater.process_builder(model_builder)
 
@@ -90,7 +91,13 @@ class ImportUpdater:
         # HACK: Converts to tuple in order to prevent missing elements as the list was getting modified during iteration
 
         for import_model in module_imports_tuple:
+            # FIXME: Trying to update `ArangoDBManager` twice, only that import for whatever reason
+            if import_model.import_names[0].name == "ArangoDBManager":
+                print(f"module_imports_tuple: {module_imports_tuple}")
+                print("ArangoDBManager import found in handle_import_models")
             self.update_import_for_builder(builder, import_model)
+            if import_model.import_names[0].name == "ArangoDBManager":
+                print(f"Updated import: {import_model.import_names[0].name}")
             dependency_updater: DependencyUpdater = DependencyUpdater(builder)
             dependency_updater.update_dependencies()
 
@@ -107,6 +114,8 @@ class ImportUpdater:
         """
 
         if self.is_local_import(import_model):
+            if import_model.import_names[0].name == "ArangoDBManager":
+                print("ArangoDBManager import found in update_import_for_builder")
             import_path: str = self.get_import_path(import_model)
             import_names: list[str] | None = None
 
