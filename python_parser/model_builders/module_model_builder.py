@@ -99,6 +99,8 @@ class ModuleModelBuilder(BaseModelBuilder):
                 ):
                     import_to_remove = existing_import
                     break
+            if old_import_model.import_names[0].name == "ArangoDBManager":
+                print("module_model_builder ", import_to_remove)
 
             if not import_to_remove:
                 raise Exception(f"Could not find import to remove: {old_import_model}")
