@@ -108,4 +108,4 @@ class StandaloneCodeBlockIDGenerationStrategy(IDGenerationStrategy):
         Returns:
             str: The generated ID, incorporating the parent ID and the count.
         """
-        return f"{parent_id}__*__STANDALONE_CODE_BLOCK-{count}"
+        return f"{parent_id}__*__STANDALONE_BLOCK-{count}"
