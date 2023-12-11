@@ -46,7 +46,7 @@ class GraphDBBuilder:
             ).insert(module_data)
             # print(f"Module vertex created, response: {response}")
         except Exception as e:
-            print(f"Error inserting module vertex: {e}")
+            print(f"Error inserting module vertex (ArangoDB): {e}")
 
     count = 0
 
@@ -101,7 +101,7 @@ class GraphDBBuilder:
                 parent_type: str = self.get_block_type_from_id(parent_key)
                 self.create_edge(key, parent_key, vertex_type, parent_type)
         except Exception as e:
-            print(f"Error inserting {vertex_type} vertex: {e}")
+            print(f"Error inserting {vertex_type} vertex (ArangoDB): {e}")
 
     def create_vertex_for_class(
         self, class_data: dict[str, Any], parent_key: str
@@ -142,7 +142,7 @@ class GraphDBBuilder:
             self.db_manager.db.collection("code_edges").insert(edge_data)
             # print(f"Edge created between {from_key} and {to_key}")
         except Exception as e:
-            print(f"Error creating edge: {e}")
+            print(f"Error creating edge (ArangoDB): {e}")
 
     def get_block_type_from_id(self, block_id) -> str:
         block_id_parts: list[str] = block_id.split("__*__")
