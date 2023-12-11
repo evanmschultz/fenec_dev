@@ -1,0 +1,200 @@
+{
+    "file_path": "./python_parser/main.py",
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "typer",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "setup_logging",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:utilities:logger:logging_config.py__*__MODULE__*__FUNCTION-setup_logging"
+                }
+            ],
+            "imported_from": "utilities.logger.logging_config",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:utilities:logger:logging_config.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "VisitorManager",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager"
+                }
+            ],
+            "imported_from": "visitor_manager.visitor_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE"
+        }
+    ],
+    "id": ".:python_parser:main.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 44,
+    "code_content": "import logging\nfrom logging import Logger\nimport typer\n\nfrom utilities.logger.logging_config import setup_logging\nfrom visitor_manager.visitor_manager import VisitorManager\n\n\ndef main(\n    directory: str = typer.Option(\n        default=\".\",\n        prompt=\"Please enter a directory path\",\n        help=\"The path to the directory to parse\",\n    ),\n    output_directory: str = typer.Option(\n        default=\"output\",\n        help=\"The path to the output directory\",\n    ),\n) -> None:\n    \"\"\"\n    Parse the specified directory and save the results in the output directory.\n\n    Args:\n        directory (str): The path to the directory to parse.\n        output_directory (str): The path to the output directory.\n\n    Returns:\n        None\n    \"\"\"\n\n    logger: Logger = logging.getLogger(__name__)\n    logger.info(\"Starting the directory parsing.\")\n\n    visitor_manager = VisitorManager(directory, output_directory)\n    visitor_manager.process_files()\n    visitor_manager.save_visited_directories()\n\n    logger.info(\"Directory parsing completed.\")\n\n\nif __name__ == \"__main__\":\n    setup_logging()\n    typer.run(main)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children": [
+        {
+            "variable_assignments": [],
+            "id": ".:python_parser:main.py__*__MODULE__*__STANDALONE_BLOCK-1",
+            "parent_id": ".:python_parser:main.py__*__MODULE",
+            "block_type": "STANDALONE_BLOCK",
+            "start_line_num": 39,
+            "end_line_num": 44,
+            "code_content": "if __name__ == \"__main__\":\n    setup_logging()\n    typer.run(main)\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "code_block_id": ".:python_parser:main.py__*__MODULE__*__FUNCTION-main"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "logging",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "typer",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "setup_logging",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:utilities:logger:logging_config.py__*__MODULE__*__FUNCTION-setup_logging"
+                        }
+                    ],
+                    "imported_from": "utilities.logger.logging_config",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:utilities:logger:logging_config.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "function_name": "main",
+            "docstring": "Parse the specified directory and save the results in the output directory.\n\nArgs:\n    directory (str): The path to the directory to parse.\n    output_directory (str): The path to the output directory.\n\nReturns:\n    None",
+            "decorators": null,
+            "parameters": null,
+            "returns": "None",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:main.py__*__MODULE__*__FUNCTION-main",
+            "parent_id": ".:python_parser:main.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 7,
+            "end_line_num": 39,
+            "code_content": "\n\ndef main(\n    directory: str = typer.Option(\n        default=\".\",\n        prompt=\"Please enter a directory path\",\n        help=\"The path to the directory to parse\",\n    ),\n    output_directory: str = typer.Option(\n        default=\"output\",\n        help=\"The path to the output directory\",\n    ),\n) -> None:\n    \"\"\"\n    Parse the specified directory and save the results in the output directory.\n\n    Args:\n        directory (str): The path to the directory to parse.\n        output_directory (str): The path to the output directory.\n\n    Returns:\n        None\n    \"\"\"\n\n    logger: Logger = logging.getLogger(__name__)\n    logger.info(\"Starting the directory parsing.\")\n\n    visitor_manager = VisitorManager(directory, output_directory)\n    visitor_manager.process_files()\n    visitor_manager.save_visited_directories()\n\n    logger.info(\"Directory parsing completed.\")\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "logging",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "Logger",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "logging",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "typer",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "VisitorManager",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager"
+                        }
+                    ],
+                    "imported_from": "visitor_manager.visitor_manager",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": null
+        }
+    ]
+}

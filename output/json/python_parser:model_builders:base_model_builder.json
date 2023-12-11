@@ -1,0 +1,743 @@
+{
+    "file_path": "./python_parser/model_builders/base_model_builder.py",
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "annotations",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "__future__",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "TYPE_CHECKING",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ABC",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "abstractmethod",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "abc",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "DependencyModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+                },
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "BaseCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel"
+                }
+            ],
+            "imported_from": "models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        }
+    ],
+    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 227,
+    "code_content": "from __future__ import annotations\n\nfrom typing import TYPE_CHECKING, Any, Union\nfrom abc import ABC, abstractmethod\n\nfrom models.models import (\n    BaseCodeBlockModel,\n    CommentModel,\n    ImportModel,\n    DependencyModel,\n)\n\nfrom models.enums import BlockType\n\nif TYPE_CHECKING:\n    from model_builders.class_model_builder import ClassModelBuilder\n    from model_builders.function_model_builder import FunctionModelBuilder\n    from model_builders.module_model_builder import ModuleModelBuilder\n    from model_builders.standalone_block_model_builder import (\n        StandaloneBlockModelBuilder,\n    )\n\n\nclass BaseModelBuilder(ABC):\n    \"\"\"\n    Abstract base class for building models of different code blocks.\n\n    This class follows the builder pattern, providing a structured approach to constructing models for various types of code blocks (like modules, classes, functions). It defines common attributes and methods used across all specific model builders.\n\n    Attributes:\n        id (str): The unique identifier for the code block.\n        children_builders (list[Union[ClassModelBuilder, FunctionModelBuilder, StandaloneBlockModelBuilder]]):\n            A list of builders for the children code blocks.\n        common_attributes (BaseCodeBlockModel): An instance containing common attributes shared across different code block models.\n\n    Example:\n        # This example demonstrates how a derived builder might be initialized and used.\n        >>> class SomeModelBuilder(BaseModelBuilder):\n                def build(self):\n                    # Building logic specific to 'SomeModelBuilder'\n                    pass\n        >>> builder = SomeModelBuilder(id='123', block_type=BlockType.CLASS, parent_id='root')\n        >>> builder.set_start_line_num(1).set_end_line_num(10)\n        # Sets the start and end line numbers for the code block.\n    \"\"\"\n\n    def __init__(\n        self, *, id: str, block_type: BlockType, parent_id: str | None\n    ) -> None:\n        self.id: str = id\n        self.children_builders: list[\n            ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder\n        ] = []\n\n        self.common_attributes = BaseCodeBlockModel(\n            id=id,\n            parent_id=parent_id,\n            block_type=block_type,\n            start_line_num=0,\n            end_line_num=0,\n            code_content=\"\",\n            important_comments=None,\n            children=None,\n            dependencies=None,\n            summary=None,\n        )\n\n    def set_start_line_num(\n        self, line_num: int\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Sets the start line number of the code block model instance.\"\"\"\n        self.common_attributes.start_line_num = line_num\n        return self\n\n    def set_end_line_num(\n        self, line_num: int\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Sets the end line number of the code block model instance.\"\"\"\n        self.common_attributes.end_line_num = line_num\n        return self\n\n    def set_code_content(\n        self, code_content: str\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Adds the string containing the content of the code block to the model instance.\"\"\"\n        self.common_attributes.code_content = code_content\n        return self\n\n    def add_important_comment(\n        self, comment: CommentModel\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Adds an important comment to the model instance.\"\"\"\n        if not self.common_attributes.important_comments:\n            self.common_attributes.important_comments = []\n        self.common_attributes.important_comments.append(comment)\n        return self\n\n    def add_summary(\n        self, summary: str\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Adds a summary to the model instance.\"\"\"\n        return self\n\n    def add_child(\n        self,\n        child: Union[\n            \"ClassModelBuilder\", \"FunctionModelBuilder\", StandaloneBlockModelBuilder\n        ],\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Adds a child code block to the model instance.\"\"\"\n        self.children_builders.append(child)\n        return self\n\n    def set_dependencies(\n        self, dependencies: list[ImportModel | DependencyModel] | None\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Sets the dependencies of the model instance.\"\"\"\n        self.common_attributes.dependencies = dependencies\n        return self\n\n    def update_import_dependency(\n        self,\n        new_import_model: ImportModel,\n        old_import_model: ImportModel,\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"\n        Updates an import in the model instance.\n\n        Args:\n            new_import_model (ImportModel): The updated import model.\n            old_import_model\n\n        Returns:\n            BaseModelBuilder: The base model builder instance.\n        \"\"\"\n\n        if self.common_attributes.dependencies:\n            import_model_to_remove: ImportModel | None = None\n            for existing_import_model in self.common_attributes.dependencies:\n                if isinstance(existing_import_model, DependencyModel):\n                    continue\n\n                if (\n                    existing_import_model.import_names == old_import_model.import_names\n                    and existing_import_model.imported_from\n                    == old_import_model.imported_from\n                    and existing_import_model.import_module_type\n                    == old_import_model.import_module_type\n                ):\n                    import_model_to_remove = existing_import_model\n                    break\n\n            if not import_model_to_remove:\n                raise Exception(f\"Could not find import to remove: {old_import_model}\")\n\n            self.common_attributes.dependencies.remove(import_model_to_remove)\n            self.common_attributes.dependencies.append(new_import_model)\n        else:\n            raise Exception(\n                f\"No imports in the builders imports list: {self.common_attributes.dependencies}\"\n            )\n        return self\n\n    def build_and_set_children(self) -> None:\n        if self.children_builders:\n            self.common_attributes.children = [\n                child.build() for child in self.children_builders\n            ]\n\n    def _get_common_attributes(self) -> dict[str, Any]:\n        \"\"\"\n        Returns a dictionary containing the attributes common to all code block models.\n        \"\"\"\n        return self.common_attributes.model_dump()\n\n    @abstractmethod\n    def build(\n        self,\n    ) -> None:\n        \"\"\"\n        Builds and returns the code block model instance.\n\n        Returns:\n            CodeBlockModel: The built code block model instance.\n        \"\"\"\n        ...\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children": [
+        {
+            "variable_assignments": [],
+            "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__STANDALONE_BLOCK-1",
+            "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE",
+            "block_type": "STANDALONE_BLOCK",
+            "start_line_num": 14,
+            "end_line_num": 22,
+            "code_content": "if TYPE_CHECKING:\n    from model_builders.class_model_builder import ClassModelBuilder\n    from model_builders.function_model_builder import FunctionModelBuilder\n    from model_builders.module_model_builder import ModuleModelBuilder\n    from model_builders.standalone_block_model_builder import (\n        StandaloneBlockModelBuilder,\n    )\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "TYPE_CHECKING",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "Any",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "Union",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "typing",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ClassModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.class_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "FunctionModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.function_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ModuleModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.module_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "StandaloneBlockModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.standalone_block_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "class_name": "BaseModelBuilder",
+            "decorators": null,
+            "bases": [
+                "ABC"
+            ],
+            "docstring": "Abstract base class for building models of different code blocks.\n\nThis class follows the builder pattern, providing a structured approach to constructing models for various types of code blocks (like modules, classes, functions). It defines common attributes and methods used across all specific model builders.\n\nAttributes:\n    id (str): The unique identifier for the code block.\n    children_builders (list[Union[ClassModelBuilder, FunctionModelBuilder, StandaloneBlockModelBuilder]]):\n        A list of builders for the children code blocks.\n    common_attributes (BaseCodeBlockModel): An instance containing common attributes shared across different code block models.\n\nExample:\n    # This example demonstrates how a derived builder might be initialized and used.\n    >>> class SomeModelBuilder(BaseModelBuilder):\n            def build(self):\n                # Building logic specific to 'SomeModelBuilder'\n                pass\n    >>> builder = SomeModelBuilder(id='123', block_type=BlockType.CLASS, parent_id='root')\n    >>> builder.set_start_line_num(1).set_end_line_num(10)\n    # Sets the start and end line numbers for the code block.",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+            "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 22,
+            "end_line_num": 227,
+            "code_content": "\n\nclass BaseModelBuilder(ABC):\n    \"\"\"\n    Abstract base class for building models of different code blocks.\n\n    This class follows the builder pattern, providing a structured approach to constructing models for various types of code blocks (like modules, classes, functions). It defines common attributes and methods used across all specific model builders.\n\n    Attributes:\n        id (str): The unique identifier for the code block.\n        children_builders (list[Union[ClassModelBuilder, FunctionModelBuilder, StandaloneBlockModelBuilder]]):\n            A list of builders for the children code blocks.\n        common_attributes (BaseCodeBlockModel): An instance containing common attributes shared across different code block models.\n\n    Example:\n        # This example demonstrates how a derived builder might be initialized and used.\n        >>> class SomeModelBuilder(BaseModelBuilder):\n                def build(self):\n                    # Building logic specific to 'SomeModelBuilder'\n                    pass\n        >>> builder = SomeModelBuilder(id='123', block_type=BlockType.CLASS, parent_id='root')\n        >>> builder.set_start_line_num(1).set_end_line_num(10)\n        # Sets the start and end line numbers for the code block.\n    \"\"\"\n\n    def __init__(\n        self, *, id: str, block_type: BlockType, parent_id: str | None\n    ) -> None:\n        self.id: str = id\n        self.children_builders: list[\n            ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder\n        ] = []\n\n        self.common_attributes = BaseCodeBlockModel(\n            id=id,\n            parent_id=parent_id,\n            block_type=block_type,\n            start_line_num=0,\n            end_line_num=0,\n            code_content=\"\",\n            important_comments=None,\n            children=None,\n            dependencies=None,\n            summary=None,\n        )\n\n    def set_start_line_num(\n        self, line_num: int\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Sets the start line number of the code block model instance.\"\"\"\n        self.common_attributes.start_line_num = line_num\n        return self\n\n    def set_end_line_num(\n        self, line_num: int\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Sets the end line number of the code block model instance.\"\"\"\n        self.common_attributes.end_line_num = line_num\n        return self\n\n    def set_code_content(\n        self, code_content: str\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Adds the string containing the content of the code block to the model instance.\"\"\"\n        self.common_attributes.code_content = code_content\n        return self\n\n    def add_important_comment(\n        self, comment: CommentModel\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Adds an important comment to the model instance.\"\"\"\n        if not self.common_attributes.important_comments:\n            self.common_attributes.important_comments = []\n        self.common_attributes.important_comments.append(comment)\n        return self\n\n    def add_summary(\n        self, summary: str\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Adds a summary to the model instance.\"\"\"\n        return self\n\n    def add_child(\n        self,\n        child: Union[\n            \"ClassModelBuilder\", \"FunctionModelBuilder\", StandaloneBlockModelBuilder\n        ],\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Adds a child code block to the model instance.\"\"\"\n        self.children_builders.append(child)\n        return self\n\n    def set_dependencies(\n        self, dependencies: list[ImportModel | DependencyModel] | None\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"Sets the dependencies of the model instance.\"\"\"\n        self.common_attributes.dependencies = dependencies\n        return self\n\n    def update_import_dependency(\n        self,\n        new_import_model: ImportModel,\n        old_import_model: ImportModel,\n    ) -> Union[\n        \"BaseModelBuilder\",\n        \"ModuleModelBuilder\",\n        \"ClassModelBuilder\",\n        \"FunctionModelBuilder\",\n    ]:\n        \"\"\"\n        Updates an import in the model instance.\n\n        Args:\n            new_import_model (ImportModel): The updated import model.\n            old_import_model\n\n        Returns:\n            BaseModelBuilder: The base model builder instance.\n        \"\"\"\n\n        if self.common_attributes.dependencies:\n            import_model_to_remove: ImportModel | None = None\n            for existing_import_model in self.common_attributes.dependencies:\n                if isinstance(existing_import_model, DependencyModel):\n                    continue\n\n                if (\n                    existing_import_model.import_names == old_import_model.import_names\n                    and existing_import_model.imported_from\n                    == old_import_model.imported_from\n                    and existing_import_model.import_module_type\n                    == old_import_model.import_module_type\n                ):\n                    import_model_to_remove = existing_import_model\n                    break\n\n            if not import_model_to_remove:\n                raise Exception(f\"Could not find import to remove: {old_import_model}\")\n\n            self.common_attributes.dependencies.remove(import_model_to_remove)\n            self.common_attributes.dependencies.append(new_import_model)\n        else:\n            raise Exception(\n                f\"No imports in the builders imports list: {self.common_attributes.dependencies}\"\n            )\n        return self\n\n    def build_and_set_children(self) -> None:\n        if self.children_builders:\n            self.common_attributes.children = [\n                child.build() for child in self.children_builders\n            ]\n\n    def _get_common_attributes(self) -> dict[str, Any]:\n        \"\"\"\n        Returns a dictionary containing the attributes common to all code block models.\n        \"\"\"\n        return self.common_attributes.model_dump()\n\n    @abstractmethod\n    def build(\n        self,\n    ) -> None:\n        \"\"\"\n        Builds and returns the code block model instance.\n\n        Returns:\n            CodeBlockModel: The built code block model instance.\n        \"\"\"\n        ...\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "BaseCodeBlockModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "CommentModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ImportModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "DependencyModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "BaseCodeBlockModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "CommentModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ImportModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "DependencyModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "BaseCodeBlockModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "CommentModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ImportModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "DependencyModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "BaseCodeBlockModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "CommentModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ImportModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "DependencyModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "TYPE_CHECKING",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "Any",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "Union",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "typing",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "TYPE_CHECKING",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "Any",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "Union",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "typing",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ABC",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "abstractmethod",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "abc",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ABC",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "abstractmethod",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "abc",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "BlockType",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                        }
+                    ],
+                    "imported_from": "models.enums",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ClassModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.class_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "FunctionModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.function_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ModuleModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.module_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "StandaloneBlockModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.standalone_block_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": [
+                {
+                    "function_name": "__init__",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-__init__",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 46,
+                    "end_line_num": 67,
+                    "code_content": "\ndef __init__(\n    self, *, id: str, block_type: BlockType, parent_id: str | None\n) -> None:\n    self.id: str = id\n    self.children_builders: list[\n        ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder\n    ] = []\n\n    self.common_attributes = BaseCodeBlockModel(\n        id=id,\n        parent_id=parent_id,\n        block_type=block_type,\n        start_line_num=0,\n        end_line_num=0,\n        code_content=\"\",\n        important_comments=None,\n        children=None,\n        dependencies=None,\n        summary=None,\n    )\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "set_start_line_num",
+                    "docstring": "Sets the start line number of the code block model instance.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "Union[, , , ]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-set_start_line_num",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 67,
+                    "end_line_num": 79,
+                    "code_content": "\ndef set_start_line_num(\n    self, line_num: int\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Sets the start line number of the code block model instance.\"\"\"\n    self.common_attributes.start_line_num = line_num\n    return self\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "set_end_line_num",
+                    "docstring": "Sets the end line number of the code block model instance.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "Union[, , , ]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-set_end_line_num",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 79,
+                    "end_line_num": 91,
+                    "code_content": "\ndef set_end_line_num(\n    self, line_num: int\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Sets the end line number of the code block model instance.\"\"\"\n    self.common_attributes.end_line_num = line_num\n    return self\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "set_code_content",
+                    "docstring": "Adds the string containing the content of the code block to the model instance.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "Union[, , , ]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-set_code_content",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 91,
+                    "end_line_num": 103,
+                    "code_content": "\ndef set_code_content(\n    self, code_content: str\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Adds the string containing the content of the code block to the model instance.\"\"\"\n    self.common_attributes.code_content = code_content\n    return self\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "add_important_comment",
+                    "docstring": "Adds an important comment to the model instance.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "Union[, , , ]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-add_important_comment",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 103,
+                    "end_line_num": 117,
+                    "code_content": "\ndef add_important_comment(\n    self, comment: CommentModel\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Adds an important comment to the model instance.\"\"\"\n    if not self.common_attributes.important_comments:\n        self.common_attributes.important_comments = []\n    self.common_attributes.important_comments.append(comment)\n    return self\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "add_summary",
+                    "docstring": "Adds a summary to the model instance.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "Union[, , , ]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-add_summary",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 117,
+                    "end_line_num": 128,
+                    "code_content": "\ndef add_summary(\n    self, summary: str\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Adds a summary to the model instance.\"\"\"\n    return self\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "add_child",
+                    "docstring": "Adds a child code block to the model instance.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "Union[, , , ]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-add_child",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 128,
+                    "end_line_num": 143,
+                    "code_content": "\ndef add_child(\n    self,\n    child: Union[\n        \"ClassModelBuilder\", \"FunctionModelBuilder\", StandaloneBlockModelBuilder\n    ],\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Adds a child code block to the model instance.\"\"\"\n    self.children_builders.append(child)\n    return self\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "set_dependencies",
+                    "docstring": "Sets the dependencies of the model instance.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "Union[, , , ]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-set_dependencies",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 143,
+                    "end_line_num": 155,
+                    "code_content": "\ndef set_dependencies(\n    self, dependencies: list[ImportModel | DependencyModel] | None\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Sets the dependencies of the model instance.\"\"\"\n    self.common_attributes.dependencies = dependencies\n    return self\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "update_import_dependency",
+                    "docstring": "Updates an import in the model instance.\n\nArgs:\n    new_import_model (ImportModel): The updated import model.\n    old_import_model\n\nReturns:\n    BaseModelBuilder: The base model builder instance.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "Union[, , , ]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-update_import_dependency",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 155,
+                    "end_line_num": 203,
+                    "code_content": "\ndef update_import_dependency(\n    self,\n    new_import_model: ImportModel,\n    old_import_model: ImportModel,\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"\n        Updates an import in the model instance.\n\n        Args:\n            new_import_model (ImportModel): The updated import model.\n            old_import_model\n\n        Returns:\n            BaseModelBuilder: The base model builder instance.\n        \"\"\"\n\n    if self.common_attributes.dependencies:\n        import_model_to_remove: ImportModel | None = None\n        for existing_import_model in self.common_attributes.dependencies:\n            if isinstance(existing_import_model, DependencyModel):\n                continue\n\n            if (\n                existing_import_model.import_names == old_import_model.import_names\n                and existing_import_model.imported_from\n                == old_import_model.imported_from\n                and existing_import_model.import_module_type\n                == old_import_model.import_module_type\n            ):\n                import_model_to_remove = existing_import_model\n                break\n\n        if not import_model_to_remove:\n            raise Exception(f\"Could not find import to remove: {old_import_model}\")\n\n        self.common_attributes.dependencies.remove(import_model_to_remove)\n        self.common_attributes.dependencies.append(new_import_model)\n    else:\n        raise Exception(\n            f\"No imports in the builders imports list: {self.common_attributes.dependencies}\"\n        )\n    return self\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "build_and_set_children",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-build_and_set_children",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 203,
+                    "end_line_num": 209,
+                    "code_content": "\ndef build_and_set_children(self) -> None:\n    if self.children_builders:\n        self.common_attributes.children = [\n            child.build() for child in self.children_builders\n        ]\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_get_common_attributes",
+                    "docstring": "Returns a dictionary containing the attributes common to all code block models.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "dict[str, Any]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-_get_common_attributes",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 209,
+                    "end_line_num": 215,
+                    "code_content": "\ndef _get_common_attributes(self) -> dict[str, Any]:\n    \"\"\"\n        Returns a dictionary containing the attributes common to all code block models.\n        \"\"\"\n    return self.common_attributes.model_dump()\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "build",
+                    "docstring": "Builds and returns the code block model instance.\n\nReturns:\n    CodeBlockModel: The built code block model instance.",
+                    "decorators": [
+                        {
+                            "content": "@abstractmethod",
+                            "decorator_name": "abstractmethod",
+                            "decorator_args": null
+                        }
+                    ],
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-build",
+                    "parent_id": ".:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 215,
+                    "end_line_num": 227,
+                    "code_content": "\n@abstractmethod\ndef build(\n    self,\n) -> None:\n    \"\"\"\n        Builds and returns the code block model instance.\n\n        Returns:\n            CodeBlockModel: The built code block model instance.\n        \"\"\"\n    ...\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                }
+            ]
+        }
+    ]
+}

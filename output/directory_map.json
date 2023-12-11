@@ -1,0 +1,63 @@
+{
+    "./python_parser": [
+        "__init__.py",
+        "main.py"
+    ],
+    "./python_parser/visitors": [
+        "base_code_block_visitor.py",
+        "__init__.py",
+        "module_visitor.py"
+    ],
+    "./python_parser/visitors/node_processing": [
+        "gather_dependencies.py",
+        "__init__.py",
+        "class_def_functions.py",
+        "standalone_code_block_functions.py",
+        "common_functions.py",
+        "module_functions.py",
+        "function_def_functions.py"
+    ],
+    "./python_parser/parsers": [
+        "__init__.py",
+        "python_parser.py"
+    ],
+    "./python_parser/id_generation": [
+        "__init__.py",
+        "id_generation_strategies.py"
+    ],
+    "./python_parser/models": [
+        "enums.py",
+        "models.py",
+        "__init__.py"
+    ],
+    "./python_parser/utilities": [
+        "__init__.py",
+        "processing_context.py",
+        "utilities.py"
+    ],
+    "./python_parser/utilities/logger": [
+        "logging_config.py",
+        "__init__.py",
+        "decorators.py"
+    ],
+    "./python_parser/model_builders": [
+        "module_model_builder.py",
+        "function_model_builder.py",
+        "__init__.py",
+        "standalone_block_model_builder.py",
+        "builder_factory.py",
+        "class_model_builder.py",
+        "base_model_builder.py"
+    ],
+    "./python_parser/visitor_manager": [
+        "import_and_dependency_update_functions.py",
+        "__init__.py",
+        "visitor_manager.py"
+    ],
+    "./arango_db": [
+        "arango_db_manager_old.py",
+        "__init__.py",
+        "arango_db_builder.py",
+        "arango_db_manager.py"
+    ]
+}

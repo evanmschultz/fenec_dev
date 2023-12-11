@@ -1,0 +1,591 @@
+{
+    "file_path": "./python_parser/visitors/node_processing/function_def_functions.py",
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "ParameterModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-ParameterModel"
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-ParameterListModel"
+                }
+            ],
+            "imported_from": "models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "extract_code_content",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_code_content"
+                },
+                {
+                    "name": "extract_stripped_code_content",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_stripped_code_content"
+                },
+                {
+                    "name": "extract_decorators",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorators"
+                },
+                {
+                    "name": "extract_type_annotation",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_type_annotation"
+                }
+            ],
+            "imported_from": "visitors.node_processing.common_functions",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                }
+            ],
+            "imported_from": "utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 155,
+    "code_content": "from typing import Sequence\n\nimport libcst\n\nfrom model_builders.function_model_builder import FunctionModelBuilder\n\nfrom models.enums import BlockType\nfrom models.models import DecoratorModel, ParameterListModel, ParameterModel\nfrom visitors.node_processing.common_functions import (\n    extract_code_content,\n    extract_decorators,\n    extract_stripped_code_content,\n    extract_type_annotation,\n)\n\nfrom utilities.processing_context import PositionData\n\n\ndef process_func_def(\n    func_id: str,\n    node: libcst.FunctionDef,\n    position_data: PositionData,\n    func_builder: FunctionModelBuilder,\n) -> None:\n    \"\"\"\n    Processes a libcst.FunctionDef node to build a function model.\n\n    Extracts various components of a function definition such as its docstring, code content, decorators, and return annotations, and updates the provided FunctionModelBuilder with these details.\n\n    Args:\n        func_id (str): The unique identifier for the function.\n        node (libcst.FunctionDef): The function definition node from the CST.\n        position_data (PositionData): Positional data for the function in the source code.\n        func_builder (FunctionModelBuilder): The builder used to construct the function model.\n\n    Example:\n        >>> func_builder = FunctionModelBuilder(id=\"func1\", ...)\n        >>> process_func_def(\"func1\", function_node, position_data, func_builder)\n        # Processes the function definition and updates the function builder.\n    \"\"\"\n\n    docstring: str | None = node.get_docstring()\n    code_content: str = extract_code_content(node)\n    decorators: list[DecoratorModel] | None = extract_decorators(node.decorators)\n\n    returns: str = (\n        _extract_return_annotation(node.returns)\n        if node.returns\n        else \"Function has no return annotation\"\n    )\n    (\n        func_builder.set_docstring(docstring)\n        .set_code_content(code_content)\n        .set_start_line_num(position_data.start)\n        .set_end_line_num(position_data.end)\n    )\n    (\n        func_builder.set_decorators(decorators)\n        .set_is_method(_func_is_method(func_id))\n        .set_is_async(_func_is_async(node))\n        .set_return_annotation(returns)\n    )\n\n\ndef process_parameters(\n    node: libcst.Parameters,\n) -> ParameterListModel | None:\n    \"\"\"\n    Processes libcst.Parameters node to create a ParameterListModel.\n\n    Extracts parameters, keyword-only parameters, positional-only parameters, and special arguments (like *args and **kwargs) from the function definition and forms a model representing these parameters.\n\n    Args:\n        node (libcst.Parameters): The parameters node from a function definition.\n\n    Returns:\n        ParameterListModel | None: A model representing the function's parameters, or None if there are no parameters.\n\n    Example:\n        >>> parameters_model = process_parameters(function_node.params)\n        # Processes the function parameters and returns a parameter model.\n    \"\"\"\n\n    params: list[ParameterModel] | None = (\n        _get_parameters_list(node.params) if node.params else []\n    )\n    kwonly_params: list[ParameterModel] | None = (\n        _get_parameters_list(node.kwonly_params) if node.kwonly_params else []\n    )\n    posonly_params: list[ParameterModel] | None = (\n        _get_parameters_list(node.posonly_params) if node.posonly_params else []\n    )\n\n    star_arg: ParameterModel | None = (\n        ParameterModel(content=extract_stripped_code_content(node.star_arg))\n        if node.star_arg and isinstance(node.star_arg, libcst.Param)\n        else None\n    )\n    star_kwarg: ParameterModel | None = (\n        ParameterModel(content=extract_stripped_code_content(node.star_kwarg))\n        if node.star_kwarg\n        else None\n    )\n\n    if params and kwonly_params and posonly_params and star_arg and star_kwarg:\n        return ParameterListModel(\n            params=params,\n            kwonly_params=kwonly_params,\n            posonly_params=posonly_params,\n            star_arg=star_arg,\n            star_kwarg=star_kwarg,\n        )\n\n\ndef _func_is_method(id: str) -> bool:\n    \"\"\"Returns true if an ancestor of the function is a class.\"\"\"\n\n    return str(BlockType.CLASS) in id\n\n\ndef _func_is_async(node: libcst.FunctionDef) -> bool:\n    \"\"\"Returns true if the function is async.\"\"\"\n\n    return True if node.asynchronous else False\n\n\ndef _get_parameters_list(\n    parameter_sequence: Sequence[libcst.Param],\n) -> list[ParameterModel] | None:\n    \"\"\"Returns a list of ParameterModel representing the parameters in a function definition.\"\"\"\n\n    params: list[ParameterModel] | None = None\n\n    if parameter_sequence:\n        params = []\n        for parameter in parameter_sequence:\n            param: ParameterModel = ParameterModel(\n                content=extract_stripped_code_content(parameter)\n            )\n            params.append(param)\n\n    return params if params else None\n\n\ndef _extract_return_annotation(\n    node_returns: libcst.Annotation | None,\n) -> str:\n    \"\"\"Extracts the return annotation from a function definition.\"\"\"\n\n    if isinstance(node_returns, libcst.Annotation) and node_returns:\n        annotation: str | None = extract_type_annotation(node_returns)\n        return annotation if annotation else \"No return annotation\"\n    else:\n        return \"No return annotation\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children": [
+        {
+            "function_name": "process_func_def",
+            "docstring": "Processes a libcst.FunctionDef node to build a function model.\n\nExtracts various components of a function definition such as its docstring, code content, decorators, and return annotations, and updates the provided FunctionModelBuilder with these details.\n\nArgs:\n    func_id (str): The unique identifier for the function.\n    node (libcst.FunctionDef): The function definition node from the CST.\n    position_data (PositionData): Positional data for the function in the source code.\n    func_builder (FunctionModelBuilder): The builder used to construct the function model.\n\nExample:\n    >>> func_builder = FunctionModelBuilder(id=\"func1\", ...)\n    >>> process_func_def(\"func1\", function_node, position_data, func_builder)\n    # Processes the function definition and updates the function builder.",
+            "decorators": null,
+            "parameters": null,
+            "returns": "None",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-process_func_def",
+            "parent_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 17,
+            "end_line_num": 63,
+            "code_content": "\n\ndef process_func_def(\n    func_id: str,\n    node: libcst.FunctionDef,\n    position_data: PositionData,\n    func_builder: FunctionModelBuilder,\n) -> None:\n    \"\"\"\n    Processes a libcst.FunctionDef node to build a function model.\n\n    Extracts various components of a function definition such as its docstring, code content, decorators, and return annotations, and updates the provided FunctionModelBuilder with these details.\n\n    Args:\n        func_id (str): The unique identifier for the function.\n        node (libcst.FunctionDef): The function definition node from the CST.\n        position_data (PositionData): Positional data for the function in the source code.\n        func_builder (FunctionModelBuilder): The builder used to construct the function model.\n\n    Example:\n        >>> func_builder = FunctionModelBuilder(id=\"func1\", ...)\n        >>> process_func_def(\"func1\", function_node, position_data, func_builder)\n        # Processes the function definition and updates the function builder.\n    \"\"\"\n\n    docstring: str | None = node.get_docstring()\n    code_content: str = extract_code_content(node)\n    decorators: list[DecoratorModel] | None = extract_decorators(node.decorators)\n\n    returns: str = (\n        _extract_return_annotation(node.returns)\n        if node.returns\n        else \"Function has no return annotation\"\n    )\n    (\n        func_builder.set_docstring(docstring)\n        .set_code_content(code_content)\n        .set_start_line_num(position_data.start)\n        .set_end_line_num(position_data.end)\n    )\n    (\n        func_builder.set_decorators(decorators)\n        .set_is_method(_func_is_method(func_id))\n        .set_is_async(_func_is_async(node))\n        .set_return_annotation(returns)\n    )\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "code_block_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_func_is_method"
+                },
+                {
+                    "code_block_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_func_is_async"
+                },
+                {
+                    "code_block_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_extract_return_annotation"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "DecoratorModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ParameterListModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ParameterModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "extract_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_decorators",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_stripped_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_type_annotation",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "visitors.node_processing.common_functions",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "extract_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_decorators",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_stripped_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_type_annotation",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "visitors.node_processing.common_functions",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "libcst",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "FunctionModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.function_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "PositionData",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                        }
+                    ],
+                    "imported_from": "utilities.processing_context",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:utilities:processing_context.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "function_name": "process_parameters",
+            "docstring": "Processes libcst.Parameters node to create a ParameterListModel.\n\nExtracts parameters, keyword-only parameters, positional-only parameters, and special arguments (like *args and **kwargs) from the function definition and forms a model representing these parameters.\n\nArgs:\n    node (libcst.Parameters): The parameters node from a function definition.\n\nReturns:\n    ParameterListModel | None: A model representing the function's parameters, or None if there are no parameters.\n\nExample:\n    >>> parameters_model = process_parameters(function_node.params)\n    # Processes the function parameters and returns a parameter model.",
+            "decorators": null,
+            "parameters": null,
+            "returns": "ParameterListModel | None",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-process_parameters",
+            "parent_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 63,
+            "end_line_num": 113,
+            "code_content": "\n\ndef process_parameters(\n    node: libcst.Parameters,\n) -> ParameterListModel | None:\n    \"\"\"\n    Processes libcst.Parameters node to create a ParameterListModel.\n\n    Extracts parameters, keyword-only parameters, positional-only parameters, and special arguments (like *args and **kwargs) from the function definition and forms a model representing these parameters.\n\n    Args:\n        node (libcst.Parameters): The parameters node from a function definition.\n\n    Returns:\n        ParameterListModel | None: A model representing the function's parameters, or None if there are no parameters.\n\n    Example:\n        >>> parameters_model = process_parameters(function_node.params)\n        # Processes the function parameters and returns a parameter model.\n    \"\"\"\n\n    params: list[ParameterModel] | None = (\n        _get_parameters_list(node.params) if node.params else []\n    )\n    kwonly_params: list[ParameterModel] | None = (\n        _get_parameters_list(node.kwonly_params) if node.kwonly_params else []\n    )\n    posonly_params: list[ParameterModel] | None = (\n        _get_parameters_list(node.posonly_params) if node.posonly_params else []\n    )\n\n    star_arg: ParameterModel | None = (\n        ParameterModel(content=extract_stripped_code_content(node.star_arg))\n        if node.star_arg and isinstance(node.star_arg, libcst.Param)\n        else None\n    )\n    star_kwarg: ParameterModel | None = (\n        ParameterModel(content=extract_stripped_code_content(node.star_kwarg))\n        if node.star_kwarg\n        else None\n    )\n\n    if params and kwonly_params and posonly_params and star_arg and star_kwarg:\n        return ParameterListModel(\n            params=params,\n            kwonly_params=kwonly_params,\n            posonly_params=posonly_params,\n            star_arg=star_arg,\n            star_kwarg=star_kwarg,\n        )\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "code_block_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_get_parameters_list"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "DecoratorModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ParameterListModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ParameterModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "DecoratorModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ParameterListModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ParameterModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "extract_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_decorators",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_stripped_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_type_annotation",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "visitors.node_processing.common_functions",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "libcst",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "function_name": "_func_is_method",
+            "docstring": "Returns true if an ancestor of the function is a class.",
+            "decorators": null,
+            "parameters": null,
+            "returns": "bool",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_func_is_method",
+            "parent_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 113,
+            "end_line_num": 119,
+            "code_content": "\n\ndef _func_is_method(id: str) -> bool:\n    \"\"\"Returns true if an ancestor of the function is a class.\"\"\"\n\n    return str(BlockType.CLASS) in id\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "BlockType",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                        }
+                    ],
+                    "imported_from": "models.enums",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "function_name": "_func_is_async",
+            "docstring": "Returns true if the function is async.",
+            "decorators": null,
+            "parameters": null,
+            "returns": "bool",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_func_is_async",
+            "parent_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 119,
+            "end_line_num": 125,
+            "code_content": "\n\ndef _func_is_async(node: libcst.FunctionDef) -> bool:\n    \"\"\"Returns true if the function is async.\"\"\"\n\n    return True if node.asynchronous else False\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "libcst",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "function_name": "_get_parameters_list",
+            "docstring": "Returns a list of ParameterModel representing the parameters in a function definition.",
+            "decorators": null,
+            "parameters": null,
+            "returns": "list[ParameterModel] | None",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_get_parameters_list",
+            "parent_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 125,
+            "end_line_num": 143,
+            "code_content": "\n\ndef _get_parameters_list(\n    parameter_sequence: Sequence[libcst.Param],\n) -> list[ParameterModel] | None:\n    \"\"\"Returns a list of ParameterModel representing the parameters in a function definition.\"\"\"\n\n    params: list[ParameterModel] | None = None\n\n    if parameter_sequence:\n        params = []\n        for parameter in parameter_sequence:\n            param: ParameterModel = ParameterModel(\n                content=extract_stripped_code_content(parameter)\n            )\n            params.append(param)\n\n    return params if params else None\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "DecoratorModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ParameterListModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ParameterModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "extract_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_decorators",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_stripped_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_type_annotation",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "visitors.node_processing.common_functions",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "Sequence",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "typing",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "libcst",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "function_name": "_extract_return_annotation",
+            "docstring": "Extracts the return annotation from a function definition.",
+            "decorators": null,
+            "parameters": null,
+            "returns": "str",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_extract_return_annotation",
+            "parent_id": ".:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 143,
+            "end_line_num": 155,
+            "code_content": "\n\ndef _extract_return_annotation(\n    node_returns: libcst.Annotation | None,\n) -> str:\n    \"\"\"Extracts the return annotation from a function definition.\"\"\"\n\n    if isinstance(node_returns, libcst.Annotation) and node_returns:\n        annotation: str | None = extract_type_annotation(node_returns)\n        return annotation if annotation else \"No return annotation\"\n    else:\n        return \"No return annotation\"\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "extract_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_decorators",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_stripped_code_content",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "extract_type_annotation",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "visitors.node_processing.common_functions",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "libcst",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": null
+        }
+    ]
+}

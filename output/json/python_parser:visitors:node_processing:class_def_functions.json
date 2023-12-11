@@ -1,0 +1,373 @@
+{
+    "file_path": "./python_parser/visitors/node_processing/class_def_functions.py",
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "ClassKeywordModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel"
+                }
+            ],
+            "imported_from": "models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "extract_code_content",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_code_content"
+                },
+                {
+                    "name": "extract_stripped_code_content",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_stripped_code_content"
+                },
+                {
+                    "name": "extract_decorators",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorators"
+                }
+            ],
+            "imported_from": "visitors.node_processing.common_functions",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                }
+            ],
+            "imported_from": "utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "id": ".:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 111,
+    "code_content": "from typing import Sequence\n\nimport libcst\n\nfrom model_builders.class_model_builder import ClassModelBuilder\n\nfrom models.models import ClassKeywordModel, DecoratorModel\nfrom visitors.node_processing.common_functions import (\n    extract_code_content,\n    extract_stripped_code_content,\n    extract_decorators,\n)\nfrom utilities.processing_context import PositionData\n\n\ndef process_class_def(\n    node: libcst.ClassDef,\n    position_data: PositionData,\n    builder: ClassModelBuilder,\n) -> None:\n    \"\"\"\n    Processes a libcst.ClassDef node to build a class model.\n\n    Extracts various components of a class definition such as its docstring, code content, base classes, decorators, and keywords, and updates the provided ClassModelBuilder with these details.\n\n    Args:\n        node (libcst.ClassDef): The class definition node from the CST.\n        position_data (PositionData): Positional data for the class in the source code.\n        builder (ClassModelBuilder): The builder used to construct the class model.\n\n    Example:\n        >>> class_builder = ClassModelBuilder(id=\"class1\", ...)\n        >>> process_class_def(class_node, position_data, class_builder)\n        # Processes the class definition and updates the class builder.\n    \"\"\"\n\n    docstring: str | None = node.get_docstring()\n    code_content: str = extract_code_content(node)\n    bases: list[str] | None = _extract_bases(node.bases)\n    keywords: list[ClassKeywordModel] | None = _extract_keywords(node.keywords)\n    decorators: list[DecoratorModel] | None = extract_decorators(node.decorators)\n\n    (\n        builder.set_docstring(docstring)\n        .set_code_content(code_content)\n        .set_start_line_num(position_data.start)\n        .set_end_line_num(position_data.end)\n    )\n    builder.set_bases(bases).set_decorators(decorators).set_keywords(keywords)\n\n\ndef _extract_bases(bases: Sequence[libcst.Arg]) -> list[str] | None:\n    \"\"\"\n    Extracts the base classes from a sequence of libcst.Arg representing class bases.\n\n    Args:\n        bases (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class base classes.\n\n    Returns:\n        list[str] | None: A list of base class names, or None if there are no bases.\n\n    Example:\n        >>> class_bases = _extract_bases(class_node.bases)\n        # Returns a list of base class names from the class definition.\n    \"\"\"\n\n    bases_list: list[str] = []\n    for base in bases:\n        if (\n            isinstance(base, libcst.Arg)\n            and isinstance(base.value, libcst.Name)\n            and base.value.value\n        ):\n            bases_list.append(base.value.value)\n    return bases_list if bases_list else None\n\n\ndef _extract_keywords(\n    keywords: Sequence[libcst.Arg],\n) -> list[ClassKeywordModel] | None:\n    \"\"\"\n    Extracts class keywords (like metaclass) from a sequence of libcst.Arg representing class keywords.\n\n    Args:\n        keywords (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class keywords.\n\n    Returns:\n        list[ClassKeywordModel] | None: A list of ClassKeywordModel objects representing each keyword, or None if there are no keywords.\n\n    Example:\n        >>> class_keywords = _extract_keywords(class_node.keywords)\n        # Returns a list of ClassKeywordModel objects for each keyword in the class definition.\n    \"\"\"\n\n    keywords_list: list[ClassKeywordModel] = []\n\n    for keyword in keywords:\n        if keyword.keyword is not None:\n            keyword_name: str = keyword.keyword.value\n            args: str | None = (\n                extract_stripped_code_content(keyword.value) if keyword.value else None\n            )\n            content: str = extract_stripped_code_content(keyword)\n\n            keyword_model = ClassKeywordModel(\n                content=content, keyword_name=keyword_name, args=args\n            )\n            keywords_list.append(keyword_model)\n\n    return keywords_list if keywords_list else None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children": [
+        {
+            "function_name": "process_class_def",
+            "docstring": "Processes a libcst.ClassDef node to build a class model.\n\nExtracts various components of a class definition such as its docstring, code content, base classes, decorators, and keywords, and updates the provided ClassModelBuilder with these details.\n\nArgs:\n    node (libcst.ClassDef): The class definition node from the CST.\n    position_data (PositionData): Positional data for the class in the source code.\n    builder (ClassModelBuilder): The builder used to construct the class model.\n\nExample:\n    >>> class_builder = ClassModelBuilder(id=\"class1\", ...)\n    >>> process_class_def(class_node, position_data, class_builder)\n    # Processes the class definition and updates the class builder.",
+            "decorators": null,
+            "parameters": null,
+            "returns": "None",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-process_class_def",
+            "parent_id": ".:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 14,
+            "end_line_num": 50,
+            "code_content": "\n\ndef process_class_def(\n    node: libcst.ClassDef,\n    position_data: PositionData,\n    builder: ClassModelBuilder,\n) -> None:\n    \"\"\"\n    Processes a libcst.ClassDef node to build a class model.\n\n    Extracts various components of a class definition such as its docstring, code content, base classes, decorators, and keywords, and updates the provided ClassModelBuilder with these details.\n\n    Args:\n        node (libcst.ClassDef): The class definition node from the CST.\n        position_data (PositionData): Positional data for the class in the source code.\n        builder (ClassModelBuilder): The builder used to construct the class model.\n\n    Example:\n        >>> class_builder = ClassModelBuilder(id=\"class1\", ...)\n        >>> process_class_def(class_node, position_data, class_builder)\n        # Processes the class definition and updates the class builder.\n    \"\"\"\n\n    docstring: str | None = node.get_docstring()\n    code_content: str = extract_code_content(node)\n    bases: list[str] | None = _extract_bases(node.bases)\n    keywords: list[ClassKeywordModel] | None = _extract_keywords(node.keywords)\n    decorators: list[DecoratorModel] | None = extract_decorators(node.decorators)\n\n    (\n        builder.set_docstring(docstring)\n        .set_code_content(code_content)\n        .set_start_line_num(position_data.start)\n        .set_end_line_num(position_data.end)\n    )\n    builder.set_bases(bases).set_decorators(decorators).set_keywords(keywords)\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "code_block_id": ".:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_bases"
+                },
+                {
+                    "code_block_id": ".:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_keywords"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ClassKeywordModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "DecoratorModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ClassKeywordModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "DecoratorModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "libcst",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ClassModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.class_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "extract_code_content",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_code_content"
+                        },
+                        {
+                            "name": "extract_stripped_code_content",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_stripped_code_content"
+                        },
+                        {
+                            "name": "extract_decorators",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorators"
+                        }
+                    ],
+                    "imported_from": "visitors.node_processing.common_functions",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "extract_code_content",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_code_content"
+                        },
+                        {
+                            "name": "extract_stripped_code_content",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_stripped_code_content"
+                        },
+                        {
+                            "name": "extract_decorators",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorators"
+                        }
+                    ],
+                    "imported_from": "visitors.node_processing.common_functions",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "PositionData",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                        }
+                    ],
+                    "imported_from": "utilities.processing_context",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:utilities:processing_context.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "function_name": "_extract_bases",
+            "docstring": "Extracts the base classes from a sequence of libcst.Arg representing class bases.\n\nArgs:\n    bases (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class base classes.\n\nReturns:\n    list[str] | None: A list of base class names, or None if there are no bases.\n\nExample:\n    >>> class_bases = _extract_bases(class_node.bases)\n    # Returns a list of base class names from the class definition.",
+            "decorators": null,
+            "parameters": null,
+            "returns": "list[str] | None",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_bases",
+            "parent_id": ".:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 50,
+            "end_line_num": 76,
+            "code_content": "\n\ndef _extract_bases(bases: Sequence[libcst.Arg]) -> list[str] | None:\n    \"\"\"\n    Extracts the base classes from a sequence of libcst.Arg representing class bases.\n\n    Args:\n        bases (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class base classes.\n\n    Returns:\n        list[str] | None: A list of base class names, or None if there are no bases.\n\n    Example:\n        >>> class_bases = _extract_bases(class_node.bases)\n        # Returns a list of base class names from the class definition.\n    \"\"\"\n\n    bases_list: list[str] = []\n    for base in bases:\n        if (\n            isinstance(base, libcst.Arg)\n            and isinstance(base.value, libcst.Name)\n            and base.value.value\n        ):\n            bases_list.append(base.value.value)\n    return bases_list if bases_list else None\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "Sequence",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "typing",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "libcst",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "function_name": "_extract_keywords",
+            "docstring": "Extracts class keywords (like metaclass) from a sequence of libcst.Arg representing class keywords.\n\nArgs:\n    keywords (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class keywords.\n\nReturns:\n    list[ClassKeywordModel] | None: A list of ClassKeywordModel objects representing each keyword, or None if there are no keywords.\n\nExample:\n    >>> class_keywords = _extract_keywords(class_node.keywords)\n    # Returns a list of ClassKeywordModel objects for each keyword in the class definition.",
+            "decorators": null,
+            "parameters": null,
+            "returns": "list[ClassKeywordModel] | None",
+            "is_method": false,
+            "is_async": false,
+            "id": ".:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_keywords",
+            "parent_id": ".:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE",
+            "block_type": "FUNCTION",
+            "start_line_num": 76,
+            "end_line_num": 111,
+            "code_content": "\n\ndef _extract_keywords(\n    keywords: Sequence[libcst.Arg],\n) -> list[ClassKeywordModel] | None:\n    \"\"\"\n    Extracts class keywords (like metaclass) from a sequence of libcst.Arg representing class keywords.\n\n    Args:\n        keywords (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class keywords.\n\n    Returns:\n        list[ClassKeywordModel] | None: A list of ClassKeywordModel objects representing each keyword, or None if there are no keywords.\n\n    Example:\n        >>> class_keywords = _extract_keywords(class_node.keywords)\n        # Returns a list of ClassKeywordModel objects for each keyword in the class definition.\n    \"\"\"\n\n    keywords_list: list[ClassKeywordModel] = []\n\n    for keyword in keywords:\n        if keyword.keyword is not None:\n            keyword_name: str = keyword.keyword.value\n            args: str | None = (\n                extract_stripped_code_content(keyword.value) if keyword.value else None\n            )\n            content: str = extract_stripped_code_content(keyword)\n\n            keyword_model = ClassKeywordModel(\n                content=content, keyword_name=keyword_name, args=args\n            )\n            keywords_list.append(keyword_model)\n\n    return keywords_list if keywords_list else None\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "ClassKeywordModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "DecoratorModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "Sequence",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "typing",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "libcst",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "extract_code_content",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_code_content"
+                        },
+                        {
+                            "name": "extract_stripped_code_content",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_stripped_code_content"
+                        },
+                        {
+                            "name": "extract_decorators",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorators"
+                        }
+                    ],
+                    "imported_from": "visitors.node_processing.common_functions",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": null
+        }
+    ]
+}

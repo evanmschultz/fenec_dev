@@ -1,0 +1,190 @@
+{
+    "file_path": "./python_parser/models/enums.py",
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Enum",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "enum",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "id": ".:python_parser:models:enums.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 47,
+    "code_content": "from enum import Enum\n\n\nclass ImportModuleType(Enum):\n    \"\"\"Enum of import module types.\"\"\"\n\n    STANDARD_LIBRARY = \"STANDARD_LIBRARY\"\n    LOCAL = \"LOCAL\"\n    THIRD_PARTY = \"THIRD_PARTY\"\n\n    def __str__(self) -> str:\n        return self.value\n\n\nclass CommentType(Enum):\n    \"\"\"Class representing the different types of important comments.\"\"\"\n\n    TODO = \"TODO\"\n    FIXME = \"FIXME\"\n    NOTE = \"NOTE\"\n    HACK = \"HACK\"\n    XXX = \"XXX\"\n    REVIEW = \"REVIEW\"\n    OPTIMIZE = \"OPTIMIZE\"\n    CHANGED = \"CHANGED\"\n    QUESTION = \"QUESTION\"\n    Q = \"Q\"\n    DEPRECATED = \"@deprecated\"\n    NOSONAR = \"NOSONAR\"\n    TODO_FIXME = \"TODO-FIXME\"\n\n    def __str__(self) -> str:\n        return self.value\n\n\nclass BlockType(Enum):\n    \"\"\"Enum of code block types.\"\"\"\n\n    STANDALONE_CODE_BLOCK = \"STANDALONE_BLOCK\"\n    IMPORT_BLOCK = \"IMPORT_BLOCK\"\n    CLASS = \"CLASS\"\n    FUNCTION = \"FUNCTION\"\n    MODULE = \"MODULE\"\n\n    def __str__(self) -> str:\n        return self.value\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children": [
+        {
+            "class_name": "ImportModuleType",
+            "decorators": null,
+            "bases": [
+                "Enum"
+            ],
+            "docstring": "Enum of import module types.",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-ImportModuleType",
+            "parent_id": ".:python_parser:models:enums.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 2,
+            "end_line_num": 13,
+            "code_content": "\n\nclass ImportModuleType(Enum):\n    \"\"\"Enum of import module types.\"\"\"\n\n    STANDARD_LIBRARY = \"STANDARD_LIBRARY\"\n    LOCAL = \"LOCAL\"\n    THIRD_PARTY = \"THIRD_PARTY\"\n\n    def __str__(self) -> str:\n        return self.value\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "Enum",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "enum",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": [
+                {
+                    "function_name": "__str__",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-ImportModuleType__*__FUNCTION-__str__",
+                    "parent_id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-ImportModuleType",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 10,
+                    "end_line_num": 13,
+                    "code_content": "\ndef __str__(self) -> str:\n    return self.value\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                }
+            ]
+        },
+        {
+            "class_name": "CommentType",
+            "decorators": null,
+            "bases": [
+                "Enum"
+            ],
+            "docstring": "Class representing the different types of important comments.",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-CommentType",
+            "parent_id": ".:python_parser:models:enums.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 13,
+            "end_line_num": 34,
+            "code_content": "\n\nclass CommentType(Enum):\n    \"\"\"Class representing the different types of important comments.\"\"\"\n\n    TODO = \"TODO\"\n    FIXME = \"FIXME\"\n    NOTE = \"NOTE\"\n    HACK = \"HACK\"\n    XXX = \"XXX\"\n    REVIEW = \"REVIEW\"\n    OPTIMIZE = \"OPTIMIZE\"\n    CHANGED = \"CHANGED\"\n    QUESTION = \"QUESTION\"\n    Q = \"Q\"\n    DEPRECATED = \"@deprecated\"\n    NOSONAR = \"NOSONAR\"\n    TODO_FIXME = \"TODO-FIXME\"\n\n    def __str__(self) -> str:\n        return self.value\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "Enum",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "enum",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": [
+                {
+                    "function_name": "__str__",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-CommentType__*__FUNCTION-__str__",
+                    "parent_id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-CommentType",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 31,
+                    "end_line_num": 34,
+                    "code_content": "\ndef __str__(self) -> str:\n    return self.value\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                }
+            ]
+        },
+        {
+            "class_name": "BlockType",
+            "decorators": null,
+            "bases": [
+                "Enum"
+            ],
+            "docstring": "Enum of code block types.",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-BlockType",
+            "parent_id": ".:python_parser:models:enums.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 34,
+            "end_line_num": 47,
+            "code_content": "\n\nclass BlockType(Enum):\n    \"\"\"Enum of code block types.\"\"\"\n\n    STANDALONE_CODE_BLOCK = \"STANDALONE_BLOCK\"\n    IMPORT_BLOCK = \"IMPORT_BLOCK\"\n    CLASS = \"CLASS\"\n    FUNCTION = \"FUNCTION\"\n    MODULE = \"MODULE\"\n\n    def __str__(self) -> str:\n        return self.value\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "Enum",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "enum",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": [
+                {
+                    "function_name": "__str__",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-BlockType__*__FUNCTION-__str__",
+                    "parent_id": ".:python_parser:models:enums.py__*__MODULE__*__CLASS-BlockType",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 44,
+                    "end_line_num": 47,
+                    "code_content": "\ndef __str__(self) -> str:\n    return self.value\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                }
+            ]
+        }
+    ]
+}

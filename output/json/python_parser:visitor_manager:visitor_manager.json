@@ -1,0 +1,566 @@
+{
+    "file_path": "./python_parser/visitor_manager/visitor_manager.py",
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "json",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "os",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging_decorator",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                }
+            ],
+            "imported_from": "utilities.logger.decorators",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:utilities:logger:decorators.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PythonParser",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser"
+                }
+            ],
+            "imported_from": "parsers.python_parser",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:parsers:python_parser.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportAndDependencyUpdater",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:visitor_manager:import_and_dependency_update_functions.py__*__MODULE__*__CLASS-ImportAndDependencyUpdater"
+                }
+            ],
+            "imported_from": "visitor_manager.import_and_dependency_update_functions",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:visitor_manager:import_and_dependency_update_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-ModuleModel"
+                }
+            ],
+            "imported_from": "models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:models:models.py__*__MODULE"
+        }
+    ],
+    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 198,
+    "code_content": "import json\nimport os\nfrom model_builders.module_model_builder import ModuleModelBuilder\nfrom utilities.logger.decorators import logging_decorator\n\nfrom parsers.python_parser import PythonParser\nfrom visitor_manager.import_and_dependency_update_functions import (\n    ImportAndDependencyUpdater,\n)\nfrom models.models import ModuleModel\n\nEXCLUDED_DIRECTORIES: set[str] = {\".venv\", \"node_modules\", \"__pycache__\", \".git\"}\n\n\nclass VisitorManager:\n    \"\"\"\n    Manages the visiting and processing of Python files in a given directory.\n\n    This class scans a specified directory, filters for Python files, parses them, and saves the parsed data in a structured JSON format. It also maintains a mapping of directories to the Python files they contain.\n\n    Attributes:\n        directory (str): The root directory to scan for Python files.\n        output_directory (str): The directory where output JSON files will be saved.\n        directory_modules (dict): A mapping of directories to their contained Python files.\n\n    Example:\n        >>> visitor_manager = VisitorManager(\"/path/to/python/code\", \"output\")\n        >>> visitor_manager.process_files()\n        # This will process all Python files in /path/to/python/code and save their parsed data in the output directory.\n\n        # If you want to save a mapping of directories to Python files, you can call the save_visited_directories method.\n        >>> visitor_manager.save_visited_directories()\n    \"\"\"\n\n    @logging_decorator(message=\"Initializing VisitorManager\")\n    def __init__(self, directory: str, output_directory: str = \"output\") -> None:\n        self.directory: str = directory\n        self.output_directory: str = output_directory\n        self._create_output_directory()\n        self.directory_modules: dict[str, list[str]] = {}\n\n    def process_files(self) -> None:\n        \"\"\"\n        Processes each Python file found in the specified directory.\n\n        For each Python file, this method updates the directory_modules with the file's information, parses the file, and saves the parsed data as JSON.\n\n        Example:\n            >>> visitor_manager.process_files()\n            # Processes all Python files and saves their parsed data.\n        \"\"\"\n\n        python_files: list[str] = self._get_python_files()\n        model_save_context_list: list[tuple[ModuleModelBuilder, str]] = []\n        for file in python_files:\n            if model_builder := self._process_file(file):\n                model_save_context_list.append((model_builder, file))\n\n        model_builder_list: list[ModuleModelBuilder] = [\n            model_save_context[0] for model_save_context in model_save_context_list\n        ]\n\n        import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_list)\n        import_and_dependency_updater.update_imports()\n\n        for model_save_context in model_save_context_list:\n            module_model: ModuleModel = self._build_module_model(model_save_context[0])\n            self._save_model_as_json(module_model, model_save_context[1])\n\n    @logging_decorator(message=\"Saving visited directories\")\n    def save_visited_directories(\n        self, directory_mape_name: str = \"directory_map.json\"\n    ) -> None:\n        \"\"\"\n        Saves a JSON file mapping each visited directory to its Python files.\n\n        The output is saved in a file named '00_directory_module_map.json' within the specified output directory.\n\n        Args:\n            directory_mape_name (str): The name of the output file for the directory map.\n\n        Example:\n            >>> visitor_manager.save_visited_directories(\"directory_map.json\")\n            # Saves a mapping of directories to Python files as JSON.\n        \"\"\"\n\n        output_path: str = self._get_directory_map_output_path(directory_mape_name)\n        self._write_json_directory_map(output_path)\n\n    def _create_output_directory(self) -> None:\n        \"\"\"Creates the output directory if it does not already exist.\"\"\"\n\n        os.makedirs(self.output_directory, exist_ok=True)\n\n    def _walk_directories(self) -> list[str]:\n        \"\"\"Walks the specified directory and returns a list of all files.\"\"\"\n\n        all_files: list[str] = []\n        for root, directories, files in os.walk(self.directory):\n            directories[:] = [\n                directory\n                for directory in directories\n                if directory not in EXCLUDED_DIRECTORIES\n            ]\n            all_files.extend(os.path.join(root, file) for file in files)\n        return all_files\n\n    def _filter_python_files(self, files: list[str]) -> list[str]:\n        \"\"\"Filters a list of files to only include Python files.\"\"\"\n\n        return [file for file in files if file.endswith(\".py\")]\n\n    @logging_decorator(message=\"Getting Python files\")\n    def _get_python_files(self) -> list[str]:\n        \"\"\"Gets all Python files in the specified directory.\"\"\"\n\n        all_files: list[str] = self._walk_directories()\n        return self._filter_python_files(all_files)\n\n    def _process_file(self, file_path: str) -> ModuleModelBuilder | None:\n        \"\"\"Processes a single Python file.\"\"\"\n\n        root: str = os.path.dirname(file_path)\n        self.directory_modules.setdefault(root, []).append(os.path.basename(file_path))\n        return self._parse_file(file_path)\n\n    @logging_decorator(message=\"Processing file\")\n    def _parse_file(self, file_path: str) -> ModuleModelBuilder | None:\n        \"\"\"Parses a Python file and saves the parsed data as JSON.\"\"\"\n\n        parser = PythonParser(file_path)\n        code: str = parser.open_file()\n        module_model_builder: ModuleModelBuilder | None = parser.parse(code)\n\n        return module_model_builder\n\n    @logging_decorator(message=\"Saving model as JSON\")\n    def _save_model_as_json(self, module_model: ModuleModel, file_path: str) -> None:\n        \"\"\"Saves a parsed ModuleModel as JSON.\"\"\"\n\n        json_output_directory: str = self._create_json_output_directory()\n        output_path: str = self._get_json_output_path(file_path, json_output_directory)\n        self._write_json_file(module_model, output_path)\n\n    def _create_json_output_directory(self) -> str:\n        \"\"\"Creates the JSON output directory if it does not already exist.\"\"\"\n\n        json_output_directory: str = os.path.join(self.output_directory, \"json\")\n        os.makedirs(json_output_directory, exist_ok=True)\n        return json_output_directory\n\n    def _get_json_output_path(self, file_path: str, json_output_directory: str) -> str:\n        \"\"\"Gets the output path for a JSON file.\"\"\"\n\n        relative_path: str = os.path.relpath(file_path, self.directory)\n        safe_relative_path: str = relative_path.replace(os.sep, \":\").rstrip(\".py\")\n        return os.path.join(json_output_directory, f\"{safe_relative_path}.json\")\n\n    def _write_json_file(self, module_model: ModuleModel, output_path: str) -> None:\n        \"\"\"Writes a JSON file containing the parsed data from a ModuleModel.\"\"\"\n\n        parsed_data_json: str = module_model.model_dump_json(indent=4)\n        with open(output_path, \"w\") as json_file:\n            json_file.write(parsed_data_json)\n\n    def _get_directory_map_output_path(self, directory_output_name: str) -> str:\n        \"\"\"Gets the output path for the directory map JSON file.\"\"\"\n\n        return os.path.join(self.output_directory, directory_output_name)\n\n    def _write_json_directory_map(self, output_path: str) -> None:\n        \"\"\"Writes the directory map JSON file.\"\"\"\n\n        with open(output_path, \"w\") as json_file:\n            json.dump(self.directory_modules, json_file, indent=4)\n\n    def _build_module_model(\n        self, visitor_stack: ModuleModelBuilder | None\n    ) -> ModuleModel:\n        \"\"\"\n        Builds a module model from the provided module builder.\n\n        Args:\n            visitor_stack (ModuleModelBuilder): The module builder to build the model from.\n\n        Returns:\n            ModuleModel: A structured module model.\n\n        Example:\n            >>> module_model = python_parser.build_module_model(visitor_stack)\n            # Builds a module model from the provided module builder.\n        \"\"\"\n\n        if not isinstance(visitor_stack, ModuleModelBuilder):\n            raise TypeError(\"Expected the first builder to be a ModuleModelBuilder\")\n\n        return visitor_stack.build()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children": [
+        {
+            "variable_assignments": [
+                "EXCLUDED_DIRECTORIES: set[str] = {\".venv\", \"node_modules\", \"__pycache__\", \".git\"}"
+            ],
+            "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__STANDALONE_BLOCK-1",
+            "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE",
+            "block_type": "STANDALONE_BLOCK",
+            "start_line_num": 11,
+            "end_line_num": 13,
+            "code_content": "EXCLUDED_DIRECTORIES: set[str] = {\".venv\", \"node_modules\", \"__pycache__\", \".git\"}\n",
+            "important_comments": null,
+            "dependencies": [],
+            "summary": null,
+            "children": null
+        },
+        {
+            "class_name": "VisitorManager",
+            "decorators": null,
+            "bases": null,
+            "docstring": "Manages the visiting and processing of Python files in a given directory.\n\nThis class scans a specified directory, filters for Python files, parses them, and saves the parsed data in a structured JSON format. It also maintains a mapping of directories to the Python files they contain.\n\nAttributes:\n    directory (str): The root directory to scan for Python files.\n    output_directory (str): The directory where output JSON files will be saved.\n    directory_modules (dict): A mapping of directories to their contained Python files.\n\nExample:\n    >>> visitor_manager = VisitorManager(\"/path/to/python/code\", \"output\")\n    >>> visitor_manager.process_files()\n    # This will process all Python files in /path/to/python/code and save their parsed data in the output directory.\n\n    # If you want to save a mapping of directories to Python files, you can call the save_visited_directories method.\n    >>> visitor_manager.save_visited_directories()",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+            "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 13,
+            "end_line_num": 198,
+            "code_content": "\n\nclass VisitorManager:\n    \"\"\"\n    Manages the visiting and processing of Python files in a given directory.\n\n    This class scans a specified directory, filters for Python files, parses them, and saves the parsed data in a structured JSON format. It also maintains a mapping of directories to the Python files they contain.\n\n    Attributes:\n        directory (str): The root directory to scan for Python files.\n        output_directory (str): The directory where output JSON files will be saved.\n        directory_modules (dict): A mapping of directories to their contained Python files.\n\n    Example:\n        >>> visitor_manager = VisitorManager(\"/path/to/python/code\", \"output\")\n        >>> visitor_manager.process_files()\n        # This will process all Python files in /path/to/python/code and save their parsed data in the output directory.\n\n        # If you want to save a mapping of directories to Python files, you can call the save_visited_directories method.\n        >>> visitor_manager.save_visited_directories()\n    \"\"\"\n\n    @logging_decorator(message=\"Initializing VisitorManager\")\n    def __init__(self, directory: str, output_directory: str = \"output\") -> None:\n        self.directory: str = directory\n        self.output_directory: str = output_directory\n        self._create_output_directory()\n        self.directory_modules: dict[str, list[str]] = {}\n\n    def process_files(self) -> None:\n        \"\"\"\n        Processes each Python file found in the specified directory.\n\n        For each Python file, this method updates the directory_modules with the file's information, parses the file, and saves the parsed data as JSON.\n\n        Example:\n            >>> visitor_manager.process_files()\n            # Processes all Python files and saves their parsed data.\n        \"\"\"\n\n        python_files: list[str] = self._get_python_files()\n        model_save_context_list: list[tuple[ModuleModelBuilder, str]] = []\n        for file in python_files:\n            if model_builder := self._process_file(file):\n                model_save_context_list.append((model_builder, file))\n\n        model_builder_list: list[ModuleModelBuilder] = [\n            model_save_context[0] for model_save_context in model_save_context_list\n        ]\n\n        import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_list)\n        import_and_dependency_updater.update_imports()\n\n        for model_save_context in model_save_context_list:\n            module_model: ModuleModel = self._build_module_model(model_save_context[0])\n            self._save_model_as_json(module_model, model_save_context[1])\n\n    @logging_decorator(message=\"Saving visited directories\")\n    def save_visited_directories(\n        self, directory_mape_name: str = \"directory_map.json\"\n    ) -> None:\n        \"\"\"\n        Saves a JSON file mapping each visited directory to its Python files.\n\n        The output is saved in a file named '00_directory_module_map.json' within the specified output directory.\n\n        Args:\n            directory_mape_name (str): The name of the output file for the directory map.\n\n        Example:\n            >>> visitor_manager.save_visited_directories(\"directory_map.json\")\n            # Saves a mapping of directories to Python files as JSON.\n        \"\"\"\n\n        output_path: str = self._get_directory_map_output_path(directory_mape_name)\n        self._write_json_directory_map(output_path)\n\n    def _create_output_directory(self) -> None:\n        \"\"\"Creates the output directory if it does not already exist.\"\"\"\n\n        os.makedirs(self.output_directory, exist_ok=True)\n\n    def _walk_directories(self) -> list[str]:\n        \"\"\"Walks the specified directory and returns a list of all files.\"\"\"\n\n        all_files: list[str] = []\n        for root, directories, files in os.walk(self.directory):\n            directories[:] = [\n                directory\n                for directory in directories\n                if directory not in EXCLUDED_DIRECTORIES\n            ]\n            all_files.extend(os.path.join(root, file) for file in files)\n        return all_files\n\n    def _filter_python_files(self, files: list[str]) -> list[str]:\n        \"\"\"Filters a list of files to only include Python files.\"\"\"\n\n        return [file for file in files if file.endswith(\".py\")]\n\n    @logging_decorator(message=\"Getting Python files\")\n    def _get_python_files(self) -> list[str]:\n        \"\"\"Gets all Python files in the specified directory.\"\"\"\n\n        all_files: list[str] = self._walk_directories()\n        return self._filter_python_files(all_files)\n\n    def _process_file(self, file_path: str) -> ModuleModelBuilder | None:\n        \"\"\"Processes a single Python file.\"\"\"\n\n        root: str = os.path.dirname(file_path)\n        self.directory_modules.setdefault(root, []).append(os.path.basename(file_path))\n        return self._parse_file(file_path)\n\n    @logging_decorator(message=\"Processing file\")\n    def _parse_file(self, file_path: str) -> ModuleModelBuilder | None:\n        \"\"\"Parses a Python file and saves the parsed data as JSON.\"\"\"\n\n        parser = PythonParser(file_path)\n        code: str = parser.open_file()\n        module_model_builder: ModuleModelBuilder | None = parser.parse(code)\n\n        return module_model_builder\n\n    @logging_decorator(message=\"Saving model as JSON\")\n    def _save_model_as_json(self, module_model: ModuleModel, file_path: str) -> None:\n        \"\"\"Saves a parsed ModuleModel as JSON.\"\"\"\n\n        json_output_directory: str = self._create_json_output_directory()\n        output_path: str = self._get_json_output_path(file_path, json_output_directory)\n        self._write_json_file(module_model, output_path)\n\n    def _create_json_output_directory(self) -> str:\n        \"\"\"Creates the JSON output directory if it does not already exist.\"\"\"\n\n        json_output_directory: str = os.path.join(self.output_directory, \"json\")\n        os.makedirs(json_output_directory, exist_ok=True)\n        return json_output_directory\n\n    def _get_json_output_path(self, file_path: str, json_output_directory: str) -> str:\n        \"\"\"Gets the output path for a JSON file.\"\"\"\n\n        relative_path: str = os.path.relpath(file_path, self.directory)\n        safe_relative_path: str = relative_path.replace(os.sep, \":\").rstrip(\".py\")\n        return os.path.join(json_output_directory, f\"{safe_relative_path}.json\")\n\n    def _write_json_file(self, module_model: ModuleModel, output_path: str) -> None:\n        \"\"\"Writes a JSON file containing the parsed data from a ModuleModel.\"\"\"\n\n        parsed_data_json: str = module_model.model_dump_json(indent=4)\n        with open(output_path, \"w\") as json_file:\n            json_file.write(parsed_data_json)\n\n    def _get_directory_map_output_path(self, directory_output_name: str) -> str:\n        \"\"\"Gets the output path for the directory map JSON file.\"\"\"\n\n        return os.path.join(self.output_directory, directory_output_name)\n\n    def _write_json_directory_map(self, output_path: str) -> None:\n        \"\"\"Writes the directory map JSON file.\"\"\"\n\n        with open(output_path, \"w\") as json_file:\n            json.dump(self.directory_modules, json_file, indent=4)\n\n    def _build_module_model(\n        self, visitor_stack: ModuleModelBuilder | None\n    ) -> ModuleModel:\n        \"\"\"\n        Builds a module model from the provided module builder.\n\n        Args:\n            visitor_stack (ModuleModelBuilder): The module builder to build the model from.\n\n        Returns:\n            ModuleModel: A structured module model.\n\n        Example:\n            >>> module_model = python_parser.build_module_model(visitor_stack)\n            # Builds a module model from the provided module builder.\n        \"\"\"\n\n        if not isinstance(visitor_stack, ModuleModelBuilder):\n            raise TypeError(\"Expected the first builder to be a ModuleModelBuilder\")\n\n        return visitor_stack.build()\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "json",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "os",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ModuleModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.module_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "logging_decorator",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                        }
+                    ],
+                    "imported_from": "utilities.logger.decorators",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:utilities:logger:decorators.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "PythonParser",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser"
+                        }
+                    ],
+                    "imported_from": "parsers.python_parser",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:parsers:python_parser.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ImportAndDependencyUpdater",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:visitor_manager:import_and_dependency_update_functions.py__*__MODULE__*__CLASS-ImportAndDependencyUpdater"
+                        }
+                    ],
+                    "imported_from": "visitor_manager.import_and_dependency_update_functions",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:visitor_manager:import_and_dependency_update_functions.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ModuleModel",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-ModuleModel"
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:models:models.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": [
+                {
+                    "function_name": "__init__",
+                    "docstring": null,
+                    "decorators": [
+                        {
+                            "content": "@logging_decorator(message=\"Initializing VisitorManager\")",
+                            "decorator_name": "logging_decorator",
+                            "decorator_args": [
+                                "message=\"Initializing VisitorManager\""
+                            ]
+                        }
+                    ],
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-__init__",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 34,
+                    "end_line_num": 41,
+                    "code_content": "\n@logging_decorator(message=\"Initializing VisitorManager\")\ndef __init__(self, directory: str, output_directory: str = \"output\") -> None:\n    self.directory: str = directory\n    self.output_directory: str = output_directory\n    self._create_output_directory()\n    self.directory_modules: dict[str, list[str]] = {}\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "process_files",
+                    "docstring": "Processes each Python file found in the specified directory.\n\nFor each Python file, this method updates the directory_modules with the file's information, parses the file, and saves the parsed data as JSON.\n\nExample:\n    >>> visitor_manager.process_files()\n    # Processes all Python files and saves their parsed data.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-process_files",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 41,
+                    "end_line_num": 69,
+                    "code_content": "\ndef process_files(self) -> None:\n    \"\"\"\n        Processes each Python file found in the specified directory.\n\n        For each Python file, this method updates the directory_modules with the file's information, parses the file, and saves the parsed data as JSON.\n\n        Example:\n            >>> visitor_manager.process_files()\n            # Processes all Python files and saves their parsed data.\n        \"\"\"\n\n    python_files: list[str] = self._get_python_files()\n    model_save_context_list: list[tuple[ModuleModelBuilder, str]] = []\n    for file in python_files:\n        if model_builder := self._process_file(file):\n            model_save_context_list.append((model_builder, file))\n\n    model_builder_list: list[ModuleModelBuilder] = [\n        model_save_context[0] for model_save_context in model_save_context_list\n    ]\n\n    import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_list)\n    import_and_dependency_updater.update_imports()\n\n    for model_save_context in model_save_context_list:\n        module_model: ModuleModel = self._build_module_model(model_save_context[0])\n        self._save_model_as_json(module_model, model_save_context[1])\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "save_visited_directories",
+                    "docstring": "Saves a JSON file mapping each visited directory to its Python files.\n\nThe output is saved in a file named '00_directory_module_map.json' within the specified output directory.\n\nArgs:\n    directory_mape_name (str): The name of the output file for the directory map.\n\nExample:\n    >>> visitor_manager.save_visited_directories(\"directory_map.json\")\n    # Saves a mapping of directories to Python files as JSON.",
+                    "decorators": [
+                        {
+                            "content": "@logging_decorator(message=\"Saving visited directories\")",
+                            "decorator_name": "logging_decorator",
+                            "decorator_args": [
+                                "message=\"Saving visited directories\""
+                            ]
+                        }
+                    ],
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-save_visited_directories",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 69,
+                    "end_line_num": 89,
+                    "code_content": "\n@logging_decorator(message=\"Saving visited directories\")\ndef save_visited_directories(\n    self, directory_mape_name: str = \"directory_map.json\"\n) -> None:\n    \"\"\"\n        Saves a JSON file mapping each visited directory to its Python files.\n\n        The output is saved in a file named '00_directory_module_map.json' within the specified output directory.\n\n        Args:\n            directory_mape_name (str): The name of the output file for the directory map.\n\n        Example:\n            >>> visitor_manager.save_visited_directories(\"directory_map.json\")\n            # Saves a mapping of directories to Python files as JSON.\n        \"\"\"\n\n    output_path: str = self._get_directory_map_output_path(directory_mape_name)\n    self._write_json_directory_map(output_path)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_create_output_directory",
+                    "docstring": "Creates the output directory if it does not already exist.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_create_output_directory",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 89,
+                    "end_line_num": 94,
+                    "code_content": "\ndef _create_output_directory(self) -> None:\n    \"\"\"Creates the output directory if it does not already exist.\"\"\"\n\n    os.makedirs(self.output_directory, exist_ok=True)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_walk_directories",
+                    "docstring": "Walks the specified directory and returns a list of all files.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "list[str]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_walk_directories",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 94,
+                    "end_line_num": 107,
+                    "code_content": "\ndef _walk_directories(self) -> list[str]:\n    \"\"\"Walks the specified directory and returns a list of all files.\"\"\"\n\n    all_files: list[str] = []\n    for root, directories, files in os.walk(self.directory):\n        directories[:] = [\n            directory\n            for directory in directories\n            if directory not in EXCLUDED_DIRECTORIES\n        ]\n        all_files.extend(os.path.join(root, file) for file in files)\n    return all_files\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_filter_python_files",
+                    "docstring": "Filters a list of files to only include Python files.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "list[str]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_filter_python_files",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 107,
+                    "end_line_num": 112,
+                    "code_content": "\ndef _filter_python_files(self, files: list[str]) -> list[str]:\n    \"\"\"Filters a list of files to only include Python files.\"\"\"\n\n    return [file for file in files if file.endswith(\".py\")]\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_get_python_files",
+                    "docstring": "Gets all Python files in the specified directory.",
+                    "decorators": [
+                        {
+                            "content": "@logging_decorator(message=\"Getting Python files\")",
+                            "decorator_name": "logging_decorator",
+                            "decorator_args": [
+                                "message=\"Getting Python files\""
+                            ]
+                        }
+                    ],
+                    "parameters": null,
+                    "returns": "list[str]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_get_python_files",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 112,
+                    "end_line_num": 119,
+                    "code_content": "\n@logging_decorator(message=\"Getting Python files\")\ndef _get_python_files(self) -> list[str]:\n    \"\"\"Gets all Python files in the specified directory.\"\"\"\n\n    all_files: list[str] = self._walk_directories()\n    return self._filter_python_files(all_files)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_process_file",
+                    "docstring": "Processes a single Python file.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "ModuleModelBuilder | None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_process_file",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 119,
+                    "end_line_num": 126,
+                    "code_content": "\ndef _process_file(self, file_path: str) -> ModuleModelBuilder | None:\n    \"\"\"Processes a single Python file.\"\"\"\n\n    root: str = os.path.dirname(file_path)\n    self.directory_modules.setdefault(root, []).append(os.path.basename(file_path))\n    return self._parse_file(file_path)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_parse_file",
+                    "docstring": "Parses a Python file and saves the parsed data as JSON.",
+                    "decorators": [
+                        {
+                            "content": "@logging_decorator(message=\"Processing file\")",
+                            "decorator_name": "logging_decorator",
+                            "decorator_args": [
+                                "message=\"Processing file\""
+                            ]
+                        }
+                    ],
+                    "parameters": null,
+                    "returns": "ModuleModelBuilder | None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_parse_file",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 126,
+                    "end_line_num": 136,
+                    "code_content": "\n@logging_decorator(message=\"Processing file\")\ndef _parse_file(self, file_path: str) -> ModuleModelBuilder | None:\n    \"\"\"Parses a Python file and saves the parsed data as JSON.\"\"\"\n\n    parser = PythonParser(file_path)\n    code: str = parser.open_file()\n    module_model_builder: ModuleModelBuilder | None = parser.parse(code)\n\n    return module_model_builder\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_save_model_as_json",
+                    "docstring": "Saves a parsed ModuleModel as JSON.",
+                    "decorators": [
+                        {
+                            "content": "@logging_decorator(message=\"Saving model as JSON\")",
+                            "decorator_name": "logging_decorator",
+                            "decorator_args": [
+                                "message=\"Saving model as JSON\""
+                            ]
+                        }
+                    ],
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_save_model_as_json",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 136,
+                    "end_line_num": 144,
+                    "code_content": "\n@logging_decorator(message=\"Saving model as JSON\")\ndef _save_model_as_json(self, module_model: ModuleModel, file_path: str) -> None:\n    \"\"\"Saves a parsed ModuleModel as JSON.\"\"\"\n\n    json_output_directory: str = self._create_json_output_directory()\n    output_path: str = self._get_json_output_path(file_path, json_output_directory)\n    self._write_json_file(module_model, output_path)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_create_json_output_directory",
+                    "docstring": "Creates the JSON output directory if it does not already exist.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_create_json_output_directory",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 144,
+                    "end_line_num": 151,
+                    "code_content": "\ndef _create_json_output_directory(self) -> str:\n    \"\"\"Creates the JSON output directory if it does not already exist.\"\"\"\n\n    json_output_directory: str = os.path.join(self.output_directory, \"json\")\n    os.makedirs(json_output_directory, exist_ok=True)\n    return json_output_directory\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_get_json_output_path",
+                    "docstring": "Gets the output path for a JSON file.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_get_json_output_path",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 151,
+                    "end_line_num": 158,
+                    "code_content": "\ndef _get_json_output_path(self, file_path: str, json_output_directory: str) -> str:\n    \"\"\"Gets the output path for a JSON file.\"\"\"\n\n    relative_path: str = os.path.relpath(file_path, self.directory)\n    safe_relative_path: str = relative_path.replace(os.sep, \":\").rstrip(\".py\")\n    return os.path.join(json_output_directory, f\"{safe_relative_path}.json\")\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_write_json_file",
+                    "docstring": "Writes a JSON file containing the parsed data from a ModuleModel.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_write_json_file",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 158,
+                    "end_line_num": 165,
+                    "code_content": "\ndef _write_json_file(self, module_model: ModuleModel, output_path: str) -> None:\n    \"\"\"Writes a JSON file containing the parsed data from a ModuleModel.\"\"\"\n\n    parsed_data_json: str = module_model.model_dump_json(indent=4)\n    with open(output_path, \"w\") as json_file:\n        json_file.write(parsed_data_json)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_get_directory_map_output_path",
+                    "docstring": "Gets the output path for the directory map JSON file.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_get_directory_map_output_path",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 165,
+                    "end_line_num": 170,
+                    "code_content": "\ndef _get_directory_map_output_path(self, directory_output_name: str) -> str:\n    \"\"\"Gets the output path for the directory map JSON file.\"\"\"\n\n    return os.path.join(self.output_directory, directory_output_name)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_write_json_directory_map",
+                    "docstring": "Writes the directory map JSON file.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_write_json_directory_map",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 170,
+                    "end_line_num": 176,
+                    "code_content": "\ndef _write_json_directory_map(self, output_path: str) -> None:\n    \"\"\"Writes the directory map JSON file.\"\"\"\n\n    with open(output_path, \"w\") as json_file:\n        json.dump(self.directory_modules, json_file, indent=4)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_build_module_model",
+                    "docstring": "Builds a module model from the provided module builder.\n\nArgs:\n    visitor_stack (ModuleModelBuilder): The module builder to build the model from.\n\nReturns:\n    ModuleModel: A structured module model.\n\nExample:\n    >>> module_model = python_parser.build_module_model(visitor_stack)\n    # Builds a module model from the provided module builder.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "ModuleModel",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_build_module_model",
+                    "parent_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 176,
+                    "end_line_num": 198,
+                    "code_content": "\ndef _build_module_model(\n    self, visitor_stack: ModuleModelBuilder | None\n) -> ModuleModel:\n    \"\"\"\n        Builds a module model from the provided module builder.\n\n        Args:\n            visitor_stack (ModuleModelBuilder): The module builder to build the model from.\n\n        Returns:\n            ModuleModel: A structured module model.\n\n        Example:\n            >>> module_model = python_parser.build_module_model(visitor_stack)\n            # Builds a module model from the provided module builder.\n        \"\"\"\n\n    if not isinstance(visitor_stack, ModuleModelBuilder):\n        raise TypeError(\"Expected the first builder to be a ModuleModelBuilder\")\n\n    return visitor_stack.build()\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                }
+            ]
+        }
+    ]
+}

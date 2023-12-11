@@ -1,0 +1,169 @@
+{
+    "file_path": "./python_parser/utilities/processing_context.py",
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "id": ".:python_parser:utilities:processing_context.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 30,
+    "code_content": "from dataclasses import dataclass\n\nimport libcst\n\n\n@dataclass\nclass PositionData:\n    \"\"\"Positional data for a node in the syntax tree.\"\"\"\n\n    start: int\n    end: int\n\n\n@dataclass\nclass NodeAndPositionData:\n    \"\"\"A node in the syntax tree and its positional data.\"\"\"\n\n    nodes: list[libcst.CSTNode]\n    start: int\n    end: int\n\n\n@dataclass\nclass LoggingCallerInfo:\n    \"\"\"Information about the caller of a function that is being logged. Used for `logging_decorator`.\"\"\"\n\n    caller_module_name: str\n    caller_file_path: str\n    caller_line_no: int\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children": [
+        {
+            "class_name": "PositionData",
+            "decorators": [
+                {
+                    "content": "@dataclass",
+                    "decorator_name": "dataclass",
+                    "decorator_args": null
+                }
+            ],
+            "bases": null,
+            "docstring": "Positional data for a node in the syntax tree.",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData",
+            "parent_id": ".:python_parser:utilities:processing_context.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 4,
+            "end_line_num": 12,
+            "code_content": "\n\n@dataclass\nclass PositionData:\n    \"\"\"Positional data for a node in the syntax tree.\"\"\"\n\n    start: int\n    end: int\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "dataclass",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "dataclasses",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "class_name": "NodeAndPositionData",
+            "decorators": [
+                {
+                    "content": "@dataclass",
+                    "decorator_name": "dataclass",
+                    "decorator_args": null
+                }
+            ],
+            "bases": null,
+            "docstring": "A node in the syntax tree and its positional data.",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData",
+            "parent_id": ".:python_parser:utilities:processing_context.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 12,
+            "end_line_num": 21,
+            "code_content": "\n\n@dataclass\nclass NodeAndPositionData:\n    \"\"\"A node in the syntax tree and its positional data.\"\"\"\n\n    nodes: list[libcst.CSTNode]\n    start: int\n    end: int\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "code_block_id": ".:python_parser:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "dataclass",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "dataclasses",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "libcst",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": null,
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "class_name": "LoggingCallerInfo",
+            "decorators": [
+                {
+                    "content": "@dataclass",
+                    "decorator_name": "dataclass",
+                    "decorator_args": null
+                }
+            ],
+            "bases": null,
+            "docstring": "Information about the caller of a function that is being logged. Used for `logging_decorator`.",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:utilities:processing_context.py__*__MODULE__*__CLASS-LoggingCallerInfo",
+            "parent_id": ".:python_parser:utilities:processing_context.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 21,
+            "end_line_num": 30,
+            "code_content": "\n\n@dataclass\nclass LoggingCallerInfo:\n    \"\"\"Information about the caller of a function that is being logged. Used for `logging_decorator`.\"\"\"\n\n    caller_module_name: str\n    caller_file_path: str\n    caller_line_no: int\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "dataclass",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "dataclasses",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                }
+            ],
+            "summary": null,
+            "children": null
+        }
+    ]
+}
