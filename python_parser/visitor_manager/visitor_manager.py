@@ -52,15 +52,17 @@ class VisitorManager:
 
         python_files: list[str] = self._get_python_files()
         model_save_context_list: list[tuple[ModuleModelBuilder, str]] = []
-        for file in python_files:
-            if model_builder := self._process_file(file):
-                model_save_context_list.append((model_builder, file))
+        for file_path in python_files:
+            if model_builder := self._process_file(file_path):
+                model_save_context_list.append((model_builder, file_path))
 
+        # TODO: Test making this a tuple of tuples, see if that solves the double update import issue
         model_builder_list: list[ModuleModelBuilder] = [
             model_save_context[0] for model_save_context in model_save_context_list
         ]
+        model_builder_tuple: tuple[ModuleModelBuilder, ...] = tuple(model_builder_list)
 
-        import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_list)
+        import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_tuple)
         import_and_dependency_updater.update_imports()
 
         for model_save_context in model_save_context_list:

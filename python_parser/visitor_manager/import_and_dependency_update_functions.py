@@ -24,8 +24,8 @@ class ImportAndDependencyUpdater:
         updater.update_imports()
     """
 
-    def __init__(self, model_builder_list: list[ModuleModelBuilder]) -> None:
-        self.model_builder_list: list[ModuleModelBuilder] = model_builder_list
+    def __init__(self, model_builder_tuple: tuple[ModuleModelBuilder, ...]) -> None:
+        self.model_builder_tuple: tuple[ModuleModelBuilder, ...] = model_builder_tuple
 
     def update_imports(self) -> None:
         """
@@ -37,9 +37,8 @@ class ImportAndDependencyUpdater:
             updater.update_imports()
         """
 
-        model_builders_tuple = tuple(self.model_builder_list)
-        for model_builder in model_builders_tuple:
-            import_updater: ImportUpdater = ImportUpdater(self.model_builder_list)
+        for model_builder in self.model_builder_tuple:
+            import_updater: ImportUpdater = ImportUpdater(self.model_builder_tuple)
             import_updater.process_builder(model_builder)
 
 
@@ -62,8 +61,8 @@ class ImportUpdater:
             import_updater.process_builder(builder)
     """
 
-    def __init__(self, model_builder_list: list[ModuleModelBuilder]) -> None:
-        self.model_builder_list: list[ModuleModelBuilder] = model_builder_list
+    def __init__(self, model_builder_tuple: tuple[ModuleModelBuilder, ...]) -> None:
+        self.model_builder_tuple: tuple[ModuleModelBuilder, ...] = model_builder_tuple
 
     def process_builder(self, builder: ModuleModelBuilder) -> None:
         """
@@ -91,13 +90,8 @@ class ImportUpdater:
         # HACK: Converts to tuple in order to prevent missing elements as the list was getting modified during iteration
 
         for import_model in module_imports_tuple:
-            # FIXME: Trying to update `ArangoDBManager` twice, only that import for whatever reason
-            if import_model.import_names[0].name == "ArangoDBManager":
-                print(f"module_imports_tuple: {module_imports_tuple}")
-                print("ArangoDBManager import found in handle_import_models")
             self.update_import_for_builder(builder, import_model)
-            if import_model.import_names[0].name == "ArangoDBManager":
-                print(f"Updated import: {import_model.import_names[0].name}")
+
             dependency_updater: DependencyUpdater = DependencyUpdater(builder)
             dependency_updater.update_dependencies()
 
@@ -114,8 +108,6 @@ class ImportUpdater:
         """
 
         if self.is_local_import(import_model):
-            if import_model.import_names[0].name == "ArangoDBManager":
-                print("ArangoDBManager import found in update_import_for_builder")
             import_path: str = self.get_import_path(import_model)
             import_names: list[str] | None = None
 
@@ -124,7 +116,7 @@ class ImportUpdater:
             else:
                 import_path: str = self.get_import_path(import_model)
 
-            for external_builder in self.model_builder_list:
+            for external_builder in self.model_builder_tuple:
                 if self.should_skip_builder(
                     builder, external_builder, import_path, import_model
                 ):
@@ -292,9 +284,12 @@ class DependencyUpdater:
                 ):
                     continue
 
-                # FIXME: Fix type hinting issues when creating tuples
-                dependencies_to_process: tuple[ImportModel | DependencyModel] = tuple(child_builder.common_attributes.dependencies)  # type: ignore
-                imports_to_process: tuple[ImportModel] = tuple(self.import_model_list)  # type: ignore
+                dependencies_to_process: tuple[
+                    ImportModel | DependencyModel, ...
+                ] = tuple(child_builder.common_attributes.dependencies)
+                imports_to_process: tuple[ImportModel, ...] = tuple(
+                    self.import_model_list
+                )
                 for dependency in dependencies_to_process:
                     if isinstance(dependency, DependencyModel):
                         continue

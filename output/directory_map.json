@@ -1,4 +1,14 @@
 {
+    "./ai_services": [
+        "__init__.py",
+        "temp.py",
+        "summarizer.py",
+        "summarizer_assistant.py"
+    ],
+    "./ai_services/prompts": [
+        "__init__.py",
+        "summarization_prompts.py"
+    ],
     "./python_parser": [
         "__init__.py",
         "main.py"
@@ -55,7 +65,6 @@
         "visitor_manager.py"
     ],
     "./arango_db": [
-        "arango_db_manager_old.py",
         "__init__.py",
         "arango_db_builder.py",
         "arango_db_manager.py"
