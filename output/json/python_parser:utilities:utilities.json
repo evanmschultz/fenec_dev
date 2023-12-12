@@ -12,6 +12,6 @@
     "code_content": "\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": "summary complete",
+    "summary": "Summary:\n\n        [{'content': \"You are a code summarizer. Your task is to analyze the code provided and create a concise summary of the\\ngiven code based on the prompt provided. Your summary should be technical yet understandable, providing a clear picture of the code's purpose, main\\nfeatures, and key components.\\n\", 'role': 'system'}, {'content': 'None\\n\\nCODE:\\n\\n', 'role': 'user'}]\n \n        ",
     "children": null
 }
