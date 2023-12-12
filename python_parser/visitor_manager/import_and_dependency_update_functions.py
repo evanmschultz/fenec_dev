@@ -1,5 +1,6 @@
 # TODO: Add logic to update imports when defined in a StandaloneCodeBlock
 # TODO: Add logic to track down the import's definition location
+# FIXME: There is still an issue with the imports being updated twice for some reason
 
 from model_builders.module_model_builder import ModuleModelBuilder
 from models.enums import ImportModuleType
@@ -73,17 +74,18 @@ class ImportUpdater:
         """
 
         if module_imports := builder.module_attributes.imports:
-            self.handle_import_models(builder, module_imports)
+            module_imports_tuple = tuple(module_imports)
+            self.handle_import_models(builder, module_imports_tuple)
 
     def handle_import_models(
-        self, builder: ModuleModelBuilder, module_imports: list[ImportModel]
+        self, builder: ModuleModelBuilder, module_imports: tuple[ImportModel, ...]
     ) -> None:
         """
         Handles the import models for a given builder and updates them as necessary.
 
         Args:
             builder (ModuleModelBuilder): The builder whose import models are to be handled.
-            module_imports (list[ImportModel]): A list of import models to process.
+            module_imports (tuple[ImportModel]): A tuple of import models to process.
         """
 
         module_imports_tuple = tuple(module_imports)
@@ -190,7 +192,7 @@ class ImportUpdater:
             ] = self.get_new_import_name_models(
                 external_builder, import_names, import_model
             )
-
+            # print(f"{len(new_import_name_models)} : {len(import_model.import_names)}")
             if len(new_import_name_models) < len(import_model.import_names):
                 # TODO: Add logic to track down the import's definition location
 
@@ -230,6 +232,8 @@ class ImportUpdater:
                             new_import_name_model: ImportNameModel = (
                                 import_name_model.model_copy()
                             )
+                            # if import_name_model.name == "OpenAISummarizer":
+                            #     print(f"Found OpenAISummarizer: id")
 
                             new_import_name_model.local_block_id = child_builder.id
                             new_import_name_models.append(new_import_name_model)
