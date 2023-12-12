@@ -1,9 +1,12 @@
 import logging
 from logging import Logger
+from openai import OpenAI
 import typer
 
 from utilities.logger.logging_config import setup_logging
 from visitor_manager.visitor_manager import VisitorManager
+
+from ai_services.summarizer import OpenAISummarizer
 
 
 def main(
@@ -31,7 +34,10 @@ def main(
     logger: Logger = logging.getLogger(__name__)
     logger.info("Starting the directory parsing.")
 
-    visitor_manager = VisitorManager(directory, output_directory)
+    client = OpenAI()
+    summarizer = OpenAISummarizer(client=client)
+
+    visitor_manager = VisitorManager(summarizer, directory, output_directory)
     visitor_manager.process_files()
     visitor_manager.save_visited_directories()
 
