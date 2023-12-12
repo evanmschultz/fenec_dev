@@ -67,6 +67,8 @@ class ModuleModelBuilder(BaseModelBuilder):
         """Add an import to the imports list."""
         if not self.module_attributes.imports:
             self.module_attributes.imports = []
+        # if "OpenAISummarizer" in [name.name for name in import_model.import_names]:
+        #     print("Adding OpenAISummarizer import")
         self.module_attributes.imports.append(import_model)
         return self
 
@@ -98,13 +100,19 @@ class ModuleModelBuilder(BaseModelBuilder):
                     == old_import_model.import_module_type
                 ):
                     import_to_remove = existing_import
+                    # if "OpenAISummarizer" in [
+                    #     name.name for name in existing_import.import_names
+                    # ]:
+                    #     print("Updating OpenAISummarizer import")
                     break
 
             if not import_to_remove:
-                raise Exception(f"Could not find import to remove: {old_import_model}")
-
-            self.module_attributes.imports.remove(import_to_remove)
-            self.module_attributes.imports.append(updated_import_model)
+                # raise Exception(f"Could not find import to remove: {old_import_model}")
+                # print(f"Could not find import to remove: {old_import_model}")
+                ...
+            else:
+                self.module_attributes.imports.remove(import_to_remove)
+                self.module_attributes.imports.append(updated_import_model)
         else:
             raise Exception(
                 f"No imports in the builders imports list: {self.module_attributes.imports}"
