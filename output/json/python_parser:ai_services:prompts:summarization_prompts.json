@@ -1,10 +1,10 @@
 {
-    "file_path": "./ai_services/prompts/summarization_prompts.py",
+    "file_path": "./python_parser/ai_services/prompts/summarization_prompts.py",
     "docstring": null,
     "header": [],
     "footer": [],
     "imports": null,
-    "id": ".:ai_services:prompts:summarization_prompts.py__*__MODULE",
+    "id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE",
     "parent_id": null,
     "block_type": "MODULE",
     "start_line_num": 1,
@@ -24,8 +24,8 @@
                 "GENERAL_PURPOSE_SUMMARIZATION_PROMPT = \"\"\"Summarize the following code, focusing on its primary purpose and main functions. Describe the algorithms it \nimplements and the intended use of the code. Include a brief description of significant classes and methods, their roles, and how they interconnect to \nachieve the code's objectives. Highlight any unique coding techniques used and explain how they contribute to the code's overall functionality.\n\nCODE:\n```Python\n{code}\n```\n\"\"\"",
                 "summary_prompt_list: list[str] = [\n    COD_SUMMARIZATION_PROMPT,\n    ROLE_ASSIGNMENT_PROMPT,\n    ITERATIVE_REFINEMENT_AND_COMBINING_OUTPUTS_PROMPT,\n    GENERAL_PURPOSE_SUMMARIZATION_PROMPT,\n]"
             ],
-            "id": ".:ai_services:prompts:summarization_prompts.py__*__MODULE__*__STANDALONE_BLOCK-1",
-            "parent_id": ".:ai_services:prompts:summarization_prompts.py__*__MODULE",
+            "id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE__*__STANDALONE_BLOCK-1",
+            "parent_id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE",
             "block_type": "STANDALONE_BLOCK",
             "start_line_num": 1,
             "end_line_num": 78,

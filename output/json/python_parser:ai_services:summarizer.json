@@ -1,0 +1,613 @@
+{
+    "file_path": "./python_parser/ai_services/summarizer.py",
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Literal",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Protocol",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OpenAI",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChatCompletionSystemMessageParam",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai.types.chat.chat_completion_system_message_param",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChatCompletionUserMessageParam",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai.types.chat.chat_completion_user_message_param",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChatCompletionMessageParam",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai.types.chat.chat_completion_message_param",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "code_example",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "ai_services.temp",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:ai_services:temp.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "SUMMARIZER_DEFAULT_INSTRUCTIONS",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "COD_SUMMARIZATION_PROMPT",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "summary_prompt_list",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "ai_services.prompts.summarization_prompts",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE"
+        }
+    ],
+    "id": ".:python_parser:ai_services:summarizer.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 266,
+    "code_content": "from typing import Literal, Protocol\n\nfrom pydantic import BaseModel\n\nfrom openai import OpenAI\nfrom openai.types.chat.chat_completion_system_message_param import (\n    ChatCompletionSystemMessageParam,\n)\nfrom openai.types.chat.chat_completion_user_message_param import (\n    ChatCompletionUserMessageParam,\n)\nfrom openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam\n\nfrom ai_services.temp import code_example\nfrom ai_services.prompts.summarization_prompts import (\n    SUMMARIZER_DEFAULT_INSTRUCTIONS,\n    COD_SUMMARIZATION_PROMPT,\n    summary_prompt_list,\n)\n\n\nclass SummaryCompletionConfigs(BaseModel):\n    \"\"\"\n    Configs for the summarization completion.\n\n    Used to set the chat completion parameters for the OpenAI chat completions method call.\n\n    Args:\n        - system_message (str): The system message used for chat completion.\n        - prompt_template (str): The prompt template used for chat completion. This should contain \"{code}\" to\n            insert the code at that point; otherwise, the code snippet will be appended below the prompt.\n        - model (str): The model to use for the completion. Default is \"gpt-4-1106-preview\".\n        - max_tokens (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - presence_penalty (float | None): Penalty for new tokens based on their presence in the text so far.\n            Default is None.\n        - stream (bool): Whether to stream back partial progress. Default is False.\n        - temperature (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - prompt_template should contain \"{code}\", if not, the code snippet will be appended below the prompt.\n        - model must be a valid OpenAI model name.\n\n    Examples:\n        >>> system_message = \"Summarize the following code.\"\n        >>> prompt_template = '''Summarize the following code.\n        ... CODE:\n        ... ```Python\n        ... {code}\n        ... ```\n        ... '''\n        >>> summary_completion_configs = SummaryCompletionConfigs(\n        ...     system_message=system_message,\n        ...     prompt_template=prompt_template,\n        ...     model=\"gpt-4-1106-preview\",\n        ...     max_tokens=100,\n        ...     presence_penalty=0.0,\n        ...     stream=False,\n        ...     temperature=0.0,\n        ... )\n    \"\"\"\n\n    system_message: str = SUMMARIZER_DEFAULT_INSTRUCTIONS\n    prompt_template: str = COD_SUMMARIZATION_PROMPT\n    model: Literal[\n        \"gpt-4-1106-preview\",\n        \"gpt-4-vision-preview\",\n        \"gpt-4\",\n        \"gpt-4-0314\",\n        \"gpt-4-0613\",\n        \"gpt-4-32k\",\n        \"gpt-4-32k-0314\",\n        \"gpt-4-32k-0613\",\n        \"gpt-3.5-turbo-1106\",\n        \"gpt-3.5-turbo\",\n        \"gpt-3.5-turbo-16k\",\n        \"gpt-3.5-turbo-0301\",\n        \"gpt-3.5-turbo-0613\",\n        \"gpt-3.5-turbo-16k-0613\",\n    ] = \"gpt-4-1106-preview\"\n    max_tokens: int | None = None\n    stream: bool = False\n    temperature: float = 0.0\n\n\nclass Summarizer(Protocol):\n    def summarize_code(\n        self,\n        code: str,\n        *,\n        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n    ) -> str:\n        \"\"\"\n        Summarizes the provided code snippet using the OpenAI API.\n\n        Args:\n            code (str): The code snippet to summarize.\n            configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            >>> client = OpenAI()\n            >>> summarizer = Summarizer(client=client)\n            >>> code_example = \"print('Hello, world')\"\n            >>> summary = summarizer.summarize_code(code_example)\n            >>> print(summary)\n        \"\"\"\n        ...\n\n\nclass OpenAISummarizer:\n    \"\"\"\n    A class for summarizing code snippets using the OpenAI API.\n\n    Args:\n        - client (OpenAI): The OpenAI client used for making API requests.\n        - summary_prompt_list (list[str], optional): A list of summary prompts to be used. Defaults to an empty list.\n\n    Attributes:\n        - client (OpenAI): The OpenAI client used for making API requests.\n        - prompt_list (list[str]): A list of summary prompts.\n        - default_prompt (str): The default summary prompt.\n\n    Methods:\n        summarize_code(code: str, configs: SummaryCompletionConfigs = SummaryCompletionConfigs()) -> str:\n            Summarizes the provided code snippet using the OpenAI API.\n\n    Examples:\n        >>> client = OpenAI()\n        >>> summarizer = Summarizer(client=client)\n        >>> code_example = \"print('Hello, world')\"\n        >>> summary = summarizer.summarize_code(code_example)\n        >>> print(summary)\n    \"\"\"\n\n    def __init__(\n        self, client: OpenAI, *, summary_prompt_list: list[str] = summary_prompt_list\n    ) -> None:\n        self.client: OpenAI = client\n        self.prompt_list: list[str] = summary_prompt_list\n        self.default_prompt: str = self.prompt_list[0]\n\n    def _create_system_message(self, content: str) -> ChatCompletionSystemMessageParam:\n        \"\"\"Creates a system message for chat completion using OpenAi's ChatCompletionSystemMessageParam class.\"\"\"\n        return ChatCompletionSystemMessageParam(content=content, role=\"system\")\n\n    def _create_user_message(self, content: str) -> ChatCompletionUserMessageParam:\n        \"\"\"Creates a user message for chat completion using OpenAi's ChatCompletionUserMessageParam class.\"\"\"\n        return ChatCompletionUserMessageParam(content=content, role=\"user\")\n\n    def _create_messages_list(\n        self,\n        system_message: str,\n        user_message: str,\n    ) -> list[ChatCompletionMessageParam]:\n        \"\"\"\n        Creates a list of messages for chat completion, including both system and user messages.\n\n        Args:\n            system_message (str): The system message content.\n            user_message (str): The user message content.\n\n        Returns:\n            list[ChatCompletionMessageParam]: A list containing the system and user messages as OpenAI's\n                ChatCompletionMessageParam classes.\n        \"\"\"\n\n        return [\n            self._create_system_message(system_message),\n            self._create_user_message(user_message),\n        ]\n\n    def _interpolate_prompt(self, code: str, prompt_template: str | None = None) -> str:\n        \"\"\"\n        Returns the prompt_template for the code snippet.\n\n        Args:\n            code (str): The code snippet.\n            prompt_template (str | None): Custom prompt to be used. Defaults to None.\n\n        Returns:\n            str: The formatted prompt.\n\n        Notes:\n            - If prompt_template is not provided, the default prompt will be used.\n            - If prompt_template contains \"{code}\", it will be replaced with the code snippet.\n            - If prompt_template does not contain \"{code}\", the code snippet will be appended below the prompt_template.\n        \"\"\"\n\n        if not prompt_template:\n            return self.default_prompt.format(code=code)\n\n        else:\n            if \"{code}\" in prompt_template:\n                return prompt_template.format(code=code)\n            else:\n                return f\"{prompt_template}\\n\\n{code}\"\n\n    def _get_summary(\n        self,\n        messages: list[ChatCompletionMessageParam],\n        *,\n        configs: SummaryCompletionConfigs,\n    ) -> str | None:\n        \"\"\"\n        Retrieves the summary from the OpenAI API based on the provided messages and configuration settings.\n\n        Args:\n            messages (list[ChatCompletionMessageParam]): A list of messages for chat completion.\n            configs (SummaryCompletionConfigs): Configuration settings for the summarization completion.\n\n        Returns:\n            str | None: The summary generated by the OpenAI API, or None if no summary is found.\n        \"\"\"\n\n        response = self.client.chat.completions.create(\n            messages=messages,\n            model=configs.model,\n            max_tokens=configs.max_tokens,\n            stream=configs.stream,\n            temperature=configs.temperature,\n        )\n        return response.choices[0].message.content  # type: ignore # FIXME: Fix type error\n\n    def summarize_code(\n        self,\n        code: str,\n        *,\n        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n    ) -> str:\n        \"\"\"\n        Summarizes the provided code snippet using the OpenAI API.\n\n        Args:\n            code (str): The code snippet to summarize.\n            configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            >>> client = OpenAI()\n            >>> summarizer = Summarizer(client=client)\n            >>> code_example = \"print('Hello, world')\"\n            >>> summary = summarizer.summarize_code(code_example)\n            >>> print(summary)\n        \"\"\"\n\n        prompt: str = self._interpolate_prompt(code, configs.prompt_template)\n        messages: list[ChatCompletionMessageParam] = self._create_messages_list(\n            system_message=configs.system_message, user_message=prompt\n        )\n\n        summary: str | None = self._get_summary(messages, configs=configs)\n        return summary if summary else \"Summary not found.\"\n\n\nif __name__ == \"__main__\":\n    client = OpenAI()\n    summarizer = OpenAISummarizer(client=client)\n    summary = summarizer.summarize_code(code_example)\n    print(summary)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children": [
+        {
+            "variable_assignments": [],
+            "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__STANDALONE_BLOCK-1",
+            "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE",
+            "block_type": "STANDALONE_BLOCK",
+            "start_line_num": 259,
+            "end_line_num": 266,
+            "code_content": "if __name__ == \"__main__\":\n    client = OpenAI()\n    summarizer = OpenAISummarizer(client=client)\n    summary = summarizer.summarize_code(code_example)\n    print(summary)\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "code_block_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-Summarizer"
+                },
+                {
+                    "code_block_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "OpenAI",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "openai",
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "code_example",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "ai_services.temp",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:ai_services:temp.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "class_name": "SummaryCompletionConfigs",
+            "decorators": null,
+            "bases": [
+                "BaseModel"
+            ],
+            "docstring": "Configs for the summarization completion.\n\nUsed to set the chat completion parameters for the OpenAI chat completions method call.\n\nArgs:\n    - system_message (str): The system message used for chat completion.\n    - prompt_template (str): The prompt template used for chat completion. This should contain \"{code}\" to\n        insert the code at that point; otherwise, the code snippet will be appended below the prompt.\n    - model (str): The model to use for the completion. Default is \"gpt-4-1106-preview\".\n    - max_tokens (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n    - presence_penalty (float | None): Penalty for new tokens based on their presence in the text so far.\n        Default is None.\n    - stream (bool): Whether to stream back partial progress. Default is False.\n    - temperature (float): Sampling temperature to use. Default is 0.0.\n\nNotes:\n    - prompt_template should contain \"{code}\", if not, the code snippet will be appended below the prompt.\n    - model must be a valid OpenAI model name.\n\nExamples:\n    >>> system_message = \"Summarize the following code.\"\n    >>> prompt_template = '''Summarize the following code.\n    ... CODE:\n    ... ```Python\n    ... {code}\n    ... ```\n    ... '''\n    >>> summary_completion_configs = SummaryCompletionConfigs(\n    ...     system_message=system_message,\n    ...     prompt_template=prompt_template,\n    ...     model=\"gpt-4-1106-preview\",\n    ...     max_tokens=100,\n    ...     presence_penalty=0.0,\n    ...     stream=False,\n    ...     temperature=0.0,\n    ... )",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-SummaryCompletionConfigs",
+            "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 20,
+            "end_line_num": 83,
+            "code_content": "\n\nclass SummaryCompletionConfigs(BaseModel):\n    \"\"\"\n    Configs for the summarization completion.\n\n    Used to set the chat completion parameters for the OpenAI chat completions method call.\n\n    Args:\n        - system_message (str): The system message used for chat completion.\n        - prompt_template (str): The prompt template used for chat completion. This should contain \"{code}\" to\n            insert the code at that point; otherwise, the code snippet will be appended below the prompt.\n        - model (str): The model to use for the completion. Default is \"gpt-4-1106-preview\".\n        - max_tokens (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - presence_penalty (float | None): Penalty for new tokens based on their presence in the text so far.\n            Default is None.\n        - stream (bool): Whether to stream back partial progress. Default is False.\n        - temperature (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - prompt_template should contain \"{code}\", if not, the code snippet will be appended below the prompt.\n        - model must be a valid OpenAI model name.\n\n    Examples:\n        >>> system_message = \"Summarize the following code.\"\n        >>> prompt_template = '''Summarize the following code.\n        ... CODE:\n        ... ```Python\n        ... {code}\n        ... ```\n        ... '''\n        >>> summary_completion_configs = SummaryCompletionConfigs(\n        ...     system_message=system_message,\n        ...     prompt_template=prompt_template,\n        ...     model=\"gpt-4-1106-preview\",\n        ...     max_tokens=100,\n        ...     presence_penalty=0.0,\n        ...     stream=False,\n        ...     temperature=0.0,\n        ... )\n    \"\"\"\n\n    system_message: str = SUMMARIZER_DEFAULT_INSTRUCTIONS\n    prompt_template: str = COD_SUMMARIZATION_PROMPT\n    model: Literal[\n        \"gpt-4-1106-preview\",\n        \"gpt-4-vision-preview\",\n        \"gpt-4\",\n        \"gpt-4-0314\",\n        \"gpt-4-0613\",\n        \"gpt-4-32k\",\n        \"gpt-4-32k-0314\",\n        \"gpt-4-32k-0613\",\n        \"gpt-3.5-turbo-1106\",\n        \"gpt-3.5-turbo\",\n        \"gpt-3.5-turbo-16k\",\n        \"gpt-3.5-turbo-0301\",\n        \"gpt-3.5-turbo-0613\",\n        \"gpt-3.5-turbo-16k-0613\",\n    ] = \"gpt-4-1106-preview\"\n    max_tokens: int | None = None\n    stream: bool = False\n    temperature: float = 0.0\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "Literal",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "Protocol",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "typing",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "BaseModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "pydantic",
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "OpenAI",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "openai",
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "SUMMARIZER_DEFAULT_INSTRUCTIONS",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "COD_SUMMARIZATION_PROMPT",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "summary_prompt_list",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "ai_services.prompts.summarization_prompts",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "SUMMARIZER_DEFAULT_INSTRUCTIONS",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "COD_SUMMARIZATION_PROMPT",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "summary_prompt_list",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "ai_services.prompts.summarization_prompts",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": null
+        },
+        {
+            "class_name": "Summarizer",
+            "decorators": null,
+            "bases": [
+                "Protocol"
+            ],
+            "docstring": null,
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-Summarizer",
+            "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 83,
+            "end_line_num": 111,
+            "code_content": "\n\nclass Summarizer(Protocol):\n    def summarize_code(\n        self,\n        code: str,\n        *,\n        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n    ) -> str:\n        \"\"\"\n        Summarizes the provided code snippet using the OpenAI API.\n\n        Args:\n            code (str): The code snippet to summarize.\n            configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            >>> client = OpenAI()\n            >>> summarizer = Summarizer(client=client)\n            >>> code_example = \"print('Hello, world')\"\n            >>> summary = summarizer.summarize_code(code_example)\n            >>> print(summary)\n        \"\"\"\n        ...\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "code_block_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-SummaryCompletionConfigs"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "Literal",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "Protocol",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "typing",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "OpenAI",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "openai",
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "code_example",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "ai_services.temp",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:ai_services:temp.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": [
+                {
+                    "function_name": "summarize_code",
+                    "docstring": "Summarizes the provided code snippet using the OpenAI API.\n\nArgs:\n    code (str): The code snippet to summarize.\n    configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n        Defaults to SummaryCompletionConfigs().\n\nReturns:\n    str: The summary of the provided code snippet.\n\nExamples:\n    >>> client = OpenAI()\n    >>> summarizer = Summarizer(client=client)\n    >>> code_example = \"print('Hello, world')\"\n    >>> summary = summarizer.summarize_code(code_example)\n    >>> print(summary)",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-Summarizer__*__FUNCTION-summarize_code",
+                    "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-Summarizer",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 86,
+                    "end_line_num": 111,
+                    "code_content": "def summarize_code(\n    self,\n    code: str,\n    *,\n    configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n) -> str:\n    \"\"\"\n        Summarizes the provided code snippet using the OpenAI API.\n\n        Args:\n            code (str): The code snippet to summarize.\n            configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            >>> client = OpenAI()\n            >>> summarizer = Summarizer(client=client)\n            >>> code_example = \"print('Hello, world')\"\n            >>> summary = summarizer.summarize_code(code_example)\n            >>> print(summary)\n        \"\"\"\n    ...\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                }
+            ]
+        },
+        {
+            "class_name": "OpenAISummarizer",
+            "decorators": null,
+            "bases": null,
+            "docstring": "A class for summarizing code snippets using the OpenAI API.\n\nArgs:\n    - client (OpenAI): The OpenAI client used for making API requests.\n    - summary_prompt_list (list[str], optional): A list of summary prompts to be used. Defaults to an empty list.\n\nAttributes:\n    - client (OpenAI): The OpenAI client used for making API requests.\n    - prompt_list (list[str]): A list of summary prompts.\n    - default_prompt (str): The default summary prompt.\n\nMethods:\n    summarize_code(code: str, configs: SummaryCompletionConfigs = SummaryCompletionConfigs()) -> str:\n        Summarizes the provided code snippet using the OpenAI API.\n\nExamples:\n    >>> client = OpenAI()\n    >>> summarizer = Summarizer(client=client)\n    >>> code_example = \"print('Hello, world')\"\n    >>> summary = summarizer.summarize_code(code_example)\n    >>> print(summary)",
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer",
+            "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 111,
+            "end_line_num": 259,
+            "code_content": "\n\nclass OpenAISummarizer:\n    \"\"\"\n    A class for summarizing code snippets using the OpenAI API.\n\n    Args:\n        - client (OpenAI): The OpenAI client used for making API requests.\n        - summary_prompt_list (list[str], optional): A list of summary prompts to be used. Defaults to an empty list.\n\n    Attributes:\n        - client (OpenAI): The OpenAI client used for making API requests.\n        - prompt_list (list[str]): A list of summary prompts.\n        - default_prompt (str): The default summary prompt.\n\n    Methods:\n        summarize_code(code: str, configs: SummaryCompletionConfigs = SummaryCompletionConfigs()) -> str:\n            Summarizes the provided code snippet using the OpenAI API.\n\n    Examples:\n        >>> client = OpenAI()\n        >>> summarizer = Summarizer(client=client)\n        >>> code_example = \"print('Hello, world')\"\n        >>> summary = summarizer.summarize_code(code_example)\n        >>> print(summary)\n    \"\"\"\n\n    def __init__(\n        self, client: OpenAI, *, summary_prompt_list: list[str] = summary_prompt_list\n    ) -> None:\n        self.client: OpenAI = client\n        self.prompt_list: list[str] = summary_prompt_list\n        self.default_prompt: str = self.prompt_list[0]\n\n    def _create_system_message(self, content: str) -> ChatCompletionSystemMessageParam:\n        \"\"\"Creates a system message for chat completion using OpenAi's ChatCompletionSystemMessageParam class.\"\"\"\n        return ChatCompletionSystemMessageParam(content=content, role=\"system\")\n\n    def _create_user_message(self, content: str) -> ChatCompletionUserMessageParam:\n        \"\"\"Creates a user message for chat completion using OpenAi's ChatCompletionUserMessageParam class.\"\"\"\n        return ChatCompletionUserMessageParam(content=content, role=\"user\")\n\n    def _create_messages_list(\n        self,\n        system_message: str,\n        user_message: str,\n    ) -> list[ChatCompletionMessageParam]:\n        \"\"\"\n        Creates a list of messages for chat completion, including both system and user messages.\n\n        Args:\n            system_message (str): The system message content.\n            user_message (str): The user message content.\n\n        Returns:\n            list[ChatCompletionMessageParam]: A list containing the system and user messages as OpenAI's\n                ChatCompletionMessageParam classes.\n        \"\"\"\n\n        return [\n            self._create_system_message(system_message),\n            self._create_user_message(user_message),\n        ]\n\n    def _interpolate_prompt(self, code: str, prompt_template: str | None = None) -> str:\n        \"\"\"\n        Returns the prompt_template for the code snippet.\n\n        Args:\n            code (str): The code snippet.\n            prompt_template (str | None): Custom prompt to be used. Defaults to None.\n\n        Returns:\n            str: The formatted prompt.\n\n        Notes:\n            - If prompt_template is not provided, the default prompt will be used.\n            - If prompt_template contains \"{code}\", it will be replaced with the code snippet.\n            - If prompt_template does not contain \"{code}\", the code snippet will be appended below the prompt_template.\n        \"\"\"\n\n        if not prompt_template:\n            return self.default_prompt.format(code=code)\n\n        else:\n            if \"{code}\" in prompt_template:\n                return prompt_template.format(code=code)\n            else:\n                return f\"{prompt_template}\\n\\n{code}\"\n\n    def _get_summary(\n        self,\n        messages: list[ChatCompletionMessageParam],\n        *,\n        configs: SummaryCompletionConfigs,\n    ) -> str | None:\n        \"\"\"\n        Retrieves the summary from the OpenAI API based on the provided messages and configuration settings.\n\n        Args:\n            messages (list[ChatCompletionMessageParam]): A list of messages for chat completion.\n            configs (SummaryCompletionConfigs): Configuration settings for the summarization completion.\n\n        Returns:\n            str | None: The summary generated by the OpenAI API, or None if no summary is found.\n        \"\"\"\n\n        response = self.client.chat.completions.create(\n            messages=messages,\n            model=configs.model,\n            max_tokens=configs.max_tokens,\n            stream=configs.stream,\n            temperature=configs.temperature,\n        )\n        return response.choices[0].message.content  # type: ignore # FIXME: Fix type error\n\n    def summarize_code(\n        self,\n        code: str,\n        *,\n        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n    ) -> str:\n        \"\"\"\n        Summarizes the provided code snippet using the OpenAI API.\n\n        Args:\n            code (str): The code snippet to summarize.\n            configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            >>> client = OpenAI()\n            >>> summarizer = Summarizer(client=client)\n            >>> code_example = \"print('Hello, world')\"\n            >>> summary = summarizer.summarize_code(code_example)\n            >>> print(summary)\n        \"\"\"\n\n        prompt: str = self._interpolate_prompt(code, configs.prompt_template)\n        messages: list[ChatCompletionMessageParam] = self._create_messages_list(\n            system_message=configs.system_message, user_message=prompt\n        )\n\n        summary: str | None = self._get_summary(messages, configs=configs)\n        return summary if summary else \"Summary not found.\"\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "code_block_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-SummaryCompletionConfigs"
+                },
+                {
+                    "code_block_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-Summarizer"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "OpenAI",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "openai",
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ChatCompletionSystemMessageParam",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "openai.types.chat.chat_completion_system_message_param",
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ChatCompletionUserMessageParam",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "openai.types.chat.chat_completion_user_message_param",
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ChatCompletionMessageParam",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "openai.types.chat.chat_completion_message_param",
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "code_example",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "ai_services.temp",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:ai_services:temp.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "SUMMARIZER_DEFAULT_INSTRUCTIONS",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "COD_SUMMARIZATION_PROMPT",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "summary_prompt_list",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "ai_services.prompts.summarization_prompts",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE"
+                }
+            ],
+            "summary": null,
+            "children": [
+                {
+                    "function_name": "__init__",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-__init__",
+                    "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 137,
+                    "end_line_num": 144,
+                    "code_content": "\ndef __init__(\n    self, client: OpenAI, *, summary_prompt_list: list[str] = summary_prompt_list\n) -> None:\n    self.client: OpenAI = client\n    self.prompt_list: list[str] = summary_prompt_list\n    self.default_prompt: str = self.prompt_list[0]\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_create_system_message",
+                    "docstring": "Creates a system message for chat completion using OpenAi's ChatCompletionSystemMessageParam class.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "ChatCompletionSystemMessageParam",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-_create_system_message",
+                    "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 144,
+                    "end_line_num": 148,
+                    "code_content": "\ndef _create_system_message(self, content: str) -> ChatCompletionSystemMessageParam:\n    \"\"\"Creates a system message for chat completion using OpenAi's ChatCompletionSystemMessageParam class.\"\"\"\n    return ChatCompletionSystemMessageParam(content=content, role=\"system\")\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_create_user_message",
+                    "docstring": "Creates a user message for chat completion using OpenAi's ChatCompletionUserMessageParam class.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "ChatCompletionUserMessageParam",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-_create_user_message",
+                    "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 148,
+                    "end_line_num": 152,
+                    "code_content": "\ndef _create_user_message(self, content: str) -> ChatCompletionUserMessageParam:\n    \"\"\"Creates a user message for chat completion using OpenAi's ChatCompletionUserMessageParam class.\"\"\"\n    return ChatCompletionUserMessageParam(content=content, role=\"user\")\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_create_messages_list",
+                    "docstring": "Creates a list of messages for chat completion, including both system and user messages.\n\nArgs:\n    system_message (str): The system message content.\n    user_message (str): The user message content.\n\nReturns:\n    list[ChatCompletionMessageParam]: A list containing the system and user messages as OpenAI's\n        ChatCompletionMessageParam classes.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "list[ChatCompletionMessageParam]",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-_create_messages_list",
+                    "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 152,
+                    "end_line_num": 174,
+                    "code_content": "\ndef _create_messages_list(\n    self,\n    system_message: str,\n    user_message: str,\n) -> list[ChatCompletionMessageParam]:\n    \"\"\"\n        Creates a list of messages for chat completion, including both system and user messages.\n\n        Args:\n            system_message (str): The system message content.\n            user_message (str): The user message content.\n\n        Returns:\n            list[ChatCompletionMessageParam]: A list containing the system and user messages as OpenAI's\n                ChatCompletionMessageParam classes.\n        \"\"\"\n\n    return [\n        self._create_system_message(system_message),\n        self._create_user_message(user_message),\n    ]\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_interpolate_prompt",
+                    "docstring": "Returns the prompt_template for the code snippet.\n\nArgs:\n    code (str): The code snippet.\n    prompt_template (str | None): Custom prompt to be used. Defaults to None.\n\nReturns:\n    str: The formatted prompt.\n\nNotes:\n    - If prompt_template is not provided, the default prompt will be used.\n    - If prompt_template contains \"{code}\", it will be replaced with the code snippet.\n    - If prompt_template does not contain \"{code}\", the code snippet will be appended below the prompt_template.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-_interpolate_prompt",
+                    "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 174,
+                    "end_line_num": 200,
+                    "code_content": "\ndef _interpolate_prompt(self, code: str, prompt_template: str | None = None) -> str:\n    \"\"\"\n        Returns the prompt_template for the code snippet.\n\n        Args:\n            code (str): The code snippet.\n            prompt_template (str | None): Custom prompt to be used. Defaults to None.\n\n        Returns:\n            str: The formatted prompt.\n\n        Notes:\n            - If prompt_template is not provided, the default prompt will be used.\n            - If prompt_template contains \"{code}\", it will be replaced with the code snippet.\n            - If prompt_template does not contain \"{code}\", the code snippet will be appended below the prompt_template.\n        \"\"\"\n\n    if not prompt_template:\n        return self.default_prompt.format(code=code)\n\n    else:\n        if \"{code}\" in prompt_template:\n            return prompt_template.format(code=code)\n        else:\n            return f\"{prompt_template}\\n\\n{code}\"\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "_get_summary",
+                    "docstring": "Retrieves the summary from the OpenAI API based on the provided messages and configuration settings.\n\nArgs:\n    messages (list[ChatCompletionMessageParam]): A list of messages for chat completion.\n    configs (SummaryCompletionConfigs): Configuration settings for the summarization completion.\n\nReturns:\n    str | None: The summary generated by the OpenAI API, or None if no summary is found.",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str | None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-_get_summary",
+                    "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 200,
+                    "end_line_num": 226,
+                    "code_content": "\ndef _get_summary(\n    self,\n    messages: list[ChatCompletionMessageParam],\n    *,\n    configs: SummaryCompletionConfigs,\n) -> str | None:\n    \"\"\"\n        Retrieves the summary from the OpenAI API based on the provided messages and configuration settings.\n\n        Args:\n            messages (list[ChatCompletionMessageParam]): A list of messages for chat completion.\n            configs (SummaryCompletionConfigs): Configuration settings for the summarization completion.\n\n        Returns:\n            str | None: The summary generated by the OpenAI API, or None if no summary is found.\n        \"\"\"\n\n    response = self.client.chat.completions.create(\n        messages=messages,\n        model=configs.model,\n        max_tokens=configs.max_tokens,\n        stream=configs.stream,\n        temperature=configs.temperature,\n    )\n    return response.choices[0].message.content  # type: ignore # FIXME: Fix type error\n",
+                    "important_comments": [
+                        {
+                            "content": "# type: ignore # FIXME: Fix type error",
+                            "comment_types": [
+                                "FIXME"
+                            ]
+                        }
+                    ],
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                },
+                {
+                    "function_name": "summarize_code",
+                    "docstring": "Summarizes the provided code snippet using the OpenAI API.\n\nArgs:\n    code (str): The code snippet to summarize.\n    configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n        Defaults to SummaryCompletionConfigs().\n\nReturns:\n    str: The summary of the provided code snippet.\n\nExamples:\n    >>> client = OpenAI()\n    >>> summarizer = Summarizer(client=client)\n    >>> code_example = \"print('Hello, world')\"\n    >>> summary = summarizer.summarize_code(code_example)\n    >>> print(summary)",
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "str",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-summarize_code",
+                    "parent_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 226,
+                    "end_line_num": 259,
+                    "code_content": "\ndef summarize_code(\n    self,\n    code: str,\n    *,\n    configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n) -> str:\n    \"\"\"\n        Summarizes the provided code snippet using the OpenAI API.\n\n        Args:\n            code (str): The code snippet to summarize.\n            configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            >>> client = OpenAI()\n            >>> summarizer = Summarizer(client=client)\n            >>> code_example = \"print('Hello, world')\"\n            >>> summary = summarizer.summarize_code(code_example)\n            >>> print(summary)\n        \"\"\"\n\n    prompt: str = self._interpolate_prompt(code, configs.prompt_template)\n    messages: list[ChatCompletionMessageParam] = self._create_messages_list(\n        system_message=configs.system_message, user_message=prompt\n    )\n\n    summary: str | None = self._get_summary(messages, configs=configs)\n    return summary if summary else \"Summary not found.\"\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": null,
+                    "children": null
+                }
+            ]
+        }
+    ]
+}

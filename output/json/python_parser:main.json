@@ -31,6 +31,18 @@
         {
             "import_names": [
                 {
+                    "name": "OpenAI",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
                     "name": "typer",
                     "as_name": null,
                     "local_block_id": null
@@ -63,14 +75,26 @@
             "imported_from": "visitor_manager.visitor_manager",
             "import_module_type": "LOCAL",
             "local_module_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OpenAISummarizer",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer"
+                }
+            ],
+            "imported_from": "ai_services.summarizer",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:ai_services:summarizer.py__*__MODULE"
         }
     ],
     "id": ".:python_parser:main.py__*__MODULE",
     "parent_id": null,
     "block_type": "MODULE",
     "start_line_num": 1,
-    "end_line_num": 44,
-    "code_content": "import logging\nfrom logging import Logger\nimport typer\n\nfrom utilities.logger.logging_config import setup_logging\nfrom visitor_manager.visitor_manager import VisitorManager\n\n\ndef main(\n    directory: str = typer.Option(\n        default=\".\",\n        prompt=\"Please enter a directory path\",\n        help=\"The path to the directory to parse\",\n    ),\n    output_directory: str = typer.Option(\n        default=\"output\",\n        help=\"The path to the output directory\",\n    ),\n) -> None:\n    \"\"\"\n    Parse the specified directory and save the results in the output directory.\n\n    Args:\n        directory (str): The path to the directory to parse.\n        output_directory (str): The path to the output directory.\n\n    Returns:\n        None\n    \"\"\"\n\n    logger: Logger = logging.getLogger(__name__)\n    logger.info(\"Starting the directory parsing.\")\n\n    visitor_manager = VisitorManager(directory, output_directory)\n    visitor_manager.process_files()\n    visitor_manager.save_visited_directories()\n\n    logger.info(\"Directory parsing completed.\")\n\n\nif __name__ == \"__main__\":\n    setup_logging()\n    typer.run(main)\n",
+    "end_line_num": 50,
+    "code_content": "import logging\nfrom logging import Logger\nfrom openai import OpenAI\nimport typer\n\nfrom utilities.logger.logging_config import setup_logging\nfrom visitor_manager.visitor_manager import VisitorManager\n\nfrom ai_services.summarizer import OpenAISummarizer\n\n\ndef main(\n    directory: str = typer.Option(\n        default=\".\",\n        prompt=\"Please enter a directory path\",\n        help=\"The path to the directory to parse\",\n    ),\n    output_directory: str = typer.Option(\n        default=\"output\",\n        help=\"The path to the output directory\",\n    ),\n) -> None:\n    \"\"\"\n    Parse the specified directory and save the results in the output directory.\n\n    Args:\n        directory (str): The path to the directory to parse.\n        output_directory (str): The path to the output directory.\n\n    Returns:\n        None\n    \"\"\"\n\n    logger: Logger = logging.getLogger(__name__)\n    logger.info(\"Starting the directory parsing.\")\n\n    client = OpenAI()\n    summarizer = OpenAISummarizer(client=client)\n\n    visitor_manager = VisitorManager(summarizer, directory, output_directory)\n    visitor_manager.process_files()\n    visitor_manager.save_visited_directories()\n\n    logger.info(\"Directory parsing completed.\")\n\n\nif __name__ == \"__main__\":\n    setup_logging()\n    typer.run(main)\n",
     "important_comments": null,
     "dependencies": null,
     "summary": null,
@@ -80,8 +104,8 @@
             "id": ".:python_parser:main.py__*__MODULE__*__STANDALONE_BLOCK-1",
             "parent_id": ".:python_parser:main.py__*__MODULE",
             "block_type": "STANDALONE_BLOCK",
-            "start_line_num": 39,
-            "end_line_num": 44,
+            "start_line_num": 45,
+            "end_line_num": 50,
             "code_content": "if __name__ == \"__main__\":\n    setup_logging()\n    typer.run(main)\n",
             "important_comments": null,
             "dependencies": [
@@ -139,9 +163,9 @@
             "id": ".:python_parser:main.py__*__MODULE__*__FUNCTION-main",
             "parent_id": ".:python_parser:main.py__*__MODULE",
             "block_type": "FUNCTION",
-            "start_line_num": 7,
-            "end_line_num": 39,
-            "code_content": "\n\ndef main(\n    directory: str = typer.Option(\n        default=\".\",\n        prompt=\"Please enter a directory path\",\n        help=\"The path to the directory to parse\",\n    ),\n    output_directory: str = typer.Option(\n        default=\"output\",\n        help=\"The path to the output directory\",\n    ),\n) -> None:\n    \"\"\"\n    Parse the specified directory and save the results in the output directory.\n\n    Args:\n        directory (str): The path to the directory to parse.\n        output_directory (str): The path to the output directory.\n\n    Returns:\n        None\n    \"\"\"\n\n    logger: Logger = logging.getLogger(__name__)\n    logger.info(\"Starting the directory parsing.\")\n\n    visitor_manager = VisitorManager(directory, output_directory)\n    visitor_manager.process_files()\n    visitor_manager.save_visited_directories()\n\n    logger.info(\"Directory parsing completed.\")\n",
+            "start_line_num": 10,
+            "end_line_num": 45,
+            "code_content": "\n\ndef main(\n    directory: str = typer.Option(\n        default=\".\",\n        prompt=\"Please enter a directory path\",\n        help=\"The path to the directory to parse\",\n    ),\n    output_directory: str = typer.Option(\n        default=\"output\",\n        help=\"The path to the output directory\",\n    ),\n) -> None:\n    \"\"\"\n    Parse the specified directory and save the results in the output directory.\n\n    Args:\n        directory (str): The path to the directory to parse.\n        output_directory (str): The path to the output directory.\n\n    Returns:\n        None\n    \"\"\"\n\n    logger: Logger = logging.getLogger(__name__)\n    logger.info(\"Starting the directory parsing.\")\n\n    client = OpenAI()\n    summarizer = OpenAISummarizer(client=client)\n\n    visitor_manager = VisitorManager(summarizer, directory, output_directory)\n    visitor_manager.process_files()\n    visitor_manager.save_visited_directories()\n\n    logger.info(\"Directory parsing completed.\")\n",
             "important_comments": null,
             "dependencies": [
                 {
@@ -171,6 +195,18 @@
                 {
                     "import_names": [
                         {
+                            "name": "OpenAI",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "openai",
+                    "import_module_type": "THIRD_PARTY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
                             "name": "typer",
                             "as_name": null,
                             "local_block_id": null
@@ -191,6 +227,18 @@
                     "imported_from": "visitor_manager.visitor_manager",
                     "import_module_type": "LOCAL",
                     "local_module_id": ".:python_parser:visitor_manager:visitor_manager.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "OpenAISummarizer",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer"
+                        }
+                    ],
+                    "imported_from": "ai_services.summarizer",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:ai_services:summarizer.py__*__MODULE"
                 }
             ],
             "summary": null,

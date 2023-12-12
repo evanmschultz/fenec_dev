@@ -1,5 +1,5 @@
 {
-    "file_path": "./ai_services/summarizer_assistant.py",
+    "file_path": "./python_parser/ai_services/summarizer_assistant.py",
     "docstring": null,
     "header": [],
     "footer": [],
@@ -25,7 +25,7 @@
                 }
             ],
             "imported_from": "openai",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -37,7 +37,7 @@
                 }
             ],
             "imported_from": "openai.types.beta.assistant",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -49,7 +49,7 @@
                 }
             ],
             "imported_from": "openai.types.beta.thread",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -61,7 +61,7 @@
                 }
             ],
             "imported_from": "openai.types.beta.threads.run",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -78,7 +78,7 @@
                 }
             ],
             "imported_from": "openai.types.beta.threads.thread_message",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -90,7 +90,7 @@
                 }
             ],
             "imported_from": "openai.types.beta.threads.message_content_text",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -102,7 +102,7 @@
                 }
             ],
             "imported_from": "openai.types.beta.assistant_create_params",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -119,7 +119,7 @@
                 }
             ],
             "imported_from": "openai._types",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -131,7 +131,7 @@
                 }
             ],
             "imported_from": "openai.pagination",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -144,7 +144,7 @@
             ],
             "imported_from": "temp",
             "import_module_type": "LOCAL",
-            "local_module_id": ".:ai_services:temp.py__*__MODULE"
+            "local_module_id": ".:python_parser:ai_services:temp.py__*__MODULE"
         },
         {
             "import_names": [
@@ -171,10 +171,10 @@
             ],
             "imported_from": "prompts.summarization_prompts",
             "import_module_type": "LOCAL",
-            "local_module_id": ".:ai_services:prompts:summarization_prompts.py__*__MODULE"
+            "local_module_id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE"
         }
     ],
-    "id": ".:ai_services:summarizer_assistant.py__*__MODULE",
+    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE",
     "parent_id": null,
     "block_type": "MODULE",
     "start_line_num": 1,
@@ -188,8 +188,8 @@
             "variable_assignments": [
                 "summarizer = SummarizerAssistant()"
             ],
-            "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__STANDALONE_BLOCK-1",
-            "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE",
+            "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__STANDALONE_BLOCK-1",
+            "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE",
             "block_type": "STANDALONE_BLOCK",
             "start_line_num": 143,
             "end_line_num": 158,
@@ -197,7 +197,7 @@
             "important_comments": null,
             "dependencies": [
                 {
-                    "code_block_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant"
+                    "code_block_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant"
                 },
                 {
                     "import_names": [
@@ -208,7 +208,7 @@
                         }
                     ],
                     "imported_from": "openai.types.beta.assistant",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -221,7 +221,7 @@
                     ],
                     "imported_from": "temp",
                     "import_module_type": "LOCAL",
-                    "local_module_id": ".:ai_services:temp.py__*__MODULE"
+                    "local_module_id": ".:python_parser:ai_services:temp.py__*__MODULE"
                 }
             ],
             "summary": null,
@@ -234,8 +234,8 @@
             "docstring": null,
             "attributes": null,
             "keywords": null,
-            "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
-            "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE",
+            "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+            "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE",
             "block_type": "CLASS",
             "start_line_num": 19,
             "end_line_num": 143,
@@ -263,7 +263,7 @@
                         }
                     ],
                     "imported_from": "openai",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -275,7 +275,7 @@
                         }
                     ],
                     "imported_from": "openai.types.beta.assistant",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -287,7 +287,7 @@
                         }
                     ],
                     "imported_from": "openai.types.beta.thread",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -299,7 +299,7 @@
                         }
                     ],
                     "imported_from": "openai.types.beta.threads.run",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -316,7 +316,7 @@
                         }
                     ],
                     "imported_from": "openai.types.beta.threads.thread_message",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -333,7 +333,7 @@
                         }
                     ],
                     "imported_from": "openai.types.beta.threads.thread_message",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -345,7 +345,7 @@
                         }
                     ],
                     "imported_from": "openai.types.beta.threads.message_content_text",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -357,7 +357,7 @@
                         }
                     ],
                     "imported_from": "openai.types.beta.assistant_create_params",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -374,7 +374,7 @@
                         }
                     ],
                     "imported_from": "openai._types",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -391,7 +391,7 @@
                         }
                     ],
                     "imported_from": "openai._types",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -403,7 +403,7 @@
                         }
                     ],
                     "imported_from": "openai.pagination",
-                    "import_module_type": "LOCAL",
+                    "import_module_type": "THIRD_PARTY",
                     "local_module_id": null
                 },
                 {
@@ -431,7 +431,7 @@
                     ],
                     "imported_from": "prompts.summarization_prompts",
                     "import_module_type": "LOCAL",
-                    "local_module_id": ".:ai_services:prompts:summarization_prompts.py__*__MODULE"
+                    "local_module_id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE"
                 },
                 {
                     "import_names": [
@@ -458,7 +458,7 @@
                     ],
                     "imported_from": "prompts.summarization_prompts",
                     "import_module_type": "LOCAL",
-                    "local_module_id": ".:ai_services:prompts:summarization_prompts.py__*__MODULE"
+                    "local_module_id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE"
                 },
                 {
                     "import_names": [
@@ -485,7 +485,7 @@
                     ],
                     "imported_from": "prompts.summarization_prompts",
                     "import_module_type": "LOCAL",
-                    "local_module_id": ".:ai_services:prompts:summarization_prompts.py__*__MODULE"
+                    "local_module_id": ".:python_parser:ai_services:prompts:summarization_prompts.py__*__MODULE"
                 }
             ],
             "summary": null,
@@ -498,8 +498,8 @@
                     "returns": "None",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-__init__",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-__init__",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 22,
                     "end_line_num": 31,
@@ -517,8 +517,8 @@
                     "returns": "Assistant",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_create_assistant",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_create_assistant",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 31,
                     "end_line_num": 51,
@@ -536,8 +536,8 @@
                     "returns": "None",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_delete_assistant",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_delete_assistant",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 51,
                     "end_line_num": 57,
@@ -555,8 +555,8 @@
                     "returns": "Thread",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_create_thread",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_create_thread",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 57,
                     "end_line_num": 60,
@@ -574,8 +574,8 @@
                     "returns": "None",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_delete_thread",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_delete_thread",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 60,
                     "end_line_num": 66,
@@ -593,8 +593,8 @@
                     "returns": "str",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_interpolate_prompt",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_interpolate_prompt",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 66,
                     "end_line_num": 92,
@@ -612,8 +612,8 @@
                     "returns": "None",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_add_message_to_thread",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_add_message_to_thread",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 92,
                     "end_line_num": 100,
@@ -631,8 +631,8 @@
                     "returns": "Run",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_run_thread",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_run_thread",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 100,
                     "end_line_num": 108,
@@ -650,8 +650,8 @@
                     "returns": "list[str]",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_get_response",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-_get_response",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 108,
                     "end_line_num": 130,
@@ -669,8 +669,8 @@
                     "returns": "list[str] | str | None",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-summarize_code",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-summarize_code",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 130,
                     "end_line_num": 140,
@@ -688,8 +688,8 @@
                     "returns": "None",
                     "is_method": true,
                     "is_async": false,
-                    "id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-print_assistants_list",
-                    "parent_id": ".:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
+                    "id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant__*__FUNCTION-print_assistants_list",
+                    "parent_id": ".:python_parser:ai_services:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
                     "block_type": "FUNCTION",
                     "start_line_num": 140,
                     "end_line_num": 143,

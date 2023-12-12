@@ -1,14 +1,4 @@
 {
-    "./ai_services": [
-        "__init__.py",
-        "temp.py",
-        "summarizer.py",
-        "summarizer_assistant.py"
-    ],
-    "./ai_services/prompts": [
-        "__init__.py",
-        "summarization_prompts.py"
-    ],
     "./python_parser": [
         "__init__.py",
         "main.py"
@@ -30,6 +20,17 @@
     "./python_parser/parsers": [
         "__init__.py",
         "python_parser.py"
+    ],
+    "./python_parser/ai_services": [
+        "stream_summarizer_test.py",
+        "__init__.py",
+        "temp.py",
+        "summarizer.py",
+        "summarizer_assistant.py"
+    ],
+    "./python_parser/ai_services/prompts": [
+        "__init__.py",
+        "summarization_prompts.py"
     ],
     "./python_parser/id_generation": [
         "__init__.py",
