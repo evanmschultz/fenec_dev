@@ -151,7 +151,7 @@
     "code_content": "import os\nimport json\nfrom typing import Literal\n\nfrom arango import ArangoError\nfrom arango.client import ArangoClient\nfrom arango.database import StandardDatabase\nfrom arango.cursor import Cursor\nfrom arango.job import AsyncJob, BatchJob\nfrom arango.result import Result\nfrom arango.typings import Json, Jsons\n\n\nclass ArangoDBManager:\n    def __init__(\n        self,\n        url: str = \"http://localhost:8529\",\n        username: str = \"root\",\n        password: str = \"openSesame\",\n        db_name: str = \"post_code\",\n    ) -> None:\n        self.client = ArangoClient(hosts=url)\n        self.username: str = username\n        self.password: str = password\n        self.db_name: str = db_name\n        self.db: StandardDatabase = self._ensure_database()\n\n    def _ensure_database(self) -> StandardDatabase:\n        sys_db: StandardDatabase = self.client.db(\n            \"_system\", username=self.username, password=self.password\n        )\n        if not sys_db.has_database(self.db_name):\n            sys_db.create_database(self.db_name)\n        return self.client.db(\n            self.db_name, username=self.username, password=self.password\n        )\n\n    def _ensure_vertex_collections(self, vertex_collections: list[str]) -> None:\n        for collection in vertex_collections:\n            if not self.db.has_collection(collection):\n                self.db.create_collection(collection)\n\n    def ensure_collection(self, collection_name: str) -> None:\n        if not self.db.has_collection(collection_name):\n            self.db.create_collection(collection_name)\n            print(f\"Created collection: {collection_name}\")\n\n    def ensure_edge_collection(self, collection_name: str) -> None:\n        if not self.db.has_collection(collection_name):\n            self.db.create_collection(collection_name, edge=True)\n            print(f\"Created edge collection: {collection_name}\")\n\n    def delete_all_collections(self) -> None:\n        collections: Result[Jsons] = self.db.collections()\n\n        for collection in collections:  # type: ignore # FIXME: Fix type error\n            if not collection[\"name\"].startswith(\"_\"):  # Skip system collections\n                self.db.delete_collection(collection[\"name\"])\n                print(f\"Deleted collection: {collection['name']}\")\n\n    def setup_collections(self):\n        required_collections = [\n            \"modules\",\n            \"classes\",\n            \"functions\",\n            \"standalone_blocks\",\n        ]\n        for collection_name in required_collections:\n            self.ensure_collection(collection_name)\n\n        self.ensure_edge_collection(\"code_edges\")\n\n\n# # Usage example\n# db_manager = ArangoDBManager()\n# db_manager.delete_all_collections()\n# db_manager.process_graph_data(\n#     \"/Users/evanschultz/Documents/Code/post-code/output/json/\"\n# )\n# db_manager.process_dependencies_and_imports()\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "summary complete",
     "children": [
         {
             "class_name": "ArangoDBManager",
@@ -251,7 +251,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": [
                 {
                     "function_name": "__init__",
@@ -269,7 +269,7 @@
                     "code_content": "def __init__(\n    self,\n    url: str = \"http://localhost:8529\",\n    username: str = \"root\",\n    password: str = \"openSesame\",\n    db_name: str = \"post_code\",\n) -> None:\n    self.client = ArangoClient(hosts=url)\n    self.username: str = username\n    self.password: str = password\n    self.db_name: str = db_name\n    self.db: StandardDatabase = self._ensure_database()\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -288,7 +288,7 @@
                     "code_content": "\ndef _ensure_database(self) -> StandardDatabase:\n    sys_db: StandardDatabase = self.client.db(\n        \"_system\", username=self.username, password=self.password\n    )\n    if not sys_db.has_database(self.db_name):\n        sys_db.create_database(self.db_name)\n    return self.client.db(\n        self.db_name, username=self.username, password=self.password\n    )\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -307,7 +307,7 @@
                     "code_content": "\ndef _ensure_vertex_collections(self, vertex_collections: list[str]) -> None:\n    for collection in vertex_collections:\n        if not self.db.has_collection(collection):\n            self.db.create_collection(collection)\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -326,7 +326,7 @@
                     "code_content": "\ndef ensure_collection(self, collection_name: str) -> None:\n    if not self.db.has_collection(collection_name):\n        self.db.create_collection(collection_name)\n        print(f\"Created collection: {collection_name}\")\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -345,7 +345,7 @@
                     "code_content": "\ndef ensure_edge_collection(self, collection_name: str) -> None:\n    if not self.db.has_collection(collection_name):\n        self.db.create_collection(collection_name, edge=True)\n        print(f\"Created edge collection: {collection_name}\")\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -371,7 +371,7 @@
                         }
                     ],
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -390,7 +390,7 @@
                     "code_content": "\ndef setup_collections(self):\n    required_collections = [\n        \"modules\",\n        \"classes\",\n        \"functions\",\n        \"standalone_blocks\",\n    ]\n    for collection_name in required_collections:\n        self.ensure_collection(collection_name)\n\n    self.ensure_edge_collection(\"code_edges\")\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 }
             ]

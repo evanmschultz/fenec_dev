@@ -62,6 +62,7 @@
     ],
     "./python_parser/visitor_manager": [
         "import_and_dependency_update_functions.py",
+        "summarization_manager.py",
         "__init__.py",
         "visitor_manager.py"
     ],

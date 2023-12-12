@@ -1,0 +1,451 @@
+{
+    "file_path": "./python_parser/visitor_manager/summarization_manager.py",
+    "docstring": null,
+    "header": [
+        "# define set of summarized_code_block_ids",
+        "# for loop through module_builders_tuple",
+        "# call summarization function on each module_builder (takes in builder as argument)",
+        "# func def params (builder, prev_builder | None)",
+        "# if builder.id not in summarized_code_block_ids",
+        "# while builder.children_builders or builder.common_attributes.dependencies",
+        "# if builder.children_builders:",
+        "# for child_builder in children_builders",
+        "# if child_builder.id not in summarized_code_block_ids:",
+        "# recursively call function with child_builder",
+        "# if builder.common_attributes.dependencies:",
+        "# for dependency in builder.common_attributes.dependencies",
+        "# if isinstance dependency DependencyModel and dependency.code_block_id not in summarized_code_block_ids:",
+        "# for child_builder in module_builders.children_builders",
+        "# if child_builder.id == dependency.code_block_id",
+        "# recursively call function with child_builder",
+        "# if isinstance dependency ImportModel:",
+        "# if not import_names:",
+        "# for module_builder in module_builders_tuple",
+        "# if module_builder.id == dependency.local_module_id and module_builder.id not in summarized_code_block_ids",
+        "# recursively call function with module_builder",
+        "# else:",
+        "# for import_name in dependency.import_names",
+        "# if import_name.local_block_id not in summarized_code_block_ids:",
+        "# for module_builder in module_builders_tuple",
+        "# if module_builder.id == dependency.local_module_id",
+        "# for child_builder in module_builder.children_builders",
+        "# if child_builder.id == import_name.local_block_id and child_builder.id not in summarized_code_block_ids",
+        "# recursively call function with child_builder",
+        "# after while loop",
+        "# call summarizer on code block (add temp string for now, \"summary complete\")",
+        "# update builder with summary [builder.add_summary(\"summary complete\")]",
+        "# update summarized_code_block_ids with builder.id",
+        "# return prev_builder if prev_builder else None",
+        "# What does this return to get the recursion to work going back up the stack?",
+        "# pass in current_builder as argument to function so it can return the that so the recursion can work [function params (current_builder and prev_builder)]"
+    ],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Summarizer",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-Summarizer"
+                }
+            ],
+            "imported_from": "ai_services.summarizer",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:ai_services:summarizer.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "DependencyModel",
+                    "as_name": null,
+                    "local_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+                }
+            ],
+            "imported_from": "models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": ".:python_parser:models:models.py__*__MODULE"
+        }
+    ],
+    "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 183,
+    "code_content": "# define set of summarized_code_block_ids\n# for loop through module_builders_tuple\n# call summarization function on each module_builder (takes in builder as argument)\n# func def params (builder, prev_builder | None)\n\n# if builder.id not in summarized_code_block_ids\n# while builder.children_builders or builder.common_attributes.dependencies\n\n# if builder.children_builders:\n# for child_builder in children_builders\n# if child_builder.id not in summarized_code_block_ids:\n# recursively call function with child_builder\n\n# if builder.common_attributes.dependencies:\n# for dependency in builder.common_attributes.dependencies\n\n# if isinstance dependency DependencyModel and dependency.code_block_id not in summarized_code_block_ids:\n# for child_builder in module_builders.children_builders\n# if child_builder.id == dependency.code_block_id\n# recursively call function with child_builder\n\n# if isinstance dependency ImportModel:\n# if not import_names:\n# for module_builder in module_builders_tuple\n# if module_builder.id == dependency.local_module_id and module_builder.id not in summarized_code_block_ids\n# recursively call function with module_builder\n# else:\n# for import_name in dependency.import_names\n# if import_name.local_block_id not in summarized_code_block_ids:\n# for module_builder in module_builders_tuple\n# if module_builder.id == dependency.local_module_id\n# for child_builder in module_builder.children_builders\n# if child_builder.id == import_name.local_block_id and child_builder.id not in summarized_code_block_ids\n# recursively call function with child_builder\n\n\n# after while loop\n# call summarizer on code block (add temp string for now, \"summary complete\")\n# update builder with summary [builder.add_summary(\"summary complete\")]\n# update summarized_code_block_ids with builder.id\n# return prev_builder if prev_builder else None\n\n# What does this return to get the recursion to work going back up the stack?\n# pass in current_builder as argument to function so it can return the that so the recursion can work [function params (current_builder and prev_builder)]\n\nfrom typing import Union\nfrom ai_services.summarizer import Summarizer\nfrom model_builders.class_model_builder import ClassModelBuilder\nfrom model_builders.function_model_builder import FunctionModelBuilder\nfrom model_builders.module_model_builder import ModuleModelBuilder\nfrom model_builders.standalone_block_model_builder import (\n    StandaloneBlockModelBuilder,\n)\n\nfrom models.models import DependencyModel, ImportModel\n\nBuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]\n\n\nclass SummarizationManager:\n    def __init__(\n        self,\n        module_builders_tuple: tuple[ModuleModelBuilder, ...],\n        summarizer: Summarizer,\n    ) -> None:\n        self.module_builders_tuple: tuple[\n            ModuleModelBuilder, ...\n        ] = module_builders_tuple\n        self.summarizer: Summarizer = summarizer\n        self.summarized_code_block_ids: set[str] = set()\n\n    def create_and_add_summaries_to_builders(self) -> None:\n        for module_builder in self.module_builders_tuple:\n            self._summarize_module(module_builder)\n\n    def _summarize_module(self, module_builder: ModuleModelBuilder) -> None:\n        if module_builder.id not in self.summarized_code_block_ids:\n            self._summarize_code_block(module_builder, recursion_path=None)\n            self.summarized_code_block_ids.add(module_builder.id)\n\n    def _summarize_code_block(\n        self,\n        builder: BuilderType,\n        *,\n        recursion_path: list[str] | None,\n        prev_builder: BuilderType | None = None,\n    ) -> BuilderType | None:\n        recursion_path = recursion_path if recursion_path else []\n\n        if builder.id in self.summarized_code_block_ids or builder.id in recursion_path:\n            return None\n\n        recursion_path.append(builder.id)\n\n        if builder.children_builders or builder.common_attributes.dependencies:\n            if builder.children_builders:\n                self._handle_children_builders(builder)\n\n            if builder.common_attributes.dependencies:\n                for dependency in builder.common_attributes.dependencies:\n                    if (\n                        isinstance(dependency, DependencyModel)\n                        and dependency.code_block_id\n                        not in self.summarized_code_block_ids\n                    ):\n                        self._handle_local_dependency(dependency, builder)\n\n                    if isinstance(dependency, ImportModel):\n                        if not dependency.import_names:\n                            self._handle_import_dependency(\n                                dependency, builder, recursion_path\n                            )\n                        else:\n                            self._handle_import_from_dependency(\n                                dependency, builder, recursion_path\n                            )\n\n        # summary: str = self.summarizer.summarize_code(\n        #     builder.common_attributes.code_content\n        # )\n        summary: str = \"summary complete\"\n        builder.add_summary(summary)\n        self.summarized_code_block_ids.add(builder.id)\n        recursion_path.remove(builder.id)\n\n        return prev_builder if prev_builder else None\n\n    def _handle_children_builders(self, builder: BuilderType) -> None:\n        for child_builder in builder.children_builders:\n            if child_builder.id not in self.summarized_code_block_ids:\n                self._summarize_code_block(\n                    child_builder, prev_builder=builder, recursion_path=None\n                )\n\n    def _handle_local_dependency(\n        self, dependency: DependencyModel, builder: BuilderType\n    ) -> None:\n        for child_builder in builder.children_builders:\n            if child_builder.id == dependency.code_block_id:\n                self._summarize_code_block(\n                    child_builder,\n                    prev_builder=builder,\n                    recursion_path=None,\n                )\n\n    def _handle_import_dependency(\n        self, dependency: ImportModel, builder: BuilderType, recursion_path: list[str]\n    ) -> None:\n        for module_builder in self.module_builders_tuple:\n            if (\n                module_builder.id == dependency.local_module_id\n                and module_builder.id not in self.summarized_code_block_ids\n            ):\n                self._summarize_code_block(\n                    module_builder,\n                    prev_builder=builder,\n                    recursion_path=recursion_path,\n                )\n\n    def _handle_import_from_dependency(\n        self, dependency: ImportModel, builder: BuilderType, recursion_path: list[str]\n    ) -> None:\n        for import_name in dependency.import_names:\n            if import_name.local_block_id not in self.summarized_code_block_ids:\n                for module_builder in self.module_builders_tuple:\n                    if module_builder.id == dependency.local_module_id:\n                        for child_builder in module_builder.children_builders:\n                            if (\n                                child_builder.id == import_name.local_block_id\n                                and child_builder.id\n                                not in self.summarized_code_block_ids\n                            ):\n                                self._summarize_code_block(\n                                    child_builder,\n                                    prev_builder=builder,\n                                    recursion_path=recursion_path,\n                                )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "summary complete",
+    "children": [
+        {
+            "variable_assignments": [
+                "BuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]"
+            ],
+            "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__STANDALONE_BLOCK-1",
+            "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE",
+            "block_type": "STANDALONE_BLOCK",
+            "start_line_num": 56,
+            "end_line_num": 63,
+            "code_content": "BuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "Union",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "typing",
+                    "import_module_type": "STANDARD_LIBRARY",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ClassModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.class_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:class_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "FunctionModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.function_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:function_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ModuleModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.module_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "StandaloneBlockModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.standalone_block_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+                }
+            ],
+            "summary": "summary complete",
+            "children": null
+        },
+        {
+            "class_name": "SummarizationManager",
+            "decorators": null,
+            "bases": null,
+            "docstring": null,
+            "attributes": null,
+            "keywords": null,
+            "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager",
+            "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE",
+            "block_type": "CLASS",
+            "start_line_num": 63,
+            "end_line_num": 183,
+            "code_content": "\n\nclass SummarizationManager:\n    def __init__(\n        self,\n        module_builders_tuple: tuple[ModuleModelBuilder, ...],\n        summarizer: Summarizer,\n    ) -> None:\n        self.module_builders_tuple: tuple[\n            ModuleModelBuilder, ...\n        ] = module_builders_tuple\n        self.summarizer: Summarizer = summarizer\n        self.summarized_code_block_ids: set[str] = set()\n\n    def create_and_add_summaries_to_builders(self) -> None:\n        for module_builder in self.module_builders_tuple:\n            self._summarize_module(module_builder)\n\n    def _summarize_module(self, module_builder: ModuleModelBuilder) -> None:\n        if module_builder.id not in self.summarized_code_block_ids:\n            self._summarize_code_block(module_builder, recursion_path=None)\n            self.summarized_code_block_ids.add(module_builder.id)\n\n    def _summarize_code_block(\n        self,\n        builder: BuilderType,\n        *,\n        recursion_path: list[str] | None,\n        prev_builder: BuilderType | None = None,\n    ) -> BuilderType | None:\n        recursion_path = recursion_path if recursion_path else []\n\n        if builder.id in self.summarized_code_block_ids or builder.id in recursion_path:\n            return None\n\n        recursion_path.append(builder.id)\n\n        if builder.children_builders or builder.common_attributes.dependencies:\n            if builder.children_builders:\n                self._handle_children_builders(builder)\n\n            if builder.common_attributes.dependencies:\n                for dependency in builder.common_attributes.dependencies:\n                    if (\n                        isinstance(dependency, DependencyModel)\n                        and dependency.code_block_id\n                        not in self.summarized_code_block_ids\n                    ):\n                        self._handle_local_dependency(dependency, builder)\n\n                    if isinstance(dependency, ImportModel):\n                        if not dependency.import_names:\n                            self._handle_import_dependency(\n                                dependency, builder, recursion_path\n                            )\n                        else:\n                            self._handle_import_from_dependency(\n                                dependency, builder, recursion_path\n                            )\n\n        # summary: str = self.summarizer.summarize_code(\n        #     builder.common_attributes.code_content\n        # )\n        summary: str = \"summary complete\"\n        builder.add_summary(summary)\n        self.summarized_code_block_ids.add(builder.id)\n        recursion_path.remove(builder.id)\n\n        return prev_builder if prev_builder else None\n\n    def _handle_children_builders(self, builder: BuilderType) -> None:\n        for child_builder in builder.children_builders:\n            if child_builder.id not in self.summarized_code_block_ids:\n                self._summarize_code_block(\n                    child_builder, prev_builder=builder, recursion_path=None\n                )\n\n    def _handle_local_dependency(\n        self, dependency: DependencyModel, builder: BuilderType\n    ) -> None:\n        for child_builder in builder.children_builders:\n            if child_builder.id == dependency.code_block_id:\n                self._summarize_code_block(\n                    child_builder,\n                    prev_builder=builder,\n                    recursion_path=None,\n                )\n\n    def _handle_import_dependency(\n        self, dependency: ImportModel, builder: BuilderType, recursion_path: list[str]\n    ) -> None:\n        for module_builder in self.module_builders_tuple:\n            if (\n                module_builder.id == dependency.local_module_id\n                and module_builder.id not in self.summarized_code_block_ids\n            ):\n                self._summarize_code_block(\n                    module_builder,\n                    prev_builder=builder,\n                    recursion_path=recursion_path,\n                )\n\n    def _handle_import_from_dependency(\n        self, dependency: ImportModel, builder: BuilderType, recursion_path: list[str]\n    ) -> None:\n        for import_name in dependency.import_names:\n            if import_name.local_block_id not in self.summarized_code_block_ids:\n                for module_builder in self.module_builders_tuple:\n                    if module_builder.id == dependency.local_module_id:\n                        for child_builder in module_builder.children_builders:\n                            if (\n                                child_builder.id == import_name.local_block_id\n                                and child_builder.id\n                                not in self.summarized_code_block_ids\n                            ):\n                                self._summarize_code_block(\n                                    child_builder,\n                                    prev_builder=builder,\n                                    recursion_path=recursion_path,\n                                )\n",
+            "important_comments": null,
+            "dependencies": [
+                {
+                    "import_names": [
+                        {
+                            "name": "DependencyModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ImportModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "DependencyModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        },
+                        {
+                            "name": "ImportModel",
+                            "as_name": null,
+                            "local_block_id": null
+                        }
+                    ],
+                    "imported_from": "models.models",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": null
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "Summarizer",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:ai_services:summarizer.py__*__MODULE__*__CLASS-Summarizer"
+                        }
+                    ],
+                    "imported_from": "ai_services.summarizer",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:ai_services:summarizer.py__*__MODULE"
+                },
+                {
+                    "import_names": [
+                        {
+                            "name": "ModuleModelBuilder",
+                            "as_name": null,
+                            "local_block_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                        }
+                    ],
+                    "imported_from": "model_builders.module_model_builder",
+                    "import_module_type": "LOCAL",
+                    "local_module_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE"
+                }
+            ],
+            "summary": "summary complete",
+            "children": [
+                {
+                    "function_name": "__init__",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager__*__FUNCTION-__init__",
+                    "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 66,
+                    "end_line_num": 76,
+                    "code_content": "def __init__(\n    self,\n    module_builders_tuple: tuple[ModuleModelBuilder, ...],\n    summarizer: Summarizer,\n) -> None:\n    self.module_builders_tuple: tuple[\n        ModuleModelBuilder, ...\n    ] = module_builders_tuple\n    self.summarizer: Summarizer = summarizer\n    self.summarized_code_block_ids: set[str] = set()\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": "summary complete",
+                    "children": null
+                },
+                {
+                    "function_name": "create_and_add_summaries_to_builders",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager__*__FUNCTION-create_and_add_summaries_to_builders",
+                    "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 76,
+                    "end_line_num": 80,
+                    "code_content": "\ndef create_and_add_summaries_to_builders(self) -> None:\n    for module_builder in self.module_builders_tuple:\n        self._summarize_module(module_builder)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": "summary complete",
+                    "children": null
+                },
+                {
+                    "function_name": "_summarize_module",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager__*__FUNCTION-_summarize_module",
+                    "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 80,
+                    "end_line_num": 85,
+                    "code_content": "\ndef _summarize_module(self, module_builder: ModuleModelBuilder) -> None:\n    if module_builder.id not in self.summarized_code_block_ids:\n        self._summarize_code_block(module_builder, recursion_path=None)\n        self.summarized_code_block_ids.add(module_builder.id)\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": "summary complete",
+                    "children": null
+                },
+                {
+                    "function_name": "_summarize_code_block",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "BuilderType | None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager__*__FUNCTION-_summarize_code_block",
+                    "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 85,
+                    "end_line_num": 132,
+                    "code_content": "\ndef _summarize_code_block(\n    self,\n    builder: BuilderType,\n    *,\n    recursion_path: list[str] | None,\n    prev_builder: BuilderType | None = None,\n) -> BuilderType | None:\n    recursion_path = recursion_path if recursion_path else []\n\n    if builder.id in self.summarized_code_block_ids or builder.id in recursion_path:\n        return None\n\n    recursion_path.append(builder.id)\n\n    if builder.children_builders or builder.common_attributes.dependencies:\n        if builder.children_builders:\n            self._handle_children_builders(builder)\n\n        if builder.common_attributes.dependencies:\n            for dependency in builder.common_attributes.dependencies:\n                if (\n                    isinstance(dependency, DependencyModel)\n                    and dependency.code_block_id\n                    not in self.summarized_code_block_ids\n                ):\n                    self._handle_local_dependency(dependency, builder)\n\n                if isinstance(dependency, ImportModel):\n                    if not dependency.import_names:\n                        self._handle_import_dependency(\n                            dependency, builder, recursion_path\n                        )\n                    else:\n                        self._handle_import_from_dependency(\n                            dependency, builder, recursion_path\n                        )\n\n    # summary: str = self.summarizer.summarize_code(\n    #     builder.common_attributes.code_content\n    # )\n    summary: str = \"summary complete\"\n    builder.add_summary(summary)\n    self.summarized_code_block_ids.add(builder.id)\n    recursion_path.remove(builder.id)\n\n    return prev_builder if prev_builder else None\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": "summary complete",
+                    "children": null
+                },
+                {
+                    "function_name": "_handle_children_builders",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager__*__FUNCTION-_handle_children_builders",
+                    "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 132,
+                    "end_line_num": 139,
+                    "code_content": "\ndef _handle_children_builders(self, builder: BuilderType) -> None:\n    for child_builder in builder.children_builders:\n        if child_builder.id not in self.summarized_code_block_ids:\n            self._summarize_code_block(\n                child_builder, prev_builder=builder, recursion_path=None\n            )\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": "summary complete",
+                    "children": null
+                },
+                {
+                    "function_name": "_handle_local_dependency",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager__*__FUNCTION-_handle_local_dependency",
+                    "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 139,
+                    "end_line_num": 150,
+                    "code_content": "\ndef _handle_local_dependency(\n    self, dependency: DependencyModel, builder: BuilderType\n) -> None:\n    for child_builder in builder.children_builders:\n        if child_builder.id == dependency.code_block_id:\n            self._summarize_code_block(\n                child_builder,\n                prev_builder=builder,\n                recursion_path=None,\n            )\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": "summary complete",
+                    "children": null
+                },
+                {
+                    "function_name": "_handle_import_dependency",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager__*__FUNCTION-_handle_import_dependency",
+                    "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 150,
+                    "end_line_num": 164,
+                    "code_content": "\ndef _handle_import_dependency(\n    self, dependency: ImportModel, builder: BuilderType, recursion_path: list[str]\n) -> None:\n    for module_builder in self.module_builders_tuple:\n        if (\n            module_builder.id == dependency.local_module_id\n            and module_builder.id not in self.summarized_code_block_ids\n        ):\n            self._summarize_code_block(\n                module_builder,\n                prev_builder=builder,\n                recursion_path=recursion_path,\n            )\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": "summary complete",
+                    "children": null
+                },
+                {
+                    "function_name": "_handle_import_from_dependency",
+                    "docstring": null,
+                    "decorators": null,
+                    "parameters": null,
+                    "returns": "None",
+                    "is_method": true,
+                    "is_async": false,
+                    "id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager__*__FUNCTION-_handle_import_from_dependency",
+                    "parent_id": ".:python_parser:visitor_manager:summarization_manager.py__*__MODULE__*__CLASS-SummarizationManager",
+                    "block_type": "FUNCTION",
+                    "start_line_num": 164,
+                    "end_line_num": 183,
+                    "code_content": "\ndef _handle_import_from_dependency(\n    self, dependency: ImportModel, builder: BuilderType, recursion_path: list[str]\n) -> None:\n    for import_name in dependency.import_names:\n        if import_name.local_block_id not in self.summarized_code_block_ids:\n            for module_builder in self.module_builders_tuple:\n                if module_builder.id == dependency.local_module_id:\n                    for child_builder in module_builder.children_builders:\n                        if (\n                            child_builder.id == import_name.local_block_id\n                            and child_builder.id\n                            not in self.summarized_code_block_ids\n                        ):\n                            self._summarize_code_block(\n                                child_builder,\n                                prev_builder=builder,\n                                recursion_path=recursion_path,\n                            )\n",
+                    "important_comments": null,
+                    "dependencies": null,
+                    "summary": "summary complete",
+                    "children": null
+                }
+            ]
+        }
+    ]
+}

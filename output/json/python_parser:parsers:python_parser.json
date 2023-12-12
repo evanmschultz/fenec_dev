@@ -97,7 +97,7 @@
     "code_content": "import libcst\nfrom libcst.metadata import MetadataWrapper\nfrom id_generation.id_generation_strategies import ModuleIDGenerationStrategy\nfrom model_builders.builder_factory import BuilderFactory\nfrom model_builders.module_model_builder import ModuleModelBuilder\n\nfrom visitors.module_visitor import ModuleVisitor\nfrom models.enums import BlockType\n\n\nclass PythonParser:\n    \"\"\"\n    A parser for Python source code, using libcst to parse and construct a module model.\n\n    This class takes the path to a Python file, reads its contents, and parses it into a structured\n    module model using the libcst library. It is designed to work with a specific file at a time.\n\n    Attributes:\n        file_path (str): The path to the Python file to be parsed.\n\n    Example:\n        >>> python_parser = PythonParser(\"/path/to/python/file.py\")\n        >>> module_model = python_parser.parse(python_parser.open_file())\n        # This will parse the specified Python file and return a structured module model.\n    \"\"\"\n\n    def __init__(self, file_path: str) -> None:\n        self.file_path: str = file_path\n\n    def open_file(self) -> str:\n        \"\"\"\n        Opens and reads the contents of the Python file specified in the file_path attribute.\n\n        Returns:\n            str: The contents of the file as a string.\n\n        Example:\n            >>> code = python_parser.open_file()\n            # Reads and returns the contents of the Python file.\n        \"\"\"\n\n        with open(self.file_path, \"r\") as file:\n            return file.read()\n\n    def parse(self, code: str) -> ModuleModelBuilder | None:\n        \"\"\"\n        Parses the provided Python code into a structured module model.\n\n        Uses libcst to parse the provided code using the ModuleVisitor class. A ModuleModelBuilder instance is returned\n        along with it hierarchy of child builders.\n\n        Args:\n            code (str): The Python code to be parsed.\n\n        Returns:\n            ModuleModelBuilder | None: The module model builder for the provided code.\n\n        Example:\n            >>> code = python_parser.open_file()\n            >>> module_model = python_parser.parse(code)\n            # Parses the provided code and returns a module model builder.\n        \"\"\"\n\n        wrapper = MetadataWrapper(libcst.parse_module(code))\n        module_id: str = ModuleIDGenerationStrategy.generate_id(\n            file_path=self.file_path\n        )\n        module_builder: ModuleModelBuilder = BuilderFactory.create_builder_instance(\n            block_type=BlockType.MODULE, id=module_id, file_path=self.file_path\n        )\n        visitor = ModuleVisitor(id=module_id, module_builder=module_builder)\n        wrapper.visit(visitor)\n\n        return visitor.builder_stack[0]  # type: ignore\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "summary complete",
     "children": [
         {
             "class_name": "PythonParser",
@@ -199,7 +199,7 @@
                     "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": [
                 {
                     "function_name": "__init__",
@@ -217,7 +217,7 @@
                     "code_content": "\ndef __init__(self, file_path: str) -> None:\n    self.file_path: str = file_path\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -236,7 +236,7 @@
                     "code_content": "\ndef open_file(self) -> str:\n    \"\"\"\n        Opens and reads the contents of the Python file specified in the file_path attribute.\n\n        Returns:\n            str: The contents of the file as a string.\n\n        Example:\n            >>> code = python_parser.open_file()\n            # Reads and returns the contents of the Python file.\n        \"\"\"\n\n    with open(self.file_path, \"r\") as file:\n        return file.read()\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -255,7 +255,7 @@
                     "code_content": "\ndef parse(self, code: str) -> ModuleModelBuilder | None:\n    \"\"\"\n        Parses the provided Python code into a structured module model.\n\n        Uses libcst to parse the provided code using the ModuleVisitor class. A ModuleModelBuilder instance is returned\n        along with it hierarchy of child builders.\n\n        Args:\n            code (str): The Python code to be parsed.\n\n        Returns:\n            ModuleModelBuilder | None: The module model builder for the provided code.\n\n        Example:\n            >>> code = python_parser.open_file()\n            >>> module_model = python_parser.parse(code)\n            # Parses the provided code and returns a module model builder.\n        \"\"\"\n\n    wrapper = MetadataWrapper(libcst.parse_module(code))\n    module_id: str = ModuleIDGenerationStrategy.generate_id(\n        file_path=self.file_path\n    )\n    module_builder: ModuleModelBuilder = BuilderFactory.create_builder_instance(\n        block_type=BlockType.MODULE, id=module_id, file_path=self.file_path\n    )\n    visitor = ModuleVisitor(id=module_id, module_builder=module_builder)\n    wrapper.visit(visitor)\n\n    return visitor.builder_stack[0]  # type: ignore\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 }
             ]

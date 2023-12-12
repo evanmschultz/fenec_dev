@@ -138,7 +138,7 @@
     "code_content": "from typing import Sequence\nimport libcst\n\nfrom utilities.logger.decorators import logging_decorator\n\nfrom id_generation.id_generation_strategies import (\n    StandaloneCodeBlockIDGenerationStrategy,\n)\n\nfrom model_builders.builder_factory import BuilderFactory\nfrom model_builders.standalone_block_model_builder import StandaloneBlockModelBuilder\nfrom models.enums import BlockType\nfrom models.models import CommentModel\n\nfrom visitors.node_processing.common_functions import (\n    extract_important_comment,\n    extract_stripped_code_content,\n)\nfrom utilities.processing_context import NodeAndPositionData\n\n\ndef gather_standalone_lines(\n    node_body: Sequence[libcst.CSTNode], visitor_instance\n) -> list[NodeAndPositionData]:\n    \"\"\"\n    Gathers standalone lines of code that are not part of class or function definitions or import statements.\n\n    This function iterates over a sequence of CSTNodes, identifying blocks of code that stand alone. Standalone blocks are those not encapsulated in class or function definitions and not part of import statements.\n\n    Args:\n        node_body: A sequence of libcst.CSTNode representing the body of a module or a block.\n        visitor_instance: An instance of a visitor class that provides additional context and utilities.\n\n    Returns:\n        A list of NodeAndPositionData, each representing a standalone block of code with its start and end line numbers.\n\n    Example:\n        >>> visitor_instance = ModuleVisitor(id=\"module1\", ...)\n        >>> standalone_blocks = gather_standalone_lines(module_ast.body, visitor_instance)\n        # This will process the module AST and return standalone blocks of code.\n    \"\"\"\n\n    standalone_blocks: list[NodeAndPositionData] = []\n    standalone_block: list[libcst.CSTNode] = []\n    start_line = end_line = 0\n\n    for statement in node_body:\n        if _is_class_or_function_def(statement) or _is_import_statement(statement):\n            if standalone_block:\n                end_line = visitor_instance.get_node_position_data(\n                    standalone_block[-1]\n                ).end\n                standalone_blocks.append(\n                    NodeAndPositionData(standalone_block, start_line, end_line)\n                )\n                standalone_block = []\n                start_line = end_line = 0\n        else:\n            if not standalone_block:\n                start_line = visitor_instance.get_node_position_data(statement).start\n            standalone_block.append(statement)\n\n    if standalone_block:\n        end_line = visitor_instance.get_node_position_data(standalone_block[-1]).end\n        standalone_blocks.append(\n            NodeAndPositionData(standalone_block, start_line, end_line)\n        )\n\n    return standalone_blocks\n\n\ndef process_standalone_blocks(\n    code_blocks: list[NodeAndPositionData], parent_id: str\n) -> list[StandaloneBlockModelBuilder]:\n    \"\"\"\n    Processes standalone blocks of code and builds models for each block.\n\n    Iterates over a list of standalone code blocks, processing each to build a model representing the block. Each block is assigned an identifier and associated with a parent identifier.\n\n    Args:\n        code_blocks: A list of NodeAndPositionData representing standalone code blocks.\n        parent_id: The identifier of the parent (usually a module or class).\n\n    Returns:\n        A list of StandaloneBlockModelBuilder, each representing a processed standalone block.\n\n    Example:\n        >>> standalone_blocks_models = process_standalone_blocks(standalone_blocks, \"module1\")\n        # Processes standalone blocks and creates models for them.\n    \"\"\"\n\n    models: list[StandaloneBlockModelBuilder] = []\n    for count, code_block in enumerate(code_blocks):\n        models.append(_process_standalone_block(code_block, parent_id, count + 1))\n\n    return models\n\n\ndef _is_class_or_function_def(statement: libcst.CSTNode) -> bool:\n    \"\"\"Returns True if the statement is a class or function definition.\"\"\"\n\n    return isinstance(statement, (libcst.ClassDef, libcst.FunctionDef))\n\n\ndef _is_import_statement(statement: libcst.CSTNode) -> bool:\n    \"\"\"Returns True if the statement is an import statement.\"\"\"\n\n    return isinstance(statement, libcst.SimpleStatementLine) and any(\n        isinstance(elem, (libcst.Import, libcst.ImportFrom)) for elem in statement.body\n    )\n\n\n# TODO: Fix important comment logic\ndef _process_standalone_block(\n    standalone_block: NodeAndPositionData, parent_id: str, count: int\n) -> StandaloneBlockModelBuilder:\n    \"\"\"Processes a standalone block of code and sets the attributes in the model builder, returns the builder instance.\"\"\"\n\n    id: str = StandaloneCodeBlockIDGenerationStrategy.generate_id(parent_id, count)\n    builder: StandaloneBlockModelBuilder = BuilderFactory.create_builder_instance(\n        block_type=BlockType.STANDALONE_CODE_BLOCK,\n        id=id,\n        parent_id=parent_id,\n    )\n    content, variable_assignments, important_comments = _process_nodes(standalone_block)\n    (\n        builder.set_start_line_num(standalone_block.start)\n        .set_end_line_num(standalone_block.end)\n        .set_code_content(content)\n    )\n    for important_comment in important_comments:\n        builder.add_important_comment(important_comment)\n    builder.set_variable_assignments(variable_assignments)\n\n    return builder\n\n\n@logging_decorator(syntax_highlighting=True)\ndef _process_nodes(\n    standalone_block: NodeAndPositionData,\n) -> tuple[str, list[str], list[CommentModel]]:\n    \"\"\"Processes the nodes in a standalone block of code and returns the content, variable assignments and important comments.\"\"\"\n\n    content: str = \"\"\n    variable_assignments: list[str] = []\n    important_comments: list[CommentModel] = []\n\n    for line in standalone_block.nodes:\n        if isinstance(line, libcst.SimpleStatementLine):\n            variable_assignments.extend(_extract_variable_assignments(line))\n\n        important_comments.extend(_process_leading_lines(line))\n        line_content: str = extract_stripped_code_content(line)\n        content += line_content + \"\\n\"\n\n    return content, variable_assignments, important_comments\n\n\ndef _process_leading_lines(line: libcst.CSTNode) -> list[CommentModel]:\n    \"\"\"Processes the leading lines of a node and returns the important comments.\"\"\"\n\n    important_comments: list[CommentModel] = []\n\n    if isinstance(line, libcst.SimpleStatementLine):\n        for leading_line in line.leading_lines:\n            important_comment: CommentModel | None = extract_important_comment(\n                leading_line\n            )\n            if important_comment:\n                important_comments.append(important_comment)\n\n    return important_comments\n\n\ndef _extract_variable_assignments(\n    node: libcst.SimpleStatementLine,\n) -> list[str]:\n    \"\"\"Extracts variable assignments from a SimpleStatementLine node.\"\"\"\n\n    variable_assignments: list[str] = []\n    for stmt in node.body:\n        if isinstance(stmt, (libcst.AnnAssign, libcst.Assign)):\n            variable_assignments.append(extract_stripped_code_content(stmt))\n\n    return variable_assignments\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "summary complete",
     "children": [
         {
             "function_name": "gather_standalone_lines",
@@ -199,7 +199,7 @@
                     "local_module_id": ".:python_parser:utilities:processing_context.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -246,7 +246,7 @@
                     "local_module_id": ".:python_parser:utilities:processing_context.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -278,7 +278,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -310,7 +310,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -400,7 +400,7 @@
                     "local_module_id": ".:python_parser:utilities:processing_context.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -499,7 +499,7 @@
                     "local_module_id": ".:python_parser:utilities:processing_context.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -560,7 +560,7 @@
                     "local_module_id": ".:python_parser:models:models.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -609,7 +609,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         }
     ]

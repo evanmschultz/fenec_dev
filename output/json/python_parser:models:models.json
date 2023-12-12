@@ -69,7 +69,7 @@
     "code_content": "from typing import Union\nfrom pydantic import BaseModel, Field, validator\n\nfrom models.enums import (\n    BlockType,\n    ImportModuleType,\n    CommentType,\n)\n\n\nclass ImportNameModel(BaseModel):\n    \"\"\"Class representing the name of an import.\"\"\"\n\n    name: str\n    as_name: str | None = None\n    local_block_id: str | None = None\n\n\nclass ImportModel(BaseModel):\n    \"\"\"Class representing an import statement.\"\"\"\n\n    import_names: list[ImportNameModel]\n    imported_from: str | None = None\n    import_module_type: ImportModuleType = ImportModuleType.STANDARD_LIBRARY\n    local_module_id: str | None = None\n\n\nclass DependencyModel(BaseModel):\n    \"\"\"Class representing a module dependency.\"\"\"\n\n    code_block_id: str\n\n\nclass CommentModel(BaseModel):\n    \"\"\"Class representing a comment.\"\"\"\n\n    content: str\n    comment_types: list[CommentType]\n\n\nclass DecoratorModel(BaseModel):\n    \"\"\"Class representing a decorator.\"\"\"\n\n    content: str\n    decorator_name: str\n    decorator_args: list[str] | None = None\n\n\nclass ClassKeywordModel(BaseModel):\n    \"\"\"Class representing a class keyword.\"\"\"\n\n    content: str\n    keyword_name: str\n    args: str | None = None\n\n\nclass ParameterModel(BaseModel):\n    \"\"\"Class representing a function parameter.\"\"\"\n\n    content: str\n\n\nclass ParameterListModel(BaseModel):\n    \"\"\"Class representing a list of parameters.\"\"\"\n\n    params: list[ParameterModel] | None = None\n    star_arg: ParameterModel | None = None\n    kwonly_params: list[ParameterModel] | None = None\n    star_kwarg: ParameterModel | None = None\n    posonly_params: list[ParameterModel] | None = None\n\n\nclass BaseCodeBlockModel(BaseModel):\n    \"\"\"Attributes common to all code block models.\"\"\"\n\n    id: str | None = None\n    parent_id: str | None = None\n    block_type: BlockType\n    start_line_num: int\n    end_line_num: int\n    code_content: str\n    important_comments: list[CommentModel] | None = None\n    dependencies: list[ImportModel | DependencyModel] | None = None\n    summary: str | None = None\n    children: list[\n        Union[\n            \"ClassModel\",\n            \"FunctionModel\",\n            \"StandaloneCodeBlockModel\",\n        ]\n    ] | None = []\n\n    @validator(\"parent_id\", always=True)\n    def check_parent_id(cls, v, values, **kwargs) -> str | None:\n        \"\"\"Validates that parent_id is a non-empty string unless block_type is MODULE.\"\"\"\n\n        if \"block_type\" in values and values[\"block_type\"] != BlockType.MODULE:\n            if len(v) < 1:\n                raise ValueError(\"parent_id is required!\")\n        return v\n\n\nclass ModuleSpecificAttributes(BaseModel):\n    \"\"\"Module specific attributes.\"\"\"\n\n    file_path: str = Field(min_length=1)\n    docstring: str | None = None\n    header: list[str] | None = None\n    footer: list[str] | None = None\n    imports: list[ImportModel] | None = None\n\n\nclass ModuleModel(BaseCodeBlockModel, ModuleSpecificAttributes):\n    \"\"\"Model for a module.\"\"\"\n\n    ...\n\n\nclass ClassSpecificAttributes(BaseModel):\n    \"\"\"Class specific attributes.\"\"\"\n\n    class_name: str = Field(min_length=1)\n    decorators: list[DecoratorModel] | None = None\n    bases: list[str] | None = None\n    docstring: str | None = None\n    attributes: list[dict] | None = None\n    keywords: list[ClassKeywordModel] | None = None\n\n\nclass ClassModel(BaseCodeBlockModel, ClassSpecificAttributes):\n    \"\"\"Model for a class.\"\"\"\n\n    ...\n\n\nclass FunctionSpecificAttributes(BaseModel):\n    \"\"\"Function specific attributes.\"\"\"\n\n    function_name: str = Field(min_length=1)\n    docstring: str | None = None\n    decorators: list[DecoratorModel] | None = None\n    parameters: ParameterListModel | None = None\n    returns: str | None = None\n    is_method: bool = False\n    is_async: bool = False\n\n\nclass FunctionModel(BaseCodeBlockModel, FunctionSpecificAttributes):\n    \"\"\"Model for a function.\"\"\"\n\n    ...\n\n\nclass StandaloneCodeBlockSpecificAttributes(BaseModel):\n    \"\"\"Standalone code block specific attributes.\"\"\"\n\n    variable_assignments: list[str] | None = None\n\n\nclass StandaloneCodeBlockModel(\n    BaseCodeBlockModel, StandaloneCodeBlockSpecificAttributes\n):\n    \"\"\"Model for a standalone code block.\"\"\"\n\n    ...\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "summary complete",
     "children": [
         {
             "class_name": "ImportNameModel",
@@ -111,7 +111,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -179,7 +179,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -222,7 +222,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -287,7 +287,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -330,7 +330,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -373,7 +373,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -416,7 +416,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -462,7 +462,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -579,7 +579,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": [
                 {
                     "function_name": "check_parent_id",
@@ -606,7 +606,7 @@
                     "code_content": "\n@validator(\"parent_id\", always=True)\ndef check_parent_id(cls, v, values, **kwargs) -> str | None:\n    \"\"\"Validates that parent_id is a non-empty string unless block_type is MODULE.\"\"\"\n\n    if \"block_type\" in values and values[\"block_type\"] != BlockType.MODULE:\n        if len(v) < 1:\n            raise ValueError(\"parent_id is required!\")\n    return v\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 }
             ]
@@ -676,7 +676,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -704,7 +704,7 @@
                     "code_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -775,7 +775,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -803,7 +803,7 @@
                     "code_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-ClassSpecificAttributes"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -874,7 +874,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -902,7 +902,7 @@
                     "code_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -945,7 +945,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -973,7 +973,7 @@
                     "code_block_id": ".:python_parser:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockSpecificAttributes"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         }
     ]

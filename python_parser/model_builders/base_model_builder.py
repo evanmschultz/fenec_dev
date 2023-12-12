@@ -124,6 +124,8 @@ class BaseModelBuilder(ABC):
         "FunctionModelBuilder",
     ]:
         """Adds a summary to the model instance."""
+        self.common_attributes.summary = summary
+        print(f"Added summary to {self.common_attributes.id}")
         return self
 
     def add_child(

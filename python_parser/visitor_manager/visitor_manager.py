@@ -9,6 +9,9 @@ from visitor_manager.import_and_dependency_update_functions import (
 )
 from models.models import ModuleModel
 
+from ai_services.summarizer import Summarizer, OpenAISummarizer
+from visitor_manager.summarization_manager import SummarizationManager
+
 EXCLUDED_DIRECTORIES: set[str] = {".venv", "node_modules", "__pycache__", ".git"}
 
 
@@ -33,11 +36,15 @@ class VisitorManager:
     """
 
     @logging_decorator(message="Initializing VisitorManager")
-    def __init__(self, directory: str, output_directory: str = "output") -> None:
+    def __init__(
+        self, summarizer: Summarizer, directory: str, output_directory: str = "output"
+    ) -> None:
         self.directory: str = directory
         self.output_directory: str = output_directory
         self._create_output_directory()
         self.directory_modules: dict[str, list[str]] = {}
+
+        self.summarizer: Summarizer = summarizer
 
     def process_files(self) -> None:
         """
@@ -64,6 +71,11 @@ class VisitorManager:
 
         import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_tuple)
         import_and_dependency_updater.update_imports()
+
+        summarization_manager = SummarizationManager(
+            model_builder_tuple, self.summarizer
+        )
+        summarization_manager.create_and_add_summaries_to_builders()
 
         for model_save_context in model_save_context_list:
             module_model: ModuleModel = self._build_module_model(model_save_context[0])

@@ -240,7 +240,7 @@
     "code_content": "from typing import Union\nimport libcst\n\nfrom id_generation.id_generation_strategies import (\n    ClassIDGenerationStrategy,\n    FunctionIDGenerationStrategy,\n)\n\nfrom model_builders.builder_factory import BuilderFactory\nfrom model_builders.class_model_builder import ClassModelBuilder\nfrom model_builders.function_model_builder import FunctionModelBuilder\nfrom model_builders.module_model_builder import ModuleModelBuilder\n\nfrom models.enums import BlockType\nfrom models.models import (\n    ImportModel,\n    ParameterListModel,\n)\nfrom visitors.base_code_block_visitor import BaseVisitor\nfrom visitors.node_processing.class_def_functions import (\n    process_class_def,\n)\nfrom visitors.node_processing.gather_dependencies import (\n    gather_and_set_children_dependencies,\n)\nfrom visitors.node_processing.function_def_functions import (\n    process_func_def,\n    process_parameters,\n)\nfrom visitors.node_processing.module_functions import (\n    extract_content_from_empty_lines,\n    process_import,\n    process_import_from,\n)\nfrom utilities.processing_context import (\n    NodeAndPositionData,\n    PositionData,\n)\nfrom visitors.node_processing.standalone_code_block_functions import (\n    gather_standalone_lines,\n    process_standalone_blocks,\n)\n\n\nBuilderType = Union[ModuleModelBuilder, ClassModelBuilder, FunctionModelBuilder]\n\n\nclass ModuleVisitor(BaseVisitor):\n    \"\"\"\n    Visitor class for traversing and building a model of a Python module.\n\n    This class extends BaseVisitor and is used to visit different nodes in a Python module's abstract\n    syntax tree (CST) using the libcst library. It builds a structured model of the module, including\n    imports, classes, and functions.\n\n    Attributes:\n        id (str): The ID of the module to be generated before instantiation.\n        builder (ModuleModelBuilder): The builder used to construct the module model.\n\n    Example:\n        >>> module_builder = ModuleModelBuilder(id=\"module1\", name=\"example_module\")\n        >>> visitor = ModuleVisitor(id=\"module1\", module_builder=module_builder)\n        >>> libcst.parse_module(\"import os\\\\nclass MyClass:\\\\n    pass\").visit(visitor)\n        # This will process the module and build its corresponding model using the provided module builder.\n    \"\"\"\n\n    def __init__(self, id: str, module_builder: ModuleModelBuilder) -> None:\n        super().__init__(id=id)\n        self.builder: ModuleModelBuilder = module_builder\n        self.builder_stack.append(module_builder)\n\n    def visit_Module(self, node: libcst.Module) -> bool | None:\n        \"\"\"\n        Visits the root Module node of the CST.\n\n        Extracts various components of the module such as docstring, header, footer, and code content, and\n        updates the module builder with these details.\n        \"\"\"\n\n        docstring: str | None = node.get_docstring()\n        header: list[str] = extract_content_from_empty_lines(node.header)\n        footer: list[str] = extract_content_from_empty_lines(node.footer)\n        content: str = node.code if node.code else \"\"\n        position_data: PositionData = self.get_node_position_data(node)\n        (\n            self.builder.set_docstring(docstring)\n            .set_header_content(header)\n            .set_footer_content(footer)\n            .set_code_content(content)\n            .set_start_line_num(position_data.start)\n            .set_end_line_num(position_data.end)\n        )\n        standalone_blocks: list[NodeAndPositionData] = gather_standalone_lines(\n            node.body, self\n        )\n        standalone_block_models = process_standalone_blocks(\n            code_blocks=standalone_blocks, parent_id=self.id\n        )\n        for standalone_block_model in standalone_block_models:\n            self.builder.add_child(standalone_block_model)\n\n    def visit_Import(self, node: libcst.Import) -> None:\n        \"\"\"\n        Visits an Import node in the CST.\n\n        Processes the import statement and updates the module builder with the import model.\n        \"\"\"\n\n        import_model: ImportModel = process_import(node)\n        self.builder.add_import(import_model)\n\n    def visit_ImportFrom(self, node: libcst.ImportFrom) -> None:\n        \"\"\"\n        Visits an ImportFrom node in the CST.\n\n        Processes the 'from ... import ...' statement and updates the module builder with the import model.\n        \"\"\"\n\n        import_model: ImportModel = process_import_from(node)\n        self.builder.add_import(import_model)\n\n    def visit_ClassDef(self, node: libcst.ClassDef) -> None:\n        \"\"\"\n        Visits a ClassDef node in the CST.\n\n        Initiates the process of building a class model from the class definition.\n        \"\"\"\n\n        parent_id: str = self.builder_stack[-1].id\n        class_id: str = ClassIDGenerationStrategy.generate_id(\n            parent_id=parent_id, class_name=node.name.value\n        )\n\n        class_builder: ClassModelBuilder = BuilderFactory.create_builder_instance(\n            block_type=BlockType.CLASS,\n            id=class_id,\n            name=node.name.value,\n            parent_id=parent_id,\n        )\n\n        builder: ClassModelBuilder = self.builder_stack[-1]  # type: ignore\n        builder.add_child(class_builder)\n        self.builder_stack.append(class_builder)\n\n        position_data: PositionData = self.get_node_position_data(node)\n        process_class_def(node, position_data, class_builder)\n\n    def leave_ClassDef(self, original_node: libcst.ClassDef) -> None:\n        \"\"\"\n        Leaves a ClassDef node in the CST.\n\n        Finalizes the class model building process by popping the current builder from the stack.\n        \"\"\"\n\n        self.builder_stack.pop()\n\n    def visit_FunctionDef(self, node: libcst.FunctionDef) -> None:\n        \"\"\"\n        Visits a FunctionDef node in the CST.\n\n        Initiates the process of building a function model from the function definition.\n        \"\"\"\n\n        parent_id: str = self.builder_stack[-1].id\n        func_id: str = FunctionIDGenerationStrategy.generate_id(\n            parent_id=parent_id, function_name=node.name.value\n        )\n\n        func_builder: FunctionModelBuilder = BuilderFactory.create_builder_instance(\n            block_type=BlockType.FUNCTION,\n            id=func_id,\n            name=node.name.value,\n            parent_id=parent_id,\n        )\n        builder: FunctionModelBuilder = self.builder_stack[-1]  # type: ignore\n        builder.add_child(func_builder)\n        self.builder_stack.append(func_builder)\n\n        position_data: PositionData = self.get_node_position_data(node)\n        process_func_def(func_id, node, position_data, func_builder)\n\n    def visit_Parameters(self, node: libcst.Parameters) -> None:\n        \"\"\"\n        Visits a Parameters node in the CST.\n\n        Processes the parameters of a function and updates the current function model builder with these parameters.\n        \"\"\"\n\n        builder = self.builder_stack[-1]\n        parameter_list: ParameterListModel | None = process_parameters(node)\n\n        if isinstance(builder, FunctionModelBuilder):\n            builder.set_parameters_list(parameter_list)  # type: ignore\n\n    def leave_FunctionDef(self, original_node: libcst.FunctionDef) -> None:\n        \"\"\"\n        Leaves a FunctionDef node in the CST.\n\n        Finalizes the function model building process by popping the current builder from the stack.\n        \"\"\"\n\n        self.builder_stack.pop()\n\n    def leave_Module(self, original_node: libcst.Module) -> None:\n        \"\"\"\n        Leaves the root Module node in the CST.\n\n        Finalizes the module model building process by setting dependencies for children of the module.\n        \"\"\"\n\n        gather_and_set_children_dependencies(self.builder)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "summary complete",
     "children": [
         {
             "variable_assignments": [
@@ -303,7 +303,7 @@
                     "local_module_id": ".:python_parser:model_builders:module_model_builder.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -668,7 +668,7 @@
                     "local_module_id": ".:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": [
                 {
                     "function_name": "__init__",
@@ -686,7 +686,7 @@
                     "code_content": "\ndef __init__(self, id: str, module_builder: ModuleModelBuilder) -> None:\n    super().__init__(id=id)\n    self.builder: ModuleModelBuilder = module_builder\n    self.builder_stack.append(module_builder)\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -705,7 +705,7 @@
                     "code_content": "\ndef visit_Module(self, node: libcst.Module) -> bool | None:\n    \"\"\"\n        Visits the root Module node of the CST.\n\n        Extracts various components of the module such as docstring, header, footer, and code content, and\n        updates the module builder with these details.\n        \"\"\"\n\n    docstring: str | None = node.get_docstring()\n    header: list[str] = extract_content_from_empty_lines(node.header)\n    footer: list[str] = extract_content_from_empty_lines(node.footer)\n    content: str = node.code if node.code else \"\"\n    position_data: PositionData = self.get_node_position_data(node)\n    (\n        self.builder.set_docstring(docstring)\n        .set_header_content(header)\n        .set_footer_content(footer)\n        .set_code_content(content)\n        .set_start_line_num(position_data.start)\n        .set_end_line_num(position_data.end)\n    )\n    standalone_blocks: list[NodeAndPositionData] = gather_standalone_lines(\n        node.body, self\n    )\n    standalone_block_models = process_standalone_blocks(\n        code_blocks=standalone_blocks, parent_id=self.id\n    )\n    for standalone_block_model in standalone_block_models:\n        self.builder.add_child(standalone_block_model)\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -724,7 +724,7 @@
                     "code_content": "\ndef visit_Import(self, node: libcst.Import) -> None:\n    \"\"\"\n        Visits an Import node in the CST.\n\n        Processes the import statement and updates the module builder with the import model.\n        \"\"\"\n\n    import_model: ImportModel = process_import(node)\n    self.builder.add_import(import_model)\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -743,7 +743,7 @@
                     "code_content": "\ndef visit_ImportFrom(self, node: libcst.ImportFrom) -> None:\n    \"\"\"\n        Visits an ImportFrom node in the CST.\n\n        Processes the 'from ... import ...' statement and updates the module builder with the import model.\n        \"\"\"\n\n    import_model: ImportModel = process_import_from(node)\n    self.builder.add_import(import_model)\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -762,7 +762,7 @@
                     "code_content": "\ndef visit_ClassDef(self, node: libcst.ClassDef) -> None:\n    \"\"\"\n        Visits a ClassDef node in the CST.\n\n        Initiates the process of building a class model from the class definition.\n        \"\"\"\n\n    parent_id: str = self.builder_stack[-1].id\n    class_id: str = ClassIDGenerationStrategy.generate_id(\n        parent_id=parent_id, class_name=node.name.value\n    )\n\n    class_builder: ClassModelBuilder = BuilderFactory.create_builder_instance(\n        block_type=BlockType.CLASS,\n        id=class_id,\n        name=node.name.value,\n        parent_id=parent_id,\n    )\n\n    builder: ClassModelBuilder = self.builder_stack[-1]  # type: ignore\n    builder.add_child(class_builder)\n    self.builder_stack.append(class_builder)\n\n    position_data: PositionData = self.get_node_position_data(node)\n    process_class_def(node, position_data, class_builder)\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -781,7 +781,7 @@
                     "code_content": "\ndef leave_ClassDef(self, original_node: libcst.ClassDef) -> None:\n    \"\"\"\n        Leaves a ClassDef node in the CST.\n\n        Finalizes the class model building process by popping the current builder from the stack.\n        \"\"\"\n\n    self.builder_stack.pop()\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -800,7 +800,7 @@
                     "code_content": "\ndef visit_FunctionDef(self, node: libcst.FunctionDef) -> None:\n    \"\"\"\n        Visits a FunctionDef node in the CST.\n\n        Initiates the process of building a function model from the function definition.\n        \"\"\"\n\n    parent_id: str = self.builder_stack[-1].id\n    func_id: str = FunctionIDGenerationStrategy.generate_id(\n        parent_id=parent_id, function_name=node.name.value\n    )\n\n    func_builder: FunctionModelBuilder = BuilderFactory.create_builder_instance(\n        block_type=BlockType.FUNCTION,\n        id=func_id,\n        name=node.name.value,\n        parent_id=parent_id,\n    )\n    builder: FunctionModelBuilder = self.builder_stack[-1]  # type: ignore\n    builder.add_child(func_builder)\n    self.builder_stack.append(func_builder)\n\n    position_data: PositionData = self.get_node_position_data(node)\n    process_func_def(func_id, node, position_data, func_builder)\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -819,7 +819,7 @@
                     "code_content": "\ndef visit_Parameters(self, node: libcst.Parameters) -> None:\n    \"\"\"\n        Visits a Parameters node in the CST.\n\n        Processes the parameters of a function and updates the current function model builder with these parameters.\n        \"\"\"\n\n    builder = self.builder_stack[-1]\n    parameter_list: ParameterListModel | None = process_parameters(node)\n\n    if isinstance(builder, FunctionModelBuilder):\n        builder.set_parameters_list(parameter_list)  # type: ignore\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -838,7 +838,7 @@
                     "code_content": "\ndef leave_FunctionDef(self, original_node: libcst.FunctionDef) -> None:\n    \"\"\"\n        Leaves a FunctionDef node in the CST.\n\n        Finalizes the function model building process by popping the current builder from the stack.\n        \"\"\"\n\n    self.builder_stack.pop()\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 },
                 {
@@ -857,7 +857,7 @@
                     "code_content": "\ndef leave_Module(self, original_node: libcst.Module) -> None:\n    \"\"\"\n        Leaves the root Module node in the CST.\n\n        Finalizes the module model building process by setting dependencies for children of the module.\n        \"\"\"\n\n    gather_and_set_children_dependencies(self.builder)\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 }
             ]

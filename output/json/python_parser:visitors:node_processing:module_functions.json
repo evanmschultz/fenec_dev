@@ -78,7 +78,7 @@
     "code_content": "import sys\nfrom typing import Sequence\n\nimport libcst\nfrom models.enums import ImportModuleType\nfrom models.models import ImportModel, ImportNameModel\n\n\ndef extract_content_from_empty_lines(\n    sequence: Sequence[libcst.EmptyLine],\n) -> list[str]:\n    \"\"\"\n    Extracts comments from a sequence of EmptyLine nodes.\n\n    Args:\n        sequence: A sequence of libcst.EmptyLine nodes to process.\n\n    Returns:\n        A list of string comments extracted from the EmptyLine nodes.\n\n    Example:\n        >>> extract_content_from_empty_lines([libcst.EmptyLine(comment=libcst.Comment(\"# Comment\"))])\n        ['# Comment']\n    \"\"\"\n\n    return [line.comment.value for line in sequence if line.comment]\n\n\ndef process_import(node: libcst.Import) -> ImportModel:\n    \"\"\"\n    Processes an Import node to create an ImportModel.\n\n    Args:\n        node: The Import node to process.\n\n    Returns:\n        An ImportModel representing the processed import.\n\n    Example:\n        >>> process_import(libcst.Import(names=[libcst.ImportAlias(name=libcst.Name(\"module\"))]))\n        # Returns an ImportModel for 'module'\n    \"\"\"\n\n    import_name_model: ImportNameModel = _build_import_name_model(node)\n    import_model: ImportModel = _build_import_model(\n        import_name_models=[import_name_model]\n    )\n    return import_model\n\n\ndef process_import_from(node: libcst.ImportFrom) -> ImportModel:\n    \"\"\"\n    Processes an ImportFrom node to create an ImportModel.\n\n    Args:\n        node: The ImportFrom node to process.\n\n    Returns:\n        An ImportModel representing the processed import from statement.\n\n    Example:\n        >>> process_import_from(libcst.ImportFrom(module=libcst.Name(\"module\"), names=[libcst.ImportAlias(name=libcst.Name(\"submodule\"))]))\n        # Returns an ImportModel for 'from module import submodule'\n    \"\"\"\n\n    module_name: str | None = (\n        _get_full_module_path(node.module) if node.module else None\n    )\n    import_names: list[ImportNameModel] = _build_import_from_name_models(node)\n    import_module_type: ImportModuleType = _get_import_from_module_type(module_name)\n\n    import_model = ImportModel(\n        import_names=import_names,\n        imported_from=module_name,\n        import_module_type=import_module_type,\n    )\n    return import_model\n\n\ndef _get_import_name(node: libcst.Import) -> str:\n    \"\"\"Gets the import name from an Import node.\"\"\"\n\n    return str(node.names[0].name.value)\n\n\ndef _get_as_name(node: libcst.Import) -> str | None:\n    \"\"\"Gets the as name from an Import node.\"\"\"\n\n    first_name: libcst.ImportAlias = node.names[0]\n\n    if first_name.asname and isinstance(first_name.asname, libcst.AsName):\n        as_name_node = first_name.asname.name\n        if isinstance(as_name_node, libcst.Name):\n            return as_name_node.value\n\n\ndef _build_import_name_model(node: libcst.Import) -> ImportNameModel:\n    \"\"\"Builds an ImportNameModel from an Import node.\"\"\"\n\n    import_name: str | None = _get_import_name(node)\n    as_name: str | None = _get_as_name(node)\n    return ImportNameModel(name=import_name, as_name=as_name)\n\n\ndef _is_standard_library_import(import_name: str) -> bool:\n    \"\"\"Checks if an import is a standard library import.\"\"\"\n\n    return import_name in sys.stdlib_module_names\n\n\ndef _third_party_imports() -> list[str]:\n    \"\"\"Gets a list of all third party imports.\"\"\"\n\n    third_party_imports: list[str] = []\n\n    for module_name, module in sys.modules.items():\n        if module_name in sys.stdlib_module_names or not hasattr(module, \"__file__\"):\n            continue\n\n        module_file: str | None = module.__file__\n        if module_file and (\n            \"site-packages\" in module_file or \"dist-packages\" in module_file\n        ):\n            third_party_imports.append(module_name)\n\n    return third_party_imports\n\n\ndef _is_third_party_import(import_name: str) -> bool:\n    \"\"\"Checks if an import is a third party import.\"\"\"\n\n    return import_name in _third_party_imports()\n\n\ndef _determine_import_module_type(module_name: str) -> ImportModuleType:\n    \"\"\"Determines the type of import a module is.\"\"\"\n\n    if _is_standard_library_import(module_name):\n        return ImportModuleType.STANDARD_LIBRARY\n    elif _is_third_party_import(module_name):\n        return ImportModuleType.THIRD_PARTY\n    else:\n        return ImportModuleType.LOCAL\n\n\ndef _get_import_module_type(\n    import_name_models: list[ImportNameModel],\n) -> ImportModuleType:\n    \"\"\"Gets the import module type of a list of ImportNameModels.\"\"\"\n\n    for import_name_model in import_name_models:\n        module_type = _determine_import_module_type(import_name_model.name)\n        if module_type != ImportModuleType.LOCAL:\n            return module_type\n    return ImportModuleType.LOCAL\n\n\ndef _get_import_from_module_type(module_name: str | None) -> ImportModuleType:\n    \"\"\"Gets the import module type of an ImportFrom node.\"\"\"\n\n    if module_name:\n        return _determine_import_module_type(module_name)\n    return ImportModuleType.LOCAL\n\n\ndef _build_import_model(\n    import_name_models: list[ImportNameModel],\n) -> ImportModel:\n    \"\"\"Builds an ImportModel from a list of ImportNameModels.\"\"\"\n\n    import_module_type: ImportModuleType = _get_import_module_type(import_name_models)\n    return ImportModel(\n        import_names=import_name_models,\n        imported_from=None,\n        import_module_type=import_module_type,\n    )\n\n\ndef _get_full_module_path(node) -> str:\n    \"\"\"Recursively gets the full module path from a node and returns it as a string.\"\"\"\n\n    if isinstance(node, libcst.Name):\n        return node.value\n    elif isinstance(node, libcst.Attribute):\n        return \".\".join([_get_full_module_path(node.value), node.attr.value])\n    else:\n        return str(node)\n\n\ndef _extract_as_name(import_alias: libcst.ImportAlias) -> str | None:\n    \"\"\"Extracts the as name from an ImportAlias node.\"\"\"\n\n    if import_alias.asname and isinstance(import_alias.asname, libcst.AsName):\n        if isinstance(import_alias.asname.name, libcst.Name):\n            return import_alias.asname.name.value\n\n\ndef _build_import_from_name_models(node: libcst.ImportFrom) -> list[ImportNameModel]:\n    \"\"\"Builds a list of ImportNameModels from an ImportFrom node.\"\"\"\n\n    import_names: list[ImportNameModel] = []\n    if isinstance(node.names, libcst.ImportStar):\n        import_names.append(ImportNameModel(name=\"*\", as_name=None))\n    else:\n        for import_alias in node.names:\n            if isinstance(import_alias, libcst.ImportAlias):\n                name = str(import_alias.name.value)\n                as_name = _extract_as_name(import_alias)\n                import_names.append(ImportNameModel(name=name, as_name=as_name))\n    return import_names\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "summary complete",
     "children": [
         {
             "function_name": "extract_content_from_empty_lines",
@@ -121,7 +121,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -193,7 +193,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -283,7 +283,7 @@
                     "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -315,7 +315,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -347,7 +347,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -402,7 +402,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -434,7 +434,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -466,7 +466,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -489,7 +489,7 @@
                     "code_block_id": ".:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_third_party_imports"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -527,7 +527,7 @@
                     "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -579,7 +579,7 @@
                     "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -614,7 +614,7 @@
                     "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -683,7 +683,7 @@
                     "local_module_id": ".:python_parser:models:enums.py__*__MODULE"
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -715,7 +715,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -747,7 +747,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         },
         {
@@ -799,7 +799,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": null
         }
     ]

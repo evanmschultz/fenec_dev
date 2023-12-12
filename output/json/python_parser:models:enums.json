@@ -25,7 +25,7 @@
     "code_content": "from enum import Enum\n\n\nclass ImportModuleType(Enum):\n    \"\"\"Enum of import module types.\"\"\"\n\n    STANDARD_LIBRARY = \"STANDARD_LIBRARY\"\n    LOCAL = \"LOCAL\"\n    THIRD_PARTY = \"THIRD_PARTY\"\n\n    def __str__(self) -> str:\n        return self.value\n\n\nclass CommentType(Enum):\n    \"\"\"Class representing the different types of important comments.\"\"\"\n\n    TODO = \"TODO\"\n    FIXME = \"FIXME\"\n    NOTE = \"NOTE\"\n    HACK = \"HACK\"\n    XXX = \"XXX\"\n    REVIEW = \"REVIEW\"\n    OPTIMIZE = \"OPTIMIZE\"\n    CHANGED = \"CHANGED\"\n    QUESTION = \"QUESTION\"\n    Q = \"Q\"\n    DEPRECATED = \"@deprecated\"\n    NOSONAR = \"NOSONAR\"\n    TODO_FIXME = \"TODO-FIXME\"\n\n    def __str__(self) -> str:\n        return self.value\n\n\nclass BlockType(Enum):\n    \"\"\"Enum of code block types.\"\"\"\n\n    STANDALONE_CODE_BLOCK = \"STANDALONE_BLOCK\"\n    IMPORT_BLOCK = \"IMPORT_BLOCK\"\n    CLASS = \"CLASS\"\n    FUNCTION = \"FUNCTION\"\n    MODULE = \"MODULE\"\n\n    def __str__(self) -> str:\n        return self.value\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "summary complete",
     "children": [
         {
             "class_name": "ImportModuleType",
@@ -57,7 +57,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": [
                 {
                     "function_name": "__str__",
@@ -75,7 +75,7 @@
                     "code_content": "\ndef __str__(self) -> str:\n    return self.value\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 }
             ]
@@ -110,7 +110,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": [
                 {
                     "function_name": "__str__",
@@ -128,7 +128,7 @@
                     "code_content": "\ndef __str__(self) -> str:\n    return self.value\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 }
             ]
@@ -163,7 +163,7 @@
                     "local_module_id": null
                 }
             ],
-            "summary": null,
+            "summary": "summary complete",
             "children": [
                 {
                     "function_name": "__str__",
@@ -181,7 +181,7 @@
                     "code_content": "\ndef __str__(self) -> str:\n    return self.value\n",
                     "important_comments": null,
                     "dependencies": null,
-                    "summary": null,
+                    "summary": "summary complete",
                     "children": null
                 }
             ]
