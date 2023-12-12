@@ -1,29 +1,25 @@
-from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Protocol
+
+from pydantic import BaseModel
+
 from openai import OpenAI
-from openai.resources.chat.completions import Completions
 from openai.types.chat.chat_completion_system_message_param import (
     ChatCompletionSystemMessageParam,
 )
 from openai.types.chat.chat_completion_user_message_param import (
     ChatCompletionUserMessageParam,
 )
-from openai.types.chat.chat_completion import ChatCompletion
-from openai.types.chat.chat_completion_chunk import ChatCompletionChunk
 from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
 
-from openai._streaming import Stream
-
-from temp import code_example
-from prompts.summarization_prompts import (
+from ai_services.temp import code_example
+from ai_services.prompts.summarization_prompts import (
     SUMMARIZER_DEFAULT_INSTRUCTIONS,
     COD_SUMMARIZATION_PROMPT,
     summary_prompt_list,
 )
 
 
-@dataclass
-class SummaryCompletionConfigs:
+class SummaryCompletionConfigs(BaseModel):
     """
     Configs for the summarization completion.
 
@@ -84,6 +80,34 @@ class SummaryCompletionConfigs:
     max_tokens: int | None = None
     stream: bool = False
     temperature: float = 0.0
+
+
+class Summarizer(Protocol):
+    def summarize_code(
+        self,
+        code: str,
+        *,
+        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),
+    ) -> str:
+        """
+        Summarizes the provided code snippet using the OpenAI API.
+
+        Args:
+            code (str): The code snippet to summarize.
+            configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.
+                Defaults to SummaryCompletionConfigs().
+
+        Returns:
+            str: The summary of the provided code snippet.
+
+        Examples:
+            >>> client = OpenAI()
+            >>> summarizer = Summarizer(client=client)
+            >>> code_example = "print('Hello, world')"
+            >>> summary = summarizer.summarize_code(code_example)
+            >>> print(summary)
+        """
+        ...
 
 
 class OpenAISummarizer:
@@ -234,7 +258,8 @@ class OpenAISummarizer:
         return summary if summary else "Summary not found."
 
 
-client = OpenAI()
-summarizer = OpenAISummarizer(client=client)
-summary = summarizer.summarize_code(code_example)
-print(summary)
+if __name__ == "__main__":
+    client = OpenAI()
+    summarizer = OpenAISummarizer(client=client)
+    summary = summarizer.summarize_code(code_example)
+    print(summary)
