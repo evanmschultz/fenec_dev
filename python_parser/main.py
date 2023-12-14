@@ -26,7 +26,7 @@ def main(
     logger: Logger = logging.getLogger(__name__)
     logger.info("Starting the directory parsing.")
 
-    client = OpenAI()
+    client = OpenAI(max_retries=4)
     summarizer = OpenAISummarizer(client=client)
 
     visitor_manager = VisitorManager(summarizer, directory, output_directory)
