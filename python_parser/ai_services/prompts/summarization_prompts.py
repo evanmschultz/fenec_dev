@@ -58,7 +58,7 @@ STANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:
 Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
 """
 
-COD_SUMMARIZATION_PROMPT_WITHOUT_CHILDREN = """Prompt: "Summarize the code provided."
+COD_SUMMARIZATION_PROMPT_NO_CHILDREN = """Prompt: "Summarize the code provided."
 
 NOTE: Below the code are summaries, `LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES`. The `LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES` are summaries of all the 
 code blocks defined locally in the overarching project that the `CODE` depends on or uses to accomplish its intended task. Use these summaries to help 
@@ -108,7 +108,7 @@ STANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:
 Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
 """
 
-COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES = """Prompt: "Summarize the code provided."
+COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES = """Prompt: "Summarize the code provided."
 
 NOTE: Below the code are summaries, `CHILDREN_SUMMARIES`. The `CHILDREN_SUMMARIES of summaries of all 
 of the code blocks defined in the `CODE`. Use these summaries to help you write your summary of the 
@@ -156,7 +156,7 @@ STANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:
 Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
 """
 
-COD_SUMMARIZATION_PROMPT_WITHOUT_THIRD_PARTY_IMPORTS = """Prompt: "Summarize the code provided."
+COD_SUMMARIZATION_PROMPT_NO_IMPORTS = """Prompt: "Summarize the code provided."
 
 NOTE: Below the code are summaries, `CHILDREN_SUMMARIES` and `LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES`. The `CHILDREN_SUMMARIES of summaries of all 
 of the code blocks defined in the `CODE`. The `LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES` are summaries of all the code blocks defined locally in the 
@@ -205,7 +205,7 @@ LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:
 Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
 """
 
-COD_SUMMARIZATION_PROMPT_WITHOUT_CHILDREN_OR_THIRD_PARTY_IMPORTS = """Prompt: "Summarize the code provided."
+COD_SUMMARIZATION_PROMPT_NO_CHILDREN_NO_IMPORTS = """Prompt: "Summarize the code provided."
 
 NOTE: Below the code are summaries, `LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES`. The `LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES` are summaries of all the 
 code blocks defined locally in the overarching project that the `CODE` depends on or uses to accomplish its intended task. Use these summaries to help 
@@ -252,7 +252,7 @@ LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:
 Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
 """
 
-COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES_OR_THIRD_PARTY_IMPORTS = """Prompt: "Summarize the code provided."
+COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_IMPORTS = """Prompt: "Summarize the code provided."
 
 NOTE: Below the code are summaries, `CHILDREN_SUMMARIES`. The `CHILDREN_SUMMARIES of summaries of all 
 of the code blocks defined in the `CODE`. Use these summaries to help you write your summary of the 
@@ -297,7 +297,7 @@ CHILDREN_SUMMARIES:
 Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
 """
 
-COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES_OR_CHILDREN = """Prompt: "Summarize the code provided."
+COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_CHILDREN = """Prompt: "Summarize the code provided."
 
 If the code is for a function, or class, specifically reference the function or class name, and any names defined inside of it, in your summary.
 
@@ -448,12 +448,12 @@ CODE:
 summary_prompt_list: list[str] = [
     COD_SUMMARIZATION_PROMPT_WITH_EVERYTHING,
     COD_SUMMARIZATION_PROMPT_WITHOUT_ANYTHING,
-    COD_SUMMARIZATION_PROMPT_WITHOUT_CHILDREN,
-    COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES,
-    COD_SUMMARIZATION_PROMPT_WITHOUT_THIRD_PARTY_IMPORTS,
-    COD_SUMMARIZATION_PROMPT_WITHOUT_CHILDREN_OR_THIRD_PARTY_IMPORTS,
-    COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES_OR_THIRD_PARTY_IMPORTS,
-    COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES_OR_CHILDREN,
+    COD_SUMMARIZATION_PROMPT_NO_CHILDREN,
+    COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES,
+    COD_SUMMARIZATION_PROMPT_NO_IMPORTS,
+    COD_SUMMARIZATION_PROMPT_NO_CHILDREN_NO_IMPORTS,
+    COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_IMPORTS,
+    COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_CHILDREN,
     ROLE_ASSIGNMENT_PROMPT,
     ITERATIVE_REFINEMENT_AND_COMBINING_OUTPUTS_PROMPT,
     GENERAL_PURPOSE_SUMMARIZATION_PROMPT,
