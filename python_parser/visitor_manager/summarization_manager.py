@@ -84,7 +84,7 @@ class SummarizationManager:
             dependency_summary_list
         )
 
-        summary: str = self.summarizer.test_summarize_code(
+        summary: str = self.summarizer.summarize_code(
             builder.common_attributes.code_content,
             children_summaries=children_summaries,
             dependency_summaries=dependency_summaries,

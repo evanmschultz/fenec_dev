@@ -374,7 +374,7 @@ class OpenAISummarizer:
 
         final_summary: str | None = None
         if summary := self._get_summary(messages, configs=configs):
-            print("Full Summary:\n", summary)
+            # print("Full Summary:\n", summary)
             final_summary = summary.split("FINAL_SUMMARY:")[-1]
             print("Final Summary:\n", final_summary)
 
