@@ -1,13 +1,16 @@
+import logging
 from typing import Union
-from ai_services.summarizer import Summarizer
+
+from ai_services.summarizer_protocol import Summarizer
+
 from model_builders.class_model_builder import ClassModelBuilder
 from model_builders.function_model_builder import FunctionModelBuilder
 from model_builders.module_model_builder import ModuleModelBuilder
 from model_builders.standalone_block_model_builder import (
     StandaloneBlockModelBuilder,
 )
-
 from models.models import DependencyModel, ImportModel
+
 
 BuilderType = Union[
     ModuleModelBuilder,
@@ -36,6 +39,7 @@ class SummarizationManager:
     def _summarize_module(self, module_builder: ModuleModelBuilder) -> None:
         if module_builder.id not in self.summarized_code_block_ids:
             self._summarize_code_block(module_builder)
+            logging.info(f"Summarized module: {module_builder.id}")
             self.summarized_code_block_ids.add(module_builder.id)
 
     def _summarize_code_block(
@@ -96,8 +100,9 @@ class SummarizationManager:
             dependency_summary_list
         )
 
-        summary: str = self.summarizer.summarize_code(
+        summary: str = self.summarizer.test_summarize_code(
             builder.common_attributes.code_content,
+            builder_id=builder.id,
             children_summaries=children_summaries,
             dependency_summaries=dependency_summaries,
             import_details=import_details,

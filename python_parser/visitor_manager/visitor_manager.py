@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from model_builders.module_model_builder import ModuleModelBuilder
 from utilities.logger.decorators import logging_decorator
@@ -9,7 +10,7 @@ from visitor_manager.import_and_dependency_update_functions import (
 )
 from models.models import ModuleModel
 
-from ai_services.summarizer import Summarizer, OpenAISummarizer
+from ai_services.summarizer_protocol import Summarizer
 from visitor_manager.summarization_manager import SummarizationManager
 
 EXCLUDED_DIRECTORIES: set[str] = {".venv", "node_modules", "__pycache__", ".git"}
@@ -57,11 +58,15 @@ class VisitorManager:
             # Processes all Python files and saves their parsed data.
         """
 
+        logging.info("Processing files")
         python_files: list[str] = self._get_python_files()
         model_save_context_list: list[tuple[ModuleModelBuilder, str]] = []
         for file_path in python_files:
             if model_builder := self._process_file(file_path):
                 model_save_context_list.append((model_builder, file_path))
+
+        logging.info("File processing completed")
+        logging.info("Updating imports")
 
         # TODO: Test making this a tuple of tuples, see if that solves the double update import issue
         model_builder_list: list[ModuleModelBuilder] = [
@@ -71,15 +76,18 @@ class VisitorManager:
 
         import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_tuple)
         import_and_dependency_updater.update_imports()
+        logging.info("Updated imports")
 
         summarization_manager = SummarizationManager(
             model_builder_tuple, self.summarizer
         )
         summarization_manager.create_and_add_summaries_to_builders()
-
+        logging.info("Summarization complete")
+        logging.info("Saving models as JSON")
         for model_save_context in model_save_context_list:
             module_model: ModuleModel = self._build_module_model(model_save_context[0])
             self._save_model_as_json(module_model, model_save_context[1])
+        logging.info("JSON save complete")
 
     @logging_decorator(message="Saving visited directories")
     def save_visited_directories(
