@@ -1,8 +1,9 @@
 # TODO List
 
+-   [ ] Add logic to log summary count, eg. 'Summarizing k of n files'
 -   [ ] Finish summarization MVP
 -   [ ] Add tests for summarization
--   [ ] Add update models with summary in `python_parser`'s `PythonParser`
+-   [x] Add update models with summary in `python_parser`'s `PythonParser`
 -   [ ] Add chromadb logic
 -   [ ] Fix parsing error, trying to update an import after it was updated
 -   [ ] Add query logic for ArangoDB
