@@ -35,16 +35,14 @@ class SummarizationManager:
 
     def _summarize_module(self, module_builder: ModuleModelBuilder) -> None:
         if module_builder.id not in self.summarized_code_block_ids:
-            self._summarize_code_block(module_builder, recursion_path=None)
+            self._summarize_code_block(module_builder)
             self.summarized_code_block_ids.add(module_builder.id)
 
     def _summarize_code_block(
         self,
         builder: BuilderType,
-        recursion_path: list[str] | None,
+        recursion_path: list[str] = [],
     ) -> str | None:
-        recursion_path = recursion_path if recursion_path else []
-
         if builder.id in recursion_path or not builder.common_attributes.code_content:
             return None
         if builder.id in self.summarized_code_block_ids:
@@ -57,25 +55,39 @@ class SummarizationManager:
             child_summary_list = self._get_child_summaries(builder, recursion_path)
 
         dependency_summary_list: list[str] = []
+        import_details: str | None = None
         if builder.common_attributes.dependencies:
             for dependency in builder.common_attributes.dependencies:
                 if isinstance(dependency, DependencyModel) and dependency.code_block_id:
-                    if module_local_dependency_summary := self._handle_local_dependency(
+                    if module_local_dependency_summary := self._get_local_dependency_summary(
                         dependency, builder, recursion_path
                     ):
                         dependency_summary_list.append(module_local_dependency_summary)
 
                 if isinstance(dependency, ImportModel):
-                    if not dependency.import_names:
-                        if module_import_dependency := self._handle_import_dependency(
-                            dependency, recursion_path
-                        ):
-                            dependency_summary_list.append(module_import_dependency)
+                    if dependency.import_module_type == "LOCAL":
+                        if not dependency.import_names:
+                            if module_import_dependency := self._get_local_import_summary(
+                                dependency, recursion_path
+                            ):
+                                dependency_summary_list.append(module_import_dependency)
+                        else:
+                            if import_from_dependency := self._get_local_import_from_summary(
+                                dependency, recursion_path
+                            ):
+                                dependency_summary_list.append(import_from_dependency)
                     else:
-                        if import_from_dependency := self._handle_import_from_dependency(
-                            dependency, recursion_path
-                        ):
-                            dependency_summary_list.append(import_from_dependency)
+                        import_detail: str | None = self._get_import_details(dependency)
+                        if not import_detail:
+                            continue
+                        if not import_details:
+                            import_details = ""
+                        import_details += f"\n{import_detail}"
+
+        if isinstance(builder, ModuleModelBuilder) and recursion_path:
+            dependency_summary_list, import_details = self._handle_module_builder(
+                builder, recursion_path
+            )
 
         children_summaries: str | None = self._stringify_child_summaries(
             child_summary_list
@@ -88,6 +100,7 @@ class SummarizationManager:
             builder.common_attributes.code_content,
             children_summaries=children_summaries,
             dependency_summaries=dependency_summaries,
+            import_details=import_details,
         )
 
         builder.add_summary(summary)
@@ -95,6 +108,50 @@ class SummarizationManager:
         recursion_path.remove(builder.id)
 
         return summary
+
+    def _handle_module_builder(
+        self, builder: ModuleModelBuilder, recursion_path: list[str]
+    ) -> tuple[list[str], str | None]:
+        dependency_summary_list: list[str] = []
+        all_import_details: str | None = None
+        if builder.module_attributes.imports:
+            for import_model in builder.module_attributes.imports:
+                if import_model.import_module_type == "LOCAL":
+                    if not import_model.import_names:
+                        if module_import := self._get_local_import_summary(
+                            import_model, recursion_path
+                        ):
+                            dependency_summary_list.append(module_import)
+                    else:
+                        if import_from := self._get_local_import_from_summary(
+                            import_model, recursion_path
+                        ):
+                            dependency_summary_list.append(import_from)
+                else:
+                    if import_details := self._get_import_details(import_model):
+                        if not all_import_details:
+                            all_import_details = ""
+                        all_import_details += f"\n{import_details}"
+
+        return dependency_summary_list, all_import_details
+
+    def _get_import_details(self, import_model: ImportModel) -> str | None:
+        if import_model.import_module_type == "LOCAL" or not import_model.import_names:
+            return None
+
+        import_names_list: list[str] = []
+        for import_name in import_model.import_names:
+            if import_name.as_name:
+                import_names_list.append(f"{import_name.name} as {import_name.as_name}")
+            else:
+                import_names_list.append(f"{import_name.name}")
+
+        if import_model.imported_from:
+            import_details: str = f"from {import_model.imported_from} import {', '.join(import_names_list)}"
+        else:
+            import_details = f"import {', '.join(import_names_list)}"
+
+        return import_details
 
     def _get_child_summaries(
         self, builder: BuilderType, recursion_path: list[str]
@@ -131,7 +188,7 @@ class SummarizationManager:
             dependency_summaries += f"\n{dependency_summary}"
         return dependency_summaries
 
-    def _handle_local_dependency(
+    def _get_local_dependency_summary(
         self,
         dependency: DependencyModel,
         builder: BuilderType,
@@ -144,7 +201,7 @@ class SummarizationManager:
                     recursion_path,
                 )
 
-    def _handle_import_dependency(
+    def _get_local_import_summary(
         self, dependency: ImportModel, recursion_path: list[str]
     ) -> str | None:
         for module_builder in self.module_builders_tuple:
@@ -154,7 +211,7 @@ class SummarizationManager:
                     recursion_path,
                 )
 
-    def _handle_import_from_dependency(
+    def _get_local_import_from_summary(
         self, dependency: ImportModel, recursion_path: list[str]
     ) -> str | None:
         for import_name in dependency.import_names:

@@ -1,3 +1,4 @@
+import logging
 from typing import Literal, Protocol
 
 from pydantic import BaseModel
@@ -14,10 +15,14 @@ from openai.types.chat.chat_completion_message_param import ChatCompletionMessag
 from ai_services.temp import code_example
 from ai_services.prompts.summarization_prompts import (
     SUMMARIZER_DEFAULT_INSTRUCTIONS,
-    COD_SUMMARIZATION_PROMPT_WITH_CHILDREN_AND_DEPENDENCIES,
-    COD_SUMMARIZATION_PROMPT_WITH_CHILDREN,
-    COD_SUMMARIZATION_PROMPT_WITH_DEPENDENCIES,
-    COD_SUMMARIZATION_PROMPT,
+    COD_SUMMARIZATION_PROMPT_WITH_EVERYTHING,
+    COD_SUMMARIZATION_PROMPT_WITHOUT_ANYTHING,
+    COD_SUMMARIZATION_PROMPT_WITHOUT_CHILDREN,
+    COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES,
+    COD_SUMMARIZATION_PROMPT_WITHOUT_THIRD_PARTY_IMPORTS,
+    COD_SUMMARIZATION_PROMPT_WITHOUT_CHILDREN_OR_THIRD_PARTY_IMPORTS,
+    COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES_OR_THIRD_PARTY_IMPORTS,
+    COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES_OR_CHILDREN,
     summary_prompt_list,
 )
 
@@ -91,6 +96,7 @@ class Summarizer(Protocol):
         *,
         children_summaries: str | None,
         dependency_summaries: str | None,
+        import_details: str | None,
         configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),
     ) -> str:
         """
@@ -119,6 +125,7 @@ class Summarizer(Protocol):
         *,
         children_summaries: str | None,
         dependency_summaries: str | None,
+        import_details: str | None,
         configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),
     ) -> str:
         """
@@ -208,106 +215,115 @@ class OpenAISummarizer:
         self,
         code: str,
         *,
-        children_summaries: str = "",
-        dependency_summaries: str = "",
+        children_summaries: str | None,
+        dependency_summaries: str | None,
+        import_details: str | None,
         prompt_template: str | None = None,
     ) -> str:
-        """
-        Returns the prompt_template for the code snippet.
+        """Returns the prompt_template for the code snippet."""
 
-        Args:
-            code (str): The code snippet.
-            prompt_template (str | None): Custom prompt to be used. Defaults to None.
-
-        Returns:
-            str: The formatted prompt.
-
-        Notes:
-            - If prompt_template is not provided, the default prompt will be used.
-            - If prompt_template contains "{code}", it will be replaced with the code snippet.
-            - If prompt_template does not contain "{code}", the code snippet will be appended below the prompt_template.
-        """
-
-        if children_summaries and dependency_summaries:
-            if not prompt_template:
-                prompt_template = (
-                    COD_SUMMARIZATION_PROMPT_WITH_CHILDREN_AND_DEPENDENCIES
+        prompt: str = ""
+        if not prompt_template:
+            if children_summaries and dependency_summaries and import_details:
+                prompt_template = COD_SUMMARIZATION_PROMPT_WITH_EVERYTHING
+                prompt = prompt_template.format(
+                    code=code,
+                    children_summaries=children_summaries,
+                    dependency_summaries=dependency_summaries,
+                    import_details=import_details,
                 )
-            if (
-                "{code}" in prompt_template
-                and "{children_summaries}" in prompt_template
-                and "{dependency_summaries}" in prompt_template
-            ):
-                return prompt_template.format(
+            elif children_summaries and dependency_summaries and not import_details:
+                prompt_template = COD_SUMMARIZATION_PROMPT_WITHOUT_THIRD_PARTY_IMPORTS
+                prompt = prompt_template.format(
                     code=code,
                     children_summaries=children_summaries,
                     dependency_summaries=dependency_summaries,
                 )
-            else:
-                return f"""
-                    {prompt_template}\n\nCODE:\n{code}\n\nCHILDREN_SUMMARIES:\n{children_summaries}\n
-                    LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:\n{dependency_summaries}
-                    """
-
-        elif children_summaries:
-            if not prompt_template:
-                prompt_template = COD_SUMMARIZATION_PROMPT_WITH_CHILDREN
-            if (
-                "{code}" in prompt_template
-                and "{children_summaries}" in prompt_template
-            ):
-                return prompt_template.format(
+            elif children_summaries and not dependency_summaries and not import_details:
+                prompt_template = (
+                    COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES_OR_THIRD_PARTY_IMPORTS
+                )
+                prompt = prompt_template.format(
                     code=code, children_summaries=children_summaries
                 )
-            else:
-                return f"{prompt_template}\n\nCODE:\n{code}\n\nCHILDREN_SUMMARIES:\n{children_summaries}"
-
-        elif dependency_summaries:
-            if not prompt_template:
-                prompt_template = COD_SUMMARIZATION_PROMPT_WITH_DEPENDENCIES
-            if (
-                "{code}" in prompt_template
-                and "{dependency_summaries}" in prompt_template
-            ):
-                return prompt_template.format(
+            elif children_summaries and import_details and not dependency_summaries:
+                prompt_template = COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES
+                prompt = prompt_template.format(
+                    code=code,
+                    children_summaries=children_summaries,
+                    import_details=import_details,
+                )
+            elif dependency_summaries and import_details and not children_summaries:
+                prompt_template = COD_SUMMARIZATION_PROMPT_WITHOUT_CHILDREN
+                prompt = prompt_template.format(
+                    code=code,
+                    dependency_summaries=dependency_summaries,
+                    import_details=import_details,
+                )
+            elif dependency_summaries and not children_summaries and not import_details:
+                prompt_template = (
+                    COD_SUMMARIZATION_PROMPT_WITHOUT_CHILDREN_OR_THIRD_PARTY_IMPORTS
+                )
+                prompt = prompt_template.format(
                     code=code, dependency_summaries=dependency_summaries
                 )
+            elif import_details and not children_summaries and not dependency_summaries:
+                prompt_template = (
+                    COD_SUMMARIZATION_PROMPT_WITHOUT_DEPENDENCIES_OR_CHILDREN
+                )
+                prompt = prompt_template.format(
+                    code=code, import_details=import_details
+                )
             else:
-                return f"""
-                    {prompt_template}\n\nCODE:\n{code}\n
-                    LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:\n{dependency_summaries}
-                    """
+                prompt_template = COD_SUMMARIZATION_PROMPT_WITHOUT_ANYTHING
+                prompt = prompt_template.format(code=code)
+
+        elif (
+            "{code}" in prompt_template
+            and "{children_summaries}" in prompt_template
+            and f"{dependency_summaries}" in prompt_template
+            and f"{import_details}" in prompt_template
+        ):
+            prompt = prompt_template.format(
+                code=code,
+                children_summaries=children_summaries,
+                dependency_summaries=dependency_summaries,
+                import_details=import_details,
+            )
 
         else:
-            if prompt_template and "{code}" in prompt_template:
-                return prompt_template.format(code=code)
-            else:
-                return f"{prompt_template}\n\nCODE:\n{code}"
+            if not children_summaries:
+                children_summaries = "No children summaries."
+            if not dependency_summaries:
+                dependency_summaries = "No local imports or dependency summaries."
+            if not import_details:
+                import_details = (
+                    "No standard library or third party library imports details."
+                )
+
+            prompt = f"""
+            {prompt_template}\n\nCODE:\n{code}\n\nCHILDREN_SUMMARIES:\n{children_summaries}\n
+            LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:\n{dependency_summaries}\n
+            STANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:\n{import_details}
+            """
+
+        return prompt
 
     def _create_prompt(
         self,
         code: str,
         children_summaries: str | None,
         dependency_summaries: str | None,
+        import_details: str | None,
+        prompt_template: str | None = None,
     ) -> str:
-        if children_summaries and dependency_summaries:
-            prompt: str = self._interpolate_prompt(
-                code,
-                children_summaries=children_summaries,
-                dependency_summaries=dependency_summaries,
-            )
-        elif children_summaries:
-            prompt: str = self._interpolate_prompt(
-                code,
-                children_summaries=children_summaries,
-            )
-        elif dependency_summaries:
-            prompt: str = self._interpolate_prompt(
-                code,
-                dependency_summaries=dependency_summaries,
-            )
-        else:
-            prompt: str = self._interpolate_prompt(code)
+        prompt: str = self._interpolate_prompt(
+            code,
+            children_summaries=children_summaries,
+            dependency_summaries=dependency_summaries,
+            import_details=import_details,
+            prompt_template=prompt_template,
+        )
 
         return prompt
 
@@ -328,14 +344,18 @@ class OpenAISummarizer:
             str | None: The summary generated by the OpenAI API, or None if no summary is found.
         """
 
-        response = self.client.chat.completions.create(
-            messages=messages,
-            model=configs.model,
-            max_tokens=configs.max_tokens,
-            stream=configs.stream,
-            temperature=configs.temperature,
-        )
-        return response.choices[0].message.content  # type: ignore # FIXME: Fix type error
+        try:
+            response = self.client.chat.completions.create(
+                messages=messages,
+                model=configs.model,
+                max_tokens=configs.max_tokens,
+                stream=configs.stream,
+                temperature=configs.temperature,
+            )
+            return response.choices[0].message.content  # type: ignore # FIXME: Fix type error
+        except Exception as e:
+            logging.error(e)
+            return "Summarization failed."
 
     def summarize_code(
         self,
@@ -343,6 +363,7 @@ class OpenAISummarizer:
         *,
         children_summaries: str | None,
         dependency_summaries: str | None,
+        import_details: str | None,
         configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),
     ) -> str:
         """
@@ -366,7 +387,7 @@ class OpenAISummarizer:
 
         print("Summarizing code...")
         prompt: str = self._create_prompt(
-            code, children_summaries, dependency_summaries
+            code, children_summaries, dependency_summaries, import_details
         )
         messages: list[ChatCompletionMessageParam] = self._create_messages_list(
             system_message=configs.system_message, user_message=prompt
@@ -375,7 +396,7 @@ class OpenAISummarizer:
         final_summary: str | None = None
         if summary := self._get_summary(messages, configs=configs):
             # print("Full Summary:\n", summary)
-            final_summary = summary.split("FINAL_SUMMARY:")[-1]
+            final_summary = summary.split("FINAL SUMMARY:")[-1]
             print("Final Summary:\n", final_summary)
 
         return final_summary if final_summary else "Summary not found."
@@ -386,6 +407,7 @@ class OpenAISummarizer:
         *,
         children_summaries: str | None,
         dependency_summaries: str | None,
+        import_details: str | None,
         configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),
     ) -> str:
         """
@@ -409,7 +431,7 @@ class OpenAISummarizer:
 
         print("Summarizing code...")
         prompt: str = self._create_prompt(
-            code, children_summaries, dependency_summaries
+            code, children_summaries, dependency_summaries, import_details
         )
         messages: list[ChatCompletionMessageParam] = self._create_messages_list(
             system_message=configs.system_message, user_message=prompt
@@ -432,5 +454,6 @@ if __name__ == "__main__":
         code_example,
         children_summaries=children_summaries,
         dependency_summaries=dependency_summaries,
+        import_details=None,
     )
     print(summary)
