@@ -1,6 +1,6 @@
 import json
 import logging
-import os
+from pathlib import Path
 from model_builders.module_model_builder import ModuleModelBuilder
 from utilities.logger.decorators import logging_decorator
 
@@ -112,19 +112,17 @@ class VisitorManager:
     def _create_output_directory(self) -> None:
         """Creates the output directory if it does not already exist."""
 
-        os.makedirs(self.output_directory, exist_ok=True)
+        Path(self.output_directory).mkdir(exist_ok=True)
 
     def _walk_directories(self) -> list[str]:
         """Walks the specified directory and returns a list of all files."""
 
         all_files: list[str] = []
-        for root, directories, files in os.walk(self.directory):
-            directories[:] = [
-                directory
-                for directory in directories
-                if directory not in EXCLUDED_DIRECTORIES
-            ]
-            all_files.extend(os.path.join(root, file) for file in files)
+        for file_path in Path(self.directory).rglob("*"):
+            if not any(
+                excluded in file_path.parts for excluded in EXCLUDED_DIRECTORIES
+            ):
+                all_files.append(str(file_path))
         return all_files
 
     def _filter_python_files(self, files: list[str]) -> list[str]:
@@ -142,8 +140,9 @@ class VisitorManager:
     def _process_file(self, file_path: str) -> ModuleModelBuilder | None:
         """Processes a single Python file."""
 
-        root: str = os.path.dirname(file_path)
-        self.directory_modules.setdefault(root, []).append(os.path.basename(file_path))
+        file_path_obj = Path(file_path)
+        root = str(file_path_obj.parent)
+        self.directory_modules.setdefault(root, []).append(file_path_obj.name)
         return self._parse_file(file_path)
 
     @logging_decorator(message="Processing file")
@@ -167,16 +166,16 @@ class VisitorManager:
     def _create_json_output_directory(self) -> str:
         """Creates the JSON output directory if it does not already exist."""
 
-        json_output_directory: str = os.path.join(self.output_directory, "json")
-        os.makedirs(json_output_directory, exist_ok=True)
-        return json_output_directory
+        json_output_directory: Path = Path(self.output_directory) / "json"
+        json_output_directory.mkdir(exist_ok=True)
+        return str(json_output_directory)
 
     def _get_json_output_path(self, file_path: str, json_output_directory: str) -> str:
         """Gets the output path for a JSON file."""
 
-        relative_path: str = os.path.relpath(file_path, self.directory)
-        safe_relative_path: str = relative_path.replace(os.sep, ":").rstrip(".py")
-        return os.path.join(json_output_directory, f"{safe_relative_path}.json")
+        relative_path: Path = Path(file_path).relative_to(Path(self.directory))
+        safe_relative_path: str = str(relative_path).replace("/", ":").rstrip(".py")
+        return str(Path(json_output_directory) / f"{safe_relative_path}.json")
 
     def _write_json_file(self, module_model: ModuleModel, output_path: str) -> None:
         """Writes a JSON file containing the parsed data from a ModuleModel."""
@@ -188,7 +187,7 @@ class VisitorManager:
     def _get_directory_map_output_path(self, directory_output_name: str) -> str:
         """Gets the output path for the directory map JSON file."""
 
-        return os.path.join(self.output_directory, directory_output_name)
+        return str(Path(self.output_directory) / directory_output_name)
 
     def _write_json_directory_map(self, output_path: str) -> None:
         """Writes the directory map JSON file."""
