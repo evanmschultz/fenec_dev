@@ -1,7 +1,7 @@
 from typing import Literal
 
 from pydantic import BaseModel
-from python_parser.ai_services.prompts.summarization_prompts import (
+from ai_services.prompts.summarization_prompts import (
     SUMMARIZER_DEFAULT_INSTRUCTIONS,
 )
 

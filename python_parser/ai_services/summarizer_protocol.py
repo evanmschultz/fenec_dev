@@ -1,6 +1,7 @@
 from typing import Protocol
 
 import ai_services.summarizer_configs as configs
+import ai_services.summarizer_context as context
 
 
 class Summarizer(Protocol):
@@ -13,7 +14,7 @@ class Summarizer(Protocol):
         dependency_summaries: str | None,
         import_details: str | None,
         configs: configs.SummaryCompletionConfigs = configs.SummaryCompletionConfigs(),
-    ) -> str:
+    ) -> context.OpenAIReturnContext | str:
         """
         Summarizes the provided code snippet using the OpenAI API.
 
@@ -43,7 +44,7 @@ class Summarizer(Protocol):
         dependency_summaries: str | None,
         import_details: str | None,
         configs: configs.SummaryCompletionConfigs = configs.SummaryCompletionConfigs(),
-    ) -> str:
+    ) -> context.OpenAIReturnContext | str:
         """
         Summarizes the provided code snippet using the OpenAI API.
 

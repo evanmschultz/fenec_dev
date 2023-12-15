@@ -1,6 +1,6 @@
 import logging
 from typing import Callable, LiteralString
-import prompts.summarization_prompts as prompts
+import ai_services.prompts.summarization_prompts as prompts
 
 
 class PromptCreator:
