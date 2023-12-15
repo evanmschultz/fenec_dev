@@ -10,6 +10,7 @@ from model_builders.standalone_block_model_builder import (
     StandaloneBlockModelBuilder,
 )
 from models.models import DependencyModel, ImportModel
+import ai_services.summarizer_context as context
 
 
 BuilderType = Union[
@@ -31,6 +32,16 @@ class SummarizationManager:
         ] = module_builders_tuple
         self.summarizer: Summarizer = summarizer
         self.summarized_code_block_ids: set[str] = set()
+        self.prompt_tokens: int = 0
+        self.completion_tokens: int = 0
+
+    @property
+    def total_cost(self) -> float:
+        prompt_cost: int = self.prompt_tokens * 1  # Costs 1 cent per 1,000 tokens
+        completion_cost: int = (
+            self.completion_tokens * 3
+        )  # Costs 3 cents per 1,000 tokens
+        return (prompt_cost + completion_cost) / 100_000  # Convert to dollars
 
     def create_and_add_summaries_to_builders(self) -> None:
         for module_builder in self.module_builders_tuple:
@@ -100,19 +111,32 @@ class SummarizationManager:
             dependency_summary_list
         )
 
-        summary: str = self.summarizer.test_summarize_code(
-            builder.common_attributes.code_content,
-            builder_id=builder.id,
-            children_summaries=children_summaries,
-            dependency_summaries=dependency_summaries,
-            import_details=import_details,
+        summary_context: context.OpenAIReturnContext | str = (
+            self.summarizer.summarize_code(
+                builder.common_attributes.code_content,
+                builder_id=builder.id,
+                children_summaries=children_summaries,
+                dependency_summaries=dependency_summaries,
+                import_details=import_details,
+            )
         )
 
-        builder.add_summary(summary)
-        self.summarized_code_block_ids.add(builder.id)
-        recursion_path.remove(builder.id)
+        if isinstance(summary_context, context.OpenAIReturnContext):
+            if summary_context.summary:
+                builder.add_summary(summary_context.summary)
+                self.summarized_code_block_ids.add(builder.id)
+                recursion_path.remove(builder.id)
 
-        return summary
+                self.prompt_tokens += summary_context.prompt_tokens
+                self.completion_tokens += summary_context.completion_tokens
+                logging.info(f"Summarized code block: {builder.id}")
+                logging.info(f"Total cost: {self.total_cost}")
+
+        return (
+            summary_context.summary
+            if isinstance(summary_context, context.OpenAIReturnContext)
+            else summary_context
+        )
 
     def _handle_module_builder(
         self, builder: ModuleModelBuilder, recursion_path: list[str]

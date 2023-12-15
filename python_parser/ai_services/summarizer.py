@@ -11,8 +11,9 @@ from openai.types.chat.chat_completion_message_param import ChatCompletionMessag
 from openai.types.chat.chat_completion import ChatCompletion
 
 from ai_services.temp import code_example
-from python_parser.ai_services.prompt_creator import PromptCreator
-import python_parser.ai_services.summarizer_configs as configs
+from ai_services.prompt_creator import PromptCreator
+import ai_services.summarizer_configs as configs
+import ai_services.summarizer_context as context
 
 
 class OpenAISummarizer:
@@ -103,7 +104,7 @@ class OpenAISummarizer:
         messages: list[ChatCompletionMessageParam],
         *,
         configs: configs.SummaryCompletionConfigs,
-    ) -> str | None:
+    ) -> context.OpenAIReturnContext | str:
         """
         Retrieves the summary from the OpenAI API based on the provided messages and configuration settings.
 
@@ -122,7 +123,19 @@ class OpenAISummarizer:
                 max_tokens=configs.max_tokens,
                 temperature=configs.temperature,
             )
-            return response.choices[0].message.content
+            prompt_tokens: int = 0
+            completion_tokens: int = 0
+            summary: str | None = response.choices[0].message.content
+            if response.usage:
+                prompt_tokens = response.usage.prompt_tokens
+                completion_tokens = response.usage.completion_tokens
+
+            return context.OpenAIReturnContext(
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+                summary=summary,
+            )
+
         except Exception as e:
             logging.error(e)
             return "Summarization failed."
@@ -136,7 +149,7 @@ class OpenAISummarizer:
         dependency_summaries: str | None,
         import_details: str | None,
         configs: configs.SummaryCompletionConfigs = configs.SummaryCompletionConfigs(),
-    ) -> str:
+    ) -> context.OpenAIReturnContext | str:
         """
         Summarizes the provided code snippet using the OpenAI API.
 
@@ -165,13 +178,17 @@ class OpenAISummarizer:
         )
 
         final_summary: str | None = None
-        if summary := self._get_summary(messages, configs=configs):
+        if summary_context := self._get_summary(messages, configs=configs):
             # print("Full Summary:\n", summary)
-            final_summary = summary.split("FINAL SUMMARY:")[-1]
-            logging.info(f"Full Summary:\n")
-            print(final_summary)
+            if isinstance(summary_context, context.OpenAIReturnContext):
+                if summary_context.summary:
+                    final_summary = summary_context.summary.split("FINAL SUMMARY:")[-1]
+                    logging.info(f"Full Summary:\n")
+                    print(final_summary)
+                    print(f"Prompt tokens: {summary_context.prompt_tokens}")
+                    print(f"Completion tokens: {summary_context.completion_tokens}")
 
-        return final_summary if final_summary else "Summary not found."
+        return summary_context if summary_context else "Summary not found."
 
     def test_summarize_code(
         self,
@@ -182,7 +199,7 @@ class OpenAISummarizer:
         dependency_summaries: str | None,
         import_details: str | None,
         configs: configs.SummaryCompletionConfigs = configs.SummaryCompletionConfigs(),
-    ) -> str:
+    ) -> context.OpenAIReturnContext | str:
         """
         Summarizes the provided code snippet using the OpenAI API.
 
@@ -213,10 +230,15 @@ class OpenAISummarizer:
         summary: str = f"""Summary:\n
         {messages}\n 
         """
+        summary_context = context.OpenAIReturnContext(
+            summary=summary,
+            prompt_tokens=1,
+            completion_tokens=1,
+        )
         logging.info(f"Full Summary:\n")
         print(summary)
 
-        return summary
+        return summary_context
 
 
 if __name__ == "__main__":
