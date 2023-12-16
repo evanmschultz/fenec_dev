@@ -73,7 +73,7 @@ class ParameterListModel(BaseModel):
 class BaseCodeBlockModel(BaseModel):
     """Attributes common to all code block models."""
 
-    id: str | None = None
+    id: str
     parent_id: str | None = None
     block_type: BlockType
     start_line_num: int
