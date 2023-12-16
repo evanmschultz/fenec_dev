@@ -1,9 +1,15 @@
 import logging
 from logging import Logger
 from openai import OpenAI
+from ai_services.summarization_manager import SummarizationManager
+from json_management.json_handler import JSONHandler
+from python_parser.models.models import ModuleModel
 
-from python_parser.utilities.logger.logging_config import setup_logging
-from python_parser.visitor_manager.visitor_manager import VisitorManager
+from utilities.logger.logging_config import setup_logging
+from python_parser.visitor_manager.visitor_manager import (
+    VisitorManager,
+    VisitorManagerProcessFilesReturn,
+)
 
 from ai_services.summarizer import OpenAISummarizer
 
@@ -30,8 +36,24 @@ def main(
     summarizer = OpenAISummarizer(client=client)
 
     visitor_manager = VisitorManager(summarizer, directory, output_directory)
-    visitor_manager.process_files()
-    visitor_manager.save_visited_directories()
+    process_files_return: VisitorManagerProcessFilesReturn = (
+        visitor_manager.process_files()
+    )
+
+    module_models_tuple: tuple[ModuleModel, ...] = process_files_return.models_tuple
+    directory_modules: dict[str, list[str]] = process_files_return.directory_modules
+    summarization_manager = SummarizationManager(module_models_tuple, summarizer)
+    summarization_manager.create_and_add_summaries_to_models()
+    logger.info("Summarization complete")
+
+    logger.info("Saving models as JSON")
+    json_manager = JSONHandler(directory, directory_modules, output_directory)
+
+    for module_model in module_models_tuple:
+        json_manager.save_model_as_json(module_model, module_model.file_path)
+
+    json_manager.save_visited_directories()
+    logger.info("JSON save complete")
 
     logger.info("Directory parsing completed.")
 
