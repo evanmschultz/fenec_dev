@@ -3,7 +3,6 @@
 -   [ ] Add logic to log summary count, eg. 'Summarizing k of n files'
 -   [ ] Finish summarization MVP
 -   [ ] Add tests for summarization
--   [x] Add update models with summary in `python_parser`'s `PythonParser`
 -   [ ] Add chromadb
 -   [ ] Add initial chat logic
 -   [ ] Implement parsing based on git diff using ChromaDB or ArangoDB
