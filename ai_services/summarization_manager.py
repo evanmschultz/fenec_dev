@@ -3,33 +3,32 @@ from typing import Union
 
 from ai_services.summarizer_protocol import Summarizer
 
-from python_parser.model_builders.class_model_builder import ClassModelBuilder
-from python_parser.model_builders.function_model_builder import FunctionModelBuilder
-from python_parser.model_builders.module_model_builder import ModuleModelBuilder
-from python_parser.model_builders.standalone_block_model_builder import (
-    StandaloneBlockModelBuilder,
+from python_parser.models.models import (
+    ClassModel,
+    DependencyModel,
+    FunctionModel,
+    ImportModel,
+    ModuleModel,
+    StandaloneCodeBlockModel,
 )
-from python_parser.models.models import DependencyModel, ImportModel
 import ai_services.summarizer_context as context
 
 
-BuilderType = Union[
-    ModuleModelBuilder,
-    ClassModelBuilder,
-    FunctionModelBuilder,
-    StandaloneBlockModelBuilder,
+ModelType = Union[
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
 ]
 
 
 class SummarizationManager:
     def __init__(
         self,
-        module_builders_tuple: tuple[ModuleModelBuilder, ...],
+        module_models_tuple: tuple[ModuleModel, ...],
         summarizer: Summarizer,
     ) -> None:
-        self.module_builders_tuple: tuple[
-            ModuleModelBuilder, ...
-        ] = module_builders_tuple
+        self.module_models_tuple: tuple[ModuleModel, ...] = module_models_tuple
         self.summarizer: Summarizer = summarizer
         self.summarized_code_block_ids: set[str] = set()
         self.prompt_tokens: int = 0
@@ -43,39 +42,39 @@ class SummarizationManager:
         )  # Costs 3 cents per 1,000 tokens
         return (prompt_cost + completion_cost) / 100_000  # Convert to dollars
 
-    def create_and_add_summaries_to_builders(self) -> None:
-        for module_builder in self.module_builders_tuple:
-            self._summarize_module(module_builder)
+    def create_and_add_summaries_to_models(self) -> None:
+        for module_model in self.module_models_tuple:
+            self._summarize_module(module_model)
 
-    def _summarize_module(self, module_builder: ModuleModelBuilder) -> None:
-        if module_builder.id not in self.summarized_code_block_ids:
-            self._summarize_code_block(module_builder)
-            logging.info(f"Summarized module: {module_builder.id}")
-            self.summarized_code_block_ids.add(module_builder.id)
+    def _summarize_module(self, module_model: ModuleModel) -> None:
+        if module_model.id not in self.summarized_code_block_ids:
+            self._summarize_code_block(module_model)
+            logging.info(f"Summarized module: {module_model.id}")
+            self.summarized_code_block_ids.add(module_model.id)
 
     def _summarize_code_block(
         self,
-        builder: BuilderType,
+        model: ModelType,
         recursion_path: list[str] = [],
     ) -> str | None:
-        if builder.id in recursion_path or not builder.common_attributes.code_content:
+        if model.id in recursion_path or not model.code_content:
             return None
-        if builder.id in self.summarized_code_block_ids:
-            return builder.common_attributes.summary
+        if model.id in self.summarized_code_block_ids:
+            return model.summary
 
-        recursion_path.append(builder.id)
+        recursion_path.append(model.id)
 
         child_summary_list: list[str] | None = None
-        if builder.children_builders:
-            child_summary_list = self._get_child_summaries(builder, recursion_path)
+        if model.children:
+            child_summary_list = self._get_child_summaries(model, recursion_path)
 
         dependency_summary_list: list[str] = []
         import_details: str | None = None
-        if builder.common_attributes.dependencies:
-            for dependency in builder.common_attributes.dependencies:
+        if model.dependencies:
+            for dependency in model.dependencies:
                 if isinstance(dependency, DependencyModel) and dependency.code_block_id:
                     if module_local_dependency_summary := self._get_local_dependency_summary(
-                        dependency, builder, recursion_path
+                        dependency, model, recursion_path
                     ):
                         dependency_summary_list.append(module_local_dependency_summary)
 
@@ -99,9 +98,9 @@ class SummarizationManager:
                             import_details = ""
                         import_details += f"\n{import_detail}"
 
-        if isinstance(builder, ModuleModelBuilder) and recursion_path:
-            dependency_summary_list, import_details = self._handle_module_builder(
-                builder, recursion_path
+        if isinstance(model, ModuleModel) and recursion_path:
+            dependency_summary_list, import_details = self._handle_module_model(
+                model, recursion_path
             )
 
         children_summaries: str | None = self._stringify_child_summaries(
@@ -113,8 +112,8 @@ class SummarizationManager:
 
         summary_context: context.OpenAIReturnContext | str = (
             self.summarizer.test_summarize_code(
-                builder.common_attributes.code_content,
-                builder_id=builder.id,
+                model.code_content,
+                model_id=model.id,
                 children_summaries=children_summaries,
                 dependency_summaries=dependency_summaries,
                 import_details=import_details,
@@ -123,13 +122,13 @@ class SummarizationManager:
 
         if isinstance(summary_context, context.OpenAIReturnContext):
             if summary_context.summary:
-                builder.add_summary(summary_context.summary)
-                self.summarized_code_block_ids.add(builder.id)
-                recursion_path.remove(builder.id)
+                model.summary = summary_context.summary
+                self.summarized_code_block_ids.add(model.id)
+                recursion_path.remove(model.id)
 
                 self.prompt_tokens += summary_context.prompt_tokens
                 self.completion_tokens += summary_context.completion_tokens
-                logging.info(f"Summarized code block: {builder.id}")
+                logging.info(f"Summarized code block: {model.id}")
                 logging.info(f"Total cost: {self.total_cost}")
 
         return (
@@ -138,13 +137,13 @@ class SummarizationManager:
             else summary_context
         )
 
-    def _handle_module_builder(
-        self, builder: ModuleModelBuilder, recursion_path: list[str]
+    def _handle_module_model(
+        self, model: ModuleModel, recursion_path: list[str]
     ) -> tuple[list[str], str | None]:
         dependency_summary_list: list[str] = []
         all_import_details: str | None = None
-        if builder.module_attributes.imports:
-            for import_model in builder.module_attributes.imports:
+        if model.imports:
+            for import_model in model.imports:
                 if import_model.import_module_type == "LOCAL":
                     if not import_model.import_names:
                         if module_import := self._get_local_import_summary(
@@ -183,16 +182,17 @@ class SummarizationManager:
         return import_details
 
     def _get_child_summaries(
-        self, builder: BuilderType, recursion_path: list[str]
+        self, model: ModelType, recursion_path: list[str]
     ) -> list[str]:
         child_summary_list: list[str] = []
-        for child_builder in builder.children_builders:
-            child_summary: str | None = self._summarize_code_block(
-                child_builder,
-                recursion_path,
-            )
-            if child_summary:
-                child_summary_list.append(child_summary)
+        if model.children:
+            for child_model in model.children:
+                child_summary: str | None = self._summarize_code_block(
+                    child_model,
+                    recursion_path,
+                )
+                if child_summary:
+                    child_summary_list.append(child_summary)
         return child_summary_list
 
     def _stringify_child_summaries(
@@ -220,23 +220,26 @@ class SummarizationManager:
     def _get_local_dependency_summary(
         self,
         dependency: DependencyModel,
-        builder: BuilderType,
+        model: ModelType,
         recursion_path: list[str],
     ) -> str | None:
-        for child_builder in builder.children_builders:
-            if child_builder.id == dependency.code_block_id:
+        if not model.children:
+            return None
+
+        for child_model in model.children:
+            if child_model.id == dependency.code_block_id:
                 return self._summarize_code_block(
-                    child_builder,
+                    child_model,
                     recursion_path,
                 )
 
     def _get_local_import_summary(
         self, dependency: ImportModel, recursion_path: list[str]
     ) -> str | None:
-        for module_builder in self.module_builders_tuple:
-            if module_builder.id == dependency.local_module_id:
+        for module_model in self.module_models_tuple:
+            if module_model.id == dependency.local_module_id:
                 return self._summarize_code_block(
-                    module_builder,
+                    module_model,
                     recursion_path,
                 )
 
@@ -244,14 +247,15 @@ class SummarizationManager:
         self, dependency: ImportModel, recursion_path: list[str]
     ) -> str | None:
         for import_name in dependency.import_names:
-            for module_builder in self.module_builders_tuple:
-                if module_builder.id == dependency.local_module_id:
-                    for child_builder in module_builder.children_builders:
-                        if (
-                            child_builder.id == import_name.local_block_id
-                            and child_builder.id
-                        ):
-                            return self._summarize_code_block(
-                                child_builder,
-                                recursion_path,
-                            )
+            for module_model in self.module_models_tuple:
+                if module_model.id == dependency.local_module_id:
+                    if module_model.children:
+                        for child_model in module_model.children:
+                            if (
+                                child_model.id == import_name.local_block_id
+                                and child_model.id
+                            ):
+                                return self._summarize_code_block(
+                                    child_model,
+                                    recursion_path,
+                                )

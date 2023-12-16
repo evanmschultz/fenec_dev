@@ -144,7 +144,7 @@ class OpenAISummarizer:
         self,
         code: str,
         *,
-        builder_id: str,
+        model_id: str,
         children_summaries: str | None,
         dependency_summaries: str | None,
         import_details: str | None,
@@ -169,7 +169,7 @@ class OpenAISummarizer:
             >>> print(summary)
         """
 
-        logging.info(f"Summarizing code for builder: {builder_id}")
+        logging.info(f"Summarizing code for model: {model_id}")
         prompt: str = self._create_prompt(
             code, children_summaries, dependency_summaries, import_details
         )
@@ -194,7 +194,7 @@ class OpenAISummarizer:
         self,
         code: str,
         *,
-        builder_id: str,
+        model_id: str,
         children_summaries: str | None,
         dependency_summaries: str | None,
         import_details: str | None,
@@ -219,7 +219,7 @@ class OpenAISummarizer:
             >>> print(summary)
         """
 
-        logging.info(f"Summarizing code for builder: {builder_id}")
+        logging.info(f"Summarizing code for model: {model_id}")
         prompt: str = self._create_prompt(
             code, children_summaries, dependency_summaries, import_details
         )
@@ -248,7 +248,7 @@ if __name__ == "__main__":
     dependency_summaries = ""
     summary = summarizer.summarize_code(
         code_example,
-        builder_id="test",
+        model_id="test",
         children_summaries=children_summaries,
         dependency_summaries=dependency_summaries,
         import_details=None,
