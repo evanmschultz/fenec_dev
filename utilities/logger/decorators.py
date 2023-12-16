@@ -11,7 +11,7 @@ from python_parser.visitors.node_processing.common_functions import (
     extract_code_content,
     extract_stripped_code_content,
 )
-from python_parser.utilities.processing_context import LoggingCallerInfo, NodeAndPositionData
+from utilities.processing_context import LoggingCallerInfo, NodeAndPositionData
 
 
 def logging_decorator(
