@@ -3,13 +3,13 @@ from typing import Union
 
 from ai_services.summarizer_protocol import Summarizer
 
-from model_builders.class_model_builder import ClassModelBuilder
-from model_builders.function_model_builder import FunctionModelBuilder
-from model_builders.module_model_builder import ModuleModelBuilder
-from model_builders.standalone_block_model_builder import (
+from python_parser.model_builders.class_model_builder import ClassModelBuilder
+from python_parser.model_builders.function_model_builder import FunctionModelBuilder
+from python_parser.model_builders.module_model_builder import ModuleModelBuilder
+from python_parser.model_builders.standalone_block_model_builder import (
     StandaloneBlockModelBuilder,
 )
-from models.models import DependencyModel, ImportModel
+from python_parser.models.models import DependencyModel, ImportModel
 import ai_services.summarizer_context as context
 
 
@@ -112,7 +112,7 @@ class SummarizationManager:
         )
 
         summary_context: context.OpenAIReturnContext | str = (
-            self.summarizer.summarize_code(
+            self.summarizer.test_summarize_code(
                 builder.common_attributes.code_content,
                 builder_id=builder.id,
                 children_summaries=children_summaries,

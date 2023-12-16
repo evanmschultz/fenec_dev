@@ -3,8 +3,8 @@ from typing import Sequence
 import libcst
 
 
-from models.models import CommentModel, DecoratorModel
-from models.enums import CommentType
+from python_parser.models.models import CommentModel, DecoratorModel
+from python_parser.models.enums import CommentType
 
 
 def extract_code_content(

@@ -1,14 +1,14 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any
-from utilities.logger.decorators import logging_decorator
+from python_parser.utilities.logger.decorators import logging_decorator
 
-from model_builders.base_model_builder import BaseModelBuilder
-from models.models import ClassSpecificAttributes, ClassModel
-from models.enums import BlockType
+from python_parser.model_builders.base_model_builder import BaseModelBuilder
+from python_parser.models.models import ClassSpecificAttributes, ClassModel
+from python_parser.models.enums import BlockType
 
 
 if TYPE_CHECKING:
-    from models.models import (
+    from python_parser.models.models import (
         ClassKeywordModel,
         DecoratorModel,
     )

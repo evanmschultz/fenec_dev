@@ -2,18 +2,18 @@ from typing import Sequence
 
 import libcst
 
-from model_builders.function_model_builder import FunctionModelBuilder
+from python_parser.model_builders.function_model_builder import FunctionModelBuilder
 
-from models.enums import BlockType
-from models.models import DecoratorModel, ParameterListModel, ParameterModel
-from visitors.node_processing.common_functions import (
+from python_parser.models.enums import BlockType
+from python_parser.models.models import DecoratorModel, ParameterListModel, ParameterModel
+from python_parser.visitors.node_processing.common_functions import (
     extract_code_content,
     extract_decorators,
     extract_stripped_code_content,
     extract_type_annotation,
 )
 
-from utilities.processing_context import PositionData
+from python_parser.utilities.processing_context import PositionData
 
 
 def process_func_def(

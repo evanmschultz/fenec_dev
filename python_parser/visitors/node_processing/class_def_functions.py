@@ -2,15 +2,15 @@ from typing import Sequence
 
 import libcst
 
-from model_builders.class_model_builder import ClassModelBuilder
+from python_parser.model_builders.class_model_builder import ClassModelBuilder
 
-from models.models import ClassKeywordModel, DecoratorModel
-from visitors.node_processing.common_functions import (
+from python_parser.models.models import ClassKeywordModel, DecoratorModel
+from python_parser.visitors.node_processing.common_functions import (
     extract_code_content,
     extract_stripped_code_content,
     extract_decorators,
 )
-from utilities.processing_context import PositionData
+from python_parser.utilities.processing_context import PositionData
 
 
 def process_class_def(

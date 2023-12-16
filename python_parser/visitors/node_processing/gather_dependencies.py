@@ -1,11 +1,11 @@
 import re
 from typing import Callable, Sequence
 
-from model_builders.class_model_builder import ClassModelBuilder
-from model_builders.function_model_builder import FunctionModelBuilder
-from model_builders.module_model_builder import ModuleModelBuilder
-from model_builders.standalone_block_model_builder import StandaloneBlockModelBuilder
-from models.models import ImportModel, DependencyModel
+from python_parser.model_builders.class_model_builder import ClassModelBuilder
+from python_parser.model_builders.function_model_builder import FunctionModelBuilder
+from python_parser.model_builders.module_model_builder import ModuleModelBuilder
+from python_parser.model_builders.standalone_block_model_builder import StandaloneBlockModelBuilder
+from python_parser.models.models import ImportModel, DependencyModel
 
 
 def gather_and_set_children_dependencies(module_builder: ModuleModelBuilder) -> None:

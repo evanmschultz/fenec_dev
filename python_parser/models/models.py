@@ -1,7 +1,7 @@
 from typing import Union
 from pydantic import BaseModel, Field, validator
 
-from models.enums import (
+from python_parser.models.enums import (
     BlockType,
     ImportModuleType,
     CommentType,

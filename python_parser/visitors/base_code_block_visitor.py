@@ -7,18 +7,20 @@ from libcst.metadata import (
 )
 from libcst._metadata_dependent import _UNDEFINED_DEFAULT
 
-from model_builders.class_model_builder import ClassModelBuilder
-from model_builders.function_model_builder import FunctionModelBuilder
-from model_builders.module_model_builder import ModuleModelBuilder
-from model_builders.standalone_block_model_builder import StandaloneBlockModelBuilder
+from python_parser.model_builders.class_model_builder import ClassModelBuilder
+from python_parser.model_builders.function_model_builder import FunctionModelBuilder
+from python_parser.model_builders.module_model_builder import ModuleModelBuilder
+from python_parser.model_builders.standalone_block_model_builder import (
+    StandaloneBlockModelBuilder,
+)
 
-from models.models import (
+from python_parser.models.models import (
     CommentModel,
 )
-from visitors.node_processing.common_functions import (
+from python_parser.visitors.node_processing.common_functions import (
     extract_important_comment,
 )
-from utilities.processing_context import PositionData
+from python_parser.utilities.processing_context import PositionData
 
 
 BuilderType = Union[

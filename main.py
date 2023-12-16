@@ -2,8 +2,8 @@ import logging
 from logging import Logger
 from openai import OpenAI
 
-from utilities.logger.logging_config import setup_logging
-from visitor_manager.visitor_manager import VisitorManager
+from python_parser.utilities.logger.logging_config import setup_logging
+from python_parser.visitor_manager.visitor_manager import VisitorManager
 
 from ai_services.summarizer import OpenAISummarizer
 

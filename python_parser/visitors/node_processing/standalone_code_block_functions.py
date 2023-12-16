@@ -1,22 +1,24 @@
 from typing import Sequence
 import libcst
 
-from utilities.logger.decorators import logging_decorator
+from python_parser.utilities.logger.decorators import logging_decorator
 
-from id_generation.id_generation_strategies import (
+from python_parser.id_generation.id_generation_strategies import (
     StandaloneCodeBlockIDGenerationStrategy,
 )
 
-from model_builders.builder_factory import BuilderFactory
-from model_builders.standalone_block_model_builder import StandaloneBlockModelBuilder
-from models.enums import BlockType
-from models.models import CommentModel
+from python_parser.model_builders.builder_factory import BuilderFactory
+from python_parser.model_builders.standalone_block_model_builder import (
+    StandaloneBlockModelBuilder,
+)
+from python_parser.models.enums import BlockType
+from python_parser.models.models import CommentModel
 
-from visitors.node_processing.common_functions import (
+from python_parser.visitors.node_processing.common_functions import (
     extract_important_comment,
     extract_stripped_code_content,
 )
-from utilities.processing_context import NodeAndPositionData
+from python_parser.utilities.processing_context import NodeAndPositionData
 
 
 def gather_standalone_lines(

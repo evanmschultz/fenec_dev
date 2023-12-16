@@ -1,17 +1,17 @@
 import json
 import logging
 from pathlib import Path
-from model_builders.module_model_builder import ModuleModelBuilder
-from utilities.logger.decorators import logging_decorator
+from python_parser.model_builders.module_model_builder import ModuleModelBuilder
+from python_parser.utilities.logger.decorators import logging_decorator
 
-from parsers.python_parser import PythonParser
-from visitor_manager.import_and_dependency_update_functions import (
+from python_parser.parsers.python_parser import PythonParser
+from python_parser.visitor_manager.import_and_dependency_update_functions import (
     ImportAndDependencyUpdater,
 )
-from models.models import ModuleModel
+from python_parser.models.models import ModuleModel
 
 from ai_services.summarizer_protocol import Summarizer
-from visitor_manager.summarization_manager import SummarizationManager
+from python_parser.visitor_manager.summarization_manager import SummarizationManager
 
 EXCLUDED_DIRECTORIES: set[str] = {".venv", "node_modules", "__pycache__", ".git"}
 
@@ -78,6 +78,7 @@ class VisitorManager:
         import_and_dependency_updater.update_imports()
         logging.info("Updated imports")
 
+        # Move from here down
         summarization_manager = SummarizationManager(
             model_builder_tuple, self.summarizer
         )

@@ -2,8 +2,8 @@ import sys
 from typing import Sequence
 
 import libcst
-from models.enums import ImportModuleType
-from models.models import ImportModel, ImportNameModel
+from python_parser.models.enums import ImportModuleType
+from python_parser.models.models import ImportModel, ImportNameModel
 
 
 def extract_content_from_empty_lines(

@@ -2,14 +2,16 @@ import logging
 from logging import Logger
 
 from typing import Any, Callable, Literal, overload
-from utilities.logger.decorators import logging_decorator
+from python_parser.utilities.logger.decorators import logging_decorator
 
-from model_builders.class_model_builder import ClassModelBuilder
-from model_builders.function_model_builder import FunctionModelBuilder
-from model_builders.module_model_builder import ModuleModelBuilder
-from model_builders.standalone_block_model_builder import StandaloneBlockModelBuilder
+from python_parser.model_builders.class_model_builder import ClassModelBuilder
+from python_parser.model_builders.function_model_builder import FunctionModelBuilder
+from python_parser.model_builders.module_model_builder import ModuleModelBuilder
+from python_parser.model_builders.standalone_block_model_builder import (
+    StandaloneBlockModelBuilder,
+)
 
-from models.enums import BlockType
+from python_parser.models.enums import BlockType
 
 
 class BuilderFactory:

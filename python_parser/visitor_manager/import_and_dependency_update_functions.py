@@ -2,9 +2,9 @@
 # TODO: Add logic to track down the import's definition location
 # FIXME: There is still an issue with the imports being updated twice for some reason
 
-from model_builders.module_model_builder import ModuleModelBuilder
-from models.enums import ImportModuleType
-from models.models import DependencyModel, ImportModel, ImportNameModel
+from python_parser.model_builders.module_model_builder import ModuleModelBuilder
+from python_parser.models.enums import ImportModuleType
+from python_parser.models.models import DependencyModel, ImportModel, ImportNameModel
 
 
 class ImportAndDependencyUpdater:

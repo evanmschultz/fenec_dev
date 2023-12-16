@@ -1,11 +1,13 @@
 import libcst
 from libcst.metadata import MetadataWrapper
-from id_generation.id_generation_strategies import ModuleIDGenerationStrategy
-from model_builders.builder_factory import BuilderFactory
-from model_builders.module_model_builder import ModuleModelBuilder
+from python_parser.id_generation.id_generation_strategies import (
+    ModuleIDGenerationStrategy,
+)
+from python_parser.model_builders.builder_factory import BuilderFactory
+from python_parser.model_builders.module_model_builder import ModuleModelBuilder
 
-from visitors.module_visitor import ModuleVisitor
-from models.enums import BlockType
+from python_parser.visitors.module_visitor import ModuleVisitor
+from python_parser.models.enums import BlockType
 
 
 class PythonParser:

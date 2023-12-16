@@ -1,15 +1,15 @@
 from typing import Any
 
-from model_builders.base_model_builder import BaseModelBuilder
+from python_parser.model_builders.base_model_builder import BaseModelBuilder
 
-from utilities.logger.decorators import logging_decorator
-from models.models import (
+from python_parser.utilities.logger.decorators import logging_decorator
+from python_parser.models.models import (
     DecoratorModel,
     FunctionModel,
     FunctionSpecificAttributes,
     ParameterListModel,
 )
-from models.enums import BlockType
+from python_parser.models.enums import BlockType
 
 
 class FunctionModelBuilder(BaseModelBuilder):

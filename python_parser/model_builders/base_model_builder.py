@@ -3,20 +3,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Union
 from abc import ABC, abstractmethod
 
-from models.models import (
+from python_parser.models.models import (
     BaseCodeBlockModel,
     CommentModel,
     ImportModel,
     DependencyModel,
 )
 
-from models.enums import BlockType
+from python_parser.models.enums import BlockType
 
 if TYPE_CHECKING:
-    from model_builders.class_model_builder import ClassModelBuilder
-    from model_builders.function_model_builder import FunctionModelBuilder
-    from model_builders.module_model_builder import ModuleModelBuilder
-    from model_builders.standalone_block_model_builder import (
+    from python_parser.model_builders.class_model_builder import ClassModelBuilder
+    from python_parser.model_builders.function_model_builder import FunctionModelBuilder
+    from python_parser.model_builders.module_model_builder import ModuleModelBuilder
+    from python_parser.model_builders.standalone_block_model_builder import (
         StandaloneBlockModelBuilder,
     )
 

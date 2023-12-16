@@ -1,42 +1,42 @@
 from typing import Union
 import libcst
 
-from id_generation.id_generation_strategies import (
+from python_parser.id_generation.id_generation_strategies import (
     ClassIDGenerationStrategy,
     FunctionIDGenerationStrategy,
 )
 
-from model_builders.builder_factory import BuilderFactory
-from model_builders.class_model_builder import ClassModelBuilder
-from model_builders.function_model_builder import FunctionModelBuilder
-from model_builders.module_model_builder import ModuleModelBuilder
+from python_parser.model_builders.builder_factory import BuilderFactory
+from python_parser.model_builders.class_model_builder import ClassModelBuilder
+from python_parser.model_builders.function_model_builder import FunctionModelBuilder
+from python_parser.model_builders.module_model_builder import ModuleModelBuilder
 
-from models.enums import BlockType
-from models.models import (
+from python_parser.models.enums import BlockType
+from python_parser.models.models import (
     ImportModel,
     ParameterListModel,
 )
-from visitors.base_code_block_visitor import BaseVisitor
-from visitors.node_processing.class_def_functions import (
+from python_parser.visitors.base_code_block_visitor import BaseVisitor
+from python_parser.visitors.node_processing.class_def_functions import (
     process_class_def,
 )
-from visitors.node_processing.gather_dependencies import (
+from python_parser.visitors.node_processing.gather_dependencies import (
     gather_and_set_children_dependencies,
 )
-from visitors.node_processing.function_def_functions import (
+from python_parser.visitors.node_processing.function_def_functions import (
     process_func_def,
     process_parameters,
 )
-from visitors.node_processing.module_functions import (
+from python_parser.visitors.node_processing.module_functions import (
     extract_content_from_empty_lines,
     process_import,
     process_import_from,
 )
-from utilities.processing_context import (
+from python_parser.utilities.processing_context import (
     NodeAndPositionData,
     PositionData,
 )
-from visitors.node_processing.standalone_code_block_functions import (
+from python_parser.visitors.node_processing.standalone_code_block_functions import (
     gather_standalone_lines,
     process_standalone_blocks,
 )
