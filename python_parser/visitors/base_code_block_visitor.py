@@ -6,13 +6,8 @@ from libcst.metadata import (
     CodeRange,
 )
 from libcst._metadata_dependent import _UNDEFINED_DEFAULT
+from post_code_types import BuilderType
 
-from python_parser.model_builders.class_model_builder import ClassModelBuilder
-from python_parser.model_builders.function_model_builder import FunctionModelBuilder
-from python_parser.model_builders.module_model_builder import ModuleModelBuilder
-from python_parser.model_builders.standalone_block_model_builder import (
-    StandaloneBlockModelBuilder,
-)
 
 from python_parser.models.models import (
     CommentModel,
@@ -21,14 +16,6 @@ from python_parser.visitors.node_processing.common_functions import (
     extract_important_comment,
 )
 from utilities.processing_context import PositionData
-
-
-BuilderType = Union[
-    ModuleModelBuilder,
-    ClassModelBuilder,
-    FunctionModelBuilder,
-    StandaloneBlockModelBuilder,
-]
 
 
 class BaseVisitor(libcst.CSTVisitor):
