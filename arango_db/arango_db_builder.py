@@ -6,7 +6,7 @@ from arango.cursor import Cursor
 
 from typing import Any
 
-from arango_db_manager import ArangoDBManager
+from arango_db.arango_db_manager import ArangoDBManager
 
 # NOTE: Remember, when adding logic to connect dependencies, the `from` the external dependency `to` the internal definition using it
 
@@ -240,15 +240,16 @@ class GraphDBBuilder:
                     )
 
 
-# Example usage
-db_manager = ArangoDBManager()
-db_manager.delete_all_collections()  # Delete all collections in the database
-db_manager.setup_collections()  # Create the required collections
-graph_builder = GraphDBBuilder(db_manager)
+if __name__ == "__main__":
+    # Example usage
+    db_manager = ArangoDBManager()
+    db_manager.delete_all_collections()  # Delete all collections in the database
+    db_manager.setup_collections()  # Create the required collections
+    graph_builder = GraphDBBuilder(db_manager)
 
-# Directory containing JSON files
-json_directory = "/Users/evanschultz/Documents/Code/post-code/output/json/"
+    # Directory containing JSON files
+    json_directory = "/Users/evanschultz/Documents/Code/post-code/output/json/"
 
-# Process all JSON files in the directory
-graph_builder.process_json_directory(json_directory)
-graph_builder.process_imports_and_dependencies()
+    # Process all JSON files in the directory
+    graph_builder.process_json_directory(json_directory)
+    graph_builder.process_imports_and_dependencies()

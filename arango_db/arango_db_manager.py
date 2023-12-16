@@ -1,14 +1,7 @@
-import os
-import json
-from typing import Literal
-
-from arango import ArangoError
 from arango.client import ArangoClient
 from arango.database import StandardDatabase
-from arango.cursor import Cursor
-from arango.job import AsyncJob, BatchJob
 from arango.result import Result
-from arango.typings import Json, Jsons
+from arango.typings import Jsons
 
 
 class ArangoDBManager:
@@ -71,10 +64,12 @@ class ArangoDBManager:
         self.ensure_edge_collection("code_edges")
 
 
-# # Usage example
-# db_manager = ArangoDBManager()
-# db_manager.delete_all_collections()
-# db_manager.process_graph_data(
-#     "/Users/evanschultz/Documents/Code/post-code/output/json/"
-# )
-# db_manager.process_dependencies_and_imports()
+if __name__ == "__main__":
+    # # Usage example
+    # db_manager = ArangoDBManager()
+    # db_manager.delete_all_collections()
+    # db_manager.process_graph_data(
+    #     "/Users/evanschultz/Documents/Code/post-code/output/json/"
+    # )
+    # db_manager.process_dependencies_and_imports()
+    ...
