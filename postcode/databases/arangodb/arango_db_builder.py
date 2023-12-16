@@ -6,7 +6,7 @@ from arango.cursor import Cursor
 
 from typing import Any
 
-from arango_db.arango_db_manager import ArangoDBManager
+from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
 
 # NOTE: Remember, when adding logic to connect dependencies, the `from` the external dependency `to` the internal definition using it
 
