@@ -32,7 +32,7 @@ from python_parser.visitors.node_processing.module_functions import (
     process_import,
     process_import_from,
 )
-from python_parser.utilities.processing_context import (
+from utilities.processing_context import (
     NodeAndPositionData,
     PositionData,
 )

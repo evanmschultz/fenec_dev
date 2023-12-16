@@ -1,8 +1,6 @@
-import logging
-from logging import Logger
-
 from typing import Any, Callable, Literal, overload
-from python_parser.utilities.logger.decorators import logging_decorator
+
+from utilities.logger.decorators import logging_decorator
 
 from python_parser.model_builders.class_model_builder import ClassModelBuilder
 from python_parser.model_builders.function_model_builder import FunctionModelBuilder

@@ -2,7 +2,7 @@ from typing import Any
 
 from python_parser.model_builders.base_model_builder import BaseModelBuilder
 
-from python_parser.utilities.logger.decorators import logging_decorator
+from utilities.logger.decorators import logging_decorator
 from python_parser.models.models import (
     DecoratorModel,
     FunctionModel,

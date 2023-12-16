@@ -1,7 +1,7 @@
 from typing import Sequence
 import libcst
 
-from python_parser.utilities.logger.decorators import logging_decorator
+from utilities.logger.decorators import logging_decorator
 
 from python_parser.id_generation.id_generation_strategies import (
     StandaloneCodeBlockIDGenerationStrategy,
@@ -18,7 +18,7 @@ from python_parser.visitors.node_processing.common_functions import (
     extract_important_comment,
     extract_stripped_code_content,
 )
-from python_parser.utilities.processing_context import NodeAndPositionData
+from utilities.processing_context import NodeAndPositionData
 
 
 def gather_standalone_lines(

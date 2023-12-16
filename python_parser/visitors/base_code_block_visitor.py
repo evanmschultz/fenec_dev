@@ -20,7 +20,7 @@ from python_parser.models.models import (
 from python_parser.visitors.node_processing.common_functions import (
     extract_important_comment,
 )
-from python_parser.utilities.processing_context import PositionData
+from utilities.processing_context import PositionData
 
 
 BuilderType = Union[
