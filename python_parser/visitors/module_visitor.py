@@ -1,4 +1,3 @@
-from typing import Union
 import libcst
 
 from python_parser.id_generation.id_generation_strategies import (
@@ -10,6 +9,9 @@ from python_parser.model_builders.builder_factory import BuilderFactory
 from python_parser.model_builders.class_model_builder import ClassModelBuilder
 from python_parser.model_builders.function_model_builder import FunctionModelBuilder
 from python_parser.model_builders.module_model_builder import ModuleModelBuilder
+from python_parser.model_builders.standalone_block_model_builder import (
+    StandaloneBlockModelBuilder,
+)
 
 from python_parser.models.enums import BlockType
 from python_parser.models.models import (
@@ -17,32 +19,18 @@ from python_parser.models.models import (
     ParameterListModel,
 )
 from python_parser.visitors.base_code_block_visitor import BaseVisitor
-from python_parser.visitors.node_processing.class_def_functions import (
-    process_class_def,
-)
-from python_parser.visitors.node_processing.gather_dependencies import (
-    gather_and_set_children_dependencies,
-)
-from python_parser.visitors.node_processing.function_def_functions import (
-    process_func_def,
-    process_parameters,
-)
-from python_parser.visitors.node_processing.module_functions import (
-    extract_content_from_empty_lines,
-    process_import,
-    process_import_from,
-)
+import python_parser.visitors.node_processing.class_def_functions as class_def_functions
+import python_parser.visitors.node_processing.function_def_functions as function_def_functions
+import python_parser.visitors.node_processing.module_functions as module_functions
+import python_parser.visitors.node_processing.standalone_code_block_functions as standalone_code_block_functions
+
 from utilities.processing_context import (
     NodeAndPositionData,
     PositionData,
 )
-from python_parser.visitors.node_processing.standalone_code_block_functions import (
-    gather_standalone_lines,
-    process_standalone_blocks,
+from python_parser.visitors.node_processing.gather_dependencies import (
+    gather_and_set_children_dependencies,
 )
-
-
-BuilderType = Union[ModuleModelBuilder, ClassModelBuilder, FunctionModelBuilder]
 
 
 class ModuleVisitor(BaseVisitor):
@@ -78,8 +66,12 @@ class ModuleVisitor(BaseVisitor):
         """
 
         docstring: str | None = node.get_docstring()
-        header: list[str] = extract_content_from_empty_lines(node.header)
-        footer: list[str] = extract_content_from_empty_lines(node.footer)
+        header: list[str] = module_functions.extract_content_from_empty_lines(
+            node.header
+        )
+        footer: list[str] = module_functions.extract_content_from_empty_lines(
+            node.footer
+        )
         content: str = node.code if node.code else ""
         position_data: PositionData = self.get_node_position_data(node)
         (
@@ -90,10 +82,12 @@ class ModuleVisitor(BaseVisitor):
             .set_start_line_num(position_data.start)
             .set_end_line_num(position_data.end)
         )
-        standalone_blocks: list[NodeAndPositionData] = gather_standalone_lines(
-            node.body, self
-        )
-        standalone_block_models = process_standalone_blocks(
+        standalone_blocks: list[
+            NodeAndPositionData
+        ] = standalone_code_block_functions.gather_standalone_lines(node.body, self)
+        standalone_block_models: list[
+            StandaloneBlockModelBuilder
+        ] = standalone_code_block_functions.process_standalone_blocks(
             code_blocks=standalone_blocks, parent_id=self.id
         )
         for standalone_block_model in standalone_block_models:
@@ -106,7 +100,7 @@ class ModuleVisitor(BaseVisitor):
         Processes the import statement and updates the module builder with the import model.
         """
 
-        import_model: ImportModel = process_import(node)
+        import_model: ImportModel = module_functions.process_import(node)
         self.builder.add_import(import_model)
 
     def visit_ImportFrom(self, node: libcst.ImportFrom) -> None:
@@ -116,7 +110,7 @@ class ModuleVisitor(BaseVisitor):
         Processes the 'from ... import ...' statement and updates the module builder with the import model.
         """
 
-        import_model: ImportModel = process_import_from(node)
+        import_model: ImportModel = module_functions.process_import_from(node)
         self.builder.add_import(import_model)
 
     def visit_ClassDef(self, node: libcst.ClassDef) -> None:
@@ -138,12 +132,12 @@ class ModuleVisitor(BaseVisitor):
             parent_id=parent_id,
         )
 
-        builder: ClassModelBuilder = self.builder_stack[-1]  # type: ignore
+        builder = self.builder_stack[-1]
         builder.add_child(class_builder)
         self.builder_stack.append(class_builder)
 
         position_data: PositionData = self.get_node_position_data(node)
-        process_class_def(node, position_data, class_builder)
+        class_def_functions.process_class_def(node, position_data, class_builder)
 
     def leave_ClassDef(self, original_node: libcst.ClassDef) -> None:
         """
@@ -172,12 +166,14 @@ class ModuleVisitor(BaseVisitor):
             name=node.name.value,
             parent_id=parent_id,
         )
-        builder: FunctionModelBuilder = self.builder_stack[-1]  # type: ignore
+        builder = self.builder_stack[-1]
         builder.add_child(func_builder)
         self.builder_stack.append(func_builder)
 
         position_data: PositionData = self.get_node_position_data(node)
-        process_func_def(func_id, node, position_data, func_builder)
+        function_def_functions.process_func_def(
+            func_id, node, position_data, func_builder
+        )
 
     def visit_Parameters(self, node: libcst.Parameters) -> None:
         """
@@ -187,10 +183,12 @@ class ModuleVisitor(BaseVisitor):
         """
 
         builder = self.builder_stack[-1]
-        parameter_list: ParameterListModel | None = process_parameters(node)
+        parameter_list: ParameterListModel | None = (
+            function_def_functions.process_parameters(node)
+        )
 
         if isinstance(builder, FunctionModelBuilder):
-            builder.set_parameters_list(parameter_list)  # type: ignore
+            builder.set_parameters_list(parameter_list)
 
     def leave_FunctionDef(self, original_node: libcst.FunctionDef) -> None:
         """
