@@ -3,7 +3,7 @@ from logging import Logger
 
 from openai import OpenAI
 
-from postcode.ai_services.summarization_manager import SummarizationManager
+from postcode.ai_services.summarizer.summarization_manager import SummarizationManager
 from postcode.json_management.json_handler import JSONHandler
 from postcode.python_parser.models.models import ModuleModel
 
@@ -12,7 +12,7 @@ from postcode.python_parser.visitor_manager.visitor_manager import (
     VisitorManager,
     VisitorManagerProcessFilesReturn,
 )
-from postcode.ai_services.summarizer import OpenAISummarizer
+from postcode.ai_services.summarizer.summarizer import OpenAISummarizer
 
 
 def main(

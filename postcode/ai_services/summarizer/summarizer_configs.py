@@ -2,7 +2,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from postcode.ai_services.prompts.summarization_prompts import (
+from postcode.ai_services.summarizer.prompts.summarization_prompts import (
     SUMMARIZER_DEFAULT_INSTRUCTIONS,
 )
 

@@ -10,10 +10,9 @@ from openai._types import NotGiven, NOT_GIVEN
 from openai.pagination import SyncCursorPage
 
 from temp import code_example
-from prompts.summarization_prompts import (
+from postcode.ai_services.summarizer.prompts.summarization_prompts import (
     SUMMARIZER_DEFAULT_INSTRUCTIONS,
     SUMMARIZER_DEFAULT_DESCRIPTION,
-    COD_SUMMARIZATION_PROMPT,
     summary_prompt_list,
 )
 

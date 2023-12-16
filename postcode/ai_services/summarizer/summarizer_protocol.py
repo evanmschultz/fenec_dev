@@ -1,7 +1,7 @@
 from typing import Protocol
 
-import postcode.ai_services.summarizer_configs as configs
-import postcode.ai_services.summarizer_context as context
+import postcode.ai_services.summarizer.summarizer_configs as configs
+import postcode.ai_services.summarizer.summarizer_context as context
 
 
 class Summarizer(Protocol):

@@ -1,5 +1,5 @@
 {
-    "file_path": "postcode/ai_services/summarizer_context.py",
+    "file_path": "postcode/ai_services/summarizer/summarizer_context.py",
     "docstring": null,
     "header": [],
     "footer": [],
@@ -17,7 +17,7 @@
             "local_module_id": null
         }
     ],
-    "id": "postcode:ai_services:summarizer_context.py__*__MODULE",
+    "id": "postcode:ai_services:summarizer:summarizer_context.py__*__MODULE",
     "parent_id": null,
     "block_type": "MODULE",
     "start_line_num": 1,
@@ -40,8 +40,8 @@
             "docstring": null,
             "attributes": null,
             "keywords": null,
-            "id": "postcode:ai_services:summarizer_context.py__*__MODULE__*__CLASS-OpenAIReturnContext",
-            "parent_id": "postcode:ai_services:summarizer_context.py__*__MODULE",
+            "id": "postcode:ai_services:summarizer:summarizer_context.py__*__MODULE__*__CLASS-OpenAIReturnContext",
+            "parent_id": "postcode:ai_services:summarizer:summarizer_context.py__*__MODULE",
             "block_type": "CLASS",
             "start_line_num": 2,
             "end_line_num": 9,

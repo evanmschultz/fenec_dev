@@ -1,6 +1,6 @@
 from typing import Callable, LiteralString
 
-import postcode.ai_services.prompts.summarization_prompts as prompts
+import postcode.ai_services.summarizer.prompts.summarization_prompts as prompts
 
 
 class PromptCreator:

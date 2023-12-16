@@ -7,10 +7,12 @@
         "__init__.py"
     ],
     "postcode/ai_services": [
+        "__init__.py"
+    ],
+    "postcode/ai_services/summarizer": [
         "summarizer_configs.py",
         "summarizer_protocol.py",
         "summarization_manager.py",
-        "stream_summarizer_test.py",
         "__init__.py",
         "prompt_creator.py",
         "temp.py",
@@ -18,7 +20,7 @@
         "summarizer.py",
         "summarizer_assistant.py"
     ],
-    "postcode/ai_services/prompts": [
+    "postcode/ai_services/summarizer/prompts": [
         "__init__.py",
         "summarization_prompts.py"
     ],

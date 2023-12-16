@@ -1,10 +1,10 @@
 {
-    "file_path": "postcode/ai_services/prompts/__init__.py",
+    "file_path": "postcode/ai_services/summarizer/prompts/__init__.py",
     "docstring": null,
     "header": [],
     "footer": [],
     "imports": null,
-    "id": "postcode:ai_services:prompts:__init__.py__*__MODULE",
+    "id": "postcode:ai_services:summarizer:prompts:__init__.py__*__MODULE",
     "parent_id": null,
     "block_type": "MODULE",
     "start_line_num": 1,

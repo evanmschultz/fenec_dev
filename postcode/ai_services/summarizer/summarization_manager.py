@@ -1,6 +1,6 @@
 import logging
 
-from postcode.ai_services.summarizer_protocol import Summarizer
+from postcode.ai_services.summarizer.summarizer_protocol import Summarizer
 from postcode.post_code_types import ModelType
 
 from postcode.python_parser.models.models import (
@@ -8,7 +8,7 @@ from postcode.python_parser.models.models import (
     ImportModel,
     ModuleModel,
 )
-import postcode.ai_services.summarizer_context as context
+import postcode.ai_services.summarizer.summarizer_context as context
 
 
 class SummarizationManager:
