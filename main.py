@@ -1,17 +1,18 @@
 import logging
 from logging import Logger
-from openai import OpenAI
-from ai_services.summarization_manager import SummarizationManager
-from json_management.json_handler import JSONHandler
-from python_parser.models.models import ModuleModel
 
-from utilities.logger.logging_config import setup_logging
-from python_parser.visitor_manager.visitor_manager import (
+from openai import OpenAI
+
+from postcode.ai_services.summarization_manager import SummarizationManager
+from postcode.json_management.json_handler import JSONHandler
+from postcode.python_parser.models.models import ModuleModel
+
+from postcode.utilities.logger.logging_config import setup_logging
+from postcode.python_parser.visitor_manager.visitor_manager import (
     VisitorManager,
     VisitorManagerProcessFilesReturn,
 )
-
-from ai_services.summarizer import OpenAISummarizer
+from postcode.ai_services.summarizer import OpenAISummarizer
 
 
 def main(
