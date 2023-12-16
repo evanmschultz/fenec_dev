@@ -1,20 +1,15 @@
-from typing import Union
-
 import libcst
 from libcst.metadata import (
     WhitespaceInclusivePositionProvider,
     CodeRange,
 )
 from libcst._metadata_dependent import _UNDEFINED_DEFAULT
+
 from post_code_types import BuilderType
-
-
 from python_parser.models.models import (
     CommentModel,
 )
-from python_parser.visitors.node_processing.common_functions import (
-    extract_important_comment,
-)
+import python_parser.visitors.node_processing.common_functions as common_functions
 from utilities.processing_context import PositionData
 
 
@@ -47,7 +42,7 @@ class BaseVisitor(libcst.CSTVisitor):
         """
 
         parent_builder = self.builder_stack[-1]
-        content: CommentModel | None = extract_important_comment(node)
+        content: CommentModel | None = common_functions.extract_important_comment(node)
         if content:
             parent_builder.add_important_comment(content)
 
