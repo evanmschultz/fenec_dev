@@ -185,10 +185,12 @@ class OpenAISummarizer:
             if isinstance(summary_context, OpenAIReturnContext):
                 if summary_context.summary:
                     final_summary = summary_context.summary.split("FINAL SUMMARY:")[-1]
-                    logging.info(f"Full Summary:\n")
+                    logging.info(f"Summary:\n")
                     print(final_summary)
-                    print(f"Prompt tokens: {summary_context.prompt_tokens}")
-                    print(f"Completion tokens: {summary_context.completion_tokens}")
+                    logging.info(f"Prompt tokens: {summary_context.prompt_tokens}")
+                    logging.info(
+                        f"Completion tokens: {summary_context.completion_tokens}"
+                    )
 
         return summary_context if summary_context else "Summary not found."
 
@@ -221,7 +223,7 @@ class OpenAISummarizer:
             >>> print(summary)
         """
 
-        logging.info(f"Summarizing code for model: {model_id}")
+        # logging.info(f"Summarizing code for model: {model_id}")
         prompt: str = self._create_prompt(
             code, children_summaries, dependency_summaries, import_details
         )
@@ -237,8 +239,8 @@ class OpenAISummarizer:
             prompt_tokens=1,
             completion_tokens=1,
         )
-        logging.info(f"Full Summary:\n")
-        print(summary)
+        # logging.info(f"Full Summary:\n")
+        # print(summary)
 
         return summary_context
 
