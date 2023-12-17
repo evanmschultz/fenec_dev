@@ -5,6 +5,7 @@ import libcst
 
 from postcode.python_parser.models.enums import ImportModuleType
 from postcode.python_parser.models.models import ImportModel, ImportNameModel
+import postcode.python_parser.visitors.node_processing.common_functions as common_functions
 
 
 def extract_content_from_empty_lines(
@@ -81,7 +82,7 @@ def process_import_from(node: libcst.ImportFrom) -> ImportModel:
 def _get_import_name(node: libcst.Import) -> str:
     """Gets the import name from an Import node."""
 
-    return str(node.names[0].name.value)
+    return common_functions.extract_code_content(node.names[0].name)
 
 
 def _get_as_name(node: libcst.Import) -> str | None:
@@ -183,9 +184,11 @@ def _get_full_module_path(node) -> str:
     if isinstance(node, libcst.Name):
         return node.value
     elif isinstance(node, libcst.Attribute):
-        return ".".join([_get_full_module_path(node.value), node.attr.value])
+        return common_functions.extract_code_content(node)
     else:
-        return str(node)
+        print(f"\n\nImport Node type: {type(node)}\n")
+        # return str(node)
+        return common_functions.extract_code_content(node)
 
 
 def _extract_as_name(import_alias: libcst.ImportAlias) -> str | None:
