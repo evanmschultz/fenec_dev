@@ -87,7 +87,6 @@
                 "BaseModelBuilder"
             ],
             "docstring": "A builder class for constructing a model of a standalone code block.\n\nThis class extends BaseModelBuilder and specializes in building models of standalone code blocks, which are blocks of code not part of any class or function definitions. It captures details such as variable assignments within the block.\n\nAttributes:\n    standalone_block_attributes (StandaloneCodeBlockSpecificAttributes): An instance containing attributes specific to a standalone code block, such as variable assignments.\n\nArgs:\n    id (str): The unique identifier for the standalone code block model.\n    parent_id (str): The identifier of the parent model (e.g., module or class containing this standalone block).\n\nExample:\n    >>> standalone_block_builder = StandaloneBlockModelBuilder(id='block1', parent_id='module1')\n    >>> standalone_block_builder.set_variable_assignments(['x = 1', 'y = 2'])\n    # Configures the builder with variable assignments for the standalone code block.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder",
             "parent_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE",

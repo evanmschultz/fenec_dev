@@ -66,7 +66,6 @@
             "decorators": null,
             "bases": null,
             "docstring": null,
-            "attributes": null,
             "keywords": null,
             "id": "postcode:ai_services:summarizer:prompt_creator.py__*__MODULE__*__CLASS-PromptCreator",
             "parent_id": "postcode:ai_services:summarizer:prompt_creator.py__*__MODULE",

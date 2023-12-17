@@ -105,7 +105,6 @@
                 "RichHandler"
             ],
             "docstring": "A custom logging handler that extends RichHandler to add syntax highlighting.\n\nThis handler checks if the log record contains a 'syntax_highlight' attribute and, if so, uses 'rich.syntax.Syntax' to render the message with Python syntax highlighting.\n\nInherits:\n    RichHandler: The base handler provided by the rich library for rich text formatting.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:utilities:logger:logging_config.py__*__MODULE__*__CLASS-RichSyntaxHandler",
             "parent_id": "postcode:utilities:logger:logging_config.py__*__MODULE",

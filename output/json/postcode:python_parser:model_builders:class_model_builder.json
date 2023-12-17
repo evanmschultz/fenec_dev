@@ -186,7 +186,6 @@
                 "BaseModelBuilder"
             ],
             "docstring": "A builder class for constructing a model of a Python class.\n\nThis class extends BaseModelBuilder and is specialized for building a model of a Python class, capturing details such as decorators, base classes, documentation strings, class attributes, and class-specific keywords.\n\nAttributes:\n    class_attributes (ClassSpecificAttributes): An instance containing attributes specific to a class, like name, decorators, bases, etc.\n\nArgs:\n    id (str): The unique identifier for the class model.\n    class_name (str): The name of the class.\n    parent_id (str): The identifier of the parent model (e.g., module or class containing this class).",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder",
             "parent_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE",

@@ -109,7 +109,6 @@
             "decorators": null,
             "bases": null,
             "docstring": "Base visitor class for traversing and processing nodes in a CST (Concrete Syntax Tree).\n\nThis abstract class provides the foundational functionality for processing various nodes in a CST, using the libcst library. It is designed to be extended by more specific visitor classes like ModuleVisitor.\n\nAttributes:\n    id (str): An identifier for the visitor instance.\n    builder_stack (list[BuilderType]): A stack of model builders for handling different CST nodes.\n\nMETADATA_DEPENDENCIES (tuple): Metadata dependencies required for processing the CST nodes.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor",
             "parent_id": "postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE",

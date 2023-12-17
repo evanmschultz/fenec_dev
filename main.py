@@ -2,6 +2,9 @@ import logging
 from logging import Logger
 
 from openai import OpenAI
+import chromadb
+
+import postcode.types.chroma as chroma_types
 
 from postcode.ai_services.summarizer.summarization_manager import SummarizationManager
 from postcode.json_management.json_handler import JSONHandler
@@ -13,6 +16,13 @@ from postcode.python_parser.visitor_manager.visitor_manager import (
     VisitorManagerProcessFilesReturn,
 )
 from postcode.ai_services.summarizer.summarizer import OpenAISummarizer
+
+from postcode.databases.chroma import (
+    ChromaDBClientBuilder,
+    ChromaDBClientManager,
+    ChromaDBCollectionManager,
+    ChromaDBLoader,
+)
 
 
 def main(
@@ -44,7 +54,10 @@ def main(
     module_models_tuple: tuple[ModuleModel, ...] = process_files_return.models_tuple
     directory_modules: dict[str, list[str]] = process_files_return.directory_modules
     summarization_manager = SummarizationManager(module_models_tuple, summarizer)
-    summarization_manager.create_and_add_summaries_to_models()
+    finalized_module_models: tuple[
+        ModuleModel, ...
+    ] = summarization_manager.create_and_add_summaries_to_models()
+    # print(finalized_module_models)
     logger.info("Summarization complete")
 
     logger.info("Saving models as JSON")
@@ -52,6 +65,19 @@ def main(
 
     for module_model in module_models_tuple:
         json_manager.save_model_as_json(module_model, module_model.file_path)
+
+    chroma_client: chroma_types.ClientAPI = chromadb.PersistentClient()
+    chroma_client_manager = ChromaDBClientManager(chroma_client)
+    chroma_collection: chroma_types.Collection = (
+        chroma_client_manager.get_or_create_collection("postcode")
+    )
+    chroma_collection_manager = ChromaDBCollectionManager(chroma_collection)
+    chroma_loader = ChromaDBLoader(finalized_module_models, chroma_collection_manager)
+    chroma_loader.load_models()
+
+    print("Collections list", chroma_client_manager.list_collections())
+    chroma_client_manager.delete_collection("postcode")
+    print("Collections list", chroma_client_manager.list_collections())
 
     json_manager.save_visited_directories()
     logger.info("JSON save complete")

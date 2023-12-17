@@ -227,7 +227,6 @@
             "decorators": null,
             "bases": null,
             "docstring": null,
-            "attributes": null,
             "keywords": null,
             "id": "postcode:ai_services:summarizer:summarizer_assistant.py__*__MODULE__*__CLASS-SummarizerAssistant",
             "parent_id": "postcode:ai_services:summarizer:summarizer_assistant.py__*__MODULE",

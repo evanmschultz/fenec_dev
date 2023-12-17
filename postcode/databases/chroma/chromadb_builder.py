@@ -52,7 +52,7 @@ class ChromaDBClientBuilder:
 
     @staticmethod
     def create_persistent_client(
-        path: str = "../chroma",
+        path: str = "./chroma",
         settings: chroma_types.Settings | None = None,
         tenant: str = chroma_types.DEFAULT_TENANT,
         database: str = chroma_types.DEFAULT_DATABASE,

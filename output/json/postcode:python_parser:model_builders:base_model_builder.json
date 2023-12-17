@@ -244,7 +244,6 @@
                 "ABC"
             ],
             "docstring": "Abstract base class for building models of different code blocks.\n\nThis class follows the builder pattern, providing a structured approach to constructing models for various types of code blocks (like modules, classes, functions). It defines common attributes and methods used across all specific model builders.\n\nAttributes:\n    id (str): The unique identifier for the code block.\n    children_builders (list[Union[ClassModelBuilder, FunctionModelBuilder, StandaloneBlockModelBuilder]]):\n        A list of builders for the children code blocks.\n    common_attributes (BaseCodeBlockModel): An instance containing common attributes shared across different code block models.\n\nExample:\n    # This example demonstrates how a derived builder might be initialized and used.\n    >>> class SomeModelBuilder(BaseModelBuilder):\n            def build(self):\n                # Building logic specific to 'SomeModelBuilder'\n                pass\n    >>> builder = SomeModelBuilder(id='123', block_type=BlockType.CLASS, parent_id='root')\n    >>> builder.set_start_line_num(1).set_end_line_num(10)\n    # Sets the start and end line numbers for the code block.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
             "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE",

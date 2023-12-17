@@ -92,7 +92,6 @@
                 "BaseModelBuilder"
             ],
             "docstring": "A builder class for constructing a model of a Python module.\n\nThis class extends BaseModelBuilder and specializes in building a detailed model of a Python module, capturing various aspects such as the module's docstring, header content, footer content, and imports. It allows for the incremental construction of the module model by adding or setting various components.\n\nAttributes:\n    module_attributes (ModuleSpecificAttributes): An instance containing attributes specific to a module, like file path, docstring, header, footer, and imports.\n\nArgs:\n    id (str): The unique identifier for the module model.\n    file_path (str): The file path of the module being modeled.\n\nExample:\n    >>> module_builder = ModuleModelBuilder(id='module1', file_path='/path/to/module.py')\n    >>> module_builder.set_docstring(\"This is a docstring\").add_import(some_import_model)\n    # Configures the module builder with a docstring and an import.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder",
             "parent_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE",

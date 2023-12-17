@@ -229,7 +229,6 @@
                 "BaseVisitor"
             ],
             "docstring": "Visitor class for traversing and building a model of a Python module.\n\nThis class extends BaseVisitor and is used to visit different nodes in a Python module's abstract\nsyntax tree (CST) using the libcst library. It builds a structured model of the module, including\nimports, classes, and functions.\n\nAttributes:\n    id (str): The ID of the module to be generated before instantiation.\n    builder (ModuleModelBuilder): The builder used to construct the module model.\n\nExample:\n    >>> module_builder = ModuleModelBuilder(id=\"module1\", name=\"example_module\")\n    >>> visitor = ModuleVisitor(id=\"module1\", module_builder=module_builder)\n    >>> libcst.parse_module(\"import os\\nclass MyClass:\\n    pass\").visit(visitor)\n    # This will process the module and build its corresponding model using the provided module builder.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor",
             "parent_id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE",

@@ -38,7 +38,6 @@
             ],
             "bases": null,
             "docstring": null,
-            "attributes": null,
             "keywords": null,
             "id": "postcode:ai_services:summarizer:summarizer_context.py__*__MODULE__*__CLASS-OpenAIReturnContext",
             "parent_id": "postcode:ai_services:summarizer:summarizer_context.py__*__MODULE",

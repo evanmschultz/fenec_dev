@@ -164,7 +164,6 @@
             "decorators": null,
             "bases": null,
             "docstring": null,
-            "attributes": null,
             "keywords": null,
             "id": "postcode:databases:arangodb:arangodb_builder.py__*__MODULE__*__CLASS-GraphDBBuilder",
             "parent_id": "postcode:databases:arangodb:arangodb_builder.py__*__MODULE",
