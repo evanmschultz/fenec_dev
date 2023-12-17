@@ -83,16 +83,12 @@ class ChromaDBClientManager:
             ```
         """
 
-        if collection := self.client.get_collection(name):
-            logging.info(f"Getting collection {name}")
-            return collection
-        else:
-            logging.info(f"Creating collection {name}")
-            return self.client.get_or_create_collection(
-                name,
-                metadata=metadata,
-                embedding_function=embedding_function,
-            )
+        logging.info(f"Getting or creating collection: {name}")
+        return self.client.get_or_create_collection(
+            name,
+            metadata=metadata,
+            embedding_function=embedding_function,
+        )
 
     def delete_collection(self, name: str) -> None:
         """
