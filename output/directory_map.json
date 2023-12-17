@@ -23,24 +23,23 @@
     ],
     "postcode/types": [
         "postcode.py",
+        "openai.py",
         "chroma.py"
     ],
     "postcode/ai_services": [
         "__init__.py"
     ],
     "postcode/ai_services/summarizer": [
-        "summarizer_configs.py",
-        "summarizer_protocol.py",
         "summarization_manager.py",
+        "summarization_context.py",
         "__init__.py",
-        "prompt_creator.py",
         "temp.py",
-        "summarizer_context.py",
         "summarizer.py",
         "summarizer_assistant.py"
     ],
     "postcode/ai_services/summarizer/prompts": [
         "__init__.py",
+        "prompt_creator.py",
         "summarization_prompts.py"
     ],
     "postcode/python_parser": [

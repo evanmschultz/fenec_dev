@@ -1,6 +1,7 @@
 import logging
 
-from postcode.ai_services.summarizer import Summarizer, OpenAIReturnContext
+from postcode.ai_services.summarizer.summarizer import OpenAIReturnContext
+from postcode.ai_services.summarizer.summarization_context import Summarizer
 from postcode.types.postcode import ModelType
 
 from postcode.python_parser.models.models import (

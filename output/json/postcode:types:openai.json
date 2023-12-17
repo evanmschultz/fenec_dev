@@ -1,0 +1,66 @@
+{
+    "file_path": "postcode/types/openai.py",
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "ChatCompletionSystemMessageParam",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai.types.chat.chat_completion_system_message_param",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChatCompletionUserMessageParam",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai.types.chat.chat_completion_user_message_param",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChatCompletionMessageParam",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai.types.chat.chat_completion_message_param",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChatCompletion",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai.types.chat.chat_completion",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "id": "postcode:types:openai.py__*__MODULE",
+    "parent_id": null,
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 9,
+    "code_content": "from openai.types.chat.chat_completion_system_message_param import (\n    ChatCompletionSystemMessageParam,\n)\nfrom openai.types.chat.chat_completion_user_message_param import (\n    ChatCompletionUserMessageParam,\n)\nfrom openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam\nfrom openai.types.chat.chat_completion import ChatCompletion\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "Summary:\n\n        [{'content': \"You are a code summarizer. Your task is to analyze the code provided and create a concise summary of the\\ngiven code based on the prompt provided. Your summary should be technical yet understandable, providing a clear picture of the code's purpose, main\\nfeatures, and key components.\\n\", 'role': 'system'}, {'content': 'Prompt: \"Summarize the code provided.\"\\n\\nIf the code is for a function, or class, specifically reference the function or class name, and any names defined inside of it, in your summary.\\n\\nChain of Density Steps:\\n\\n1. INITIAL SUMMARY: Start by generating a high-level summary of the code. This summary should briefly describe the main functionality \\nand purpose of the code. For example, \"This code implements a basic sorting algorithm to return a list of integers sorted in ascending order.\"\\n\\n2. IDENTIFY MISSING KEY COMPONENTS: After creating the initial summary, identify 1-3 key components that are missing from the summary. These \\ncomponents could be specific functions, algorithms, data structures, classes, local and third-party library imports and variables, etc.\\n\\n3. INCORPORATE MISSING COMPONENTS: Rewrite the summary to include the identified components, making it more detailed and informative and explains the\\nfunctionality and purpose of the code even better. Ensure that the length of the summary does not increase. For example, \"This code implements a \\nquicksort algorithm using a pivot selection function and partitioning logic to return a list of integers in ascending order.\"\\n\\n4. REPEAT THE PROCESS: Continue this process, identifying missing components and integrating them into the summary in each iteration. After \\neach iteration, the summary should become more detailed, covering more aspects of the code and getting better detail on its purpose without becoming \\nlonger.\\n\\n5. FINAL SUMMARY: After 5 iterations, the final summary should be dense with technical details and accurately reflect the key functionalities, \\nalgorithms, and structures used in the code, and include detailed information on the code\\'s purpose. It should provide a clear and concise overview of \\nthe code\\'s content and purpose.\\n\\nGuidelines:\\n- Ensure that each iteration of the summary accurately reflects the code\\'s functionality and purpose.\\n- The summary should be technical yet understandable, providing a clear picture of the code\\'s purpose, main features, and key components.\\n- Avoid technical jargon unless it is directly relevant to the code\\'s main functionality.\\n- The final summary should be comprehensive yet concise, capturing the essence of the code, and written below the phrase \"FINAL SUMMARY:\".\\n\\nCODE:\\n```Python\\nfrom openai.types.chat.chat_completion_system_message_param import (\\n    ChatCompletionSystemMessageParam,\\n)\\nfrom openai.types.chat.chat_completion_user_message_param import (\\n    ChatCompletionUserMessageParam,\\n)\\nfrom openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam\\nfrom openai.types.chat.chat_completion import ChatCompletion\\n\\n```\\n\\nSTANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:\\n\\nfrom openai.types.chat.chat_completion_system_message_param import ChatCompletionSystemMessageParam\\nfrom openai.types.chat.chat_completion_user_message_param import ChatCompletionUserMessageParam\\nfrom openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam\\nfrom openai.types.chat.chat_completion import ChatCompletion\\n\\nMake sure to write your final summary below the phrase \"FINAL SUMMARY:\". Take a deep breath and do some great work!\\n', 'role': 'user'}]\n \n        ",
+    "children": null
+}

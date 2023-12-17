@@ -13,7 +13,7 @@ from postcode.python_parser.visitor_manager.import_and_dependency_updater import
 )
 from postcode.python_parser.models.models import ModuleModel
 
-from postcode.ai_services.summarizer.summarizer_protocol import Summarizer
+from postcode.ai_services.summarizer.summarization_context import Summarizer
 
 EXCLUDED_DIRECTORIES: set[str] = {".venv", "node_modules", "__pycache__", ".git"}
 

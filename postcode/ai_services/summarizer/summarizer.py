@@ -8,13 +8,13 @@ from postcode.types.openai import (
     ChatCompletion,
 )
 
-from postcode.ai_services.summarizer.temp import code_example
-
-from postcode.ai_services.summarizer import (
+from postcode.ai_services.summarizer.prompts import PromptCreator
+from postcode.ai_services.summarizer.summarization_context import (
     OpenAIReturnContext,
-    PromptCreator,
     SummaryCompletionConfigs,
 )
+
+from postcode.ai_services.summarizer.temp import code_example
 
 
 class OpenAISummarizer:
