@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping
 
 import postcode.types.chroma as chroma_types
 
@@ -96,6 +96,9 @@ class ChromaDBCollectionManager:
             collection_manager.add_embeddings(id, metadatas, documents)
             ```
         """
+
+        if not len(ids) == len(documents) == len(metadatas):
+            raise ValueError("The length of ids, documents, and metadatas must match.")
 
         try:
             logging.info(f"Adding embeddings to collection {self.collection.name}")
@@ -223,6 +226,7 @@ class ChromaDBCollectionManager:
                 )
             ```
         """
+
         try:
             logging.info(f"Querying collection {self.collection.name}")
 
@@ -246,21 +250,181 @@ class ChromaDBCollectionManager:
             raise exception
 
     def modify_collection_name(self, name: str) -> None:
-        # TODO: Add docstring
+        """
+        Modifies the name of the collection managed by this class.
+
+        Args:
+            - name (str): The new name to assign to the collection.
+
+        Examples:
+            ```Python
+            # Rename the collection to 'new_collection_name'
+            collection_manager.modify_collection_name('new_collection_name')
+            ```
+        """
+
         self.collection.modify(name=name)
 
     def modify_collection_metadata(
         self, metadata: dict[str, Any] | None = None
     ) -> None:
-        # TODO: Add docstring
+        """
+        Modifies the metadata of the collection managed by this class.
+
+        Args:
+            - metadata (dict[str, Any] | None): The new metadata to assign to the collection. If None, no change is made.
+
+        Examples:
+            ```Python
+            # Update metadata of the collection
+            new_metadata = {"description": "Updated collection metadata"}
+            collection_manager.modify_collection_metadata(new_metadata)
+            ```
+        """
+
         self.collection.modify(metadata=metadata)
 
     def update_metadata_or_documents_by_ids(
         self,
         ids: list[str],
-        metadatas: list[Mapping[str, str | int | float | bool]],
-        documents: list[str],
+        metadatas: list[Mapping[str, str | int | float | bool]] | None = None,
+        documents: list[str] | None = None,
     ) -> None:
-        # TODO: Add docstring
-        # TODO: Finish logic
-        self.collection.update(ids=ids, metadatas=metadatas, documents=documents)
+        """
+        Updates the metadata or documents of specific entries in the collection by their ids.
+
+        Args:
+            - ids (list[str]): List of ids of the entries to be updated.
+            - metadatas (list[Mapping[str, Any]] | None): List of metadata updates corresponding to the ids.
+            - documents (list[str] | None): List of document updates corresponding to the ids.
+
+        Raises:
+            - ValueError: If neither metadatas nor documents are provided.
+            - ValueError: If the length of ids and documents don't match.
+            - ValueError: If the length of ids and metadatas don't match.
+            - ValueError: If the length of ids, metadatas, and documents don't match.
+
+        Notes:
+            - As of now, ChromaDB doesn't raise an exception if you provide an id that doesn't exist.
+
+        Examples:
+            ```Python
+            # Update metadata and documents for specific ids
+            ids_to_update = ['id1', 'id2']
+            metadata_updates = [{"key1": "value1"}, {"key2": "value2"}]
+            document_updates = ["new document 1", "new document 2"]
+            collection_manager.update_metadata_or_documents_by_ids(ids_to_update, metadata_updates, document_updates)
+            ```
+        """
+
+        if not metadatas and not documents:
+            raise ValueError("You must provide either metadatas or documents.")
+        if not metadatas and documents:
+            if len(ids) != len(documents):
+                raise ValueError("The length of ids and documents must match.")
+        if metadatas and not documents:
+            if len(ids) != len(metadatas):
+                raise ValueError("The length of ids and metadatas must match.")
+        if metadatas and documents:
+            if len(ids) != len(metadatas) != len(documents):
+                raise ValueError(
+                    "The length of ids, metadatas, and documents must match."
+                )
+        for index, id in enumerate(ids):
+            if not self.collection.get(id):
+                logging.error(
+                    f"Id {id} does not exist in collection {self.collection.name}."
+                )
+                ids.pop(index)
+                if metadatas:
+                    popped_metadata = metadatas.pop(index)
+                    if popped_metadata:
+                        logging.warning(
+                            f"Removing metadata at index {index} from update."
+                        )
+                if documents:
+                    popped_document = documents.pop(index)
+                    if popped_document:
+                        logging.warning(
+                            f"Removing document at index {index} from update."
+                        )
+
+        if not ids:
+            logging.warning("All updates failed.")
+            return None
+        else:
+            logging.info(f"Updating collection {self.collection.name} with ids {ids}.")
+            self.collection.update(ids=ids, metadatas=metadatas, documents=documents)
+
+    def upsert_documents(
+        self,
+        ids: list[str],
+        documents: list[str],
+        metadatas: list[Mapping[str, str | int | float | bool]],
+        # embeddings: list[chroma_types.Embedding],
+    ) -> None:
+        """
+        Inserts or updates documents in the collection, based on the provided ids.
+
+        Args:
+            - ids (list[str]): List of ids for the documents to be inserted or updated.
+            - documents (list[str]): List of documents corresponding to the ids.
+            - metadatas (list[Mapping[str, Any]]): List of metadata corresponding to the ids.
+
+        Raises:
+            - ValueError: If the lengths of ids, documents, and metadatas don't match.
+
+        Examples:
+            ```Python
+            # Upsert documents in the collection
+            ids = ['id1', 'id2']
+            documents = ['doc1', 'doc2']
+            metadatas = [{"meta1": "value1"}, {"meta2": "value2"}]
+
+            # Upsert documents in the collection
+            collection_manager.upsert_documents(ids, documents, metadatas)
+            ```
+        """
+
+        if len(ids) != len(documents) != len(metadatas):
+            raise ValueError("The length of ids, documents, and metadatas must match.")
+
+        logging.info(f"Upserting collection {self.collection.name} with ids {ids}.")
+        self.collection.upsert(
+            ids=ids,
+            # embeddings=embeddings,
+            metadatas=metadatas,
+            documents=documents,
+        )
+
+    def delete_embeddings(self, ids: list[str]) -> None:
+        """
+        Deletes embeddings from the collection based on the provided ids.
+
+        Args:
+            - ids (list[str]): List of ids corresponding to the embeddings to be deleted.
+
+        Examples:
+            ```Python
+            # Delete specific embeddings by ids
+            ids_to_delete = ['id1', 'id2']
+            collection_manager.delete_embeddings(ids_to_delete)
+            ```
+        """
+
+        ids_to_delete: list[str] = ids.copy()
+        for index, id in enumerate(ids_to_delete):
+            if not self.collection.get(id):
+                logging.error(
+                    f"Id {id} does not exist in collection {self.collection.name}."
+                )
+                ids_to_delete.pop(index)
+
+        if not ids_to_delete:
+            logging.warning("No IDs given were in the database.")
+            return None
+
+        logging.info(
+            f"Deleting embeddings from collection {self.collection.name} with ids {ids_to_delete}."
+        )
+        self.collection.delete(ids_to_delete)
