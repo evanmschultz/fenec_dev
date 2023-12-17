@@ -23,7 +23,7 @@
                 }
             ],
             "imported_from": "chromadb.config",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -35,7 +35,7 @@
                 }
             ],
             "imported_from": "chromadb.api",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -97,7 +97,7 @@
                 }
             ],
             "imported_from": "chromadb.api.types",
-            "import_module_type": "LOCAL",
+            "import_module_type": "THIRD_PARTY",
             "local_module_id": null
         },
         {
@@ -109,8 +109,8 @@
                 }
             ],
             "imported_from": "chromadb",
-            "import_module_type": "LOCAL",
-            "local_module_id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE"
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
         },
         {
             "import_names": [
@@ -121,8 +121,8 @@
                 }
             ],
             "imported_from": "chromadb",
-            "import_module_type": "LOCAL",
-            "local_module_id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE"
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
         }
     ],
     "id": "postcode:types:chroma.py__*__MODULE",

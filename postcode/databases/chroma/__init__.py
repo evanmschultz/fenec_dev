@@ -11,3 +11,4 @@ from postcode.databases.chroma.chromadb_client_manager import ChromaDBClientMana
 from postcode.databases.chroma.chromadb_collection_manager import (
     ChromaDBCollectionManager,
 )
+from postcode.databases.chroma.chromadb_loader import ChromaDBLoader

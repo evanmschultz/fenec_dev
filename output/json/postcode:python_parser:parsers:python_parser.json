@@ -104,7 +104,6 @@
             "decorators": null,
             "bases": null,
             "docstring": "A parser for Python source code, using libcst to parse and construct a module model.\n\nThis class takes the path to a Python file, reads its contents, and parses it into a structured\nmodule model using the libcst library. It is designed to work with a specific file at a time.\n\nAttributes:\n    file_path (str): The path to the Python file to be parsed.\n\nExample:\n    >>> python_parser = PythonParser(\"/path/to/python/file.py\")\n    >>> module_model = python_parser.parse(python_parser.open_file())\n    # This will parse the specified Python file and return a structured module model.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser",
             "parent_id": "postcode:python_parser:parsers:python_parser.py__*__MODULE",

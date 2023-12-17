@@ -119,7 +119,6 @@
             "decorators": null,
             "bases": null,
             "docstring": "A factory class for creating instances of different types of model builders.\n\nThis class uses a strategy pattern to map each block type to a corresponding builder creation function. Depending on the block type specified, it creates and returns an instance of the appropriate model builder class.\n\nThe factory supports creating builders for modules, classes, functions, and standalone code blocks.\n\nAttributes:\n    _creation_strategies (dict[BlockType, Callable[..., Any]]): A dictionary mapping block types to their corresponding builder creation functions.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory",
             "parent_id": "postcode:python_parser:model_builders:builder_factory.py__*__MODULE",

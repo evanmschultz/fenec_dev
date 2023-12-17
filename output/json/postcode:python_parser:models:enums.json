@@ -34,7 +34,6 @@
                 "Enum"
             ],
             "docstring": "Enum of import module types.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:models:enums.py__*__MODULE__*__CLASS-ImportModuleType",
             "parent_id": "postcode:python_parser:models:enums.py__*__MODULE",
@@ -87,7 +86,6 @@
                 "Enum"
             ],
             "docstring": "Class representing the different types of important comments.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:models:enums.py__*__MODULE__*__CLASS-CommentType",
             "parent_id": "postcode:python_parser:models:enums.py__*__MODULE",
@@ -140,7 +138,6 @@
                 "Enum"
             ],
             "docstring": "Enum of code block types.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:models:enums.py__*__MODULE__*__CLASS-BlockType",
             "parent_id": "postcode:python_parser:models:enums.py__*__MODULE",

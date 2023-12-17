@@ -58,7 +58,6 @@
                 "BaseModel"
             ],
             "docstring": "Configs for the summarization completion.\n\nUsed to set the chat completion parameters for the OpenAI chat completions method call.\n\nArgs:\n    - system_message (str): The system message used for chat completion.\n    - model (str): The model to use for the completion. Default is \"gpt-4-1106-preview\".\n    - max_tokens (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n    - presence_penalty (float | None): Penalty for new tokens based on their presence in the text so far.\n        Default is None.\n    - stream (bool): Whether to stream back partial progress. Default is False.\n    - temperature (float): Sampling temperature to use. Default is 0.0.\n\nNotes:\n    - model must be a valid OpenAI model name.\n\nExamples:\n    >>> system_message = \"Summarize the following code.\"\n    >>> summary_completion_configs = SummaryCompletionConfigs(\n    ...     system_message=system_message,\n    ...     model=\"gpt-4-1106-preview\",\n    ...     max_tokens=100,\n    ...     presence_penalty=0.0,\n    ...     stream=False,\n    ...     temperature=0.0,\n    ... )",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:ai_services:summarizer:summarizer_configs.py__*__MODULE__*__CLASS-SummaryCompletionConfigs",
             "parent_id": "postcode:ai_services:summarizer:summarizer_configs.py__*__MODULE",

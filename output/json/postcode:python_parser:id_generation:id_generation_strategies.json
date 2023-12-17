@@ -39,7 +39,6 @@
                 "ABC"
             ],
             "docstring": "Abstract base class defining the interface for ID generation strategies.\n\nThis class serves as a template for creating various ID generation strategies for different types\nof code blocks, such as modules, classes, functions, and standalone code blocks.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy",
             "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
@@ -125,7 +124,6 @@
                 "IDGenerationStrategy"
             ],
             "docstring": "ID generation strategy for modules.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy",
             "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
@@ -200,7 +198,6 @@
                 "IDGenerationStrategy"
             ],
             "docstring": "ID generation strategy for classes.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy",
             "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
@@ -250,7 +247,6 @@
                 "IDGenerationStrategy"
             ],
             "docstring": "ID generation strategy for functions.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-FunctionIDGenerationStrategy",
             "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
@@ -300,7 +296,6 @@
                 "IDGenerationStrategy"
             ],
             "docstring": "ID generation strategy for standalone code blocks.",
-            "attributes": null,
             "keywords": null,
             "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-StandaloneCodeBlockIDGenerationStrategy",
             "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
