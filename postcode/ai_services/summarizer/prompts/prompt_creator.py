@@ -1,9 +1,27 @@
 from typing import Callable, LiteralString
 
-import postcode.ai_services.summarizer.prompts.summarization_prompts as prompts
+from postcode.ai_services.summarizer.prompts import summarization_prompts as prompts
 
 
 class PromptCreator:
+    """
+    Class for creating prompts for the summarizer.
+
+    Methods:
+        - `create_prompt`: Static method that creates a prompt for the summarizer.
+
+    Examples:
+        ```Python
+        # Create a prompt
+        prompt: str | None = PromptCreator.create_prompt(
+            code,
+            children_summaries,
+            dependency_summaries,
+            import_details,
+        )
+        ```
+    """
+
     _interpolation_strategies: dict[str, Callable[..., str]] = {
         "children_dependencies_import_details": lambda code, children_summaries, dependencies, import_details: PromptCreator._interpolate_prompt_string(
             prompts.COD_SUMMARIZATION_PROMPT_WITH_EVERYTHING,
@@ -53,6 +71,8 @@ class PromptCreator:
 
     @staticmethod
     def _interpolate_prompt_string(prompt_template: str, **kwargs) -> str:
+        """Returns a prompt string with the provided values interpolated into the template."""
+
         prompt_string: str = prompt_template
         for key, value in kwargs.items():
             if value:
@@ -60,13 +80,37 @@ class PromptCreator:
 
         return prompt_string
 
+    @staticmethod
     def create_prompt(
-        self,
         code: str,
         children_summaries: str | None = None,
         dependency_summaries: str | None = None,
         import_details: str | None = None,
     ) -> str | None:
+        """
+        Dynamically creates a prompt for the summarizer based on the provided arguments.
+
+        Args:
+            - code (str): The code snippet to summarize.
+            - children_summaries (str, optional): The summaries of the children of the code snippet.
+            - dependency_summaries (str, optional): The summaries of the dependencies of the code snippet.
+            - import_details (str, optional): The import details of the code snippet.
+
+        Returns:
+            - str: The prompt for the summarizer.
+
+        Examples:
+            ```Python
+            # Create a prompt
+            prompt: str | None = PromptCreator.create_prompt(
+                code,
+                children_summaries,
+                dependency_summaries,
+                import_details,
+            )
+            ```
+        """
+
         strategy_key: LiteralString = "_".join(
             [
                 "children" if children_summaries else "nochildren",
@@ -74,79 +118,12 @@ class PromptCreator:
                 "import_details" if import_details else "noimport_details",
             ]
         )
-        strategy: Callable[..., str] | None = self._interpolation_strategies.get(
-            strategy_key
-        )
+        strategy: Callable[
+            ..., str
+        ] | None = PromptCreator._interpolation_strategies.get(strategy_key)
         if strategy:
             return strategy(
                 code, children_summaries, dependency_summaries, import_details
             )
         else:
             raise ValueError(f"Could not find strategy for {strategy_key}")
-
-
-def main() -> None:
-    prompt_creator = PromptCreator()
-    prompt_1: str | None = prompt_creator.create_prompt(
-        code="example code",
-        children_summaries="example children summaries",
-        dependency_summaries="example dependencies",
-        import_details="example import details",
-    )
-    print("Everything:\n")
-    print(prompt_1, "\n")
-
-    prompt_2: str | None = prompt_creator.create_prompt(
-        code="example code",
-        children_summaries="example children summaries",
-        dependency_summaries="example dependencies",
-    )
-    print("No import details:\n")
-    print(prompt_2, "\n")
-
-    prompt_3: str | None = prompt_creator.create_prompt(
-        code="example code",
-        children_summaries="example children summaries",
-        import_details="example import details",
-    )
-    print("No dependencies:\n")
-    print(prompt_3, "\n")
-
-    prompt_4: str | None = prompt_creator.create_prompt(
-        code="example code",
-        children_summaries="example children summaries",
-    )
-    print("No dependencies and no import details:\n")
-    print(prompt_4, "\n")
-
-    prompt_5: str | None = prompt_creator.create_prompt(
-        code="example code",
-        dependency_summaries="example dependencies",
-        import_details="example import details",
-    )
-    print("No children:\n")
-    print(prompt_5, "\n")
-
-    prompt_6: str | None = prompt_creator.create_prompt(
-        code="example code",
-        dependency_summaries="example dependencies",
-    )
-    print("No children and no import details:\n")
-    print(prompt_6, "\n")
-
-    prompt_7: str | None = prompt_creator.create_prompt(
-        code="example code",
-        import_details="example import details",
-    )
-    print("No children and no dependencies:\n")
-    print(prompt_7, "\n")
-
-    prompt_8: str | None = prompt_creator.create_prompt(
-        code="example code",
-    )
-    print("No children, no dependencies, and no import details:\n")
-    print(prompt_8, "\n")
-
-
-if __name__ == "__main__":
-    main()

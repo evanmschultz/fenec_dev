@@ -1,6 +1,6 @@
 import logging
 
-from postcode.ai_services.summarizer.summarizer_protocol import Summarizer
+from postcode.ai_services.summarizer import Summarizer, OpenAIReturnContext
 from postcode.types.postcode import ModelType
 
 from postcode.python_parser.models.models import (
@@ -8,10 +8,54 @@ from postcode.python_parser.models.models import (
     ImportModel,
     ModuleModel,
 )
-import postcode.ai_services.summarizer.summarizer_context as context
 
 
 class SummarizationManager:
+    """
+    Manages the summarization process for Python code modules.
+
+    This manager handles the summarization of code blocks within Python module models. It uses an instance of a 
+    Summarizer to generate summaries for each code block, tracking token usage for cost estimation and updating 
+    module models with their respective summaries.
+
+    Args:
+        - module_models_tuple (tuple[ModuleModel, ...]): A tuple of module models to summarize.
+        - summarizer (Summarizer): An instance of a Summarizer to perform the summarization.
+
+    Attributes:
+        - module_models_tuple (tuple[ModuleModel, ...]): Stores the module models to be summarized.
+        - summarizer (Summarizer): The summarizer instance used for generating summaries.
+        - summarized_code_block_ids (set[str]): A set of IDs for code blocks that have been summarized to avoid 
+            repetition.
+        - prompt_tokens (int): The total number of prompt tokens used in summarization.
+        - completion_tokens (int): The total number of completion tokens used in summarization.
+        - updated_module_models (list[ModuleModel]): A list of module models with updated summaries.
+
+    Methods:
+        - `create_and_add_summaries_to_models`: Generates summaries for each module model.
+        - `_summarize_module`: Handles the summarization of a single module.
+        - `_summarize_code_block`: Summarizes an individual code block.
+        - `_handle_module_model`: Special handling for module model summarization.
+        - `_get_import_details`: Retrieves details of import statements.
+        - `_get_child_summaries`: Gathers summaries of child models.
+        - `_stringify_child_summaries`: Converts child summaries to a single string.
+        - `_stringify_dependency_summaries`: Converts dependency summaries to a single string.
+        - `_get_local_dependency_summary`: Gets a summary for a local dependency.
+        - `_get_local_import_summary`: Summarizes a local import statement.
+        - `_get_local_import_from_summary`: Summarizes 'from' import statements for local modules.
+
+    Examples:
+        ```Python
+        client = OpenAI()
+        # Create a summarizer instance with the OpenAI client
+        summarizer = OpenAISummarizer(client=client)
+        # Create a summarization manager instance with the summarizer
+        summarization_manager = SummarizationManager(module_models_tuple, summarizer)
+        # Generate summaries for each module model
+        updated_module_models = summarization_manager.create_and_add_summaries_to_models()
+        ```
+    """
+
     def __init__(
         self,
         module_models_tuple: tuple[ModuleModel, ...],
@@ -26,6 +70,7 @@ class SummarizationManager:
 
     @property
     def total_cost(self) -> float:
+        """Provides the total cost of the summarization process."""
         prompt_cost: int = self.prompt_tokens * 1  # Costs 1 cent per 1,000 tokens
         completion_cost: int = (
             self.completion_tokens * 3
@@ -33,12 +78,31 @@ class SummarizationManager:
         return (prompt_cost + completion_cost) / 100_000  # Convert to dollars
 
     def create_and_add_summaries_to_models(self) -> tuple[ModuleModel, ...]:
+        """
+        Generates summaries for each module model and updates them.
+
+        This method iterates over the provided module models, generating summaries for each. The summarized modules are then added to the list of updated module models.
+
+        Returns:
+            - tuple[ModuleModel, ...]: A tuple of module models with updated summaries.
+
+        Example:
+            ```Python
+            summarization_manager = SummarizationManager(...)
+            updated_modules = summarization_manager.create_and_add_summaries_to_models()
+            print(updated_modules)
+            ```
+        """
         for module_model in self.module_models_tuple:
             self._summarize_module(module_model)
 
         return tuple(self.updated_module_models)
 
     def _summarize_module(self, module_model: ModuleModel) -> None:
+        """
+        Summarizes a single module model by calling `_summarize_code_block` method and adds it to the list of
+        updated module models.
+        """
         if module_model.id not in self.summarized_code_block_ids:
             self._summarize_code_block(module_model)
             # logging.info(f"Summarized module: {module_model.id}")
@@ -50,6 +114,25 @@ class SummarizationManager:
         model: ModelType,
         recursion_path: list[str] = [],
     ) -> str | None:
+        """
+        Recursively summarizes a code block, its children, and its dependencies.
+
+        Travels down the tree of code blocks until it finds ones that have no children or dependencies summarizes that code block
+        and returns the summary. The return summary is then added to the summary of the parent code block to allow for better contextual
+        information in the summary. If a code block has already been summarized, the summary will be gotten from the code block model
+        and added to the prompt for generating the parent summary.
+
+        Args:
+            - model (ModelType): The code block model to summarize.
+            - recursion_path (list[str]): A list of code block IDs that have been visited to avoid infinite recursion.
+
+        Returns:
+            - str | None: The summary of the provided code block, or None if the summarization failed.
+
+        Notes:
+            - This method is too large and needs to be refactored.
+            - We plan to allow it to take a `recursion_path` argument to allow for customization of summary creation direction.
+        """
         if model.id in recursion_path or not model.code_content:
             return None
         if model.id in self.summarized_code_block_ids:
@@ -96,14 +179,14 @@ class SummarizationManager:
                 model, recursion_path
             )
 
-        children_summaries: str | None = self._stringify_child_summaries(
+        children_summaries: str | None = self._stringify_children_summaries(
             child_summary_list
         )
-        dependency_summaries: str | None = self._stringify_dependency_summaries(
+        dependency_summaries: str | None = self._stringify_dependencies_summaries(
             dependency_summary_list
         )
 
-        summary_context: context.OpenAIReturnContext | str = (
+        summary_context: OpenAIReturnContext | str = (
             self.summarizer.test_summarize_code(
                 model.code_content,
                 model_id=model.id,
@@ -113,7 +196,7 @@ class SummarizationManager:
             )
         )
 
-        if isinstance(summary_context, context.OpenAIReturnContext):
+        if isinstance(summary_context, OpenAIReturnContext):
             if summary_context.summary:
                 model.summary = summary_context.summary
                 self.summarized_code_block_ids.add(model.id)
@@ -126,13 +209,14 @@ class SummarizationManager:
 
         return (
             summary_context.summary
-            if isinstance(summary_context, context.OpenAIReturnContext)
+            if isinstance(summary_context, OpenAIReturnContext)
             else summary_context
         )
 
     def _handle_module_model(
         self, model: ModuleModel, recursion_path: list[str]
     ) -> tuple[list[str], str | None]:
+        """Handles the special case of summarizing a module model."""
         dependency_summary_list: list[str] = []
         all_import_details: str | None = None
         if model.imports:
@@ -157,6 +241,7 @@ class SummarizationManager:
         return dependency_summary_list, all_import_details
 
     def _get_import_details(self, import_model: ImportModel) -> str | None:
+        """Retrieves details of import statements to be used in the prompt."""
         if import_model.import_module_type == "LOCAL" or not import_model.import_names:
             return None
 
@@ -177,6 +262,7 @@ class SummarizationManager:
     def _get_child_summaries(
         self, model: ModelType, recursion_path: list[str]
     ) -> list[str]:
+        """Gathers summaries of child models."""
         child_summary_list: list[str] = []
         if model.children:
             for child_model in model.children:
@@ -188,25 +274,27 @@ class SummarizationManager:
                     child_summary_list.append(child_summary)
         return child_summary_list
 
-    def _stringify_child_summaries(
-        self, child_summary_list: list[str] | None
+    def _stringify_children_summaries(
+        self, children_summary_list: list[str] | None
     ) -> str | None:
-        if not child_summary_list:
+        """Converts all of the child summaries to a single string to be used in the prompt."""
+        if not children_summary_list:
             return None
 
         children_summaries: str = ""
-        for child_summary in child_summary_list:
+        for child_summary in children_summary_list:
             children_summaries += f"\n{child_summary}"
         return children_summaries
 
-    def _stringify_dependency_summaries(
-        self, dependency_summary_list: list[str] | None
+    def _stringify_dependencies_summaries(
+        self, dependencies_summary_list: list[str] | None
     ) -> str | None:
-        if not dependency_summary_list:
+        """Converts all of the dependency summaries to a single string to be used in the prompt."""
+        if not dependencies_summary_list:
             return None
 
         dependency_summaries: str = ""
-        for dependency_summary in dependency_summary_list:
+        for dependency_summary in dependencies_summary_list:
             dependency_summaries += f"\n{dependency_summary}"
         return dependency_summaries
 
@@ -216,6 +304,7 @@ class SummarizationManager:
         model: ModelType,
         recursion_path: list[str],
     ) -> str | None:
+        """Gets a summary for a dependency local to the module."""
         if not model.children:
             return None
 
@@ -229,6 +318,7 @@ class SummarizationManager:
     def _get_local_import_summary(
         self, dependency: ImportModel, recursion_path: list[str]
     ) -> str | None:
+        """Gets the summary of a dependency imported from a separate module, but is local to the project."""
         for module_model in self.module_models_tuple:
             if module_model.id == dependency.local_module_id:
                 return self._summarize_code_block(
@@ -239,6 +329,10 @@ class SummarizationManager:
     def _get_local_import_from_summary(
         self, dependency: ImportModel, recursion_path: list[str]
     ) -> str | None:
+        """
+        Gets the summary of a dependency imported from a separate module, but is local to the project.
+        Unique handling for 'from' import statements.
+        """
         for import_name in dependency.import_names:
             for module_model in self.module_models_tuple:
                 if module_model.id == dependency.local_module_id:
