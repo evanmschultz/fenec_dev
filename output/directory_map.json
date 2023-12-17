@@ -9,7 +9,6 @@
         "__init__.py"
     ],
     "postcode/databases/chroma": [
-        "chromadb_loader.py",
         "__init__.py",
         "chromadb_collection_manager.py",
         "chromadb_builder.py",

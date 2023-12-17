@@ -1,5 +1,6 @@
 import logging
 from typing import Any, Mapping
+from postcode.python_parser.models.models import ModuleModel
 
 import postcode.types.chroma as chroma_types
 
@@ -428,3 +429,27 @@ class ChromaDBCollectionManager:
             f"Deleting embeddings from collection {self.collection.name} with ids {ids_to_delete}."
         )
         self.collection.delete(ids_to_delete)
+
+    def load_models(self, module_models: tuple[ModuleModel, ...]) -> None:
+        ids: list[str] = []
+        documents: list[str] = []
+        metadatas: list[Mapping[str, str | int | float | bool]] = []
+
+        for module_model in module_models:
+            ids.append(module_model.id)
+            documents.append(module_model.code_content)
+            metadatas.append(module_model.convert_to_metadata())
+
+            if module_model.children:
+                for child in module_model.children:
+                    ids.append(child.id)
+                    documents.append(child.code_content)
+                    metadatas.append(child.convert_to_metadata())
+
+        logging.info(
+            f"{self.collection.name} has {self.collection_embedding_count()} embeddings."
+        )
+        self.upsert_documents(ids=ids, documents=documents, metadatas=metadatas)
+        logging.info(
+            f"After upsert {self.collection.name} has {self.collection_embedding_count()} embeddings."
+        )

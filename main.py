@@ -21,7 +21,6 @@ from postcode.databases.chroma import (
     ChromaDBClientBuilder,
     ChromaDBClientManager,
     ChromaDBCollectionManager,
-    ChromaDBLoader,
 )
 
 
@@ -72,8 +71,8 @@ def main(
         chroma_client_manager.get_or_create_collection("postcode")
     )
     chroma_collection_manager = ChromaDBCollectionManager(chroma_collection)
-    chroma_loader = ChromaDBLoader(finalized_module_models, chroma_collection_manager)
-    chroma_loader.load_models()
+
+    chroma_collection_manager.load_models(finalized_module_models)
 
     print("Collections list", chroma_client_manager.list_collections())
     chroma_client_manager.delete_collection("postcode")
