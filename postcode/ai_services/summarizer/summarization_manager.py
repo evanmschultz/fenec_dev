@@ -22,6 +22,7 @@ class SummarizationManager:
         self.summarized_code_block_ids: set[str] = set()
         self.prompt_tokens: int = 0
         self.completion_tokens: int = 0
+        self.updated_module_models: list[ModuleModel] = []
 
     @property
     def total_cost(self) -> float:
@@ -31,15 +32,18 @@ class SummarizationManager:
         )  # Costs 3 cents per 1,000 tokens
         return (prompt_cost + completion_cost) / 100_000  # Convert to dollars
 
-    def create_and_add_summaries_to_models(self) -> None:
+    def create_and_add_summaries_to_models(self) -> tuple[ModuleModel, ...]:
         for module_model in self.module_models_tuple:
             self._summarize_module(module_model)
+
+        return tuple(self.updated_module_models)
 
     def _summarize_module(self, module_model: ModuleModel) -> None:
         if module_model.id not in self.summarized_code_block_ids:
             self._summarize_code_block(module_model)
-            logging.info(f"Summarized module: {module_model.id}")
+            # logging.info(f"Summarized module: {module_model.id}")
             self.summarized_code_block_ids.add(module_model.id)
+            self.updated_module_models.append(module_model)
 
     def _summarize_code_block(
         self,
