@@ -3,8 +3,26 @@
         "main.py"
     ],
     "postcode": [
-        "post_code_types.py",
         "__init__.py"
+    ],
+    "postcode/databases": [
+        "__init__.py"
+    ],
+    "postcode/databases/chroma": [
+        "__init__.py",
+        "chromadb_collection_manager.py",
+        "chromadb_builder.py",
+        "chromadb_client_manager.py"
+    ],
+    "postcode/databases/arangodb": [
+        "arangodb_manager.py",
+        "arangodb_builder.py",
+        "__init__.py",
+        "arango_db_builder.py"
+    ],
+    "postcode/types": [
+        "postcode.py",
+        "chroma.py"
     ],
     "postcode/ai_services": [
         "__init__.py"
@@ -80,10 +98,5 @@
         "logging_config.py",
         "__init__.py",
         "decorators.py"
-    ],
-    "postcode/arango_db": [
-        "__init__.py",
-        "arango_db_builder.py",
-        "arango_db_manager.py"
     ]
 }

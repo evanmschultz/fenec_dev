@@ -1,5 +1,5 @@
 {
-    "file_path": "postcode/post_code_types.py",
+    "file_path": "postcode/types/postcode.py",
     "docstring": null,
     "header": [],
     "footer": [],
@@ -92,7 +92,7 @@
             "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
         }
     ],
-    "id": "postcode:post_code_types.py__*__MODULE",
+    "id": "postcode:types:postcode.py__*__MODULE",
     "parent_id": null,
     "block_type": "MODULE",
     "start_line_num": 1,
@@ -107,8 +107,8 @@
                 "ModelType = Union[\n    ModuleModel,\n    ClassModel,\n    FunctionModel,\n    StandaloneCodeBlockModel,\n]",
                 "BuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]"
             ],
-            "id": "postcode:post_code_types.py__*__MODULE__*__STANDALONE_BLOCK-1",
-            "parent_id": "postcode:post_code_types.py__*__MODULE",
+            "id": "postcode:types:postcode.py__*__MODULE__*__STANDALONE_BLOCK-1",
+            "parent_id": "postcode:types:postcode.py__*__MODULE",
             "block_type": "STANDALONE_BLOCK",
             "start_line_num": 19,
             "end_line_num": 33,

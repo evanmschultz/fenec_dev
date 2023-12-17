@@ -1,7 +1,7 @@
 import logging
 
 from postcode.ai_services.summarizer.summarizer_protocol import Summarizer
-from postcode.post_code_types import ModelType
+from postcode.types.postcode import ModelType
 
 from postcode.python_parser.models.models import (
     DependencyModel,
