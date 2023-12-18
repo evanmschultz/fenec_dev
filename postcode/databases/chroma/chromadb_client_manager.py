@@ -152,9 +152,8 @@ class ChromaDBClientManager:
         """
         Resets the ChromaDB client to its initial state.
 
-        This method resets the client settings and clears any cached or temporary data.
-        It iterates over the collections, logging their names, and then resets the client.
-        If the reset operation is unsuccessful, it raises a ValueError.
+        This method resets the client settings and clears any cached or temporary data. It iterates over the collections,
+        logging their names, and then resets the client. If the reset operation is unsuccessful, it raises a ValueError.
 
         Raises:
             ValueError: If the client reset operation is unsuccessful.
@@ -175,7 +174,6 @@ class ChromaDBClientManager:
             if collections := self.list_collections():
                 for collection in collections:
                     print(f"\t\t\t\tCollection: {collection.name}")
-                print("\n")
             else:
                 print("\t\t\t\tNo collections.\n")
 
