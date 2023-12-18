@@ -239,9 +239,6 @@ class ChromaDBCollectionManager:
                 where_document=where_document_filter,
                 include=include_in_result,
             ):
-                logging.info(
-                    f"Got {len(results)} results from collection {self.collection.name}."
-                )
                 return results
             else:
                 logging.warning(
