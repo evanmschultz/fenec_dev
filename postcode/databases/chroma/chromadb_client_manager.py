@@ -170,15 +170,15 @@ class ChromaDBClientManager:
         """
         reset_successful: bool = self.client.reset()
         if reset_successful:
-            print("Resetting client with:")
+            logging.info("Resetting client with:")
 
             if collections := self.list_collections():
                 for collection in collections:
-                    print(f"\tCollection: {collection.name}")
+                    print(f"\t\t\t\tCollection: {collection.name}")
+                print("\n")
             else:
-                print("No collections.")
+                print("\t\t\t\tNo collections.\n")
 
-            self.client.reset()
             logging.info("Client reset successful.")
         else:
             raise ValueError("Client reset unsuccessful.")
