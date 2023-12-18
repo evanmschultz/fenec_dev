@@ -1,8 +1,10 @@
 import logging
 from logging import Logger
+from pprint import pprint
 
 from openai import OpenAI
 import chromadb
+from chromadb.config import Settings
 
 import postcode.types.chroma as chroma_types
 
@@ -18,28 +20,80 @@ from postcode.python_parser.visitor_manager.visitor_manager import (
 from postcode.ai_services.summarizer.summarizer import OpenAISummarizer
 
 from postcode.databases.chroma import (
-    ChromaDBClientBuilder,
     ChromaDBClientManager,
     ChromaDBCollectionManager,
 )
 
 
-def main(
-    directory: str = ".",
-    output_directory: str = "output",
+def setup_chroma() -> (
+    tuple[ChromaDBCollectionManager, chroma_types.Collection, ChromaDBClientManager]
+):
+    chroma_settings = Settings(allow_reset=True)
+    chroma_client: chroma_types.ClientAPI = chromadb.PersistentClient(
+        settings=chroma_settings
+    )
+    chroma_client_manager = ChromaDBClientManager(chroma_client)
+    chroma_collection: chroma_types.Collection = (
+        chroma_client_manager.get_or_create_collection("postcode")
+    )
+
+    return (
+        ChromaDBCollectionManager(chroma_collection),
+        chroma_collection,
+        chroma_client_manager,
+    )
+
+
+def upsert_models(
+    chroma_collection_manager: ChromaDBCollectionManager,
+    module_models: tuple[ModuleModel, ...],
 ) -> None:
-    """
-    Parse the specified directory and save the results in the output directory.
+    chroma_collection_manager.upsert_models(module_models)
 
-    Args:
-        directory (str): The path to the directory to parse.
-        output_directory (str): The path to the output directory.
 
-    Returns:
-        None
-    """
+def query_chroma(
+    query: str,
+    chroma_collection_manager: ChromaDBCollectionManager,
+    chroma_collection: chroma_types.Collection,
+    logger: Logger,
+) -> None:
+    logger.info(f"Querying ChromaDB collection {chroma_collection.name}")
+    results: chroma_types.QueryResult | None = chroma_collection_manager.query_collection(
+        [query],
+        n_results=10,
+        # where_filter={"block_type": "MODULE"},
+        include_in_result=["metadatas", "documents", "embeddings"],
+    )
+    logger.info("Query results:")
+    if results:
+        if results["ids"]:
+            for document in results["ids"][0]:
+                # for document in documents:
+                print(document)
 
-    logger: Logger = logging.getLogger(__name__)
+            print(f"Total results: {len(results['ids'][0])}")
+
+        # pprint(results["metadatas"])
+
+
+def delete_collection(
+    chroma_client_manager: ChromaDBClientManager, logger: Logger
+) -> None:
+    logger.info("Collections list", chroma_client_manager.list_collections())
+    chroma_client_manager.delete_collection("postcode")
+    logger.info("Collections list", chroma_client_manager.list_collections())
+
+
+def reset_chroma_client(
+    chroma_client_manager: ChromaDBClientManager, logger: Logger
+) -> None:
+    if chroma_client_manager.reset_client():
+        logger.info("Client reset")
+
+
+def parse_and_summarize(
+    directory: str, output_directory: str, logger: Logger
+) -> tuple[ModuleModel, ...]:
     logger.info("Starting the directory parsing.")
 
     client = OpenAI(max_retries=4)
@@ -65,23 +119,46 @@ def main(
     for module_model in module_models_tuple:
         json_manager.save_model_as_json(module_model, module_model.file_path)
 
-    chroma_client: chroma_types.ClientAPI = chromadb.PersistentClient()
-    chroma_client_manager = ChromaDBClientManager(chroma_client)
-    chroma_collection: chroma_types.Collection = (
-        chroma_client_manager.get_or_create_collection("postcode")
-    )
-    chroma_collection_manager = ChromaDBCollectionManager(chroma_collection)
-
-    chroma_collection_manager.load_models(finalized_module_models)
-
-    print("Collections list", chroma_client_manager.list_collections())
-    chroma_client_manager.delete_collection("postcode")
-    print("Collections list", chroma_client_manager.list_collections())
-
     json_manager.save_visited_directories()
     logger.info("JSON save complete")
 
     logger.info("Directory parsing completed.")
+
+    return finalized_module_models
+
+
+def main(
+    directory: str = ".",
+    output_directory: str = "output",
+) -> None:
+    """
+    Parse the specified directory and save the results in the output directory.
+
+    Args:
+        directory (str): The path to the directory to parse.
+        output_directory (str): The path to the output directory.
+
+    Returns:
+        None
+    """
+
+    logger: Logger = logging.getLogger(__name__)
+
+    (
+        chroma_collection_manager,
+        chroma_collection,
+        chroma_client_manager,
+    ) = setup_chroma()
+
+    # delete_collection(chroma_client_manager, logger)
+    # reset_chroma_client(chroma_client_manager, logger)
+
+    # module_models: tuple[ModuleModel, ...] = parse_and_summarize(
+    #     directory, output_directory, logger
+    # )
+    # upsert_models(chroma_collection_manager, module_models)
+    query: str = "class and functions"
+    query_chroma(query, chroma_collection_manager, chroma_collection, logger)
 
 
 if __name__ == "__main__":
