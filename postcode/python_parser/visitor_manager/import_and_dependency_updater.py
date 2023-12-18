@@ -5,11 +5,11 @@
 from postcode.python_parser.model_builders.module_model_builder import (
     ModuleModelBuilder,
 )
-from postcode.python_parser.models.enums import ImportModuleType
-from postcode.python_parser.models.models import (
+from postcode.models import (
     DependencyModel,
     ImportModel,
     ImportNameModel,
+    ImportModuleType,
 )
 
 

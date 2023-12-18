@@ -2,10 +2,10 @@ from typing import Any
 
 from postcode.utilities.logger.decorators import logging_decorator
 from postcode.python_parser.model_builders.base_model_builder import BaseModelBuilder
-from postcode.python_parser.models.enums import BlockType
-from postcode.python_parser.models.models import (
+from postcode.models import (
     StandaloneCodeBlockModel,
     StandaloneCodeBlockSpecificAttributes,
+    BlockType,
 )
 
 

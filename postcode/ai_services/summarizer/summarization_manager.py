@@ -4,7 +4,7 @@ from postcode.ai_services.summarizer.summarizer import OpenAIReturnContext
 from postcode.ai_services.summarizer.summarization_context import Summarizer
 from postcode.types.postcode import ModelType
 
-from postcode.python_parser.models.models import (
+from postcode.models import (
     DependencyModel,
     ImportModel,
     ModuleModel,
@@ -15,8 +15,8 @@ class SummarizationManager:
     """
     Manages the summarization process for Python code modules.
 
-    This manager handles the summarization of code blocks within Python module models. It uses an instance of a 
-    Summarizer to generate summaries for each code block, tracking token usage for cost estimation and updating 
+    This manager handles the summarization of code blocks within Python module models. It uses an instance of a
+    Summarizer to generate summaries for each code block, tracking token usage for cost estimation and updating
     module models with their respective summaries.
 
     Args:
@@ -26,7 +26,7 @@ class SummarizationManager:
     Attributes:
         - module_models_tuple (tuple[ModuleModel, ...]): Stores the module models to be summarized.
         - summarizer (Summarizer): The summarizer instance used for generating summaries.
-        - summarized_code_block_ids (set[str]): A set of IDs for code blocks that have been summarized to avoid 
+        - summarized_code_block_ids (set[str]): A set of IDs for code blocks that have been summarized to avoid
             repetition.
         - prompt_tokens (int): The total number of prompt tokens used in summarization.
         - completion_tokens (int): The total number of completion tokens used in summarization.

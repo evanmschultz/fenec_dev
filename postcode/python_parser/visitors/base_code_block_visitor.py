@@ -6,9 +6,7 @@ from libcst.metadata import (
 from libcst._metadata_dependent import _UNDEFINED_DEFAULT
 
 from postcode.types.postcode import BuilderType
-from postcode.python_parser.models.models import (
-    CommentModel,
-)
+from postcode.models import CommentModel
 import postcode.python_parser.visitors.node_processing.common_functions as common_functions
 from postcode.utilities.processing_context import PositionData
 

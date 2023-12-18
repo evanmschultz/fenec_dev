@@ -3,8 +3,7 @@ from typing import Sequence
 
 import libcst
 
-from postcode.python_parser.models.enums import ImportModuleType
-from postcode.python_parser.models.models import ImportModel, ImportNameModel
+from postcode.models import ImportModel, ImportNameModel, ImportModuleType
 import postcode.python_parser.visitors.node_processing.common_functions as common_functions
 
 

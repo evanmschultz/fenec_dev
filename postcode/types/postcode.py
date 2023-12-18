@@ -1,5 +1,5 @@
 from typing import Union
-from postcode.python_parser.models.models import (
+from postcode.models import (
     ClassModel,
     FunctionModel,
     ModuleModel,

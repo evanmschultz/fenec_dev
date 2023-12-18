@@ -4,12 +4,11 @@ from typing import TYPE_CHECKING, Any
 from postcode.utilities.logger.decorators import logging_decorator
 
 from postcode.python_parser.model_builders.base_model_builder import BaseModelBuilder
-from postcode.python_parser.models.models import ClassSpecificAttributes, ClassModel
-from postcode.python_parser.models.enums import BlockType
+from postcode.models import ClassSpecificAttributes, ClassModel, BlockType
 
 
 if TYPE_CHECKING:
-    from postcode.python_parser.models.models import (
+    from postcode.models import (
         ClassKeywordModel,
         DecoratorModel,
     )
@@ -38,7 +37,6 @@ class ClassModelBuilder(BaseModelBuilder):
             decorators=None,
             bases=None,
             docstring=None,
-            attributes=None,
             keywords=None,
         )
 
@@ -62,13 +60,13 @@ class ClassModelBuilder(BaseModelBuilder):
         self.class_attributes.docstring = docstring
         return self
 
-    # TODO: Add attribute model
-    def add_attribute(self, attribute) -> "ClassModelBuilder":
-        """Adds an attribute of the class in the model."""
-        if not self.class_attributes.attributes:
-            self.class_attributes.attributes = []
-        self.class_attributes.attributes.append(attribute)
-        return self
+    # # TODO: Add attribute model
+    # def add_attribute(self, attribute) -> "ClassModelBuilder":
+    #     """Adds an attribute of the class in the model."""
+    #     if not self.class_attributes.attributes:
+    #         self.class_attributes.attributes = []
+    #     self.class_attributes.attributes.append(attribute)
+    #     return self
 
     def set_keywords(
         self, keyword_list: list[ClassKeywordModel] | None

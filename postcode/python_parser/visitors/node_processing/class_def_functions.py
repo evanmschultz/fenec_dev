@@ -3,7 +3,7 @@ from typing import Sequence
 import libcst
 
 from postcode.python_parser.model_builders.class_model_builder import ClassModelBuilder
-from postcode.python_parser.models.models import ClassKeywordModel, DecoratorModel
+from postcode.models import ClassKeywordModel, DecoratorModel
 import postcode.python_parser.visitors.node_processing.common_functions as common_functions
 
 from postcode.utilities.processing_context import PositionData

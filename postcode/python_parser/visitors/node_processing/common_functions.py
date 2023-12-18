@@ -3,8 +3,7 @@ from typing import Sequence
 import libcst
 
 
-from postcode.python_parser.models.models import CommentModel, DecoratorModel
-from postcode.python_parser.models.enums import CommentType
+from postcode.models import CommentModel, DecoratorModel, CommentType
 
 
 def extract_code_content(

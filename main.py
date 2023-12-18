@@ -1,6 +1,5 @@
 import logging
 from logging import Logger
-from pprint import pprint
 
 from openai import OpenAI
 import chromadb
@@ -10,7 +9,7 @@ import postcode.types.chroma as chroma_types
 
 from postcode.ai_services.summarizer.summarization_manager import SummarizationManager
 from postcode.json_management.json_handler import JSONHandler
-from postcode.python_parser.models.models import ModuleModel
+from postcode.models import ModuleModel
 
 from postcode.utilities.logger.logging_config import setup_logging
 from postcode.python_parser.visitor_manager.visitor_manager import (
@@ -150,15 +149,14 @@ def main(
         chroma_client_manager,
     ) = setup_chroma()
 
-    # delete_collection(chroma_client_manager, logger)
-    # reset_chroma_client(chroma_client_manager, logger)
-
-    # module_models: tuple[ModuleModel, ...] = parse_and_summarize(
-    #     directory, output_directory, logger
-    # )
-    # upsert_models(chroma_collection_manager, module_models)
+    module_models: tuple[ModuleModel, ...] = parse_and_summarize(
+        directory, output_directory, logger
+    )
+    upsert_models(chroma_collection_manager, module_models)
     query: str = "class and functions"
     query_chroma(query, chroma_collection_manager, chroma_collection, logger)
+    # delete_collection(chroma_client_manager, logger)
+    # reset_chroma_client(chroma_client_manager, logger)
 
 
 if __name__ == "__main__":

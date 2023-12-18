@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Union
 from abc import ABC, abstractmethod
 
-from postcode.python_parser.models.models import (
+from postcode.models import (
     BaseCodeBlockModel,
     CommentModel,
     ImportModel,
     DependencyModel,
+    BlockType,
 )
 
-from postcode.python_parser.models.enums import BlockType
 
 if TYPE_CHECKING:
     from postcode.python_parser.model_builders.class_model_builder import (

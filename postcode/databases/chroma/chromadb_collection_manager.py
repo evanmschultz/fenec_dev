@@ -1,8 +1,9 @@
 import logging
 from typing import Any, Mapping
 
+from postcode.models import ModuleModel
 import postcode.types.chroma as chroma_types
-from postcode.types.postcode import ModelType, ModuleModel
+from postcode.types.postcode import ModelType
 
 
 class ChromaDBCollectionManager:
@@ -45,7 +46,7 @@ class ChromaDBCollectionManager:
     def __init__(self, collection: chroma_types.Collection) -> None:
         self.collection: chroma_types.Collection = collection
 
-    def collection_embedding_count(self) -> int:
+    def collection_embedding_count(self) -> int | None:
         """
         Gets the total number of embeddings in the collection.
 
@@ -57,13 +58,14 @@ class ChromaDBCollectionManager:
             embedding_count: int = collection_manager.get_collection_embedding_count()
             ```
         """
-
-        embedding_count: int = self.collection.count()
-        logging.info(
-            f"Collection {self.collection.name} has {embedding_count} embeddings."
-        )
-
-        return embedding_count
+        try:
+            embedding_count: int = self.collection.count()
+            logging.info(
+                f"Collection {self.collection.name} has {embedding_count} embeddings."
+            )
+            return embedding_count
+        except Exception as exception:
+            logging.error(exception)
 
     def add_embeddings(
         self,

@@ -13,7 +13,7 @@ from postcode.python_parser.model_builders.standalone_block_model_builder import
     StandaloneBlockModelBuilder,
 )
 
-from postcode.python_parser.models.enums import BlockType
+from postcode.models import BlockType
 
 
 class BuilderFactory:

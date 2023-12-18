@@ -17,10 +17,10 @@ from postcode.python_parser.model_builders.standalone_block_model_builder import
     StandaloneBlockModelBuilder,
 )
 
-from postcode.python_parser.models.enums import BlockType
-from postcode.python_parser.models.models import (
+from postcode.models import (
     ImportModel,
     ParameterListModel,
+    BlockType
 )
 from postcode.python_parser.visitors.base_code_block_visitor import BaseVisitor
 import postcode.python_parser.visitors.node_processing.class_def_functions as class_def_functions
