@@ -15,15 +15,10 @@ class ImportNameModel(BaseModel):
     as_name: str | None = None
     local_block_id: str | None = None
 
-    def convert_import_names_to_metadata(self) -> str:
-        """Converts the import name to a metadata string."""
+    # def convert_import_names_to_metadata(self) -> str:
+    #     """Converts the import name to a metadata string."""
 
-        as_name: str = f" as {self.as_name}" if self.as_name else ""
-        block_id: str = (
-            f", local block id: {self.local_block_id}" if self.local_block_id else ""
-        )
-
-        return f"{self.name}{as_name}{block_id}"
+    #     return self.model_dump_json()
 
 
 class ImportModel(BaseModel):
@@ -34,34 +29,19 @@ class ImportModel(BaseModel):
     import_module_type: ImportModuleType = ImportModuleType.STANDARD_LIBRARY
     local_module_id: str | None = None
 
-    def convert_imports_to_metadata(self) -> str:
+    def convert_import_to_metadata(self) -> str:
         """Converts the import to a metadata string."""
-
-        import_names: str = ", ".join(
-            [
-                import_name.convert_import_names_to_metadata()
-                for import_name in self.import_names
-            ]
-        )
-        imported_from: str = (
-            f", imported from: {self.imported_from}" if self.imported_from else ""
-        )
-        import_module_type: str = (
-            f", import module type: {self.import_module_type.name}"
-            if self.import_module_type
-            else ""
-        )
-        local_module_id: str = (
-            f", local module id: {self.local_module_id}" if self.local_module_id else ""
-        )
-
-        return f"{import_names}{imported_from}{import_module_type}{local_module_id}"
+        return self.model_dump_json()
 
 
 class DependencyModel(BaseModel):
     """Class representing a module dependency."""
 
     code_block_id: str
+
+    def convert_dependency_to_metadata(self) -> str:
+        """Converts the dependency to a metadata string."""
+        return self.model_dump_json()
 
 
 class CommentModel(BaseModel):
@@ -72,8 +52,7 @@ class CommentModel(BaseModel):
 
     def convert_comment_to_metadata(self) -> str:
         """Converts the comment to a metadata string."""
-
-        return f"{self.content}"
+        return self.model_dump_json()
 
 
 class DecoratorModel(BaseModel):
@@ -85,8 +64,7 @@ class DecoratorModel(BaseModel):
 
     def convert_decorator_to_metadata(self) -> str:
         """Converts the decorator to a metadata string."""
-
-        return self.content
+        return self.model_dump_json()
 
 
 class ClassKeywordModel(BaseModel):
@@ -98,8 +76,7 @@ class ClassKeywordModel(BaseModel):
 
     def convert_class_keyword_to_metadata(self) -> str:
         """Converts the class keyword to a metadata string."""
-
-        return self.content
+        return self.model_dump_json()
 
 
 class ParameterModel(BaseModel):
@@ -119,24 +96,7 @@ class ParameterListModel(BaseModel):
 
     def convert_parameters_to_metadata(self) -> str:
         """Converts the parameter list to a metadata string."""
-
-        params: str = ", ".join(
-            [param.content for param in self.params] if self.params else ""
-        )
-        star_arg: str = f"*{self.star_arg.content}" if self.star_arg else ""
-        kwonly_params: str = ", ".join(
-            [param.content for param in self.kwonly_params]
-            if self.kwonly_params
-            else ""
-        )
-        star_kwarg: str = f"**{self.star_kwarg.content}" if self.star_kwarg else ""
-        posonly_params: str = ", ".join(
-            [param.content for param in self.posonly_params]
-            if self.posonly_params
-            else ""
-        )
-
-        return f"{params}, {star_arg}, {kwonly_params}, {star_kwarg}, {posonly_params}"
+        return self.model_dump_json()
 
 
 class BaseCodeBlockModel(BaseModel):
@@ -180,14 +140,7 @@ class BaseCodeBlockModel(BaseModel):
         """Converts the important comments to a metadata string."""
 
         important_comments: str = (
-            "\n".join(
-                [
-                    comment.convert_comment_to_metadata()
-                    for comment in self.important_comments
-                ]
-            )
-            if self.important_comments
-            else ""
+            self.model_dump_json() if self.important_comments else ""
         )
 
         return f"{important_comments}"
@@ -200,11 +153,11 @@ class BaseCodeBlockModel(BaseModel):
         if self.dependencies:
             for dependency in self.dependencies:
                 if isinstance(dependency, ImportModel):
-                    dependencies_str += (
-                        f"Import: {dependency.convert_imports_to_metadata()}\n"
-                    )
+                    dependencies_str += f"{dependency.convert_import_to_metadata()}\n"
                 elif isinstance(dependency, DependencyModel):
-                    dependencies_str += f"Dependency: {dependency.code_block_id}\n"
+                    dependencies_str += (
+                        f"{dependency.convert_dependency_to_metadata()}\n"
+                    )
 
         return dependencies_str
 
@@ -255,23 +208,15 @@ class ModuleSpecificAttributes(BaseModel):
 
     def _convert_header_to_metadata(self) -> str:
         """Converts the header and footer to a metadata string."""
-        header: str = "\n".join(self.header) if self.header else ""
-        return f"{header}"
+        return self.model_dump_json()
 
     def _convert_footer_to_metadata(self) -> str:
         """Converts the header and footer to a metadata string."""
-        footer: str = "\n".join(self.footer) if self.footer else ""
-        return f"{footer}"
+        return self.model_dump_json()
 
     def _convert_imports_to_metadata(self) -> str:
         """Converts the imports to a metadata string."""
-        imports_str: str = (
-            "\n".join(
-                [_import.convert_imports_to_metadata() for _import in self.imports]
-            )
-            if self.imports
-            else ""
-        )
+        imports_str: str = self.model_dump_json() if self.imports else ""
         return f"{imports_str}"
 
     def _convert_module_attributes_to_metadata_dict(self) -> dict[str, str | int]:
@@ -310,22 +255,12 @@ class ClassSpecificAttributes(BaseModel):
 
     def _convert_decorators_to_metadata(self) -> str:
         """Converts the decorators to a metadata string."""
-
-        decorators_str: str = (
-            "\n".join(
-                [
-                    decorator.convert_decorator_to_metadata()
-                    for decorator in self.decorators
-                ]
-            )
-            if self.decorators
-            else ""
-        )
+        decorators_str: str = self.model_dump_json() if self.decorators else ""
         return f"{decorators_str}"
 
     def _convert_bases_to_metadata(self) -> str:
         """Converts the bases to a metadata string."""
-        return ", ".join(self.bases) if self.bases else ""
+        return self.model_dump_json() if self.bases else ""
 
     def _convert_docstring_to_metadata(self) -> str:
         """Converts the docstring to a metadata string."""
@@ -333,17 +268,7 @@ class ClassSpecificAttributes(BaseModel):
 
     def _convert_keywords_to_metadata(self) -> str:
         """Converts the keywords to a metadata string."""
-
-        keywords_str: str = (
-            "\n".join(
-                [
-                    keyword.convert_class_keyword_to_metadata()
-                    for keyword in self.keywords
-                ]
-            )
-            if self.keywords
-            else ""
-        )
+        keywords_str: str = self.model_dump_json() if self.keywords else ""
         return f"{keywords_str}"
 
     def _convert_class_attributes_to_metadata_dict(self) -> dict[str, str | int]:
@@ -363,7 +288,6 @@ class ClassModel(BaseCodeBlockModel, ClassSpecificAttributes):
 
     def convert_to_metadata(self) -> dict[str, str | int]:
         """Converts the class model to a metadata dictionary."""
-
         return {
             **self._convert_base_attributes_to_metadata_dict(),
             **self._convert_class_attributes_to_metadata_dict(),
@@ -387,17 +311,7 @@ class FunctionSpecificAttributes(BaseModel):
 
     def _convert_decorators_to_metadata(self) -> str:
         """Converts the decorators to a metadata string."""
-
-        decorators_str: str = (
-            "\n".join(
-                [
-                    decorator.convert_decorator_to_metadata()
-                    for decorator in self.decorators
-                ]
-            )
-            if self.decorators
-            else ""
-        )
+        decorators_str: str = self.model_dump_json() if self.decorators else ""
         return f"{decorators_str}"
 
     def _convert_parameters_to_metadata(self) -> str:
@@ -443,13 +357,12 @@ class StandaloneCodeBlockSpecificAttributes(BaseModel):
 
     def _convert_variable_assignments_to_metadata(self) -> str:
         """Converts the variable assignments to a metadata string."""
-        return ", ".join(self.variable_assignments) if self.variable_assignments else ""
+        return self.model_dump_json() if self.variable_assignments else ""
 
     def _convert_standalone_block_attributes_to_metadata_dict(
         self,
     ) -> dict[str, str | int]:
         """Converts the standalone code block attributes to a metadata dictionary."""
-
         return {
             "variable_assignments": self._convert_variable_assignments_to_metadata(),
         }
