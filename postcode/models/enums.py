@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class ImportModuleType(Enum):
+class ImportModuleType(str, Enum):
     """Enum of import module types."""
 
     STANDARD_LIBRARY = "STANDARD_LIBRARY"
@@ -12,7 +12,7 @@ class ImportModuleType(Enum):
         return self.value
 
 
-class CommentType(Enum):
+class CommentType(str, Enum):
     """Class representing the different types of important comments."""
 
     TODO = "TODO"
@@ -33,7 +33,7 @@ class CommentType(Enum):
         return self.value
 
 
-class BlockType(Enum):
+class BlockType(str, Enum):
     """Enum of code block types."""
 
     STANDALONE_CODE_BLOCK = "STANDALONE_BLOCK"
