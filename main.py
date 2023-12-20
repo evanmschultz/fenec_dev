@@ -4,6 +4,8 @@ from logging import Logger
 from openai import OpenAI
 import chromadb
 from chromadb.config import Settings
+from postcode.databases.arangodb.arangodb_builder import GraphDBBuilder
+from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
 
 import postcode.types.chroma as chroma_types
 
@@ -143,20 +145,28 @@ def main(
 
     logger: Logger = logging.getLogger(__name__)
 
-    (
-        chroma_collection_manager,
-        chroma_collection,
-        chroma_client_manager,
-    ) = setup_chroma()
+    # (
+    #     chroma_collection_manager,
+    #     chroma_collection,
+    #     chroma_client_manager,
+    # ) = setup_chroma()
 
     module_models: tuple[ModuleModel, ...] = parse_and_summarize(
         directory, output_directory, logger
     )
-    upsert_models(chroma_collection_manager, module_models)
-    query: str = "class and functions"
-    query_chroma(query, chroma_collection_manager, chroma_collection, logger)
+    # upsert_models(chroma_collection_manager, module_models)
+    # query: str = "class and functions"
+    # query_chroma(query, chroma_collection_manager, chroma_collection, logger)
     # delete_collection(chroma_client_manager, logger)
     # reset_chroma_client(chroma_client_manager, logger)
+
+    db_manager = ArangoDBManager()
+    db_manager.delete_all_collections()  # Delete all collections in the database
+    db_manager.ensure_collections()  # Create the required collections
+
+    graph_builder = GraphDBBuilder(db_manager, module_models)
+    graph_builder.insert_models()
+    graph_builder.process_imports_and_dependencies()
 
 
 if __name__ == "__main__":

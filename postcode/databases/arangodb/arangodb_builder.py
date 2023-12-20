@@ -1,124 +1,104 @@
 import json
-import os
+from json import JSONEncoder
+from typing import Any, Callable
+
 from arango.result import Result
-from arango.typings import Json
 from arango.cursor import Cursor
 
-from typing import Any
-
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
+from postcode.types.postcode import ModelType
+from postcode.models import (
+    ModuleModel,
+    BlockType,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+)
 
 # NOTE: Remember, when adding logic to connect dependencies, the `from` the external dependency `to` the internal definition using it
 
 
 class GraphDBBuilder:
-    def __init__(self, db_manager: ArangoDBManager) -> None:
+    def __init__(
+        self, db_manager: ArangoDBManager, module_models: tuple[ModuleModel, ...]
+    ) -> None:
         self.db_manager: ArangoDBManager = db_manager
+        self.module_models: tuple[ModuleModel, ...] = module_models
+
         self.processed_id_set = set()
 
-    def process_json_directory(self, directory_path: str) -> None:
-        for filename in os.listdir(directory_path):
-            if filename.endswith(".json"):
-                file_path: str = os.path.join(directory_path, filename)
-                # print(f"Processing file: {file_path}")
-                try:
-                    with open(file_path, "r") as file:
-                        json_data = json.load(file)
-                        self.process_json_data(json_data)
-                except Exception as e:
-                    print(f"Error processing file {file_path}: {e}")
+    def insert_models(self) -> None:
+        for model in self.module_models:
+            self._process_model(model)
 
-    def process_json_data(self, json_data: dict[str, Any]) -> None:
-        if json_data.get("block_type") == "MODULE":
-            module_id: str | None = json_data.get("id")
-            self.create_vertex_for_module(json_data)
-            if module_id:
-                self.process_children(json_data, module_id)
+    def _process_model(self, module_model: ModuleModel) -> None:
+        self._create_vertex_for_module(module_model)
+        self._process_children(module_model)
 
-    def create_vertex_for_module(self, module_data: dict[str, Any]) -> None:
-        if "_key" not in module_data and "id" in module_data:
-            module_data["_key"] = module_data["id"]
+    def _create_vertex_for_module(self, module_model: ModuleModel) -> None:
+        module_model._key = module_model.id
+        module_data: dict[str, Any] = module_model.model_dump()
+        module_data["_key"] = module_model.id
 
-        # print(f"Creating module vertex with attributes: {module_data['_key']}")
         try:
-            response: Result[bool | Json] = self.db_manager.db.collection(
-                "modules"
-            ).insert(module_data)
-            # print(f"Module vertex created, response: {response}")
+            self.db_manager.db.collection("modules").insert(module_data)
         except Exception as e:
-            print(f"Error inserting module vertex (ArangoDB): {e}")
+            print(f"Error inserting {module_model.id} vertex (ArangoDB): {e}")
 
-    count = 0
-
-    def process_children(self, parent_data: dict[str, Any], parent_key: str) -> None:
-        children = parent_data.get("children")
-        if not isinstance(children, list):
+    def _process_children(self, parent_model: ModelType) -> None:
+        if not parent_model.children:
             return
 
-        for child in parent_data.get("children", []):
-            child_key = child.get("id")
-            child_block_type = child.get("block_type")
-            if child_key:
-                if child_key in self.processed_id_set:
-                    print(f"Duplicate child key: {child_key}")
-                    continue
-                self.processed_id_set.add(child_key)
+        for child in parent_model.children:
+            if child.id in self.processed_id_set:
+                print(f"Duplicate child key: {child.id}")
+                continue
+            self.processed_id_set.add(child.id)
 
-            if child_block_type == "CLASS":
-                self.create_vertex_for_class(child, parent_key)
+            if isinstance(child, ClassModel):
+                self._create_vertex_for_class(child)
 
-            elif child_block_type == "FUNCTION":
-                self.create_vertex_for_function(child, parent_key)
+            elif isinstance(child, FunctionModel):
+                self._create_vertex_for_function(child)
 
-            elif child_block_type == "STANDALONE_BLOCK":
-                self.create_vertex_for_standalone_block(child, parent_key)
+            elif isinstance(child, StandaloneCodeBlockModel):
+                self._create_vertex_for_standalone_block(child)
 
-            if child_key and "children" in child:
-                self.count += 1
-                self.process_children(child, child_key)
+            if child.children:
+                self._process_children(child)
 
-        # print(f"Total children: {self.count}")
-        # print(f"Total unique children: {len(self.processed_id_set)}")
+    def _create_vertex(self, model: ModelType, vertex_type: str) -> None:
+        if not model.parent_id:
+            print(f"Error: No parent id found for {model.id}")
+            return None
 
-    def create_vertex(
-        self, data: dict[str, Any], parent_key: str, vertex_type: str
-    ) -> None:
-        key: str | None = data.get("id")
-        if "_key" not in data and key:
-            data["_key"] = key
-        data["parent_id"] = parent_key
-
-        # print(f"Creating {vertex_type} vertex with attributes: {data['_key']}")
         try:
             vertex_type_str: str = (
                 f"{vertex_type}s" if not vertex_type == "class" else f"{vertex_type}es"
             )
+            model_data: dict[str, Any] = model.model_dump()
+            model_data["_key"] = model.id
             self.db_manager.ensure_collection(f"{vertex_type_str}")
-            self.db_manager.db.collection(f"{vertex_type_str}").insert(data)
+            self.db_manager.db.collection(f"{vertex_type_str}").insert(model_data)
             # print(f"{vertex_type.capitalize()} vertex created for {key}")
 
-            if key:
-                parent_type: str = self.get_block_type_from_id(parent_key)
-                self.create_edge(key, parent_key, vertex_type, parent_type)
+            parent_type: str = self._get_block_type_from_id(model.parent_id)
+            self._create_edge(model.id, model.parent_id, vertex_type, parent_type)
         except Exception as e:
             print(f"Error inserting {vertex_type} vertex (ArangoDB): {e}")
 
-    def create_vertex_for_class(
-        self, class_data: dict[str, Any], parent_key: str
-    ) -> None:
-        self.create_vertex(class_data, parent_key, "class")
+    def _create_vertex_for_class(self, class_data: ClassModel) -> None:
+        self._create_vertex(class_data, "class")
 
-    def create_vertex_for_function(
-        self, function_data: dict[str, Any], parent_key: str
-    ) -> None:
-        self.create_vertex(function_data, parent_key, "function")
+    def _create_vertex_for_function(self, function_data: FunctionModel) -> None:
+        self._create_vertex(function_data, "function")
 
-    def create_vertex_for_standalone_block(
-        self, standalone_block_data: dict[str, Any], parent_key: str
+    def _create_vertex_for_standalone_block(
+        self, standalone_block_data: StandaloneCodeBlockModel
     ) -> None:
-        self.create_vertex(standalone_block_data, parent_key, "standalone_block")
+        self._create_vertex(standalone_block_data, "standalone_block")
 
-    def create_edge(
+    def _create_edge(
         self, from_key: str, to_key: str, source_type: str, target_type: str
     ) -> None:
         source_string: str = (
@@ -140,26 +120,29 @@ class GraphDBBuilder:
         try:
             self.db_manager.ensure_edge_collection("code_edges")
             self.db_manager.db.collection("code_edges").insert(edge_data)
-            # print(f"Edge created between {from_key} and {to_key}")
         except Exception as e:
             print(f"Error creating edge (ArangoDB): {e}")
 
-    def get_block_type_from_id(self, block_id) -> str:
+    def _get_block_type_from_id(self, block_id: str) -> str:
         block_id_parts: list[str] = block_id.split("__*__")
-
         block_type_part: str = block_id_parts[-1]
-        if block_type_part.startswith("MODULE"):
-            return "module"
-        elif block_type_part.startswith("CLASS"):
-            return "class"
-        elif block_type_part.startswith("FUNCTION"):
-            return "function"
-        elif block_type_part.startswith("STANDALONE_BLOCK"):
-            return "standalone_block"
-        else:
-            return "unknown"
 
-    def process_imports_and_dependencies(self):
+        # Dictionary of callables
+        block_type_functions: dict[str, Callable[..., str]] = {
+            "MODULE": lambda: "module",
+            "CLASS": lambda: "class",
+            "FUNCTION": lambda: "function",
+            "STANDALONE_BLOCK": lambda: "standalone_block",
+        }
+
+        # Iterate over the dictionary and call the function if the key is found in block_type_part
+        for key, func in block_type_functions.items():
+            if block_type_part.startswith(key):
+                return func()
+
+        return "unknown"
+
+    def process_imports_and_dependencies(self) -> None:
         # Process each vertex in the database
         for vertex_collection in [
             "modules",
@@ -174,11 +157,11 @@ class GraphDBBuilder:
                 for vertex in cursor:
                     vertex_key = vertex["_key"]
                     if vertex_collection == "modules":
-                        self.create_edges_for_imports(
+                        self._create_edges_for_imports(
                             vertex_key, vertex.get("imports", [])
                         )
                     else:
-                        self.create_edges_for_dependencies(
+                        self._create_edges_for_dependencies(
                             vertex_key, vertex.get("dependencies", [])
                         )
             else:
@@ -186,7 +169,7 @@ class GraphDBBuilder:
                     f"Error getting cursor for vertex collection: {vertex_collection}"
                 )
 
-    def create_edges_for_imports(
+    def _create_edges_for_imports(
         self, module_key: str, imports: list[dict[str, Any]]
     ) -> None:
         if not imports:
@@ -201,14 +184,14 @@ class GraphDBBuilder:
                 print(f"No import names found in import {imp}")
                 continue
 
-            for imp_name in import_names:
-                local_block_id = imp_name.get("local_block_id")
+            for import_name in import_names:
+                local_block_id = import_name.get("local_block_id")
 
                 if local_block_id:
                     print(f"\nLocal block id: {local_block_id}")
-                    target_type = self.get_block_type_from_id(local_block_id)
+                    target_type = self._get_block_type_from_id(local_block_id)
                     try:
-                        self.create_edge(
+                        self._create_edge(
                             module_key, local_block_id, "module", target_type
                         )
                         print(
@@ -219,9 +202,9 @@ class GraphDBBuilder:
                             f"Error creating edge for import {module_key} to {local_block_id}: {e}"
                         )
                 else:
-                    print(f"Skipped import {imp_name} in module {module_key}")
+                    print(f"Skipped import {import_name} in module {module_key}")
 
-    def create_edges_for_dependencies(
+    def _create_edges_for_dependencies(
         self, block_key: str, dependencies: list[dict[str, Any]]
     ) -> None:
         if not dependencies:
@@ -230,26 +213,13 @@ class GraphDBBuilder:
         for dependency in dependencies:
             code_block_id = dependency.get("code_block_id")
             if code_block_id:
-                source_type = self.get_block_type_from_id(block_key)
-                target_type = self.get_block_type_from_id(code_block_id)
+                source_type: str = self._get_block_type_from_id(block_key)
+                target_type: str = self._get_block_type_from_id(code_block_id)
                 try:
-                    self.create_edge(block_key, code_block_id, source_type, target_type)
+                    self._create_edge(
+                        block_key, code_block_id, source_type, target_type
+                    )
                 except Exception as e:
                     print(
                         f"Error creating edge for dependency {block_key} to {code_block_id}: {e}"
                     )
-
-
-if __name__ == "__main__":
-    # Example usage
-    db_manager = ArangoDBManager()
-    db_manager.delete_all_collections()  # Delete all collections in the database
-    db_manager.setup_collections()  # Create the required collections
-    graph_builder = GraphDBBuilder(db_manager)
-
-    # Directory containing JSON files
-    json_directory = "/Users/evanschultz/Documents/Code/post-code/output/json/"
-
-    # Process all JSON files in the directory
-    graph_builder.process_json_directory(json_directory)
-    graph_builder.process_imports_and_dependencies()
