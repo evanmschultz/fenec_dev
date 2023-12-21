@@ -1,17 +1,19 @@
 import logging
 from logging import Logger
+from pprint import pprint
 
 from openai import OpenAI
 import chromadb
 from chromadb.config import Settings
-from postcode.databases.arangodb.arangodb_builder import GraphDBBuilder
-from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
+from postcode.databases.arangodb.arangodb_builder import ArangoDBBuilder
+from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
 
 import postcode.types.chroma as chroma_types
 
 from postcode.ai_services.summarizer.summarization_manager import SummarizationManager
 from postcode.json_management.json_handler import JSONHandler
 from postcode.models import ModuleModel
+from postcode.types.postcode import ModelType
 
 from postcode.utilities.logger.logging_config import setup_logging
 from postcode.python_parser.visitor_manager.visitor_manager import (
@@ -160,13 +162,27 @@ def main(
     # delete_collection(chroma_client_manager, logger)
     # reset_chroma_client(chroma_client_manager, logger)
 
-    db_manager = ArangoDBManager()
+    db_manager = ArangoDBConnector()
     db_manager.delete_all_collections()  # Delete all collections in the database
     db_manager.ensure_collections()  # Create the required collections
 
-    graph_builder = GraphDBBuilder(db_manager, module_models)
+    graph_builder = ArangoDBBuilder(db_manager, module_models)
     graph_builder.insert_models()
     graph_builder.process_imports_and_dependencies()
+    graph_builder.create_graph()
+    downstream_vertices: list[
+        ModelType
+    ] | None = graph_builder.get_all_downstream_vertices(
+        "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
+    )
+    upstream_vertices: list[ModelType] | None = graph_builder.get_all_upstream_vertices(
+        "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
+    )
+
+    print("Downstream:\n")
+    pprint([vertex.id for vertex in downstream_vertices])
+    print("\nUpstream:\n")
+    pprint([vertex.id for vertex in upstream_vertices])
 
 
 if __name__ == "__main__":

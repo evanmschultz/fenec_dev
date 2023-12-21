@@ -1,31 +1,35 @@
-import json
-from json import JSONEncoder
+import logging
 from typing import Any, Callable
 
 from arango.result import Result
 from arango.cursor import Cursor
 
-from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
+from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
 from postcode.types.postcode import ModelType
 from postcode.models import (
     ModuleModel,
-    BlockType,
     ClassModel,
     FunctionModel,
     StandaloneCodeBlockModel,
+    BlockType,
 )
+import postcode.databases.arangodb.helper_functions as helper_functions
 
 # NOTE: Remember, when adding logic to connect dependencies, the `from` the external dependency `to` the internal definition using it
 
 
-class GraphDBBuilder:
+class ArangoDBBuilder:
     def __init__(
-        self, db_manager: ArangoDBManager, module_models: tuple[ModuleModel, ...]
+        self,
+        db_manager: ArangoDBConnector,
+        module_models: tuple[ModuleModel, ...],
+        graph_name: str = "codebase_graph",
     ) -> None:
-        self.db_manager: ArangoDBManager = db_manager
+        self.db_manager: ArangoDBConnector = db_manager
         self.module_models: tuple[ModuleModel, ...] = module_models
 
         self.processed_id_set = set()
+        self.graph_name: str = graph_name
 
     def insert_models(self) -> None:
         for model in self.module_models:
@@ -80,7 +84,6 @@ class GraphDBBuilder:
             model_data["_key"] = model.id
             self.db_manager.ensure_collection(f"{vertex_type_str}")
             self.db_manager.db.collection(f"{vertex_type_str}").insert(model_data)
-            # print(f"{vertex_type.capitalize()} vertex created for {key}")
 
             parent_type: str = self._get_block_type_from_id(model.parent_id)
             self._create_edge(model.id, model.parent_id, vertex_type, parent_type)
@@ -127,7 +130,6 @@ class GraphDBBuilder:
         block_id_parts: list[str] = block_id.split("__*__")
         block_type_part: str = block_id_parts[-1]
 
-        # Dictionary of callables
         block_type_functions: dict[str, Callable[..., str]] = {
             "MODULE": lambda: "module",
             "CLASS": lambda: "class",
@@ -135,7 +137,6 @@ class GraphDBBuilder:
             "STANDALONE_BLOCK": lambda: "standalone_block",
         }
 
-        # Iterate over the dictionary and call the function if the key is found in block_type_part
         for key, func in block_type_functions.items():
             if block_type_part.startswith(key):
                 return func()
@@ -144,12 +145,7 @@ class GraphDBBuilder:
 
     def process_imports_and_dependencies(self) -> None:
         # Process each vertex in the database
-        for vertex_collection in [
-            "modules",
-            "classes",
-            "functions",
-            "standalone_blocks",
-        ]:
+        for vertex_collection in helper_functions.pluralized_and_lowered_block_types():
             cursor: Result[Cursor] = self.db_manager.db.collection(
                 vertex_collection
             ).all()
@@ -223,3 +219,87 @@ class GraphDBBuilder:
                     print(
                         f"Error creating edge for dependency {block_key} to {code_block_id}: {e}"
                     )
+
+    def create_graph(self) -> None:
+        graph_name = "codebase_graph"
+        try:
+            if not self.db_manager.db.has_graph(graph_name):
+                edge_definitions: list[dict[str, str | list[str]]] = [
+                    {
+                        "edge_collection": "code_edges",
+                        "from_vertex_collections": helper_functions.pluralized_and_lowered_block_types(),
+                        "to_vertex_collections": helper_functions.pluralized_and_lowered_block_types(),
+                    }
+                ]
+
+                self.db_manager.db.create_graph(
+                    graph_name, edge_definitions=edge_definitions
+                )
+                print(f"Graph '{graph_name}' created successfully.")
+            else:
+                print(f"Graph '{graph_name}' already exists.")
+        except Exception as e:
+            print(f"Error creating graph '{graph_name}': {e}")
+
+    def get_all_downstream_vertices(self, start_key: str) -> list[ModelType] | None:
+        vertex_type: str = self._get_block_type_from_id(start_key)
+        if vertex_type == "class":
+            vertex_type += "es"
+        else:
+            vertex_type += "s"
+
+        # query: str = f"""
+        # FOR v, e, p IN 1..100 OUTBOUND '{vertex_type}/{start_key}' GRAPH '{self.graph_name}'
+        # RETURN DISTINCT v
+        # """
+        # get all downstream vertices that are connected to the start vertex if they have a direct path to one anther
+        query: str = f"""
+        FOR v, e, p IN 1..100 OUTBOUND '{vertex_type}/{start_key}' GRAPH '{self.graph_name}'
+        FILTER LENGTH(p.edges[* FILTER CURRENT != e]) == 0
+        RETURN DISTINCT v
+        """
+
+        try:
+            cursor = self.db_manager.db.aql.execute(query)
+            if isinstance(cursor, Cursor):
+                return [
+                    helper_functions.create_model_from_vertex(doc) for doc in cursor
+                ]
+            else:
+                logging.error(f"Error getting cursor for query: {query}")
+                return None
+        except Exception as e:
+            print(f"Error in get_all_downstream_vertices: {e}")
+            return None
+
+    def get_all_upstream_vertices(self, end_key: str) -> list[ModelType] | None:
+        vertex_type: str = self._get_block_type_from_id(end_key)
+        if vertex_type == "class":
+            vertex_type += "es"
+        else:
+            vertex_type += "s"
+
+        # query: str = f"""
+        # FOR v, e, p IN 1..100 INBOUND '{vertex_type}/{end_key}' GRAPH '{self.graph_name}'
+        # RETURN DISTINCT v
+        # """
+
+        # get all upstream vertices that are connected to the end vertex if they have a direct path to one anther
+        query: str = f"""
+        FOR v, e, p IN 1..100 INBOUND '{vertex_type}/{end_key}' GRAPH '{self.graph_name}'
+        FILTER LENGTH(p.edges[* FILTER CURRENT != e]) == 0
+        RETURN DISTINCT v
+        """
+
+        try:
+            cursor: Result[Cursor] = self.db_manager.db.aql.execute(query)
+            if isinstance(cursor, Cursor):
+                return [
+                    helper_functions.create_model_from_vertex(doc) for doc in cursor
+                ]
+            else:
+                logging.error(f"Error getting cursor for query: {query}")
+                return None
+        except Exception as e:
+            print(f"Error in get_all_upstream_vertices: {e}")
+            return None
