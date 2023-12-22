@@ -1,8 +1,8 @@
 # TODO List
 
--   [ ] SQLite DB and version control
--   [ ] Update summaries and DB's based on version control and info in SQLite DB
--   [ ] Remove output json from version control
+-   [ ] Update summaries and DB's based on version control
+-   [ ] Add logic to track down where an import is defined
+-   [x] Remove output json from version control
 -   [ ] Add logic to log summary count, eg. 'Summarizing k of n files'
 -   [ ] Finish summarization MVP
 -   [ ] Add tests for summarization
