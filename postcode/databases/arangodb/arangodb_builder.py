@@ -31,9 +31,10 @@ class ArangoDBBuilder:
         self.processed_id_set = set()
         self.graph_name: str = graph_name
 
-    def insert_models(self) -> None:
+    def insert_models(self) -> "ArangoDBBuilder":
         for model in self.module_models:
             self._process_model(model)
+        return self
 
     def _process_model(self, module_model: ModuleModel) -> None:
         self._create_vertex_for_module(module_model)
@@ -143,7 +144,7 @@ class ArangoDBBuilder:
 
         return "unknown"
 
-    def process_imports_and_dependencies(self) -> None:
+    def process_imports_and_dependencies(self) -> "ArangoDBBuilder":
         # Process each vertex in the database
         for vertex_collection in helper_functions.pluralized_and_lowered_block_types():
             cursor: Result[Cursor] = self.db_manager.db.collection(
@@ -164,6 +165,7 @@ class ArangoDBBuilder:
                 print(
                     f"Error getting cursor for vertex collection: {vertex_collection}"
                 )
+        return self
 
     def _create_edges_for_imports(
         self, module_key: str, imports: list[dict[str, Any]]

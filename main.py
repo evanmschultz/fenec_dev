@@ -5,6 +5,7 @@ from pprint import pprint
 from openai import OpenAI
 import chromadb
 from chromadb.config import Settings
+from postcode.ai_services.summarizer.summarization_mapper import SummarizationMapper
 from postcode.databases.arangodb.arangodb_builder import ArangoDBBuilder
 from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
 
@@ -71,12 +72,9 @@ def query_chroma(
     if results:
         if results["ids"]:
             for document in results["ids"][0]:
-                # for document in documents:
                 print(document)
 
             print(f"Total results: {len(results['ids'][0])}")
-
-        # pprint(results["metadatas"])
 
 
 def delete_collection(
@@ -134,17 +132,6 @@ def main(
     directory: str = ".",
     output_directory: str = "output",
 ) -> None:
-    """
-    Parse the specified directory and save the results in the output directory.
-
-    Args:
-        directory (str): The path to the directory to parse.
-        output_directory (str): The path to the output directory.
-
-    Returns:
-        None
-    """
-
     logger: Logger = logging.getLogger(__name__)
 
     # (
@@ -163,26 +150,20 @@ def main(
     # reset_chroma_client(chroma_client_manager, logger)
 
     db_manager = ArangoDBConnector()
-    db_manager.delete_all_collections()  # Delete all collections in the database
+    # db_manager.delete_all_collections()  # Delete all collections in the database
     db_manager.ensure_collections()  # Create the required collections
 
     graph_builder = ArangoDBBuilder(db_manager, module_models)
-    graph_builder.insert_models()
-    graph_builder.process_imports_and_dependencies()
-    graph_builder.create_graph()
-    downstream_vertices: list[
-        ModelType
-    ] | None = graph_builder.get_all_downstream_vertices(
-        "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
-    )
-    upstream_vertices: list[ModelType] | None = graph_builder.get_all_upstream_vertices(
-        "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
-    )
+    # graph_builder.insert_models().process_imports_and_dependencies().create_graph()
 
-    print("Downstream:\n")
-    pprint([vertex.id for vertex in downstream_vertices])
-    print("\nUpstream:\n")
-    pprint([vertex.id for vertex in upstream_vertices])
+    summarization_map: list[list[ModelType]] = SummarizationMapper(
+        ["postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"],
+        module_models,
+        graph_builder,
+    ).create_summarization_map()
+
+    for models in summarization_map:
+        pprint([model.id for model in models])
 
 
 if __name__ == "__main__":
