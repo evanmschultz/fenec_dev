@@ -6,7 +6,7 @@ from openai import OpenAI
 import chromadb
 from chromadb.config import Settings
 from postcode.ai_services.summarizer.summarization_mapper import SummarizationMapper
-from postcode.databases.arangodb.arangodb_builder import ArangoDBBuilder
+from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
 from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
 
 import postcode.types.chroma as chroma_types
@@ -150,20 +150,32 @@ def main(
     # reset_chroma_client(chroma_client_manager, logger)
 
     db_manager = ArangoDBConnector()
-    # db_manager.delete_all_collections()  # Delete all collections in the database
+    db_manager.delete_all_collections()  # Delete all collections in the database
     db_manager.ensure_collections()  # Create the required collections
 
-    graph_builder = ArangoDBBuilder(db_manager, module_models)
-    # graph_builder.insert_models().process_imports_and_dependencies().create_graph()
+    graph_manager = ArangoDBManager(db_manager)
+    graph_manager.insert_models(
+        list(module_models)
+    ).process_imports_and_dependencies().get_or_create_graph()
 
-    summarization_map: list[list[ModelType]] = SummarizationMapper(
-        ["postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"],
+    summarization_map: list[ModelType] = SummarizationMapper(
+        [
+            "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE",
+            "postcode:types:postcode.py__*__MODULE",
+        ],
         module_models,
-        graph_builder,
+        graph_manager,
     ).create_summarization_map()
 
-    for models in summarization_map:
-        pprint([model.id for model in models])
+    # models_to_update: list[ModelType] = []
+    # for models in summarization_map:
+    #     models_to_update.extend(models)
+
+    summary_list = []
+    for model in summarization_map:
+        summary_list.append(model.id)
+    pprint([model.id for model in summarization_map])
+    print(len(summary_list))
 
 
 if __name__ == "__main__":
