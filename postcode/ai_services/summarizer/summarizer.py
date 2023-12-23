@@ -1,14 +1,16 @@
 import logging
 
 from openai import OpenAI
-from postcode.types.openai import (
+from openai.types.chat.chat_completion_system_message_param import (
     ChatCompletionSystemMessageParam,
-    ChatCompletionUserMessageParam,
-    ChatCompletionMessageParam,
-    ChatCompletion,
 )
+from openai.types.chat.chat_completion_user_message_param import (
+    ChatCompletionUserMessageParam,
+)
+from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
+from openai.types.chat.chat_completion import ChatCompletion
 
-from postcode.ai_services.summarizer.prompts import PromptCreator
+from postcode.ai_services.summarizer.prompts.prompt_creator import PromptCreator
 from postcode.ai_services.summarizer.summarization_context import (
     OpenAIReturnContext,
     SummaryCompletionConfigs,

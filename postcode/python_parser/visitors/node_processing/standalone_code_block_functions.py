@@ -11,7 +11,7 @@ from postcode.python_parser.model_builders.builder_factory import BuilderFactory
 from postcode.python_parser.model_builders.standalone_block_model_builder import (
     StandaloneBlockModelBuilder,
 )
-from postcode.models import CommentModel, BlockType
+from postcode.models.models import CommentModel, BlockType
 
 import postcode.python_parser.visitors.node_processing.common_functions as common_functions
 from postcode.utilities.processing_context import NodeAndPositionData

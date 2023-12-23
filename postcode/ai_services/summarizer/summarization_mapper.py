@@ -1,8 +1,16 @@
 import logging
 from pprint import pprint
+from typing import Union
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
-from postcode.models import ModuleModel
-from postcode.types.postcode import ModelType
+from postcode.models.models import ClassModel, FunctionModel, ModuleModel, StandaloneCodeBlockModel
+# from postcode.types.postcode import ModelType
+
+ModelType = Union[
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+]
 
 # def create_summarization_map()
 # loop through the module_ids_to_update

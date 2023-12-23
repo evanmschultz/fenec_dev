@@ -2,11 +2,11 @@ from typing import Any
 
 from postcode.utilities.logger.decorators import logging_decorator
 from postcode.python_parser.model_builders.base_model_builder import BaseModelBuilder
-from postcode.models import (
+from postcode.models.models import (
     StandaloneCodeBlockModel,
     StandaloneCodeBlockSpecificAttributes,
-    BlockType,
 )
+from postcode.models.enums import BlockType
 
 
 class StandaloneBlockModelBuilder(BaseModelBuilder):

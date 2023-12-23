@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from postcode.models import ModuleModel
+from postcode.models.models import ModuleModel
 from postcode.utilities.logger.decorators import logging_decorator
 
 

@@ -11,7 +11,7 @@ from postcode.python_parser.model_builders.module_model_builder import (
 from postcode.python_parser.model_builders.standalone_block_model_builder import (
     StandaloneBlockModelBuilder,
 )
-from postcode.models import ImportModel, DependencyModel
+from postcode.models.models import ImportModel, DependencyModel
 
 
 def gather_and_set_children_dependencies(module_builder: ModuleModelBuilder) -> None:

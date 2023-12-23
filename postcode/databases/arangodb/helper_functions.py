@@ -1,13 +1,21 @@
-from typing import Any
+from typing import Any, Union
 
-from postcode.models import BlockType
-from postcode.models import (
+from postcode.models.enums import BlockType
+from postcode.models.models import (
     ModuleModel,
     ClassModel,
     FunctionModel,
     StandaloneCodeBlockModel,
 )
-from postcode.types.postcode import ModelType
+
+# from postcode.types.postcode import ModelType
+
+ModelType = Union[
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+]
 
 
 def pluralized_and_lowered_block_types() -> list[str]:

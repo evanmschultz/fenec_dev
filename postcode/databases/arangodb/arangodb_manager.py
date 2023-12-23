@@ -1,17 +1,24 @@
 import logging
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
 from arango.result import Result
 from arango.cursor import Cursor
 from arango.graph import Graph
 
 from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
-from postcode.types.postcode import ModelType
-from postcode.models.models import ModuleModel
+# from postcode.types.postcode import ModelType
+from postcode.models.models import ClassModel, FunctionModel, ModuleModel, StandaloneCodeBlockModel
 import postcode.databases.arangodb.helper_functions as helper_functions
 
-# NOTE: Remember, when adding logic to connect dependencies, the `from` the external dependency `to` the internal definition using it
+ModelType = Union[
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+]
 
+# NOTE: Remember, when adding logic to connect dependencies, the `from` the external dependency `to` the internal definition using it
+ 
 
 class ArangoDBManager:
     def __init__(

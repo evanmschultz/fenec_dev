@@ -3,7 +3,7 @@ from typing import Sequence
 import libcst
 
 
-from postcode.models import CommentModel, DecoratorModel, CommentType
+from postcode.models.models import CommentModel, DecoratorModel, CommentType
 
 
 def extract_code_content(

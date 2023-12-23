@@ -3,7 +3,7 @@ from typing import Sequence
 
 import libcst
 
-from postcode.models import ImportModel, ImportNameModel, ImportModuleType
+from postcode.models.models import ImportModel, ImportNameModel, ImportModuleType
 import postcode.python_parser.visitors.node_processing.common_functions as common_functions
 
 

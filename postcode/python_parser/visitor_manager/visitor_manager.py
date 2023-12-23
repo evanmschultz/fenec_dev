@@ -11,7 +11,7 @@ from postcode.python_parser.parsers.python_parser import PythonParser
 from postcode.python_parser.visitor_manager.import_and_dependency_updater import (
     ImportAndDependencyUpdater,
 )
-from postcode.models import ModuleModel
+from postcode.models.models import ModuleModel
 
 from postcode.ai_services.summarizer.summarization_context import Summarizer
 

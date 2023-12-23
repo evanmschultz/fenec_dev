@@ -1,6 +1,26 @@
+from typing import Union
 from chromadb import EphemeralClient, PersistentClient, HttpClient
 
-import postcode.types.chroma as chroma_types
+# import postcode.types.chroma as chroma_types
+from chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings
+from chromadb.api import ClientAPI
+from chromadb.api.types import (
+    DataLoader,
+    CollectionMetadata,
+    GetResult,
+    QueryResult,
+    Where,
+    WhereDocument,
+    Include,
+    URIs,
+    Loadable,
+    Metadata,
+    Embedding,
+)
+from chromadb import Collection
+from chromadb import EmbeddingFunction
+
+
 
 
 class ChromaDBClientBuilder:
@@ -31,10 +51,10 @@ class ChromaDBClientBuilder:
 
     @staticmethod
     def create_ephemeral_client(
-        settings: chroma_types.Settings | None = None,
-        tenant: str = chroma_types.DEFAULT_TENANT,
-        database: str = chroma_types.DEFAULT_DATABASE,
-    ) -> chroma_types.ClientAPI:
+        settings: Settings | None = None,
+        tenant: str = DEFAULT_TENANT,
+        database: str = DEFAULT_DATABASE,
+    ) -> ClientAPI:
         """
         Creates an in-memory instance of Chroma. This is useful for testing and development, but not recommended for production use according to
         the ChromaDB documentation.
@@ -45,7 +65,7 @@ class ChromaDBClientBuilder:
             - database (str): The database to use for the ephemeral client.
         """
         return EphemeralClient(
-            settings=settings if settings else chroma_types.Settings(),
+            settings=settings if settings else Settings(),
             tenant=tenant,
             database=database,
         )
@@ -53,10 +73,10 @@ class ChromaDBClientBuilder:
     @staticmethod
     def create_persistent_client(
         path: str = "./chroma",
-        settings: chroma_types.Settings | None = None,
-        tenant: str = chroma_types.DEFAULT_TENANT,
-        database: str = chroma_types.DEFAULT_DATABASE,
-    ) -> chroma_types.ClientAPI:
+        settings: Settings | None = None,
+        tenant: str = DEFAULT_TENANT,
+        database: str = DEFAULT_DATABASE,
+    ) -> ClientAPI:
         """
         Creates a persistent instance of Chroma that saves to disk. This is useful for testing and development, but not recommended for production use
         according to the ChromaDB documentation.
@@ -69,7 +89,7 @@ class ChromaDBClientBuilder:
         """
         return PersistentClient(
             path=path,
-            settings=settings if settings else chroma_types.Settings(),
+            settings=settings if settings else Settings(),
             tenant=tenant,
             database=database,
         )
@@ -80,10 +100,10 @@ class ChromaDBClientBuilder:
         port: str = "8087",
         ssl: bool = False,
         headers: dict[str, str] = {},
-        settings: chroma_types.Settings | None = None,
-        tenant: str = chroma_types.DEFAULT_TENANT,
-        database: str = chroma_types.DEFAULT_DATABASE,
-    ) -> chroma_types.ClientAPI:
+        settings: Settings | None = None,
+        tenant: str = DEFAULT_TENANT,
+        database: str = DEFAULT_DATABASE,
+    ) -> ClientAPI:
         """
         Creates a client that connects to a remote Chroma server. This supports many clients connecting to the same server, and is the
         recommended way to use Chroma in production according to the ChromaDB Documentation.
@@ -102,7 +122,7 @@ class ChromaDBClientBuilder:
             port=port,
             ssl=ssl,
             headers=headers,
-            settings=settings if settings else chroma_types.Settings(),
+            settings=settings if settings else Settings(),
             tenant=tenant,
             database=database,
         )

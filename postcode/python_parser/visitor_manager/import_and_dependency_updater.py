@@ -5,7 +5,7 @@
 from postcode.python_parser.model_builders.module_model_builder import (
     ModuleModelBuilder,
 )
-from postcode.models import (
+from postcode.models.models import (
     DependencyModel,
     ImportModel,
     ImportNameModel,

@@ -6,12 +6,12 @@ from postcode.python_parser.model_builders.function_model_builder import (
     FunctionModelBuilder,
 )
 
-from postcode.models import (
+from postcode.models.models import (
     DecoratorModel,
     ParameterListModel,
     ParameterModel,
-    BlockType,
 )
+from postcode.models.enums import BlockType
 import postcode.python_parser.visitors.node_processing.common_functions as common_functions
 
 from postcode.utilities.processing_context import PositionData

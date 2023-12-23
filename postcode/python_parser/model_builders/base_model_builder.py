@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Union
 from abc import ABC, abstractmethod
 
-from postcode.models import (
+from postcode.models.models import (
     BaseCodeBlockModel,
     CommentModel,
     ImportModel,

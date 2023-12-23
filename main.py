@@ -1,6 +1,7 @@
 import logging
 from logging import Logger
 from pprint import pprint
+from typing import Union
 
 from openai import OpenAI
 import chromadb
@@ -13,8 +14,21 @@ import postcode.types.chroma as chroma_types
 
 from postcode.ai_services.summarizer.summarization_manager import SummarizationManager
 from postcode.json_management.json_handler import JSONHandler
-from postcode.models import ModuleModel
-from postcode.types.postcode import ModelType
+from postcode.models.models import (
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+)
+
+# from postcode.types.postcode import ModelType
+
+ModelType = Union[
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+]
 
 from postcode.utilities.logger.logging_config import setup_logging
 from postcode.python_parser.visitor_manager.visitor_manager import (
@@ -23,22 +37,38 @@ from postcode.python_parser.visitor_manager.visitor_manager import (
 )
 from postcode.ai_services.summarizer.summarizer import OpenAISummarizer
 
-from postcode.databases.chroma import (
-    ChromaDBClientManager,
+from postcode.databases.chroma.chromadb_collection_manager import (
     ChromaDBCollectionManager,
 )
+from postcode.databases.chroma.chromadb_client_manager import ChromaDBClientManager
+
+from chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings
+from chromadb.api import ClientAPI
+from chromadb.api.types import (
+    DataLoader,
+    CollectionMetadata,
+    GetResult,
+    QueryResult,
+    Where,
+    WhereDocument,
+    Include,
+    URIs,
+    Loadable,
+    Metadata,
+    Embedding,
+)
+from chromadb import Collection
+from chromadb import EmbeddingFunction
 
 
 def setup_chroma() -> (
-    tuple[ChromaDBCollectionManager, chroma_types.Collection, ChromaDBClientManager]
+    tuple[ChromaDBCollectionManager, Collection, ChromaDBClientManager]
 ):
     chroma_settings = Settings(allow_reset=True)
-    chroma_client: chroma_types.ClientAPI = chromadb.PersistentClient(
-        settings=chroma_settings
-    )
+    chroma_client: ClientAPI = chromadb.PersistentClient(settings=chroma_settings)
     chroma_client_manager = ChromaDBClientManager(chroma_client)
-    chroma_collection: chroma_types.Collection = (
-        chroma_client_manager.get_or_create_collection("postcode")
+    chroma_collection: Collection = chroma_client_manager.get_or_create_collection(
+        "postcode"
     )
 
     return (
@@ -58,11 +88,11 @@ def upsert_models(
 def query_chroma(
     query: str,
     chroma_collection_manager: ChromaDBCollectionManager,
-    chroma_collection: chroma_types.Collection,
+    chroma_collection: Collection,
     logger: Logger,
 ) -> None:
     logger.info(f"Querying ChromaDB collection {chroma_collection.name}")
-    results: chroma_types.QueryResult | None = chroma_collection_manager.query_collection(
+    results: QueryResult | None = chroma_collection_manager.query_collection(
         [query],
         n_results=10,
         # where_filter={"block_type": "MODULE"},

@@ -1,9 +1,33 @@
 import logging
-from typing import Any, Mapping
+from typing import Any, Mapping, Union
 
-from postcode.models import ModuleModel
+from postcode.models.models import ModuleModel
 import postcode.types.chroma as chroma_types
-from postcode.types.postcode import ModelType
+from chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings
+from chromadb.api import ClientAPI
+from chromadb.api.types import (
+    DataLoader,
+    CollectionMetadata,
+    GetResult,
+    QueryResult,
+    Where,
+    WhereDocument,
+    Include,
+    URIs,
+    Loadable,
+    Metadata,
+    Embedding,
+)
+from chromadb import Collection
+from chromadb import EmbeddingFunction
+# from postcode.types.postcode import ModelType
+from postcode.models.models import ModuleModel, ClassModel, FunctionModel, StandaloneCodeBlockModel
+ModelType = Union[
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+]
 
 
 class ChromaDBCollectionManager:
@@ -43,8 +67,8 @@ class ChromaDBCollectionManager:
         ```
     """
 
-    def __init__(self, collection: chroma_types.Collection) -> None:
-        self.collection: chroma_types.Collection = collection
+    def __init__(self, collection: Collection) -> None:
+        self.collection: Collection = collection
 
     def collection_embedding_count(self) -> int | None:
         """
@@ -114,11 +138,11 @@ class ChromaDBCollectionManager:
         self,
         ids: list[str] | None,
         *,
-        where_filter: chroma_types.Where | None = None,
+        where_filter: Where | None = None,
         limit: int | None = None,
-        where_document_filter: chroma_types.WhereDocument | None = None,
-        include_in_result: chroma_types.Include = ["metadatas", "documents"],
-    ) -> chroma_types.GetResult | None:
+        where_document_filter: WhereDocument | None = None,
+        include_in_result: Include = ["metadatas", "documents"],
+    ) -> GetResult | None:
         """
         Gets embeddings and their metadata from the collection in the form of a TypedDict.
 
@@ -181,10 +205,10 @@ class ChromaDBCollectionManager:
         self,
         queries: list[str],
         n_results: int = 10,
-        where_filter: chroma_types.Where | None = None,
-        where_document_filter: chroma_types.WhereDocument | None = None,
-        include_in_result: chroma_types.Include = ["metadatas", "documents"],
-    ) -> chroma_types.QueryResult | None:
+        where_filter: Where | None = None,
+        where_document_filter: WhereDocument | None = None,
+        include_in_result: Include = ["metadatas", "documents"],
+    ) -> QueryResult | None:
         """
         Queries and returns the `n` nearest neighbors from the collection.
 

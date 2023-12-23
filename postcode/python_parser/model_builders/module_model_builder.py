@@ -3,12 +3,12 @@ from typing import Any
 from postcode.python_parser.model_builders.base_model_builder import BaseModelBuilder
 
 from postcode.utilities.logger.decorators import logging_decorator
-from postcode.models import (
+from postcode.models.models import (
     ModuleModel,
     ImportModel,
     ModuleSpecificAttributes,
-    BlockType,
 )
+from postcode.models.enums import BlockType
 
 
 class ModuleModelBuilder(BaseModelBuilder):

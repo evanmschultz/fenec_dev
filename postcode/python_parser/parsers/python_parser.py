@@ -9,7 +9,7 @@ from postcode.python_parser.model_builders.module_model_builder import (
 )
 
 from postcode.python_parser.visitors.module_visitor import ModuleVisitor
-from postcode.models import BlockType
+from postcode.models.enums import BlockType
 
 
 class PythonParser:

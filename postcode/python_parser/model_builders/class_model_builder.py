@@ -4,11 +4,12 @@ from typing import TYPE_CHECKING, Any
 from postcode.utilities.logger.decorators import logging_decorator
 
 from postcode.python_parser.model_builders.base_model_builder import BaseModelBuilder
-from postcode.models import ClassSpecificAttributes, ClassModel, BlockType
+from postcode.models.models import ClassSpecificAttributes, ClassModel
+from postcode.models.enums import BlockType
 
 
 if TYPE_CHECKING:
-    from postcode.models import (
+    from postcode.models.models import (
         ClassKeywordModel,
         DecoratorModel,
     )

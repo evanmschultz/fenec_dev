@@ -1,14 +1,33 @@
+from typing import Union
 import libcst
 from libcst.metadata import (
     WhitespaceInclusivePositionProvider,
     CodeRange,
 )
 from libcst._metadata_dependent import _UNDEFINED_DEFAULT
+from postcode.python_parser.model_builders.class_model_builder import ClassModelBuilder
+from postcode.python_parser.model_builders.function_model_builder import (
+    FunctionModelBuilder,
+)
+from postcode.python_parser.model_builders.module_model_builder import (
+    ModuleModelBuilder,
+)
+from postcode.python_parser.model_builders.standalone_block_model_builder import (
+    StandaloneBlockModelBuilder,
+)
 
-from postcode.types.postcode import BuilderType
-from postcode.models import CommentModel
+# from postcode.types.postcode import BuilderType
+from postcode.models.models import CommentModel
 import postcode.python_parser.visitors.node_processing.common_functions as common_functions
 from postcode.utilities.processing_context import PositionData
+
+
+BuilderType = Union[
+    ModuleModelBuilder,
+    ClassModelBuilder,
+    FunctionModelBuilder,
+    StandaloneBlockModelBuilder,
+]
 
 
 class BaseVisitor(libcst.CSTVisitor):

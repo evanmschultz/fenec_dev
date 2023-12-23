@@ -4,6 +4,24 @@ from typing import Any, Sequence
 import postcode.types.chroma as chroma_types
 import chromadb.utils.embedding_functions as ef
 
+from chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings
+from chromadb.api import ClientAPI
+from chromadb.api.types import (
+    DataLoader,
+    CollectionMetadata,
+    GetResult,
+    QueryResult,
+    Where,
+    WhereDocument,
+    Include,
+    URIs,
+    Loadable,
+    Metadata,
+    Embedding,
+)
+from chromadb import Collection
+from chromadb import EmbeddingFunction
+
 
 class ChromaDBClientManager:
     """
@@ -38,16 +56,16 @@ class ChromaDBClientManager:
         ```
     """
 
-    def __init__(self, client: chroma_types.ClientAPI) -> None:
-        self.client: chroma_types.ClientAPI = client
+    def __init__(self, client: ClientAPI) -> None:
+        self.client: ClientAPI = client
 
     def get_or_create_collection(
         self,
         name: str,
         metadata: dict[str, Any] | None = None,
-        embedding_function: chroma_types.EmbeddingFunction[list[str]]
+        embedding_function: EmbeddingFunction[list[str]]
         | None = ef.DefaultEmbeddingFunction(),
-    ) -> chroma_types.Collection:
+    ) -> Collection:
         """
         Gets or creates a ChromaDB collection with the given name.
 
@@ -112,7 +130,7 @@ class ChromaDBClientManager:
         else:
             raise ValueError(f"Collection {name} does not exist.")
 
-    def list_collections(self) -> Sequence[chroma_types.Collection]:
+    def list_collections(self) -> Sequence[Collection]:
         """
         Lists all ChromaDB collections.
 
@@ -133,7 +151,7 @@ class ChromaDBClientManager:
 
         return self.client.list_collections()
 
-    def get_client_settings(self) -> chroma_types.Settings:
+    def get_client_settings(self) -> Settings:
         """
         Gets the setting used to instantiate the ChromaDB client.
 
