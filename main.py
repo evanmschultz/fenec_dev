@@ -154,7 +154,7 @@ def main(
     db_manager.ensure_collections()  # Create the required collections
 
     graph_manager = ArangoDBManager(db_manager)
-    graph_manager.insert_models(
+    graph_manager.upsert_models(
         list(module_models)
     ).process_imports_and_dependencies().get_or_create_graph()
 
@@ -174,7 +174,7 @@ def main(
     summary_list = []
     for model in summarization_map:
         summary_list.append(model.id)
-    pprint([model.id for model in summarization_map])
+    # pprint([model.id for model in summarization_map])
     print(len(summary_list))
 
 

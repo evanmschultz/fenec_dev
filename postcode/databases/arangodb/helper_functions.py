@@ -11,10 +11,10 @@ from postcode.types.postcode import ModelType
 
 
 def pluralized_and_lowered_block_types() -> list[str]:
-    return [_pluralize_block_type(block_type).lower() for block_type in BlockType]
+    return [pluralize_block_type(block_type).lower() for block_type in BlockType]
 
 
-def _pluralize_block_type(block_type: str) -> str:
+def pluralize_block_type(block_type: str) -> str:
     if block_type == BlockType.CLASS:
         return "classes"
     else:
