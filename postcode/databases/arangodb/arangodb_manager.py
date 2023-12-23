@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable
+from typing import Any, Callable, Literal
 
 from arango.result import Result
 from arango.cursor import Cursor
@@ -221,6 +221,42 @@ class ArangoDBManager:
                     logging.error(
                         f"Error creating edge for dependency {block_key} to {code_block_id}: {e}"
                     )
+
+    def delete_vertex_by_id(
+        self, vertex_key: str, graph_name: str | None = None
+    ) -> None:
+        vertex_type = self._get_block_type_from_id(vertex_key)
+        if vertex_type == "unknown":
+            logging.error(f"Unknown vertex type for key: {vertex_key}")
+            return None
+
+        if not graph_name:
+            graph_name = self.default_graph_name
+
+        vertex_collection: str | Literal[
+            "modules", "classes", "functions", "standalone_blocks"
+        ] = (f"{vertex_type}s" if vertex_type != "class" else f"{vertex_type}es")
+
+        try:
+            if vertex_collection:
+                vertex_coll = self.db_manager.db.graph(graph_name).vertex_collection(
+                    vertex_collection
+                )
+
+                vertex_coll.delete(vertex_key)
+
+                logging.info(
+                    f"Vertex '{vertex_key}' from collection '{vertex_collection}' was successfully deleted."
+                )
+            else:
+                logging.error(
+                    f"Unable to determine collection for vertex '{vertex_key}'."
+                )
+
+        except Exception as e:
+            logging.error(
+                f"Error deleting vertex '{vertex_key}' from collection '{vertex_collection}': {e}"
+            )
 
     def get_graph(self, graph_name: str | None = None) -> Graph | None:
         if not graph_name:
