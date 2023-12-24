@@ -233,15 +233,19 @@ class OpenAISummarizer:
         """
 
         # logging.info(f"Summarizing code for model: {model_id}")
-        prompt: str = self._create_prompt(
-            code, children_summaries, dependency_summaries, import_details
-        )
-        messages: list[ChatCompletionMessageParam] = self._create_messages_list(
-            system_message=configs.system_message, user_message=prompt
-        )
+        # prompt: str = self._create_prompt(
+        #     code, children_summaries, dependency_summaries, import_details
+        # )
+        # messages: list[ChatCompletionMessageParam] = self._create_messages_list(
+        #     system_message=configs.system_message, user_message=prompt
+        # )
 
-        summary: str = f"""Summary:\n
-        {messages}\n 
+        # summary: str = f"""Summary:\n
+        # {messages}\n
+        # """
+        summary = f"""\nSummary:\n
+        {model_id}\n
+        {children_summaries}, {dependency_summaries}, {import_details}
         """
         summary_context = OpenAIReturnContext(
             summary=summary,

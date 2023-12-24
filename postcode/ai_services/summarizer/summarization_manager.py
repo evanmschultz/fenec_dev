@@ -3,6 +3,7 @@ from typing import Union
 
 from postcode.ai_services.summarizer.summarizer import OpenAIReturnContext
 from postcode.ai_services.summarizer.summarization_context import Summarizer
+
 # from postcode.types.postcode import ModelType
 
 from postcode.models.models import (
@@ -20,7 +21,7 @@ ModelType = Union[
     FunctionModel,
     StandaloneCodeBlockModel,
 ]
- 
+
 
 class SummarizationManager:
     """
@@ -216,8 +217,8 @@ class SummarizationManager:
 
                 self.prompt_tokens += summary_context.prompt_tokens
                 self.completion_tokens += summary_context.completion_tokens
-                logging.info(f"Summarized code block: {model.id}")
-                logging.info(f"Total cost: {self.total_cost}")
+                # logging.info(f"Summarized code block: {model.id}")
+                # logging.info(f"Total cost: {self.total_cost}")
 
         return (
             summary_context.summary

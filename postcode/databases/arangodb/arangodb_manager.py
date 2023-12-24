@@ -6,8 +6,14 @@ from arango.cursor import Cursor
 from arango.graph import Graph
 
 from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
+
 # from postcode.types.postcode import ModelType
-from postcode.models.models import ClassModel, FunctionModel, ModuleModel, StandaloneCodeBlockModel
+from postcode.models.models import (
+    ClassModel,
+    FunctionModel,
+    ModuleModel,
+    StandaloneCodeBlockModel,
+)
 import postcode.databases.arangodb.helper_functions as helper_functions
 
 ModelType = Union[
@@ -18,7 +24,7 @@ ModelType = Union[
 ]
 
 # NOTE: Remember, when adding logic to connect dependencies, the `from` the external dependency `to` the internal definition using it
- 
+
 
 class ArangoDBManager:
     def __init__(
@@ -154,15 +160,15 @@ class ArangoDBManager:
         self, module_key: str, imports: list[dict[str, Any]]
     ) -> None:
         if not imports:
-            logging.debug(f"No imports found for module {module_key}")
+            # logging.debug(f"No imports found for module {module_key}")
             return
 
-        logging.info(f"Processing imports for module {module_key}")
+        # logging.info(f"Processing imports for module {module_key}")
 
         for _import in imports:
             import_names: list[dict[str, str]] = _import.get("import_names", [])
             if not import_names:
-                logging.debug(f"No import names found in import {_import}")
+                # logging.debug(f"No import names found in import {_import}")
                 continue
 
             for import_name in import_names:
@@ -175,17 +181,18 @@ class ArangoDBManager:
                             local_block_id, module_key, target_type, "modules"
                         )
 
-                        logging.info(
-                            f"Upserted edge for import {module_key} to {local_block_id}"
-                        )
+                        # logging.info(
+                        #     f"Upserted edge for import {module_key} to {local_block_id}"
+                        # )
                     except Exception as e:
                         logging.error(
                             f"Error creating edge for import {module_key} to {local_block_id}: {e}"
                         )
                 else:
-                    logging.warning(
-                        f"Skipped import {import_name} in module {module_key}"
-                    )
+                    # logging.warning(
+                    #     f"Skipped import {import_name} in module {module_key}"
+                    # )
+                    ...
 
     def _create_edges_for_dependencies(
         self, block_key: str, dependencies: list[dict[str, Any]]
@@ -202,9 +209,9 @@ class ArangoDBManager:
                     self._upsert_edge(
                         code_block_id, block_key, source_type, target_type
                     )
-                    logging.info(
-                        f"Upserted edge for dependency {block_key} to {code_block_id}"
-                    )
+                    # logging.info(
+                    #     f"Upserted edge for dependency {block_key} to {code_block_id}"
+                    # )
                 except Exception as e:
                     logging.error(
                         f"Error creating edge for dependency {block_key} to {code_block_id}: {e}"
@@ -228,9 +235,9 @@ class ArangoDBManager:
 
             vertex_coll.delete(vertex_key)
 
-            logging.info(
-                f"Vertex '{vertex_key}' from collection '{collection_name}' was successfully deleted."
-            )
+            # logging.info(
+            #     f"Vertex '{vertex_key}' from collection '{collection_name}' was successfully deleted."
+            # )
 
         except Exception as e:
             logging.error(
@@ -260,7 +267,7 @@ class ArangoDBManager:
                     }
                 ]
 
-                logging.info(f"Graph '{graph_name}' created successfully.")
+                # logging.info(f"Graph '{graph_name}' created successfully.")
                 return self.db_manager.db.create_graph(
                     graph_name, edge_definitions=edge_definitions
                 )

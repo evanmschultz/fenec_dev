@@ -2,7 +2,13 @@ import logging
 from pprint import pprint
 from typing import Union
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
-from postcode.models.models import ClassModel, FunctionModel, ModuleModel, StandaloneCodeBlockModel
+from postcode.models.models import (
+    ClassModel,
+    FunctionModel,
+    ModuleModel,
+    StandaloneCodeBlockModel,
+)
+
 # from postcode.types.postcode import ModelType
 
 ModelType = Union[
@@ -71,9 +77,9 @@ class SummarizationMapper:
 
         if outbound_models := self.arangodb_manager.get_outbound_models(model_id):
             for model in outbound_models[::-1]:
-                logging.info(
-                    f"Setting outbound models in summarization map: {model.id}"
-                )
+                # logging.info(
+                #     f"Setting outbound models in summarization map: {model.id}"
+                # )
                 self.model_visited_in_db.add(model_id)
                 # self._set_outbound_models_in_summarization_map(model.id)``
 
@@ -85,23 +91,23 @@ class SummarizationMapper:
         self._set_models_to_update()
         logging.info("Set models to update")
 
-        pprint([model.id for model in self.models_to_update])
+        # pprint([model.id for model in self.models_to_update])
 
         for model in self.models_to_update:
             # self.model_visited_in_db = set()
-            logging.info(f"Setting inbound models in summarization map: {model.id}")
+            # logging.info(f"Setting inbound models in summarization map: {model.id}")
             self._set_inbound_models_in_summarization_map(model.id)
             self.temp_map.append(model)
 
             self.model_visited_in_db.remove(model.id)
-            logging.info(f"Setting outbound models in summarization map: {model.id}")
+            # logging.info(f"Setting outbound models in summarization map: {model.id}")
             # self._set_outbound_models_in_summarization_map(model.id)
             self.summarization_map.extend(self.temp_map)
             self.temp_map = []
 
         for model in self.models_to_update:
             self.model_visited_in_db = set()
-            logging.info(f"Setting outbound models in summarization map: {model.id}")
+            # logging.info(f"Setting outbound models in summarization map: {model.id}")
             self._set_outbound_models_in_summarization_map(model.id)
             self.summarization_map.extend(self.temp_map)
             self.temp_map = []
