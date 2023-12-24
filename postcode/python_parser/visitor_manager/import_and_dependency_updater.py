@@ -48,6 +48,10 @@ class ImportAndDependencyUpdater:
             import_updater: ImportUpdater = ImportUpdater(self.model_builder_tuple)
             import_updater.process_builder(model_builder)
 
+            # for model_builder in self.model_builder_tuple:
+            ...
+        # Track down and add imports for the imports that were defined outside of the module that it is imported from
+
 
 class ImportUpdater:
     """
@@ -81,10 +85,11 @@ class ImportUpdater:
 
         if module_imports := builder.module_attributes.imports:
             module_imports_tuple = tuple(module_imports)
-            self.handle_import_models(builder, module_imports_tuple)
+            self._handle_import_models(builder, module_imports_tuple)
+            # print(module_imports_tuple)
 
-    def handle_import_models(
-        self, builder: ModuleModelBuilder, module_imports: tuple[ImportModel, ...]
+    def _handle_import_models(
+        self, builder: ModuleModelBuilder, module_imports_tuple: tuple[ImportModel, ...]
     ) -> None:
         """
         Handles the import models for a given builder and updates them as necessary.
@@ -94,16 +99,15 @@ class ImportUpdater:
             module_imports (tuple[ImportModel]): A tuple of import models to process.
         """
 
-        module_imports_tuple = tuple(module_imports)
-        # HACK: Converts to tuple in order to prevent missing elements as the list was getting modified during iteration
+        # module_imports_tuple = tuple(module_imports)
+        # # HACK: Converts to tuple in order to prevent missing elements as the list was getting modified during iteration
 
         for import_model in module_imports_tuple:
-            self.update_import_for_builder(builder, import_model)
+            self._update_import_for_builder(builder, import_model)
 
-            dependency_updater: DependencyUpdater = DependencyUpdater(builder)
-            dependency_updater.update_dependencies()
+            DependencyUpdater.update_dependencies(builder)
 
-    def update_import_for_builder(
+    def _update_import_for_builder(
         self, builder: ModuleModelBuilder, import_model: ImportModel
     ) -> None:
         """
@@ -115,34 +119,34 @@ class ImportUpdater:
             import_model (ImportModel): The import model to be updated.
         """
 
-        if self.is_local_import(import_model):
-            import_path: str = self.get_import_path(import_model)
+        if self._is_local_import(import_model):
+            import_path: str = self._get_import_path(import_model)
             import_names: list[str] | None = None
 
             if import_model.imported_from:
-                import_names = self.get_import_names(import_model)
-            else:
-                import_path: str = self.get_import_path(import_model)
+                import_names = self._get_import_names(import_model)
+            # else:
+            #     import_path: str = self._get_import_path(import_model)
 
             for external_builder in self.model_builder_tuple:
-                if self.should_skip_builder(
+                if self._should_skip_builder(
                     builder, external_builder, import_path, import_model
                 ):
                     continue
 
-                self.update_import_model(
+                self._update_import_model(
                     import_model, import_names, builder, external_builder
                 )
 
-    def is_local_import(self, import_model: ImportModel) -> bool:
+    def _is_local_import(self, import_model: ImportModel) -> bool:
         """Returns True if the import is local."""
         return import_model.import_module_type == ImportModuleType.LOCAL
 
-    def get_import_names(self, import_model: ImportModel) -> list[str]:
+    def _get_import_names(self, import_model: ImportModel) -> list[str]:
         """Returns a list of import names for the given import model."""
         return [name.name for name in import_model.import_names]
 
-    def get_import_path(self, import_model: ImportModel) -> str:
+    def _get_import_path(self, import_model: ImportModel) -> str:
         """Returns the import path for the given import model."""
 
         if import_model.imported_from:
@@ -150,7 +154,7 @@ class ImportUpdater:
         else:
             return import_model.import_names[0].name.replace(".", ":")
 
-    def should_skip_builder(
+    def _should_skip_builder(
         self,
         builder: ModuleModelBuilder,
         external_builder: ModuleModelBuilder,
@@ -165,7 +169,7 @@ class ImportUpdater:
             or import_model.local_module_id is not None
         )
 
-    def update_import_model(
+    def _update_import_model(
         self,
         import_model: ImportModel,
         import_names: list[str] | None,
@@ -184,7 +188,6 @@ class ImportUpdater:
         Returns:
             None
         """
-
         new_import_model: ImportModel = import_model.model_copy()
         new_import_model.local_module_id = external_builder.id
 
@@ -195,21 +198,21 @@ class ImportUpdater:
         if import_names:
             new_import_name_models: list[
                 ImportNameModel
-            ] = self.get_new_import_name_models(
+            ] = self._get_new_import_name_models(
                 external_builder, import_names, import_model
             )
             # print(f"{len(new_import_name_models)} : {len(import_model.import_names)}")
             if len(new_import_name_models) < len(import_model.import_names):
                 # TODO: Add logic to track down the import's definition location
 
-                new_import_name_models = self.add_missing_imports(
+                new_import_name_models = self._add_missing_imports(
                     new_import_name_models, import_model.import_names
                 )
 
             new_import_model.import_names = new_import_name_models
             builder.update_import(new_import_model, import_model)
 
-    def get_new_import_name_models(
+    def _get_new_import_name_models(
         self,
         external_builder: ModuleModelBuilder,
         import_names: list[str],
@@ -247,7 +250,7 @@ class ImportUpdater:
 
         return new_import_name_models
 
-    def add_missing_imports(
+    def _add_missing_imports(
         self,
         new_import_name_models: list[ImportNameModel],
         existing_import_names: list[ImportNameModel],
@@ -265,41 +268,50 @@ class DependencyUpdater:
     """
     Class responsible for updating dependencies in a module.
 
-    Args:
-        model_builder (ModuleModelBuilder): The module model builder.
-
-    Attributes:
-        model_builder (ModuleModelBuilder): The module model builder.
-        import_model_list (list[ImportModel] | None): The list of import models.
+    Methods:
+        - `update_dependencies` (staticmethod): Updates the dependencies in the module.
 
     Examples:
-        >>> model_builder = ModuleModelBuilder()
-        >>> updater = DependencyUpdater(model_builder)
-        >>> updater.update_dependencies()
+        ```Python
+        model_builder = ModuleModelBuilder()
+
+        DependencyUpdater.update_dependencies(model_builder)
+        ```
     """
 
-    def __init__(self, model_builder: ModuleModelBuilder) -> None:
-        self.model_builder: ModuleModelBuilder = model_builder
-        self.import_model_list: list[
+    @staticmethod
+    def update_dependencies(model_builder: ModuleModelBuilder) -> None:
+        """
+        Updates the dependencies in the module.
+
+        Args:
+            - model_builder (ModuleModelBuilder): The module model builder to update the dependencies for.
+
+        Returns:
+            - None
+
+        Example:
+            ```Python
+            model_builder = ModuleModelBuilder()
+
+            DependencyUpdater.update_dependencies(model_builder)
+            ```
+        """
+        import_model_list: list[
             ImportModel
         ] | None = model_builder.module_attributes.imports
-
-    def update_dependencies(self) -> None:
-        """Updates the dependencies in the module."""
-        if self.model_builder.children_builders:
-            for child_builder in self.model_builder.children_builders:
+        if model_builder.children_builders:
+            for child_builder in model_builder.children_builders:
                 if (
                     not child_builder.common_attributes.dependencies
-                    or not self.import_model_list
+                    or not import_model_list
                 ):
                     continue
 
                 dependencies_to_process: tuple[
                     ImportModel | DependencyModel, ...
                 ] = tuple(child_builder.common_attributes.dependencies)
-                imports_to_process: tuple[ImportModel, ...] = tuple(
-                    self.import_model_list
-                )
+                imports_to_process: tuple[ImportModel, ...] = tuple(import_model_list)
                 for dependency in dependencies_to_process:
                     if isinstance(dependency, DependencyModel):
                         continue
