@@ -12,7 +12,9 @@ from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
 
 import postcode.types.chroma as chroma_types
 
-from postcode.ai_services.summarizer.summarization_manager import SummarizationManager
+from postcode.ai_services.summarizer.old_summarization_manager import (
+    SummarizationManager,
+)
 from postcode.json_management.json_handler import JSONHandler
 from postcode.models.models import (
     ModuleModel,

@@ -3,6 +3,8 @@ import subprocess
 
 class UpdateUsingGit:
     """
+    DO NOT USE: The necessary functionality for this class is not yet implemented.
+
     A class that provides methods to get the names of the Python modules that have been changed using on version control.
 
     Use this class to get all the file names for the Python modules that have been changes since the last commit or since

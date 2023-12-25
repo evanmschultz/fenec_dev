@@ -18,12 +18,6 @@ ModelType = Union[
     StandaloneCodeBlockModel,
 ]
 
-# def create_summarization_map()
-# loop through the module_ids_to_update
-# loop through the module_models and check if the model_id is in the module_ids_to_update
-# loop through the children and insert the id in the `all_ids_to_update` list, in front of the module_id
-# after recursively reaching the bottom of the tree; add ids on the way back up
-
 
 class SummarizationMapper:
     def __init__(
@@ -121,6 +115,7 @@ class SummarizationMapper:
                 summary_ids.add(model.id)
 
         # return summary_map[::-1]
+        pprint([model.id for model in summary_map[::-1]])
         return summary_map[::-1]
 
     # def old_create_summarization_map(self) -> list[list[ModelType]]:
