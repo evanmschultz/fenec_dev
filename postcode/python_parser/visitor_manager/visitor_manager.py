@@ -51,14 +51,10 @@ class VisitorManager:
     """
 
     @logging_decorator(message="Initializing VisitorManager")
-    def __init__(
-        self, summarizer: Summarizer, directory: str, output_directory: str = "output"
-    ) -> None:
+    def __init__(self, directory: str, output_directory: str = "output") -> None:
         self.directory: str = directory
         self.output_directory: str = output_directory
         self.directory_modules: dict[str, list[str]] = {}
-
-        self.summarizer: Summarizer = summarizer
 
     def process_files(self) -> VisitorManagerProcessFilesReturn:
         """

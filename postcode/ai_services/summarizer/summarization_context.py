@@ -84,7 +84,7 @@ class Summarizer(Protocol):
         dependency_summaries: str | None,
         import_details: str | None,
         configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),
-    ) -> OpenAIReturnContext | str:
+    ) -> OpenAIReturnContext | None:
         """
         Summarizes the provided code snippet using the OpenAI API.
 
@@ -120,7 +120,7 @@ class Summarizer(Protocol):
         dependency_summaries: str | None,
         import_details: str | None,
         configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),
-    ) -> OpenAIReturnContext | str:
+    ) -> OpenAIReturnContext | None:
         """
         A method for testing whether or not a summary path is working as expected.
 

@@ -12,8 +12,8 @@ from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
 
 import postcode.types.chroma as chroma_types
 
-from postcode.ai_services.summarizer.old_summarization_manager import (
-    SummarizationManager,
+from postcode.ai_services.summarizer.graph_db_summarization_manager import (
+    GraphDBSummarizationManager,
 )
 from postcode.json_management.json_handler import JSONHandler
 from postcode.models.models import (
@@ -37,7 +37,7 @@ from postcode.python_parser.visitor_manager.visitor_manager import (
     VisitorManager,
     VisitorManagerProcessFilesReturn,
 )
-from postcode.ai_services.summarizer.summarizer import OpenAISummarizer
+from postcode.ai_services.summarizer.openai_summarizer import OpenAISummarizer
 
 from postcode.databases.chroma.chromadb_collection_manager import (
     ChromaDBCollectionManager,
@@ -125,25 +125,36 @@ def reset_chroma_client(
 
 
 def parse_and_summarize(
-    directory: str, output_directory: str, logger: Logger
+    directory: str,
+    output_directory: str,
+    logger: Logger,
+    graph_manager: ArangoDBManager,
 ) -> tuple[ModuleModel, ...]:
     logger.info("Starting the directory parsing.")
 
-    client = OpenAI(max_retries=4)
-    summarizer = OpenAISummarizer(client=client)
-
-    visitor_manager = VisitorManager(summarizer, directory, output_directory)
+    visitor_manager = VisitorManager(directory, output_directory)
     process_files_return: VisitorManagerProcessFilesReturn = (
         visitor_manager.process_files()
     )
 
     module_models_tuple: tuple[ModuleModel, ...] = process_files_return.models_tuple
+    module_ids: list[str] = [model.id for model in module_models_tuple]
     directory_modules: dict[str, list[str]] = process_files_return.directory_modules
-    summarization_manager = SummarizationManager(module_models_tuple, summarizer)
+    graph_manager.upsert_models(
+        list(module_models_tuple)
+    ).process_imports_and_dependencies().get_or_create_graph()
+    summarization_mapper = SummarizationMapper(
+        module_ids, module_models_tuple, graph_manager
+    )
+    client = OpenAI(max_retries=4)
+    summarizer = OpenAISummarizer(client=client)
+    summarization_manager = GraphDBSummarizationManager(
+        module_models_tuple, summarization_mapper, summarizer
+    )
     finalized_module_models: tuple[
         ModuleModel, ...
-    ] = summarization_manager.create_and_add_summaries_to_models()
-    # print(finalized_module_models)
+    ] = summarization_manager.create_summaries_and_return_updated_models()
+    # pprint(finalized_module_models)
     logger.info("Summarization complete")
 
     logger.info("Saving models as JSON")
@@ -172,9 +183,6 @@ def main(
     #     chroma_client_manager,
     # ) = setup_chroma()
 
-    module_models: tuple[ModuleModel, ...] = parse_and_summarize(
-        directory, output_directory, logger
-    )
     # upsert_models(chroma_collection_manager, module_models)
     # query: str = "class and functions"
     # query_chroma(query, chroma_collection_manager, chroma_collection, logger)
@@ -186,28 +194,27 @@ def main(
     db_manager.ensure_collections()  # Create the required collections
 
     graph_manager = ArangoDBManager(db_manager)
+    module_models: tuple[ModuleModel, ...] = parse_and_summarize(
+        directory, output_directory, logger, graph_manager
+    )
     graph_manager.upsert_models(
         list(module_models)
     ).process_imports_and_dependencies().get_or_create_graph()
 
-    summarization_map: list[ModelType] = SummarizationMapper(
-        [
-            "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE",
-            "postcode:types:postcode.py__*__MODULE",
-        ],
-        module_models,
-        graph_manager,
-    ).create_summarization_map()
+    # summarization_map: list[ModelType] = SummarizationMapper(
+    #     [
+    #         "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE",
+    #         "postcode:types:postcode.py__*__MODULE",
+    #     ],
+    #     module_models,
+    #     graph_manager,
+    # ).create_summarization_map()
 
-    # models_to_update: list[ModelType] = []
-    # for models in summarization_map:
-    #     models_to_update.extend(models)
-
-    summary_list = []
-    for model in summarization_map:
-        summary_list.append(model.id)
-    # pprint([model.id for model in summarization_map])
-    print(len(summary_list))
+    # summary_list = []
+    # for model in summarization_map:
+    #     summary_list.append(model.id)
+    # # pprint([model.id for model in summarization_map])
+    # print(len(summary_list))
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import logging
 from typing import Union
 
-from postcode.ai_services.summarizer.summarizer import OpenAIReturnContext
+from postcode.ai_services.summarizer.openai_summarizer import OpenAIReturnContext
 from postcode.ai_services.summarizer.summarization_context import Summarizer
 
 # from postcode.types.postcode import ModelType
@@ -23,7 +23,7 @@ ModelType = Union[
 ]
 
 
-class SummarizationManager:
+class StandardSummarizationManager:
     """
     Manages the summarization process for Python code modules.
 
@@ -90,7 +90,7 @@ class SummarizationManager:
         )  # Costs 3 cents per 1,000 tokens
         return (prompt_cost + completion_cost) / 100_000  # Convert to dollars
 
-    def create_and_add_summaries_to_models(self) -> tuple[ModuleModel, ...]:
+    def create_summarizes_and_return_updated_models(self) -> tuple[ModuleModel, ...]:
         """
         Generates summaries for each module model and updates them.
 
@@ -199,7 +199,7 @@ class SummarizationManager:
             dependency_summary_list
         )
 
-        summary_context: OpenAIReturnContext | str = (
+        summary_context: OpenAIReturnContext | None = (
             self.summarizer.test_summarize_code(
                 model.code_content,
                 model_id=model.id,
