@@ -16,7 +16,7 @@ from postcode.ai_services.summarizer.summarization_context import (
     SummaryCompletionConfigs,
 )
 
-from postcode.ai_services.summarizer.temp import code_example
+# from postcode.ai_services.summarizer.temp import code_example
 
 
 class OpenAISummarizer:
@@ -235,16 +235,16 @@ class OpenAISummarizer:
         return summary_context
 
 
-if __name__ == "__main__":
-    client = OpenAI()
-    summarizer = OpenAISummarizer(client=client)
-    children_summaries = ""
-    dependency_summaries = ""
-    summary = summarizer.summarize_code(
-        code_example,
-        model_id="test",
-        children_summaries=children_summaries,
-        dependency_summaries=dependency_summaries,
-        import_details=None,
-    )
-    print(summary)
+# if __name__ == "__main__":
+#     client = OpenAI()
+#     summarizer = OpenAISummarizer(client=client)
+#     children_summaries = ""
+#     dependency_summaries = ""
+#     summary = summarizer.summarize_code(
+#         code_example,
+#         model_id="test",
+#         children_summaries=children_summaries,
+#         dependency_summaries=dependency_summaries,
+#         import_details=None,
+#     )
+#     print(summary)
