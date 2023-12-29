@@ -29,10 +29,10 @@ ModelType = Union[
 class ArangoDBManager:
     def __init__(
         self,
-        db_manager: ArangoDBConnector,
+        db_connector: ArangoDBConnector,
         default_graph_name: str = "codebase_graph",
     ) -> None:
-        self.db_manager: ArangoDBConnector = db_manager
+        self.db_connector: ArangoDBConnector = db_connector
 
         self.processed_id_set = set()
         self.default_graph_name: str = default_graph_name
@@ -51,8 +51,8 @@ class ArangoDBManager:
             return None
 
         for child in parent_model.children:
-            if child.id in self.processed_id_set:
-                continue
+            # if child.id in self.processed_id_set:
+            #     continue
 
             self.processed_id_set.add(child.id)
             self._upsert_vertex(
@@ -67,7 +67,7 @@ class ArangoDBManager:
         model_data["_key"] = model.id
 
         try:
-            self.db_manager.ensure_collection(
+            self.db_connector.ensure_collection(
                 collection_name, model.model_json_schema()
             )
             query: str = f"""
@@ -77,7 +77,7 @@ class ArangoDBManager:
             IN {collection_name}
             """
             bind_vars: dict[str, Any] = {"key": model.id, "doc": model_data}
-            self.db_manager.db.aql.execute(query, bind_vars=bind_vars)
+            self.db_connector.db.aql.execute(query, bind_vars=bind_vars)
 
             if not isinstance(model, ModuleModel) and model.parent_id:
                 parent_type: str = self._get_collection_from_id(model.parent_id)
@@ -101,7 +101,7 @@ class ArangoDBManager:
         }
 
         try:
-            self.db_manager.ensure_edge_collection("code_edges")
+            self.db_connector.ensure_edge_collection("code_edges")
             query = f"""
             UPSERT {{_from: @from, _to: @to}}
             INSERT @doc
@@ -113,7 +113,7 @@ class ArangoDBManager:
                 "to": edge_data["_to"],
                 "doc": edge_data,
             }
-            self.db_manager.db.aql.execute(query, bind_vars=bind_vars)
+            self.db_connector.db.aql.execute(query, bind_vars=bind_vars)
         except Exception as e:
             logging.error(f"Error upserting edge (ArangoDB): {e}")
 
@@ -136,7 +136,7 @@ class ArangoDBManager:
 
     def process_imports_and_dependencies(self) -> "ArangoDBManager":
         for vertex_collection in helper_functions.pluralized_and_lowered_block_types():
-            cursor: Result[Cursor] = self.db_manager.db.collection(
+            cursor: Result[Cursor] = self.db_connector.db.collection(
                 vertex_collection
             ).all()
             if isinstance(cursor, Cursor):
@@ -229,7 +229,7 @@ class ArangoDBManager:
             graph_name = self.default_graph_name
 
         try:
-            vertex_coll = self.db_manager.db.graph(graph_name).vertex_collection(
+            vertex_coll = self.db_connector.db.graph(graph_name).vertex_collection(
                 collection_name
             )
 
@@ -248,7 +248,7 @@ class ArangoDBManager:
         if not graph_name:
             graph_name = self.default_graph_name
         try:
-            return self.db_manager.db.graph(self.default_graph_name)
+            return self.db_connector.db.graph(self.default_graph_name)
         except Exception as e:
             logging.error(f"Error getting graph '{self.default_graph_name}': {e}")
             return None
@@ -258,7 +258,7 @@ class ArangoDBManager:
             graph_name = self.default_graph_name
 
         try:
-            if not self.db_manager.db.has_graph(graph_name):
+            if not self.db_connector.db.has_graph(graph_name):
                 edge_definitions: list[dict[str, str | list[str]]] = [
                     {
                         "edge_collection": "code_edges",
@@ -268,7 +268,7 @@ class ArangoDBManager:
                 ]
 
                 # logging.info(f"Graph '{graph_name}' created successfully.")
-                return self.db_manager.db.create_graph(
+                return self.db_connector.db.create_graph(
                     graph_name, edge_definitions=edge_definitions
                 )
 
@@ -282,7 +282,7 @@ class ArangoDBManager:
         if not graph_name:
             graph_name = self.default_graph_name
         try:
-            self.db_manager.db.delete_graph(graph_name)
+            self.db_connector.db.delete_graph(graph_name)
             logging.info(f"Graph '{graph_name}' deleted successfully.")
         except Exception as e:
             logging.error(f"Error deleting graph '{graph_name}': {e}")
@@ -307,7 +307,7 @@ class ArangoDBManager:
         # """
 
         try:
-            cursor = self.db_manager.db.aql.execute(query)
+            cursor = self.db_connector.db.aql.execute(query)
             if isinstance(cursor, Cursor):
                 return [
                     helper_functions.create_model_from_vertex(doc) for doc in cursor
@@ -334,7 +334,7 @@ class ArangoDBManager:
         # """
 
         try:
-            cursor: Result[Cursor] = self.db_manager.db.aql.execute(query)
+            cursor: Result[Cursor] = self.db_connector.db.aql.execute(query)
             if isinstance(cursor, Cursor):
                 return [
                     helper_functions.create_model_from_vertex(doc) for doc in cursor

@@ -217,8 +217,8 @@ class StandardSummarizationManager:
 
                 self.prompt_tokens += summary_context.prompt_tokens
                 self.completion_tokens += summary_context.completion_tokens
-                # logging.info(f"Summarized code block: {model.id}")
-                # logging.info(f"Total cost: {self.total_cost}")
+                logging.info(f"Summarized code block: {model.id}")
+                logging.info(f"Total cost: {self.total_cost}")
 
         return (
             summary_context.summary
@@ -278,13 +278,18 @@ class StandardSummarizationManager:
         """Gathers summaries of child models."""
         child_summary_list: list[str] = []
         if model.children:
-            for child_model in model.children:
+            for child in model.children:
                 child_summary: str | None = self._summarize_code_block(
-                    child_model,
+                    child,
                     recursion_path,
                 )
-                if child_summary:
-                    child_summary_list.append(child_summary)
+                if child.summary:
+                    child_summary = child.summary
+                else:
+                    child_summary = (
+                        f"Child ({child.id}) code content:\n{child.code_content}\n"
+                    )
+                child_summary_list.append(child_summary)
         return child_summary_list
 
     def _stringify_children_summaries(
@@ -323,10 +328,14 @@ class StandardSummarizationManager:
 
         for child_model in model.children:
             if child_model.id == dependency.code_block_id:
-                return self._summarize_code_block(
+                dependency_summary = self._summarize_code_block(
                     child_model,
                     recursion_path,
                 )
+                if dependency_summary:
+                    return dependency_summary
+                else:
+                    return f"Dependency ({child_model.id}) code content:\n{child_model.code_content}\n"
 
     def _get_local_import_summary(
         self, dependency: ImportModel, recursion_path: list[str]
@@ -334,10 +343,14 @@ class StandardSummarizationManager:
         """Gets the summary of a dependency imported from a separate module, but is local to the project."""
         for module_model in self.module_models_tuple:
             if module_model.id == dependency.local_module_id:
-                return self._summarize_code_block(
+                import_summary = self._summarize_code_block(
                     module_model,
                     recursion_path,
                 )
+                if import_summary:
+                    return import_summary
+                else:
+                    return f"Module import ({module_model.id}) code content:\n{module_model.code_content}\n"
 
     def _get_local_import_from_summary(
         self, dependency: ImportModel, recursion_path: list[str]
@@ -355,7 +368,11 @@ class StandardSummarizationManager:
                                 child_model.id == import_name.local_block_id
                                 and child_model.id
                             ):
-                                return self._summarize_code_block(
+                                import_summary = self._summarize_code_block(
                                     child_model,
                                     recursion_path,
                                 )
+                                if import_summary:
+                                    return import_summary
+                                else:
+                                    return f"Code block import ({module_model.id}) code content:\n{module_model.code_content}\n"

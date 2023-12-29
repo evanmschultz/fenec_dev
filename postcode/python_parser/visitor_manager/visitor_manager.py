@@ -24,8 +24,8 @@ class VisitorManagerProcessFilesReturn:
     Represents the return value of the VisitorManager.process_files() method.
 
     Attributes:
-        models_tuple (tuple[ModuleModel, ...]): A tuple of ModuleModel objects representing the parsed modules.
-        directory_modules (dict[str, list[str]]): A dictionary mapping directory paths to lists of module names.
+        - models_tuple (tuple[ModuleModel, ...]): A tuple of ModuleModel objects representing the parsed modules.
+        - directory_modules (dict[str, list[str]]): A dictionary mapping directory paths to lists of module names.
             This is used to keep track of the modules present in each directory.
     """
 
@@ -51,7 +51,7 @@ class VisitorManager:
     """
 
     @logging_decorator(message="Initializing VisitorManager")
-    def __init__(self, directory: str, output_directory: str = "output") -> None:
+    def __init__(self, directory: str, output_directory: str = "output_json") -> None:
         self.directory: str = directory
         self.output_directory: str = output_directory
         self.directory_modules: dict[str, list[str]] = {}

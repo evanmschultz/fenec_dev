@@ -1,3 +1,5 @@
+# FIXME: This file is not currently being used. It is a work in progress as the summarization mapper isn't getting returning all of the project models.
+
 import logging
 from typing import Union
 
@@ -120,6 +122,8 @@ class GraphDBSummarizationManager:
                                     break
                         else:
                             continue
+
+        print(len(summarization_map))
 
         return self.module_models_tuple
 
