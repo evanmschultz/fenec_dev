@@ -1,3 +1,12 @@
+"""
+PostCode types
+--------------
+
+This module contains types defined by the postcode library.
+These types are used for easy implementation in the postcode project and
+provide convenience for users of the postcode library.
+"""
+
 from typing import Union
 from postcode.models.models import (
     ClassModel,
