@@ -65,10 +65,10 @@ def main(
     logger: Logger = logging.getLogger(__name__)
 
     #   ==================== GraphDB ====================
-    graph_db_updater = GraphDBUpdater(directory, output_directory, logger)
-    chroma_context: ChromaSetupReturnContext = graph_db_updater.update_all(
-        directory, output_directory, logger
-    )
+    # graph_db_updater = GraphDBUpdater(directory, output_directory, logger)
+    # chroma_context: ChromaSetupReturnContext = graph_db_updater.update_all(
+    #     directory, output_directory, logger
+    # )
     # ==================== End GraphDB ====================
 
     #   ==================== Standard ====================
