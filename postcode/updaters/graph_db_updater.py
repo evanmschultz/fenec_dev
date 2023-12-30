@@ -63,11 +63,11 @@ class GraphDBUpdater:
         client = OpenAI(max_retries=4)
         summarizer = OpenAISummarizer(client=client)
         summarization_manager = GraphDBSummarizationManager(
-            module_models_tuple, summarization_mapper, summarizer
+            module_models_tuple, summarization_mapper, summarizer, self.graph_manager
         )
-        finalized_module_models: tuple[
-            ModuleModel, ...
-        ] = summarization_manager.create_summaries_and_return_updated_models()
+        finalized_module_models: list[
+            ModuleModel
+        ] | None = summarization_manager.create_summaries_and_return_updated_models()
         logger.info("Summarization complete")
 
         logger.info("Saving models as JSON")
@@ -81,12 +81,15 @@ class GraphDBUpdater:
 
         logger.info("Directory parsing completed.")
 
-        self.graph_manager.upsert_models(
-            list(finalized_module_models)
-        ).process_imports_and_dependencies().get_or_create_graph()
+        # self.graph_manager.upsert_models(
+        #     list(finalized_module_models)
+        # ).process_imports_and_dependencies().get_or_create_graph()
 
-        chroma_context: ChromaSetupReturnContext = setup_chroma(
-            finalized_module_models, logger
-        )
+        if finalized_module_models:
+            chroma_context: ChromaSetupReturnContext = setup_chroma(
+                finalized_module_models, logger
+            )
+        else:
+            raise Exception("No finalized models returned from summarization.")
 
         return chroma_context

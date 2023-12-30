@@ -1,6 +1,7 @@
 # FIXME: This file is not currently being used. It is a work in progress as the summarization mapper isn't getting returning all of the project models.
 
 import logging
+from pprint import pprint
 from typing import Union
 
 from postcode.ai_services.summarizer.summarization_context import (
@@ -8,6 +9,7 @@ from postcode.ai_services.summarizer.summarization_context import (
     OpenAIReturnContext,
 )
 from postcode.ai_services.summarizer.summarization_mapper import SummarizationMapper
+from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
 
 # from postcode.types.postcode import ModelType
 
@@ -34,6 +36,7 @@ class GraphDBSummarizationManager:
         module_models_tuple: tuple[ModuleModel, ...],
         summarization_mapper: SummarizationMapper,
         summarizer: Summarizer,
+        graph_manager: ArangoDBManager,
     ) -> None:
         self.module_models_tuple: tuple[ModuleModel, ...] = module_models_tuple
         self.summarization_mapper: SummarizationMapper = summarization_mapper
@@ -41,6 +44,7 @@ class GraphDBSummarizationManager:
         self.summarized_code_block_ids: set[str] = set()
         self.prompt_tokens: int = 0
         self.completion_tokens: int = 0
+        self.graph_manager: ArangoDBManager = graph_manager
 
     @property
     def total_cost(self) -> float:
@@ -51,7 +55,7 @@ class GraphDBSummarizationManager:
         )  # Costs 3 cents per 1,000 tokens
         return (prompt_cost + completion_cost) / 100_000  # Convert to dollars
 
-    def create_summaries_and_return_updated_models(self) -> tuple[ModuleModel, ...]:
+    def create_summaries_and_return_updated_models(self) -> list[ModuleModel] | None:
         summarization_map: list[
             ModelType
         ] = self.summarization_mapper.create_summarization_map()
@@ -99,33 +103,38 @@ class GraphDBSummarizationManager:
                 )
             )
             if summary_return_context:
-                model.summary = summary_return_context.summary
+                if summary_return_context.summary:
+                    self.graph_manager.update_vertex_summary_by_id(
+                        model.id, summary_return_context.summary
+                    )
                 self.prompt_tokens += summary_return_context.prompt_tokens
                 self.completion_tokens += summary_return_context.completion_tokens
 
-                for module_model in self.module_models_tuple:
-                    if isinstance(model, ModuleModel):
-                        if module_model.id == model.id:
-                            module_model.summary = model.summary
-                            break
-                        else:
-                            continue
-                    else:
-                        module_id_for_model: str = model.id.split("MODULE")[0]
-                        if (
-                            module_model.children
-                            and module_id_for_model in module_model.id
-                        ):
-                            for child_model in module_model.children:
-                                if child_model.id == model.id:
-                                    child_model.summary = model.summary
-                                    break
-                        else:
-                            continue
+                # for module_model in self.module_models_tuple:
+                #     if isinstance(model, ModuleModel):
+                #         if module_model.id == model.id:
+                #             module_model.summary = model.summary
+                #             break
+                #         else:
+                #             continue
+                #     else:
+                #         module_id_for_model: str = model.id.split("MODULE")[0]
+                #         if (
+                #             module_model.children
+                #             and module_id_for_model in module_model.id
+                #         ):
+                #             for child_model in module_model.children:
+                #                 if child_model.id == model.id:
+                #                     # child_model.summary = model.summary
+                #                     break
+                #         else:
+                #             continue
 
+        # pprint([model.id for model in summarization_map[::-1]])
         print(len(summarization_map))
+        pprint([model.id for model in summarization_map])
 
-        return self.module_models_tuple
+        return self.graph_manager.get_all_modules() if self.graph_manager else None
 
     def _get_child_summaries(self, model: ModelType) -> list[str]:
         """Gathers summaries of child models."""

@@ -44,7 +44,7 @@ class ChromaSetupReturnContext:
 
 
 def setup_chroma(
-    module_models: tuple[ModuleModel, ...], logger: Logger
+    module_models: list[ModuleModel], logger: Logger
 ) -> ChromaSetupReturnContext:
     chroma_settings = Settings(allow_reset=True)
     chroma_client: ClientAPI = chromadb.PersistentClient(settings=chroma_settings)
@@ -59,6 +59,6 @@ def setup_chroma(
     )
 
     chroma_collection_manager = ChromaDBCollectionManager(chroma_collection)
-    chroma_collection_manager.upsert_models(module_models)
+    chroma_collection_manager.upsert_models(tuple(module_models))
 
     return ChromaSetupReturnContext(chroma_collection_manager, chroma_collection)

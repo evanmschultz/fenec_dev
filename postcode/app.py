@@ -65,22 +65,22 @@ def main(
     logger: Logger = logging.getLogger(__name__)
 
     #   ==================== GraphDB ====================
-    # graph_db_updater = GraphDBUpdater(directory, output_directory, logger)
-    # chroma_context: ChromaSetupReturnContext = graph_db_updater.update_all(
-    #     directory, output_directory, logger
-    # )
+    graph_db_updater = GraphDBUpdater(directory, output_directory, logger)
+    chroma_context: ChromaSetupReturnContext = graph_db_updater.update_all(
+        directory, output_directory, logger
+    )
     # ==================== End GraphDB ====================
 
     #   ==================== Standard ====================
-    chroma_context: ChromaSetupReturnContext = StandardUpdater.update_all(
-        directory, output_directory, logger
-    )
+    # chroma_context: ChromaSetupReturnContext = StandardUpdater.update_all(
+    #     directory, output_directory, logger
+    # )
     # ==================== End Standard ====================
 
-    query: str = "summarizes code block"
-    query_chroma(
-        query,
-        chroma_context.chroma_collection_manager,
-        chroma_context.chroma_collection,
-        logger,
-    )
+    # query: str = "summarizes code block"
+    # query_chroma(
+    #     query,
+    #     chroma_context.chroma_collection_manager,
+    #     chroma_context.chroma_collection,
+    #     logger,
+    # )

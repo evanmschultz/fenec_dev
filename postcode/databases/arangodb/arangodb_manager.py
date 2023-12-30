@@ -348,7 +348,60 @@ class ArangoDBManager:
             logging.error(f"Error in get_all_upstream_vertices: {e}")
             return None
 
-    def update_vertex_by_id(self, id: str, new_summary: str) -> None:
+    def get_vertex_by_id(self, id: str) -> ModelType | None:
+        """
+        Retrieves a vertex by its ID and returns it as the appropriate Pydantic model.
+        """
+        try:
+            # Determine the collection name based on the ID.
+            collection_name = self._get_collection_from_id(id)
+            if collection_name == "unknown":
+                logging.error(f"Unknown vertex type for ID: {id}")
+                return None
+
+            # Retrieve the vertex from the collection.
+            vertex_collection: StandardCollection = self.db_connector.db.collection(
+                collection_name
+            )
+            vertex_result: Result[Json | None] = vertex_collection.get(id)
+
+            # Check if the vertex was found.
+            if not vertex_result or not isinstance(vertex_result, dict):
+                logging.error(
+                    f"Vertex with ID {id} not found or is in an invalid format."
+                )
+                return None
+
+            # Convert the vertex to the appropriate Pydantic model.
+            model_class: ModelType | None = self._get_model_class_from_collection_name(
+                collection_name
+            )
+            if not model_class:
+                logging.error(f"No model class found for collection: {collection_name}")
+                return None
+
+            # Create and return the model instance.
+            return model_class(**vertex_result)  # type: ignore # FIXME: Fix type error
+
+        except Exception as e:
+            logging.error(f"Error in get_vertex_by_id: {e}")
+            return None
+
+    def _get_model_class_from_collection_name(
+        self, collection_name: str
+    ) -> ModelType | None:
+        """
+        Maps the collection name to the corresponding Pydantic model class.
+        """
+        model_class_map: dict = {
+            "modules": ModuleModel,
+            "classes": ClassModel,
+            "functions": FunctionModel,
+            "standalone_blocks": StandaloneCodeBlockModel,
+        }
+        return model_class_map.get(collection_name)
+
+    def update_vertex_summary_by_id(self, id: str, new_summary: str) -> None:
         try:
             collection_name: str = self._get_collection_from_id(id)
             if collection_name == "unknown":
