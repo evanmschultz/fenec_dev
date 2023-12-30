@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import logging
 from pathlib import Path
+from typing import TYPE_CHECKING, Union
 
 from postcode.python_parser.model_builders.module_model_builder import (
     ModuleModelBuilder,
@@ -11,9 +12,32 @@ from postcode.python_parser.parsers.python_parser import PythonParser
 from postcode.python_parser.visitor_manager.import_and_dependency_updater import (
     ImportAndDependencyUpdater,
 )
-from postcode.models.models import ModuleModel
+from postcode.models.models import (
+    ClassModel,
+    FunctionModel,
+    ModuleModel,
+    StandaloneCodeBlockModel,
+)
 
-from postcode.ai_services.summarizer.summarization_context import Summarizer
+
+if TYPE_CHECKING:
+    from postcode.python_parser.model_builders.class_model_builder import (
+        ClassModelBuilder,
+    )
+    from postcode.python_parser.model_builders.function_model_builder import (
+        FunctionModelBuilder,
+    )
+    from postcode.python_parser.model_builders.standalone_block_model_builder import (
+        StandaloneBlockModelBuilder,
+    )
+
+
+BuilderType = Union[
+    ModuleModelBuilder,
+    ClassModelBuilder,
+    FunctionModelBuilder,
+    StandaloneBlockModelBuilder,
+]
 
 EXCLUDED_DIRECTORIES: set[str] = {".venv", "node_modules", "__pycache__", ".git"}
 
@@ -29,7 +53,9 @@ class VisitorManagerProcessFilesReturn:
             This is used to keep track of the modules present in each directory.
     """
 
-    models_tuple: tuple[ModuleModel, ...]
+    models_tuple: tuple[
+        ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel, ...
+    ]
     directory_modules: dict[str, list[str]]
 
 
@@ -65,17 +91,19 @@ class VisitorManager:
         and a dictionary of directory modules.
 
         Returns:
-            A named tuple (VisitorManagerProcessFilesReturn) containing:
-            - models_tuple (tuple[ModuleModel, ...]): A tuple of module models.
-            - directory_modules (dict[str, ModuleModel]): A dictionary of directory modules.
+            - VisitorManagerProcessFilesReturn, a named tuple containing:
+                - models_tuple (tuple[ModuleModel, ...]): A tuple of module models.
+                - directory_modules (dict[str, ModuleModel]): A dictionary of directory modules.
 
         Examples:
-            >>> visitor_manager = VisitorManager()
-            >>> result = visitor_manager.process_files()
-            >>> print(result.models_tuple)
-            (ModuleModel(file_path='/path/to/file1.py'), ModuleModel(file_path='/path/to/file2.py'))
-            >>> print(result.directory_modules)
+            ```Python
+            visitor_manager = VisitorManager()
+            result = visitor_manager.process_files()
+            print(result.models_tuple)
+            # (ModuleModel(file_path='/path/to/file1.py'), ModuleModel(file_path='/path/to/file2.py'))
+            print(result.directory_modules)
             {'/path/to/directory1': ModuleModel(file_path='/path/to/directory1/__init__.py')}
+            ```
         """
 
         logging.info("Processing files")
@@ -95,15 +123,24 @@ class VisitorManager:
         import_and_dependency_updater.update_imports()
         logging.info("Updated imports")
 
-        module_models_list: list[ModuleModel] = []
+        models_list: list[
+            ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel
+        ] = []
         for module_model_builder in model_builder_tuple:
-            module_model: ModuleModel = self._build_module_model(module_model_builder)
-            module_models_list.append(module_model)
+            module_model_return: tuple[
+                ModuleModel,
+                list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None,
+            ] = self._build_module_model(module_model_builder)
+            models_list.append(module_model_return[0])
+            if module_model_return[1]:
+                models_list.extend(module_model_return[1])
 
-        module_models_tuple: tuple[ModuleModel, ...] = tuple(module_models_list)
+        models_tuple: tuple[
+            ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel, ...
+        ] = tuple(models_list)
 
         return VisitorManagerProcessFilesReturn(
-            models_tuple=module_models_tuple, directory_modules=self.directory_modules
+            models_tuple=models_tuple, directory_modules=self.directory_modules
         )
 
     def _walk_directories(self) -> list[str]:
@@ -145,11 +182,13 @@ class VisitorManager:
         code: str = parser.open_file()
         module_model_builder: ModuleModelBuilder | None = parser.parse(code)
 
-        return module_model_builder
+        return module_model_builder if module_model_builder else None
 
     def _build_module_model(
         self, visitor_stack: ModuleModelBuilder | None
-    ) -> ModuleModel:
+    ) -> tuple[
+        ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None
+    ]:
         """
         Builds a module model from the provided module builder.
 

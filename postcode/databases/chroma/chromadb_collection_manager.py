@@ -20,8 +20,15 @@ from chromadb.api.types import (
 )
 from chromadb import Collection
 from chromadb import EmbeddingFunction
+
 # from postcode.types.postcode import ModelType
-from postcode.models.models import ModuleModel, ClassModel, FunctionModel, StandaloneCodeBlockModel
+from postcode.models.models import (
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+)
+
 ModelType = Union[
     ModuleModel,
     ClassModel,
@@ -483,8 +490,8 @@ class ChromaDBCollectionManager:
                 documents.append(module_model.summary)
                 metadatas.append(module_model.convert_to_metadata())
 
-            if module_model.children:
-                for child in module_model.children:
+            if module_model.children_ids:
+                for child in module_model.children_ids:
                     child_data: dict[str, Any] = self._recursively_gather_child_data(
                         child
                     )
@@ -510,8 +517,8 @@ class ChromaDBCollectionManager:
             metadatas.append(model.convert_to_metadata())
         else:
             logging.warning(f"Child {model.id} has no summary.")
-        if model.children:
-            for child in model.children:
+        if model.children_ids:
+            for child in model.children_ids:
                 child_data: dict[str, Any] = self._recursively_gather_child_data(child)
                 ids.extend(child_data["ids"])
                 documents.extend(child_data["documents"])

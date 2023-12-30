@@ -154,7 +154,7 @@ class StandardSummarizationManager:
         recursion_path.append(model.id)
 
         child_summary_list: list[str] | None = None
-        if model.children:
+        if model.children_ids:
             child_summary_list = self._get_child_summaries(model, recursion_path)
 
         dependency_summary_list: list[str] = []
@@ -277,8 +277,8 @@ class StandardSummarizationManager:
     ) -> list[str]:
         """Gathers summaries of child models."""
         child_summary_list: list[str] = []
-        if model.children:
-            for child in model.children:
+        if model.children_ids:
+            for child in model.children_ids:
                 child_summary: str | None = self._summarize_code_block(
                     child,
                     recursion_path,
@@ -323,10 +323,10 @@ class StandardSummarizationManager:
         recursion_path: list[str],
     ) -> str | None:
         """Gets a summary for a dependency local to the module."""
-        if not model.children:
+        if not model.children_ids:
             return None
 
-        for child_model in model.children:
+        for child_model in model.children_ids:
             if child_model.id == dependency.code_block_id:
                 dependency_summary = self._summarize_code_block(
                     child_model,
@@ -362,8 +362,8 @@ class StandardSummarizationManager:
         for import_name in dependency.import_names:
             for module_model in self.module_models_tuple:
                 if module_model.id == dependency.local_module_id:
-                    if module_model.children:
-                        for child_model in module_model.children:
+                    if module_model.children_ids:
+                        for child_model in module_model.children_ids:
                             if (
                                 child_model.id == import_name.local_block_id
                                 and child_model.id

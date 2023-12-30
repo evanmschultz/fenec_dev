@@ -46,14 +46,16 @@ class ModuleVisitor(BaseVisitor):
     imports, classes, and functions.
 
     Attributes:
-        id (str): The ID of the module to be generated before instantiation.
-        builder (ModuleModelBuilder): The builder used to construct the module model.
+        - id (str): The ID of the module to be generated before instantiation.
+        - builder (ModuleModelBuilder): The builder used to construct the module model.
 
     Example:
-        >>> module_builder = ModuleModelBuilder(id="module1", name="example_module")
-        >>> visitor = ModuleVisitor(id="module1", module_builder=module_builder)
-        >>> libcst.parse_module("import os\\nclass MyClass:\\n    pass").visit(visitor)
+        ```Python
+        module_builder = ModuleModelBuilder(id="module1", name="example_module")
+        visitor = ModuleVisitor(id="module1", module_builder=module_builder)
+        libcst.parse_module("import os\\nclass MyClass:\\n    pass").visit(visitor)
         # This will process the module and build its corresponding model using the provided module builder.
+        ```
     """
 
     def __init__(self, id: str, module_builder: ModuleModelBuilder) -> None:
@@ -95,7 +97,7 @@ class ModuleVisitor(BaseVisitor):
             code_blocks=standalone_blocks, parent_id=self.id
         )
         for standalone_block_model in standalone_block_models:
-            self.builder.add_child(standalone_block_model)
+            self.builder.add_child_builder(standalone_block_model)
 
     def visit_Import(self, node: libcst.Import) -> None:
         """
@@ -137,7 +139,7 @@ class ModuleVisitor(BaseVisitor):
         )
 
         builder = self.builder_stack[-1]
-        builder.add_child(class_builder)
+        builder.add_child_builder(class_builder)
         self.builder_stack.append(class_builder)
 
         position_data: PositionData = self.get_node_position_data(node)
@@ -171,7 +173,7 @@ class ModuleVisitor(BaseVisitor):
             parent_id=parent_id,
         )
         builder = self.builder_stack[-1]
-        builder.add_child(func_builder)
+        builder.add_child_builder(func_builder)
         self.builder_stack.append(func_builder)
 
         position_data: PositionData = self.get_node_position_data(node)

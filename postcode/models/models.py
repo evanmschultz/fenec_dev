@@ -111,13 +111,7 @@ class BaseCodeBlockModel(BaseModel):
     important_comments: list[CommentModel] | None = None
     dependencies: list[ImportModel | DependencyModel] | None = None
     summary: str | None = None
-    children: list[
-        Union[
-            "ClassModel",
-            "FunctionModel",
-            "StandaloneCodeBlockModel",
-        ]
-    ] | None = []
+    children_ids: list[str] | None = []
 
     @validator("parent_id", always=True)
     def check_parent_id(cls, v, values, **kwargs) -> str | None:
@@ -168,13 +162,7 @@ class BaseCodeBlockModel(BaseModel):
     def _convert_children_to_metadata(self) -> str:
         """Converts the children to a metadata string."""
 
-        children_str: str = ""
-
-        if self.children:
-            for child in self.children:
-                children_str += f"{child.id}\n"
-
-        return children_str
+        return str(self.children_ids) if self.children_ids else ""
 
     def _convert_base_attributes_to_metadata_dict(self) -> dict[str, str | int]:
         """Converts the base attributes to a metadata dictionary."""
@@ -379,4 +367,19 @@ class StandaloneCodeBlockModel(
         return {
             **self._convert_base_attributes_to_metadata_dict(),
             **self._convert_standalone_block_attributes_to_metadata_dict(),
+        }
+
+
+class DirectoryModel(BaseModel):
+    """Model for a directory."""
+
+    directory_name: str
+    module_ids: list[str]
+
+    def convert_to_metadata(self) -> dict[str, str | int]:
+        """Converts the directory model to a metadata dictionary."""
+
+        return {
+            "directory_name": self.directory_name,
+            "module_ids": self.model_dump_json(),
         }

@@ -67,7 +67,7 @@ class GraphDBSummarizationManager:
             dependency_summaries: str | None = None
             import_details: str | None = None
 
-            if model.children:
+            if model.children_ids:
                 children_summaries: str | None = self._stringify_children_summaries(
                     self._get_child_summaries(model)
                 )
@@ -139,8 +139,8 @@ class GraphDBSummarizationManager:
     def _get_child_summaries(self, model: ModelType) -> list[str]:
         """Gathers summaries of child models."""
         child_summary_list: list[str] = []
-        if model.children:
-            for child in model.children:
+        if model.children_ids:
+            for child in model.children_ids:
                 if child.summary:
                     child_summary: str = child.summary
                 else:
@@ -221,10 +221,10 @@ class GraphDBSummarizationManager:
         model: ModelType,
     ) -> str | None:
         """Gets a summary for a dependency local to the module."""
-        if not model.children:
+        if not model.children_ids:
             return None
 
-        for child_model in model.children:
+        for child_model in model.children_ids:
             if child_model.id == dependency.code_block_id:
                 child_summary: str | None = None
 
@@ -263,8 +263,8 @@ class GraphDBSummarizationManager:
         for import_name in dependency.import_names:
             for module_model in self.module_models_tuple:
                 if module_model.id == dependency.local_module_id:
-                    if module_model.children:
-                        for child_model in module_model.children:
+                    if module_model.children_ids:
+                        for child_model in module_model.children_ids:
                             if (
                                 child_model.id == import_name.local_block_id
                                 and child_model.id

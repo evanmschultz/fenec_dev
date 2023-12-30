@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING, Union
 import libcst
 from libcst.metadata import MetadataWrapper
 from postcode.python_parser.id_generation.id_generation_strategies import (
@@ -10,6 +11,25 @@ from postcode.python_parser.model_builders.module_model_builder import (
 
 from postcode.python_parser.visitors.module_visitor import ModuleVisitor
 from postcode.models.enums import BlockType
+
+if TYPE_CHECKING:
+    from postcode.python_parser.model_builders.class_model_builder import (
+        ClassModelBuilder,
+    )
+    from postcode.python_parser.model_builders.function_model_builder import (
+        FunctionModelBuilder,
+    )
+    from postcode.python_parser.model_builders.standalone_block_model_builder import (
+        StandaloneBlockModelBuilder,
+    )
+
+
+BuilderType = Union[
+    ModuleModelBuilder,
+    ClassModelBuilder,
+    FunctionModelBuilder,
+    StandaloneBlockModelBuilder,
+]
 
 
 class PythonParser:
@@ -54,15 +74,17 @@ class PythonParser:
         along with it hierarchy of child builders.
 
         Args:
-            code (str): The Python code to be parsed.
+            - code (str): The Python code to be parsed.
 
         Returns:
-            ModuleModelBuilder | None: The module model builder for the provided code.
+            - ModuleModelBuilder | None: The module model builder for the provided code.
 
         Example:
-            >>> code = python_parser.open_file()
-            >>> module_model = python_parser.parse(code)
+            ```Python
+            code = python_parser.open_file()
+            module_model = python_parser.parse(code)
             # Parses the provided code and returns a module model builder.
+            ```
         """
 
         wrapper = MetadataWrapper(libcst.parse_module(code))
@@ -75,4 +97,8 @@ class PythonParser:
         visitor = ModuleVisitor(id=module_id, module_builder=module_builder)
         wrapper.visit(visitor)
 
-        return visitor.builder_stack[0]  # type: ignore
+        return (
+            visitor.builder_stack[0]
+            if isinstance(visitor.builder_stack[0], ModuleModelBuilder)
+            else None
+        )

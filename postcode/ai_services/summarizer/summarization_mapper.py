@@ -35,8 +35,8 @@ class SummarizationMapper:
         self.temp_map: list[ModelType] = []
 
     def _set_child_models_to_update(self, model: ModelType) -> None:
-        if model.children:
-            for child in model.children:
+        if model.children_ids:
+            for child in model.children_ids:
                 # logging.info(f"Setting child model to update: {child.id}")
                 self._set_child_models_to_update(child)
                 child.summary = None
@@ -46,8 +46,8 @@ class SummarizationMapper:
     def _set_models_to_update(self) -> None:
         for model in self.module_models:
             if model.id in self.module_ids_to_update:
-                if model.children:
-                    for child in model.children:
+                if model.children_ids:
+                    for child in model.children_ids:
                         self._set_child_models_to_update(child)
 
                 model.summary = None

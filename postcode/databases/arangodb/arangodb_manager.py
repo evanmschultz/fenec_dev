@@ -49,10 +49,10 @@ class ArangoDBManager:
         self._process_children(module_model)
 
     def _process_children(self, parent_model: ModelType) -> None:
-        if not parent_model.children:
+        if not parent_model.children_ids:
             return None
 
-        for child in parent_model.children:
+        for child in parent_model.children_ids:
             # if child.id in self.processed_id_set:
             #     continue
 

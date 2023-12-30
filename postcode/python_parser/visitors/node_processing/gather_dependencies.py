@@ -30,7 +30,7 @@ def gather_and_set_children_dependencies(module_builder: ModuleModelBuilder) -> 
         # After execution, each child block builder of the module_builder will have its dependencies set.
     """
 
-    for block_builder in module_builder.children_builders:
+    for block_builder in module_builder.child_builders:
         block_dependencies: list[ImportModel | DependencyModel] = []
         code_content: str = block_builder.common_attributes.code_content
 
@@ -42,7 +42,7 @@ def gather_and_set_children_dependencies(module_builder: ModuleModelBuilder) -> 
         non_import_dependencies: list[
             DependencyModel
         ] = _gather_non_import_dependencies(
-            module_builder.children_builders,
+            module_builder.child_builders,
             block_builder,
             code_content,
             _create_module_dependency_model,
