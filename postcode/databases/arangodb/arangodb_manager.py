@@ -4,6 +4,8 @@ from typing import Any, Callable, Union
 from arango.result import Result
 from arango.cursor import Cursor
 from arango.graph import Graph
+from arango.collection import StandardCollection
+from arango.typings import Json
 
 from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
 
@@ -344,4 +346,63 @@ class ArangoDBManager:
                 return None
         except Exception as e:
             logging.error(f"Error in get_all_upstream_vertices: {e}")
+            return None
+
+    def update_vertex_by_id(self, id: str, new_summary: str) -> None:
+        try:
+            collection_name: str = self._get_collection_from_id(id)
+            if collection_name == "unknown":
+                logging.error(f"Unknown vertex type for id: {id}")
+                return
+
+            vertex_collection: StandardCollection = self.db_connector.db.collection(
+                collection_name
+            )
+            vertex_result: Result[Json | None] = vertex_collection.get(id)
+
+            if not vertex_result:
+                logging.error(f"Vertex with id {id} not found.")
+                return
+
+            if isinstance(vertex_result, dict):
+                vertex = vertex_result
+            else:
+                logging.error("Retrieved vertex is not in a mutable format.")
+                return None
+
+            vertex["summary"] = new_summary
+
+            vertex_collection.update(vertex)
+            logging.info(f"Vertex with id {id} updated successfully.")
+
+        except Exception as e:
+            logging.error(f"Error in `update_vertex_by_id`: {e}")
+
+    def get_all_modules(self) -> list[ModuleModel] | None:
+        try:
+            # Define the collection name for modules.
+            collection_name = "modules"
+            module_collection: StandardCollection = self.db_connector.db.collection(
+                collection_name
+            )
+
+            # Retrieve all documents from the modules collection.
+            cursor: Result[Cursor] = module_collection.all()
+
+            # Convert each document to a ModuleModel instance.
+            modules: list[ModuleModel] = []
+            for doc in cursor:  # type: ignore # FIXME: Fix type error
+                # Ensure the document is a dictionary.
+                try:
+                    # Convert the document to a ModuleModel instance and add it to the list.
+                    module = ModuleModel(**doc)
+                    modules.append(module)
+                except Exception as e:
+                    logging.error(f"Retrieved document is not in a valid format: {e}")
+                    continue
+
+            return modules
+
+        except Exception as e:
+            logging.error(f"Error in get_all_modules: {e}")
             return None
