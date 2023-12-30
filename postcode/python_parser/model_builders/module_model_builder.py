@@ -11,14 +11,12 @@ from postcode.models.models import (
 )
 from postcode.models.enums import BlockType
 
-if TYPE_CHECKING:
-    from postcode.models.models import (
-        ClassModel,
-        FunctionModel,
-        StandaloneCodeBlockModel,
-    )
 
-
+from postcode.models.models import (
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+)
 
 
 class ModuleModelBuilder(BaseModelBuilder):
@@ -43,10 +41,11 @@ class ModuleModelBuilder(BaseModelBuilder):
     """
 
     def __init__(self, id: str, file_path: str) -> None:
-        super().__init__(id=id, block_type=BlockType.MODULE, parent_id=None)
+        super().__init__(
+            id=id, block_type=BlockType.MODULE, parent_id=None, file_path=file_path
+        )
 
         self.module_attributes = ModuleSpecificAttributes(
-            file_path=file_path,
             docstring=None,
             header=None,
             footer=None,
@@ -136,10 +135,18 @@ class ModuleModelBuilder(BaseModelBuilder):
         return self.module_attributes.model_dump()
 
     @logging_decorator(message="Building module model")
-    def build(self) -> tuple[ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None]:
+    def build(
+        self,
+    ) -> tuple[
+        ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None
+    ]:
         """Builds and returns the module model instance after building and setting the children models."""
         self.build_children()
         self.set_children_ids()
-        return (ModuleModel(
-            **self._get_common_attributes(), **self._get_module_specific_attributes()
-        ), self.child_models)
+        return (
+            ModuleModel(
+                **self._get_common_attributes(),
+                **self._get_module_specific_attributes(),
+            ),
+            self.child_models,
+        )

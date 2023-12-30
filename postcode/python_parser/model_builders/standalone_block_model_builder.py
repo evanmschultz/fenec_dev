@@ -30,9 +30,12 @@ class StandaloneBlockModelBuilder(BaseModelBuilder):
         ```
     """
 
-    def __init__(self, id: str, parent_id: str) -> None:
+    def __init__(self, id: str, parent_id: str, file_path: str) -> None:
         super().__init__(
-            id=id, block_type=BlockType.STANDALONE_CODE_BLOCK, parent_id=parent_id
+            id=id,
+            block_type=BlockType.STANDALONE_CODE_BLOCK,
+            parent_id=parent_id,
+            file_path=file_path,
         )
 
         self.standalone_block_attributes = StandaloneCodeBlockSpecificAttributes(

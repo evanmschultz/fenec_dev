@@ -41,7 +41,7 @@ class ModuleVisitor(BaseVisitor):
     """
     Visitor class for traversing and building a model of a Python module.
 
-    This class extends BaseVisitor and is used to visit different nodes in a Python module's abstract
+    This class extends BaseVisitor and is used to visit different nodes in a Python module's concrete
     syntax tree (CST) using the libcst library. It builds a structured model of the module, including
     imports, classes, and functions.
 
@@ -94,7 +94,9 @@ class ModuleVisitor(BaseVisitor):
         standalone_block_models: list[
             StandaloneBlockModelBuilder
         ] = standalone_code_block_functions.process_standalone_blocks(
-            code_blocks=standalone_blocks, parent_id=self.id
+            code_blocks=standalone_blocks,
+            parent_id=self.id,
+            file_path=self.builder.common_attributes.file_path,
         )
         for standalone_block_model in standalone_block_models:
             self.builder.add_child_builder(standalone_block_model)
@@ -136,6 +138,7 @@ class ModuleVisitor(BaseVisitor):
             id=class_id,
             name=node.name.value,
             parent_id=parent_id,
+            file_path=self.builder.common_attributes.file_path,
         )
 
         builder = self.builder_stack[-1]
@@ -171,6 +174,7 @@ class ModuleVisitor(BaseVisitor):
             id=func_id,
             name=node.name.value,
             parent_id=parent_id,
+            file_path=self.builder.common_attributes.file_path,
         )
         builder = self.builder_stack[-1]
         builder.add_child_builder(func_builder)

@@ -27,9 +27,10 @@ class FunctionModelBuilder(BaseModelBuilder):
         - parent_id (str): The identifier of the parent model (e.g., module or class containing this function).
     """
 
-    def __init__(self, id: str, function_name: str, parent_id: str) -> None:
+    def __init__(self, id: str, function_name: str, parent_id: str, file_path: str) -> None:
         super().__init__(
             id=id,
+            file_path=file_path,
             block_type=BlockType.FUNCTION,
             parent_id=parent_id,
         )

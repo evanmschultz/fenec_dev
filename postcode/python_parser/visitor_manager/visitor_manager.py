@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Union
+from typing import Union
 
 from postcode.python_parser.model_builders.module_model_builder import (
     ModuleModelBuilder,
@@ -14,22 +14,27 @@ from postcode.python_parser.visitor_manager.import_and_dependency_updater import
 )
 from postcode.models.models import (
     ClassModel,
+    DirectoryModel,
     FunctionModel,
     ModuleModel,
     StandaloneCodeBlockModel,
 )
 
 
-if TYPE_CHECKING:
-    from postcode.python_parser.model_builders.class_model_builder import (
-        ClassModelBuilder,
-    )
-    from postcode.python_parser.model_builders.function_model_builder import (
-        FunctionModelBuilder,
-    )
-    from postcode.python_parser.model_builders.standalone_block_model_builder import (
-        StandaloneBlockModelBuilder,
-    )
+from postcode.python_parser.model_builders.class_model_builder import (
+    ClassModelBuilder,
+)
+from postcode.python_parser.model_builders.function_model_builder import (
+    FunctionModelBuilder,
+)
+from postcode.python_parser.model_builders.standalone_block_model_builder import (
+    StandaloneBlockModelBuilder,
+)
+
+from postcode.python_parser.id_generation.id_generation_strategies import (
+    ModuleIDGenerationStrategy,
+    DirectoryIDGenerationStrategy,
+)
 
 
 BuilderType = Union[
@@ -54,9 +59,30 @@ class VisitorManagerProcessFilesReturn:
     """
 
     models_tuple: tuple[
-        ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel, ...
+        ModuleModel
+        | ClassModel
+        | FunctionModel
+        | StandaloneCodeBlockModel
+        | DirectoryModel,
+        ...,
     ]
     directory_modules: dict[str, list[str]]
+
+
+@dataclass
+class DirectoryDetails:
+    """
+    Represents the details of a directory.
+
+    Attributes:
+        - directory_name (str): The name of the directory.
+        - sub_directories (list[str]): A list of the names of the sub-directories of the directory.
+        - module_ids (list[str]): A list of the module ids of the modules in the directory.
+    """
+
+    directory_name: str
+    sub_directories: list[str]
+    module_ids: list[str]
 
 
 class VisitorManager:
@@ -66,14 +92,16 @@ class VisitorManager:
     This class scans a specified directory, filters for Python files, parses them, and saves the parsed data in a structured JSON format. It also maintains a mapping of directories to the Python files they contain.
 
     Attributes:
-        directory (str): The root directory to scan for Python files.
-        output_directory (str): The directory where output JSON files will be saved.
-        directory_modules (dict): A mapping of directories to their contained Python files.
+        - directory (str): The root directory to scan for Python files.
+        - output_directory (str): The directory where output JSON files will be saved.
+        - directory_modules (dict): A mapping of directories to their contained Python files.
 
     Example:
-        >>> visitor_manager = VisitorManager("/path/to/python/code", "output")
-        >>> visitor_manager.process_files()
+        ```Python
+        visitor_manager = VisitorManager("/path/to/python/code", "output")
+        visitor_manager.process_files()
         # This will process all Python files in /path/to/python/code and save their parsed data in the output directory.
+        ```
     """
 
     @logging_decorator(message="Initializing VisitorManager")
@@ -135,9 +163,32 @@ class VisitorManager:
             if module_model_return[1]:
                 models_list.extend(module_model_return[1])
 
+        directory_models_list: list[DirectoryModel] = []
+        for directory_path in self.directory_modules.keys():
+            directory_model: DirectoryModel = self._build_directory_model(
+                directory_path
+            )
+            directory_models_list.append(directory_model)
+
+        all_models: list[
+            ModuleModel
+            | ClassModel
+            | FunctionModel
+            | StandaloneCodeBlockModel
+            | DirectoryModel
+        ] = [
+            *models_list,
+            *directory_models_list,
+        ]
+
         models_tuple: tuple[
-            ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel, ...
-        ] = tuple(models_list)
+            ModuleModel
+            | ClassModel
+            | FunctionModel
+            | StandaloneCodeBlockModel
+            | DirectoryModel,
+            ...,
+        ] = tuple(all_models)
 
         return VisitorManagerProcessFilesReturn(
             models_tuple=models_tuple, directory_modules=self.directory_modules
@@ -193,17 +244,57 @@ class VisitorManager:
         Builds a module model from the provided module builder.
 
         Args:
-            visitor_stack (ModuleModelBuilder): The module builder to build the model from.
+            - visitor_stack (ModuleModelBuilder): The module builder to build the model from.
 
         Returns:
-            ModuleModel: A structured module model.
-
-        Example:
-            >>> module_model = python_parser.build_module_model(visitor_stack)
-            # Builds a module model from the provided module builder.
+            - ModuleModel: A structured module model.
         """
 
         if not isinstance(visitor_stack, ModuleModelBuilder):
             raise TypeError("Expected the first builder to be a ModuleModelBuilder")
 
         return visitor_stack.build()
+
+    def _build_directory_model(self, directory_path: str) -> DirectoryModel:
+        """Builds a directory model for the given directory path."""
+
+        return DirectoryModel(
+            id=DirectoryIDGenerationStrategy().generate_id(directory_path),
+            directory_name=self._get_directory_name(directory_path),
+            sub_directories_ids=self._get_subdirectory_ids(directory_path),
+            module_ids=self._generate_module_ids(directory_path),
+        )
+
+    def _get_subdirectory_ids(self, directory_path: str) -> list[str]:
+        """Gets the sub-directories of the given directory."""
+
+        subdirectories: list[str] = [
+            directory.name
+            for directory in Path(directory_path).iterdir()
+            if directory.is_dir() and directory.name not in EXCLUDED_DIRECTORIES
+        ]
+
+        subdirectory_ids: list[str] = [
+            DirectoryIDGenerationStrategy().generate_id(
+                str(Path(directory_path) / subdirectory)
+            )
+            for subdirectory in subdirectories
+        ]
+
+        return subdirectory_ids
+
+    def _get_directory_name(self, directory_path: str) -> str:
+        """Gets the name of the given directory."""
+
+        return Path(directory_path).name
+
+    def _generate_module_ids(self, directory_path: str) -> list[str]:
+        """Generates module ids for the given directory."""
+
+        file_names: list[str] = self.directory_modules.get(directory_path, [])
+        python_files: list[str] = self._filter_python_files(file_names)
+
+        return [
+            ModuleIDGenerationStrategy.generate_id(str(Path(directory_path) / module))
+            for module in python_files
+        ]

@@ -1,8 +1,24 @@
 import json
+import logging
 from pathlib import Path
+from typing import Union
 
-from postcode.models.models import ModuleModel
+from postcode.models.models import (
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+    DirectoryModel,
+)
 from postcode.utilities.logger.decorators import logging_decorator
+
+ModelType = Union[
+    ModuleModel,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+    DirectoryModel,
+]
 
 
 class JSONHandler:
@@ -19,12 +35,16 @@ class JSONHandler:
         self._create_output_directory()
 
     @logging_decorator(message="Saving model as JSON")
-    def save_model_as_json(self, module_model: ModuleModel, file_path: str) -> None:
-        """Saves a parsed ModuleModel as JSON."""
+    def save_model_as_json(
+        self,
+        model: ModelType,
+        file_path: str,
+    ) -> None:
+        """Saves a parsed ModelType as JSON."""
 
         json_output_directory: str = self._create_json_output_directory()
         output_path: str = self._get_json_output_path(file_path, json_output_directory)
-        self._write_json_file(module_model, output_path)
+        self._write_json_file(model, output_path)
 
     @logging_decorator(message="Saving visited directories")
     def save_visited_directories(
@@ -61,11 +81,22 @@ class JSONHandler:
     def _get_json_output_path(self, file_path: str, json_output_directory: str) -> str:
         """Gets the output path for a JSON file."""
 
-        relative_path: Path = Path(file_path).relative_to(Path(self.directory))
-        safe_relative_path: str = str(relative_path).replace("/", ":").rstrip(".py")
-        return str(Path(json_output_directory) / f"{safe_relative_path}.json")
+        if "DIRECTORY" in file_path:
+            # Handle the file_path with 'DIRECTORY' differently
+            # Customize this part as needed. Here's an example:
+            safe_file_path = file_path.replace("/", ":")
+            return str(Path(json_output_directory) / f"{safe_file_path}.json")
+        else:
+            # Handle regular file paths
+            relative_path: Path = Path(file_path).relative_to(Path(self.directory))
+            safe_relative_path: str = str(relative_path).replace("/", ":").rstrip(".py")
+            return str(Path(json_output_directory) / f"{safe_relative_path}.json")
 
-    def _write_json_file(self, module_model: ModuleModel, output_path: str) -> None:
+    def _write_json_file(
+        self,
+        module_model: ModelType,
+        output_path: str,
+    ) -> None:
         """Writes a JSON file containing the parsed data from a ModuleModel."""
 
         parsed_data_json: str = module_model.model_dump_json(indent=4)

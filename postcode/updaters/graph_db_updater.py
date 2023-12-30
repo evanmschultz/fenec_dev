@@ -14,7 +14,12 @@ from postcode.databases.chroma.setup_chroma import (
     setup_chroma,
 )
 from postcode.json_management.json_handler import JSONHandler
-from postcode.models.models import ModuleModel
+from postcode.models.models import (
+    ClassModel,
+    FunctionModel,
+    ModuleModel,
+    StandaloneCodeBlockModel,
+)
 from postcode.python_parser.visitor_manager.visitor_manager import (
     VisitorManager,
     VisitorManagerProcessFilesReturn,
@@ -51,7 +56,9 @@ class GraphDBUpdater:
             visitor_manager.process_files()
         )
 
-        module_models_tuple: tuple[ModuleModel, ...] = process_files_return.models_tuple
+        module_models_tuple: tuple[
+            ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel, ...
+        ] = process_files_return.models_tuple
         module_ids: list[str] = [model.id for model in module_models_tuple]
         directory_modules: dict[str, list[str]] = process_files_return.directory_modules
         self.graph_manager.upsert_models(

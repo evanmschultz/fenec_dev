@@ -35,8 +35,12 @@ class ClassModelBuilder(BaseModelBuilder):
         - parent_id (str): The identifier of the parent model (e.g., module or class containing this class).
     """
 
-    def __init__(self, id: str, class_name: str, parent_id: str) -> None:
-        super().__init__(id=id, block_type=BlockType.CLASS, parent_id=parent_id)
+    def __init__(
+        self, id: str, class_name: str, parent_id: str, file_path: str
+    ) -> None:
+        super().__init__(
+            id=id, block_type=BlockType.CLASS, parent_id=parent_id, file_path=file_path
+        )
 
         self.class_attributes = ClassSpecificAttributes(
             class_name=class_name,

@@ -16,7 +16,13 @@ from postcode.databases.chroma.setup_chroma import (
 )
 from postcode.json_management.json_handler import JSONHandler
 
-from postcode.models.models import ModuleModel
+from postcode.models.models import (
+    ClassModel,
+    DirectoryModel,
+    FunctionModel,
+    ModuleModel,
+    StandaloneCodeBlockModel,
+)
 from postcode.python_parser.visitor_manager.visitor_manager import (
     VisitorManager,
     VisitorManagerProcessFilesReturn,
@@ -26,22 +32,32 @@ from postcode.python_parser.visitor_manager.visitor_manager import (
 class StandardUpdater:
     @staticmethod
     def update_all(
-        directory: str, output_directory: str, logger: Logger
-    ) -> ChromaSetupReturnContext:
+        directory: str,
+        output_directory: str,
+        logger: Logger
+        # ) -> ChromaSetupReturnContext:
+    ) -> None:
         visitor_manager = VisitorManager(directory, output_directory)
         process_files_return: VisitorManagerProcessFilesReturn = (
             visitor_manager.process_files()
         )
 
-        module_models_tuple: tuple[ModuleModel, ...] = process_files_return.models_tuple
-        client = OpenAI(max_retries=4)
-        summarizer = OpenAISummarizer(client=client)
-        summarization_manager = StandardSummarizationManager(
-            module_models_tuple, summarizer
-        )
-        finalized_module_models: tuple[
-            ModuleModel, ...
-        ] = summarization_manager.create_summarizes_and_return_updated_models()
+        models_tuple: tuple[
+            ModuleModel
+            | ClassModel
+            | FunctionModel
+            | StandaloneCodeBlockModel
+            | DirectoryModel,
+            ...,
+        ] = process_files_return.models_tuple
+        # client = OpenAI(max_retries=4)
+        # summarizer = OpenAISummarizer(client=client)
+        # summarization_manager = StandardSummarizationManager(
+        #     module_models_tuple, summarizer
+        # )
+        # finalized_module_models: tuple[
+        #     ModuleModel, ...
+        # ] = summarization_manager.create_summarizes_and_return_updated_models()
 
         logger.info("Summarization complete")
 
@@ -49,16 +65,21 @@ class StandardUpdater:
         directory_modules: dict[str, list[str]] = process_files_return.directory_modules
         json_manager = JSONHandler(directory, directory_modules, output_directory)
 
-        for module_model in module_models_tuple:
-            json_manager.save_model_as_json(module_model, module_model.file_path)
+        for model in models_tuple:
+            if isinstance(model, DirectoryModel):
+                output_path: str = model.id
+
+            else:
+                output_path: str = model.file_path + model.id
+            json_manager.save_model_as_json(model, output_path)
 
         json_manager.save_visited_directories()
         logger.info("JSON save complete")
 
         logger.info("Directory parsing completed.")
 
-        chroma_context: ChromaSetupReturnContext = setup_chroma(
-            finalized_module_models, logger
-        )
+        # chroma_context: ChromaSetupReturnContext = setup_chroma(
+        #     finalized_module_models, logger
+        # )
 
-        return chroma_context
+        # return chroma_context

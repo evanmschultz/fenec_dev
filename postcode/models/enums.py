@@ -40,6 +40,7 @@ class BlockType(str, Enum):
     CLASS = "CLASS"
     FUNCTION = "FUNCTION"
     MODULE = "MODULE"
+    DIRECTORY = "DIRECTORY"
 
     def __str__(self) -> str:
         return self.value

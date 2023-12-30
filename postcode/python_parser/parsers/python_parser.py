@@ -12,16 +12,15 @@ from postcode.python_parser.model_builders.module_model_builder import (
 from postcode.python_parser.visitors.module_visitor import ModuleVisitor
 from postcode.models.enums import BlockType
 
-if TYPE_CHECKING:
-    from postcode.python_parser.model_builders.class_model_builder import (
-        ClassModelBuilder,
-    )
-    from postcode.python_parser.model_builders.function_model_builder import (
-        FunctionModelBuilder,
-    )
-    from postcode.python_parser.model_builders.standalone_block_model_builder import (
-        StandaloneBlockModelBuilder,
-    )
+from postcode.python_parser.model_builders.class_model_builder import (
+    ClassModelBuilder,
+)
+from postcode.python_parser.model_builders.function_model_builder import (
+    FunctionModelBuilder,
+)
+from postcode.python_parser.model_builders.standalone_block_model_builder import (
+    StandaloneBlockModelBuilder,
+)
 
 
 BuilderType = Union[

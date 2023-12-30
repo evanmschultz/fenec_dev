@@ -56,7 +56,7 @@ class BaseModelBuilder(ABC):
     """
 
     def __init__(
-        self, *, id: str, block_type: BlockType, parent_id: str | None
+        self, *, id: str, block_type: BlockType, parent_id: str | None, file_path: str
     ) -> None:
         self.id: str = id
         self.child_builders: list[
@@ -68,6 +68,7 @@ class BaseModelBuilder(ABC):
 
         self.common_attributes = BaseCodeBlockModel(
             id=id,
+            file_path=file_path,
             parent_id=parent_id,
             block_type=block_type,
             start_line_num=0,

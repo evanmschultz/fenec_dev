@@ -37,15 +37,18 @@ class BuilderFactory:
             id=id,
             class_name=name,
             parent_id=parent_id,
+            file_path=file_path,
         ),
         BlockType.FUNCTION: lambda id, name, parent_id, file_path: FunctionModelBuilder(
             id=id,
             function_name=name,
             parent_id=parent_id,
+            file_path=file_path,
         ),
         BlockType.STANDALONE_CODE_BLOCK: lambda id, parent_id, name, file_path: StandaloneBlockModelBuilder(
             id=id,
             parent_id=parent_id,
+            file_path=file_path,
         ),
     }
 
@@ -78,6 +81,7 @@ class BuilderFactory:
         id: str,
         name: str,
         parent_id: str,
+        file_path: str,
     ) -> ClassModelBuilder:
         """
         Creates a ClassModelBuilder instance for building class models.
@@ -101,6 +105,7 @@ class BuilderFactory:
         id: str,
         name: str,
         parent_id: str,
+        file_path: str,
     ) -> FunctionModelBuilder:
         """
         Creates a FunctionModelBuilder instance for building function models.
@@ -123,6 +128,7 @@ class BuilderFactory:
         *,
         id: str,
         parent_id: str,
+        file_path: str,
     ) -> StandaloneBlockModelBuilder:
         """
         Creates a StandaloneBlockModelBuilder instance for building standalone code block models.

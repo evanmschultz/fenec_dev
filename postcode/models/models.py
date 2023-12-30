@@ -103,6 +103,7 @@ class BaseCodeBlockModel(BaseModel):
     """Attributes common to all code block models."""
 
     id: str
+    file_path: str = Field(min_length=1)
     parent_id: str | None = None
     block_type: BlockType
     start_line_num: int
@@ -169,6 +170,7 @@ class BaseCodeBlockModel(BaseModel):
 
         return {
             "id": self.id,
+            "file_path": self.file_path,
             "parent_id": self._convert_parent_id_to_metadata(),
             "block_type": self._convert_block_type_to_metadata(),
             "start_line_num": self.start_line_num,
@@ -184,7 +186,6 @@ class BaseCodeBlockModel(BaseModel):
 class ModuleSpecificAttributes(BaseModel):
     """Module specific attributes."""
 
-    file_path: str = Field(min_length=1)
     docstring: str | None = None
     header: list[str] | None = None
     footer: list[str] | None = None
@@ -211,7 +212,6 @@ class ModuleSpecificAttributes(BaseModel):
         """Converts the module attributes to a metadata dictionary."""
 
         return {
-            "file_path": self.file_path,
             "docstring": self._convert_docstring_to_metadata(),
             "header": self._convert_header_to_metadata(),
             "footer": self._convert_footer_to_metadata(),
@@ -373,13 +373,21 @@ class StandaloneCodeBlockModel(
 class DirectoryModel(BaseModel):
     """Model for a directory."""
 
+    id: str
+    block_type: BlockType = BlockType.DIRECTORY
     directory_name: str
+    sub_directories_ids: list[str]
     module_ids: list[str]
+    summary: str | None = None
 
     def convert_to_metadata(self) -> dict[str, str | int]:
         """Converts the directory model to a metadata dictionary."""
 
         return {
             "directory_name": self.directory_name,
-            "module_ids": self.model_dump_json(),
+            "sub_directories": str(self.sub_directories_ids)
+            if self.sub_directories_ids
+            else "",
+            "module_ids": self.model_dump_json() if self.module_ids else "",
+            "summary": self.summary if self.summary else "",
         }
