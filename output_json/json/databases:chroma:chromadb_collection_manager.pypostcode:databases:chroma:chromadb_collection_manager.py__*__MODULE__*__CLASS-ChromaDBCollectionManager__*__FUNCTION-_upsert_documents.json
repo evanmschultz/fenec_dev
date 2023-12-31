@@ -1,0 +1,20 @@
+{
+    "function_name": "_upsert_documents",
+    "docstring": "Inserts or updates documents in the collection, based on the provided ids.\n\nArgs:\n    - ids (list[str]): List of ids for the documents to be inserted or updated.\n    - documents (list[str]): List of documents corresponding to the ids.\n    - metadatas (list[Mapping[str, Any]]): List of metadata corresponding to the ids.\n\nRaises:\n    - ValueError: If the lengths of ids, documents, and metadatas don't match.\n\nExamples:\n    ```Python\n    # Upsert documents in the collection\n    ids = ['id1', 'id2']\n    documents = ['doc1', 'doc2']\n    metadatas = [{\"meta1\": \"value1\"}, {\"meta2\": \"value2\"}]\n\n    # Upsert documents in the collection\n    collection_manager.upsert_documents(ids, documents, metadatas)\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager__*__FUNCTION-_upsert_documents",
+    "file_path": "postcode/databases/chroma/chromadb_collection_manager.py",
+    "parent_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 384,
+    "end_line_num": 425,
+    "code_content": "\ndef _upsert_documents(\n    self,\n    ids: list[str],\n    documents: list[str],\n    metadatas: list[Mapping[str, str | int | float | bool]],\n    # embeddings: list[chroma_types.Embedding],\n) -> None:\n    \"\"\"\n        Inserts or updates documents in the collection, based on the provided ids.\n\n        Args:\n            - ids (list[str]): List of ids for the documents to be inserted or updated.\n            - documents (list[str]): List of documents corresponding to the ids.\n            - metadatas (list[Mapping[str, Any]]): List of metadata corresponding to the ids.\n\n        Raises:\n            - ValueError: If the lengths of ids, documents, and metadatas don't match.\n\n        Examples:\n            ```Python\n            # Upsert documents in the collection\n            ids = ['id1', 'id2']\n            documents = ['doc1', 'doc2']\n            metadatas = [{\"meta1\": \"value1\"}, {\"meta2\": \"value2\"}]\n\n            # Upsert documents in the collection\n            collection_manager.upsert_documents(ids, documents, metadatas)\n            ```\n        \"\"\"\n\n    if len(ids) != len(documents) != len(metadatas):\n        raise ValueError(\"The length of ids, documents, and metadatas must match.\")\n\n    logging.info(f\"Upserting collection {self.collection.name} with ids {ids}.\")\n    self.collection.upsert(\n        ids=ids,\n        # embeddings=embeddings,\n        metadatas=metadatas,\n        documents=documents,\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

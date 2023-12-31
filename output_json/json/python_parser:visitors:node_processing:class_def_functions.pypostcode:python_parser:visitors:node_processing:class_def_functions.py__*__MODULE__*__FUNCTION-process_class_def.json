@@ -1,0 +1,109 @@
+{
+    "function_name": "process_class_def",
+    "docstring": "Processes a libcst.ClassDef node to build a class model.\n\nExtracts various components of a class definition such as its docstring, code content, base classes, decorators, and keywords, and updates the provided ClassModelBuilder with these details.\n\nArgs:\n    node (libcst.ClassDef): The class definition node from the CST.\n    position_data (PositionData): Positional data for the class in the source code.\n    builder (ClassModelBuilder): The builder used to construct the class model.\n\nExample:\n    >>> class_builder = ClassModelBuilder(id=\"class1\", ...)\n    >>> process_class_def(class_node, position_data, class_builder)\n    # Processes the class definition and updates the class builder.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-process_class_def",
+    "file_path": "postcode/python_parser/visitors/node_processing/class_def_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 10,
+    "end_line_num": 48,
+    "code_content": "\n\ndef process_class_def(\n    node: libcst.ClassDef,\n    position_data: PositionData,\n    builder: ClassModelBuilder,\n) -> None:\n    \"\"\"\n    Processes a libcst.ClassDef node to build a class model.\n\n    Extracts various components of a class definition such as its docstring, code content, base classes, decorators, and keywords, and updates the provided ClassModelBuilder with these details.\n\n    Args:\n        node (libcst.ClassDef): The class definition node from the CST.\n        position_data (PositionData): Positional data for the class in the source code.\n        builder (ClassModelBuilder): The builder used to construct the class model.\n\n    Example:\n        >>> class_builder = ClassModelBuilder(id=\"class1\", ...)\n        >>> process_class_def(class_node, position_data, class_builder)\n        # Processes the class definition and updates the class builder.\n    \"\"\"\n\n    docstring: str | None = node.get_docstring()\n    code_content: str = common_functions.extract_code_content(node)\n    bases: list[str] | None = _extract_bases(node.bases)\n    keywords: list[ClassKeywordModel] | None = _extract_keywords(node.keywords)\n    decorators: list[DecoratorModel] | None = common_functions.extract_decorators(\n        node.decorators\n    )\n\n    (\n        builder.set_docstring(docstring)\n        .set_code_content(code_content)\n        .set_start_line_num(position_data.start)\n        .set_end_line_num(position_data.end)\n    )\n    builder.set_bases(bases).set_decorators(decorators).set_keywords(keywords)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_bases"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_keywords"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassKeywordModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassKeywordModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

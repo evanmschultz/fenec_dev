@@ -1,0 +1,45 @@
+{
+    "class_name": "ClassKeywordModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Class representing a class keyword.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 68,
+    "end_line_num": 80,
+    "code_content": "\n\nclass ClassKeywordModel(BaseModel):\n    \"\"\"Class representing a class keyword.\"\"\"\n\n    content: str\n    keyword_name: str\n    args: str | None = None\n\n    def convert_class_keyword_to_metadata(self) -> str:\n        \"\"\"Converts the class keyword to a metadata string.\"\"\"\n        return self.model_dump_json()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel__*__FUNCTION-convert_class_keyword_to_metadata"
+    ]
+}

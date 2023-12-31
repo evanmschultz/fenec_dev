@@ -1,0 +1,30 @@
+{
+    "class_name": "FunctionModel",
+    "decorators": null,
+    "bases": [
+        "BaseCodeBlockModel",
+        "FunctionSpecificAttributes"
+    ],
+    "docstring": "Model for a function.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 327,
+    "end_line_num": 339,
+    "code_content": "\n\nclass FunctionModel(BaseCodeBlockModel, FunctionSpecificAttributes):\n    \"\"\"Model for a function.\"\"\"\n\n    def convert_to_metadata(self) -> dict[str, str | int]:\n        \"\"\"Converts the function model to a metadata dictionary.\"\"\"\n\n        return {\n            **self._convert_base_attributes_to_metadata_dict(),\n            **self._convert_function_attributes_to_metadata_dict(),\n        }\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel"
+        },
+        {
+            "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes"
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-FunctionModel__*__FUNCTION-convert_to_metadata"
+    ]
+}

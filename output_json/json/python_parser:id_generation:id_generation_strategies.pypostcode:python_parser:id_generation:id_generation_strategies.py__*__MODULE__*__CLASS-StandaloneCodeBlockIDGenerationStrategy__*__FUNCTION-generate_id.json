@@ -1,0 +1,26 @@
+{
+    "function_name": "generate_id",
+    "docstring": "Generates an ID for a standalone code block based on the given parent ID and a count.\n\nArgs:\n    - parent_id (str): The ID of the parent (typically a module).\n    - count (int): A unique count or index for the standalone block within its parent.\n\nReturns:\n    - str: The generated ID, incorporating the parent ID and the count.",
+    "decorators": [
+        {
+            "content": "@staticmethod",
+            "decorator_name": "staticmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-StandaloneCodeBlockIDGenerationStrategy__*__FUNCTION-generate_id",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-StandaloneCodeBlockIDGenerationStrategy",
+    "block_type": "FUNCTION",
+    "start_line_num": 98,
+    "end_line_num": 112,
+    "code_content": "\n@staticmethod\ndef generate_id(parent_id: str, count: int) -> str:\n    \"\"\"\n        Generates an ID for a standalone code block based on the given parent ID and a count.\n\n        Args:\n            - parent_id (str): The ID of the parent (typically a module).\n            - count (int): A unique count or index for the standalone block within its parent.\n\n        Returns:\n            - str: The generated ID, incorporating the parent ID and the count.\n        \"\"\"\n    return f\"{parent_id}__*__STANDALONE_BLOCK-{count}\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

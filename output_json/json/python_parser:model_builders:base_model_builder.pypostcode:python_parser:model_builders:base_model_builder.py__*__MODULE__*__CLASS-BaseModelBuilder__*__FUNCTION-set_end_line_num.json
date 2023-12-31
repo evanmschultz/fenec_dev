@@ -1,0 +1,20 @@
+{
+    "function_name": "set_end_line_num",
+    "docstring": "Sets the end line number of the code block model instance.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Union[, , , ]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-set_end_line_num",
+    "file_path": "postcode/python_parser/model_builders/base_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 94,
+    "end_line_num": 106,
+    "code_content": "\ndef set_end_line_num(\n    self, line_num: int\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Sets the end line number of the code block model instance.\"\"\"\n    self.common_attributes.end_line_num = line_num\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

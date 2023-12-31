@@ -1,0 +1,20 @@
+{
+    "function_name": "ensure_collections",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector__*__FUNCTION-ensure_collections",
+    "file_path": "postcode/databases/arangodb/arangodb_connector.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector",
+    "block_type": "FUNCTION",
+    "start_line_num": 86,
+    "end_line_num": 99,
+    "code_content": "\ndef ensure_collections(self) -> None:\n    # model_schemas: dict[str, dict[str, Any]] = self._get_model_schemas()\n    required_collections: list[\n        str\n    ] = helper_functions.pluralized_and_lowered_block_types()\n\n    for collection_name in required_collections:\n        # schema: dict[str, Any] = model_schemas[collection_name]\n        # self.ensure_collection(collection_name, schema)\n        self.ensure_collection(collection_name)\n\n    self.ensure_edge_collection(\"code_edges\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

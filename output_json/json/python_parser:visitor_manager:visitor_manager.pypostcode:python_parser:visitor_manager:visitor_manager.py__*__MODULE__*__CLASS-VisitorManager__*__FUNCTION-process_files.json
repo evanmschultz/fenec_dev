@@ -1,0 +1,27 @@
+{
+    "function_name": "process_files",
+    "docstring": "Process the files in the directory and return the module models.\n\nThis function iterates through all the Python files in the directory, processes each file,\nupdates the imports, and builds module models for each file. It returns a tuple of module models\nand a dictionary of directory modules.\n\nReturns:\n    - VisitorManagerProcessFilesReturn, a named tuple containing:\n        - models_tuple (tuple[ModuleModel, ...]): A tuple of module models.\n        - directory_modules (dict[str, ModuleModel]): A dictionary of directory modules.\n\nExamples:\n    ```Python\n    visitor_manager = VisitorManager()\n    result = visitor_manager.process_files()\n    print(result.models_tuple)\n    # (ModuleModel(file_path='/path/to/file1.py'), ModuleModel(file_path='/path/to/file2.py'))\n    print(result.directory_modules)\n    {'/path/to/directory1': ModuleModel(file_path='/path/to/directory1/__init__.py')}\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "VisitorManagerProcessFilesReturn",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-process_files",
+    "file_path": "postcode/python_parser/visitor_manager/visitor_manager.py",
+    "parent_id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 114,
+    "end_line_num": 185,
+    "code_content": "\ndef process_files(self) -> VisitorManagerProcessFilesReturn:\n    \"\"\"\n        Process the files in the directory and return the module models.\n\n        This function iterates through all the Python files in the directory, processes each file,\n        updates the imports, and builds module models for each file. It returns a tuple of module models\n        and a dictionary of directory modules.\n\n        Returns:\n            - VisitorManagerProcessFilesReturn, a named tuple containing:\n                - models_tuple (tuple[ModuleModel, ...]): A tuple of module models.\n                - directory_modules (dict[str, ModuleModel]): A dictionary of directory modules.\n\n        Examples:\n            ```Python\n            visitor_manager = VisitorManager()\n            result = visitor_manager.process_files()\n            print(result.models_tuple)\n            # (ModuleModel(file_path='/path/to/file1.py'), ModuleModel(file_path='/path/to/file2.py'))\n            print(result.directory_modules)\n            {'/path/to/directory1': ModuleModel(file_path='/path/to/directory1/__init__.py')}\n            ```\n        \"\"\"\n\n    logging.info(\"Processing files\")\n    python_files: list[str] = self._get_python_files()\n    model_builder_list: list[ModuleModelBuilder] = []\n    for file_path in python_files:\n        if model_builder := self._process_file(file_path):\n            model_builder_list.append((model_builder))\n\n    logging.info(\"File processing completed\")\n    logging.info(\"Updating imports\")\n\n    # TODO: Test making this a tuple of tuples, see if that solves the double update import issue\n    model_builder_tuple: tuple[ModuleModelBuilder, ...] = tuple(model_builder_list)\n\n    import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_tuple)\n    import_and_dependency_updater.update_imports()\n    logging.info(\"Updated imports\")\n\n    models_list: list[\n        ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel\n    ] = []\n    for module_model_builder in model_builder_tuple:\n        module_model_return: tuple[\n            ModuleModel,\n            list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None,\n        ] = self._build_module_model(module_model_builder)\n        models_list.append(module_model_return[0])\n        if module_model_return[1]:\n            models_list.extend(module_model_return[1])\n\n    directory_models_list: list[DirectoryModel] = []\n    for directory_path in self.directory_modules.keys():\n        directory_model: DirectoryModel = self._build_directory_model(\n            directory_path\n        )\n        directory_models_list.append(directory_model)\n\n    all_models: list[ModelType] = [\n        *models_list,\n        *directory_models_list,\n    ]\n\n    models_tuple: tuple[ModelType, ...] = tuple(all_models)\n\n    return VisitorManagerProcessFilesReturn(\n        models_tuple=models_tuple, directory_modules=self.directory_modules\n    )\n",
+    "important_comments": [
+        {
+            "content": "# TODO: Test making this a tuple of tuples, see if that solves the double update import issue",
+            "comment_types": [
+                "TODO"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

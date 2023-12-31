@@ -1,0 +1,77 @@
+{
+    "class_name": "FunctionSpecificAttributes",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Function specific attributes.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 283,
+    "end_line_num": 327,
+    "code_content": "\n\nclass FunctionSpecificAttributes(BaseModel):\n    \"\"\"Function specific attributes.\"\"\"\n\n    function_name: str = Field(min_length=1)\n    docstring: str | None = None\n    decorators: list[DecoratorModel] | None = None\n    parameters: ParameterListModel | None = None\n    returns: str | None = None\n    is_method: bool = False\n    is_async: bool = False\n\n    def _convert_docstring_to_metadata(self) -> str:\n        \"\"\"Converts the docstring to a metadata string.\"\"\"\n        return f\"{self.docstring}\" if self.docstring else \"\"\n\n    def _convert_decorators_to_metadata(self) -> str:\n        \"\"\"Converts the decorators to a metadata string.\"\"\"\n        decorators_str: str = self.model_dump_json() if self.decorators else \"\"\n        return f\"{decorators_str}\"\n\n    def _convert_parameters_to_metadata(self) -> str:\n        \"\"\"Converts the parameters to a metadata string.\"\"\"\n        return (\n            self.parameters.convert_parameters_to_metadata() if self.parameters else \"\"\n        )\n\n    def _convert_returns_to_metadata(self) -> str:\n        \"\"\"Converts the returns to a metadata string.\"\"\"\n        return f\"{self.returns}\" if self.returns else \"\"\n\n    def _convert_function_attributes_to_metadata_dict(self) -> dict[str, str | bool]:\n        \"\"\"Converts the function attributes to a metadata dictionary.\"\"\"\n\n        return {\n            \"function_name\": self.function_name,\n            \"docstring\": self._convert_docstring_to_metadata(),\n            \"decorators\": self._convert_decorators_to_metadata(),\n            \"parameters\": self._convert_parameters_to_metadata(),\n            \"returns\": self._convert_returns_to_metadata(),\n            \"is_method\": self.is_method,\n            \"is_async\": self.is_async,\n        }\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+        },
+        {
+            "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ParameterListModel"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes__*__FUNCTION-_convert_docstring_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes__*__FUNCTION-_convert_decorators_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes__*__FUNCTION-_convert_parameters_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes__*__FUNCTION-_convert_returns_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes__*__FUNCTION-_convert_function_attributes_to_metadata_dict"
+    ]
+}

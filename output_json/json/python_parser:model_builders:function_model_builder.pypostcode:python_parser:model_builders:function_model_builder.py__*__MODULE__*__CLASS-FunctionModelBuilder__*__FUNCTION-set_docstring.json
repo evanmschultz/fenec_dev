@@ -1,0 +1,20 @@
+{
+    "function_name": "set_docstring",
+    "docstring": "Sets the docstring.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_docstring",
+    "file_path": "postcode/python_parser/model_builders/function_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 63,
+    "end_line_num": 68,
+    "code_content": "\ndef set_docstring(self, docstring: str | None) -> \"FunctionModelBuilder\":\n    \"\"\"Sets the docstring.\"\"\"\n    self.function_attributes.docstring = docstring\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

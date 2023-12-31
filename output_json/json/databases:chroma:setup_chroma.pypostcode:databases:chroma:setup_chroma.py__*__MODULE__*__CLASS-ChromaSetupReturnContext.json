@@ -1,0 +1,61 @@
+{
+    "class_name": "ChromaSetupReturnContext",
+    "decorators": [
+        {
+            "content": "@dataclass",
+            "decorator_name": "dataclass",
+            "decorator_args": null
+        }
+    ],
+    "bases": null,
+    "docstring": "Represents the return value of the ChromaDB setup method.\n\nAttributes:\n    - chroma_collection_manager (ChromaDBCollectionManager): The ChromaDB collection manager.\n    - chroma_collection (Collection): The ChromaDB collection.",
+    "keywords": null,
+    "id": "postcode:databases:chroma:setup_chroma.py__*__MODULE__*__CLASS-ChromaSetupReturnContext",
+    "file_path": "postcode/databases/chroma/setup_chroma.py",
+    "parent_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 33,
+    "end_line_num": 47,
+    "code_content": "\n\n@dataclass\nclass ChromaSetupReturnContext:\n    \"\"\"\n    Represents the return value of the ChromaDB setup method.\n\n    Attributes:\n        - chroma_collection_manager (ChromaDBCollectionManager): The ChromaDB collection manager.\n        - chroma_collection (Collection): The ChromaDB collection.\n    \"\"\"\n\n    chroma_collection_manager: ChromaDBCollectionManager\n    chroma_collection: chroma_types.Collection\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaDBCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:chroma.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

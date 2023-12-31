@@ -1,0 +1,74 @@
+{
+    "function_name": "_extract_keywords",
+    "docstring": "Extracts class keywords (like metaclass) from a sequence of libcst.Arg representing class keywords.\n\nArgs:\n    keywords (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class keywords.\n\nReturns:\n    list[ClassKeywordModel] | None: A list of ClassKeywordModel objects representing each keyword, or None if there are no keywords.\n\nExample:\n    >>> class_keywords = _extract_keywords(class_node.keywords)\n    # Returns a list of ClassKeywordModel objects for each keyword in the class definition.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[ClassKeywordModel] | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_keywords",
+    "file_path": "postcode/python_parser/visitors/node_processing/class_def_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 74,
+    "end_line_num": 111,
+    "code_content": "\n\ndef _extract_keywords(\n    keywords: Sequence[libcst.Arg],\n) -> list[ClassKeywordModel] | None:\n    \"\"\"\n    Extracts class keywords (like metaclass) from a sequence of libcst.Arg representing class keywords.\n\n    Args:\n        keywords (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class keywords.\n\n    Returns:\n        list[ClassKeywordModel] | None: A list of ClassKeywordModel objects representing each keyword, or None if there are no keywords.\n\n    Example:\n        >>> class_keywords = _extract_keywords(class_node.keywords)\n        # Returns a list of ClassKeywordModel objects for each keyword in the class definition.\n    \"\"\"\n\n    keywords_list: list[ClassKeywordModel] = []\n\n    for keyword in keywords:\n        if keyword.keyword is not None:\n            keyword_name: str = keyword.keyword.value\n            args: str | None = (\n                common_functions.extract_stripped_code_content(keyword.value)\n                if keyword.value\n                else None\n            )\n            content: str = common_functions.extract_stripped_code_content(keyword)\n\n            keyword_model = ClassKeywordModel(\n                content=content, keyword_name=keyword_name, args=args\n            )\n            keywords_list.append(keyword_model)\n\n    return keywords_list if keywords_list else None\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "ClassKeywordModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

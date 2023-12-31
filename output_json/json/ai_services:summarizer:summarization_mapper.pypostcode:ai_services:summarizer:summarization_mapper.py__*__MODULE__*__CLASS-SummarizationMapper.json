@@ -1,0 +1,85 @@
+{
+    "class_name": "SummarizationMapper",
+    "decorators": null,
+    "bases": null,
+    "docstring": null,
+    "keywords": null,
+    "id": "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper",
+    "file_path": "postcode/ai_services/summarizer/summarization_mapper.py",
+    "parent_id": "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 15,
+    "end_line_num": 169,
+    "code_content": "\n# ModelType = Union[\n#     ModuleModel, ClassModel, FunctionModel, StandaloneCodeBlockModel, DirectoryModel\n# ]\n\n\nclass SummarizationMapper:\n    def __init__(\n        self,\n        module_ids_to_update: list[str],\n        all_models: tuple[ModelType, ...],\n        arangodb_manager: ArangoDBManager,\n    ) -> None:\n        self.module_ids_to_update: list[str] = module_ids_to_update\n        self.all_models: tuple[ModelType, ...] = all_models\n        self.arangodb_manager: ArangoDBManager = arangodb_manager\n\n        self.models_to_update: list[ModelType] = self._set_models_to_update()\n        self.model_visited_in_db: set[str] = set()\n        self.summarization_map: list[ModelType] = []\n        self.temp_map: list[ModelType] = []\n\n    def _set_models_to_update(self) -> list[ModelType]:\n        \"\"\"Returns all models that need to be updated.\"\"\"\n\n        models_to_update: list[ModelType] = []\n        for model in self.all_models:\n            for module_id in self.module_ids_to_update:\n                if module_id in model.id:\n                    models_to_update.append(model)\n                    break\n\n        return models_to_update\n\n    # def _set_child_models_to_update(self, model: ModelType) -> None:\n    #     if isinstance(model, DirectoryModel):\n    #         return None\n\n    #     if model.children_ids:\n    #         for child_id in model.children_ids:\n    #             # logging.info(f\"Setting child model to update: {child.id}\")\n    #             self._set_child_models_to_update(child_id)\n    #             child.summary = None\n    #             self.models_to_update.append(child)\n    #         self.models_to_update.append(model)\n\n    # def _set_models_to_update(self) -> None:\n    #     for model in self.all_models:\n    #         if model.id in self.module_ids_to_update:\n    #             if model.children_ids:\n    #                 for child in model.children_ids:\n    #                     self._set_child_models_to_update(child)\n\n    #             model.summary = None\n    #             self.models_to_update.append(model)\n\n    def _set_inbound_models_in_summarization_map(self, model_id: str) -> None:\n        if model_id in self.model_visited_in_db:\n            return\n        self.model_visited_in_db.add(model_id)\n        if inbound_models := self.arangodb_manager.get_inbound_models(model_id):\n            for model in inbound_models:\n                self.model_visited_in_db.add(model_id)\n                self._set_inbound_models_in_summarization_map(model.id)\n\n                self.temp_map.append(model)\n\n    def _set_outbound_models_in_summarization_map(self, model_id: str) -> None:\n        if model_id in self.model_visited_in_db:\n            return\n\n        if outbound_models := self.arangodb_manager.get_outbound_models(model_id):\n            for model in outbound_models[::-1]:\n                self.model_visited_in_db.add(model_id)\n\n                if model.id in self.models_to_update:\n                    model.summary = None\n                self.temp_map.append(model)\n\n    def create_summarization_map(self) -> list[ModelType]:\n        self._set_models_to_update()\n        logging.info(\"Set models to update\")\n\n        # pprint([model.id for model in self.models_to_update])\n\n        for model in self.models_to_update:\n            # self.model_visited_in_db = set()\n            # logging.info(f\"Setting inbound models in summarization map: {model.id}\")\n            self._set_inbound_models_in_summarization_map(model.id)\n            self.temp_map.append(model)\n\n            self.model_visited_in_db.remove(model.id)\n            # logging.info(f\"Setting outbound models in summarization map: {model.id}\")\n            # self._set_outbound_models_in_summarization_map(model.id)\n            self.summarization_map.extend(self.temp_map)\n            self.temp_map = []\n\n        for model in self.models_to_update:\n            self.model_visited_in_db = set()\n            # logging.info(f\"Setting outbound models in summarization map: {model.id}\")\n            self._set_outbound_models_in_summarization_map(model.id)\n            self.summarization_map.extend(self.temp_map)\n            self.temp_map = []\n\n        logging.info(\"Created summarization map\")\n        summary_ids: set[str] = set()\n        summary_map: list[ModelType] = []\n        for model in self.summarization_map[::-1]:\n            if model.id not in summary_ids:\n                summary_map.append(model)\n                summary_ids.add(model.id)\n\n        # pprint([model.id for model in summary_map[::-1]])\n\n        return summary_map[::-1]\n\n    # def old_create_summarization_map(self) -> list[list[ModelType]]:\n    #     for module_id in self.module_ids_to_update:\n    #         models_to_update: list[ModelType] = []\n\n    #         upstream_models: list[\n    #             ModelType\n    #         ] | None = self.arangodb_manager.get_all_upstream_vertices(module_id)\n    #         downstream_models: list[\n    #             ModelType\n    #         ] | None = self.arangodb_manager.get_all_downstream_vertices(module_id)\n\n    #         ids_from_db: list[str] = []\n    #         if upstream_models:\n    #             upstream_ids_to_update: list[str] = [\n    #                 model.id for model in upstream_models\n    #             ]\n    #             ids_from_db.extend(upstream_ids_to_update)\n\n    #         ids_from_db.append(module_id)\n\n    #         if downstream_models:\n    #             downstream_ids_to_update: list[str] = [\n    #                 model.id for model in downstream_models\n    #             ]\n    #             ids_from_db.extend(downstream_ids_to_update)\n\n    #         for id in ids_from_db:\n    #             for model in self.module_models:\n    #                 if model.id == id:\n    #                     models_to_update.append(model)\n    #                 elif model.children:\n    #                     for child in model.children:\n    #                         if child.id == id:\n    #                             models_to_update.append(child)\n\n    #         self.summarization_map.append(models_to_update)\n\n    #     return self.summarization_map\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "pprint",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pprint",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ArangoDBManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager"
+                }
+            ],
+            "imported_from": "postcode.databases.arangodb.arangodb_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.types.postcode",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:postcode.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-__init__",
+        "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-_set_models_to_update",
+        "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-_set_inbound_models_in_summarization_map",
+        "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-_set_outbound_models_in_summarization_map",
+        "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-create_summarization_map"
+    ]
+}

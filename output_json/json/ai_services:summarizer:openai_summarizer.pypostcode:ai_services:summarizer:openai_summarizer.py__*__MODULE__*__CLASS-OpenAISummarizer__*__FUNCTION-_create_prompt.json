@@ -1,0 +1,20 @@
+{
+    "function_name": "_create_prompt",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:openai_summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-_create_prompt",
+    "file_path": "postcode/ai_services/summarizer/openai_summarizer.py",
+    "parent_id": "postcode:ai_services:summarizer:openai_summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer",
+    "block_type": "FUNCTION",
+    "start_line_num": 89,
+    "end_line_num": 109,
+    "code_content": "\ndef _create_prompt(\n    self,\n    code: str,\n    children_summaries: str | None,\n    dependency_summaries: str | None,\n    import_details: str | None,\n) -> str:\n    prompt_creator: PromptCreator = PromptCreator()\n    prompt: str | None = prompt_creator.create_prompt(\n        code,\n        children_summaries,\n        dependency_summaries,\n        import_details,\n    )\n\n    if prompt:\n        return prompt\n    else:\n        raise Exception(\"Prompt creation failed.\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

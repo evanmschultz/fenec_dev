@@ -1,0 +1,20 @@
+{
+    "function_name": "set_is_method",
+    "docstring": "Sets the is_method attribute in the function model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_is_method",
+    "file_path": "postcode/python_parser/model_builders/function_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 73,
+    "end_line_num": 78,
+    "code_content": "\ndef set_is_method(self, is_method: bool) -> \"FunctionModelBuilder\":\n    \"\"\"Sets the is_method attribute in the function model.\"\"\"\n    self.function_attributes.is_method = is_method\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

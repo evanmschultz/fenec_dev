@@ -1,0 +1,130 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "annotations",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "__future__",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "TYPE_CHECKING",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging_decorator",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                }
+            ],
+            "imported_from": "postcode.utilities.logger.decorators",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:logger:decorators.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.base_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassSpecificAttributes",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassSpecificAttributes"
+                },
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassModel"
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionModel"
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:enums.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "ClassKeywordModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE",
+    "file_path": "postcode/python_parser/model_builders/class_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 103,
+    "code_content": "from __future__ import annotations\nfrom typing import TYPE_CHECKING, Any\n\nfrom postcode.utilities.logger.decorators import logging_decorator\n\nfrom postcode.python_parser.model_builders.base_model_builder import BaseModelBuilder\nfrom postcode.models.models import (\n    ClassSpecificAttributes,\n    ClassModel,\n    FunctionModel,\n    StandaloneCodeBlockModel,\n)\nfrom postcode.models.enums import BlockType\n\n\nif TYPE_CHECKING:\n    from postcode.models.models import (\n        ClassKeywordModel,\n        DecoratorModel,\n    )\n\n\nclass ClassModelBuilder(BaseModelBuilder):\n    \"\"\"\n    A builder class for constructing a model of a Python class.\n\n    This class extends BaseModelBuilder and is specialized for building a model of a Python class, capturing details such as decorators, base classes, documentation strings, class attributes, and class-specific keywords.\n\n    Attributes:\n        - class_attributes (ClassSpecificAttributes): An instance containing attributes specific to a class, like name, decorators, bases, etc.\n\n    Args:\n        - id (str): The unique identifier for the class model.\n        - class_name (str): The name of the class.\n        - parent_id (str): The identifier of the parent model (e.g., module or class containing this class).\n    \"\"\"\n\n    def __init__(\n        self, id: str, class_name: str, parent_id: str, file_path: str\n    ) -> None:\n        super().__init__(\n            id=id, block_type=BlockType.CLASS, parent_id=parent_id, file_path=file_path\n        )\n\n        self.class_attributes = ClassSpecificAttributes(\n            class_name=class_name,\n            decorators=None,\n            bases=None,\n            docstring=None,\n            keywords=None,\n        )\n\n    def set_decorators(\n        self, decorators: list[DecoratorModel] | None\n    ) -> \"ClassModelBuilder\":\n        \"\"\"Adds decorator to the decorators list in the class model.\"\"\"\n        if decorators:\n            self.class_attributes.decorators = decorators\n        else:\n            self.class_attributes.decorators = None\n        return self\n\n    def set_bases(self, base_classes: list[str] | None) -> \"ClassModelBuilder\":\n        \"\"\"Sets the list of base classes to the class model.\"\"\"\n        self.class_attributes.bases = base_classes\n        return self\n\n    def set_docstring(self, docstring: str | None) -> \"ClassModelBuilder\":\n        \"\"\"Sets the docstring of the class in the model.\"\"\"\n        self.class_attributes.docstring = docstring\n        return self\n\n    # # TODO: Add attribute model\n    # def add_attribute(self, attribute) -> \"ClassModelBuilder\":\n    #     \"\"\"Adds an attribute of the class in the model.\"\"\"\n    #     if not self.class_attributes.attributes:\n    #         self.class_attributes.attributes = []\n    #     self.class_attributes.attributes.append(attribute)\n    #     return self\n\n    def set_keywords(\n        self, keyword_list: list[ClassKeywordModel] | None\n    ) -> \"ClassModelBuilder\":\n        \"\"\"Sets the list of keywords to the class model.\"\"\"\n        self.class_attributes.keywords = keyword_list\n        return self\n\n    def _get_class_specific_attributes(self) -> dict[str, Any]:\n        \"\"\"Gets the class specific attributes.\"\"\"\n        return self.class_attributes.model_dump()\n\n    @logging_decorator(message=\"Building ClassModel\")\n    def build(\n        self,\n    ) -> ClassModel:\n        \"\"\"Creates a ClassModel instance after building and setting the children models.\"\"\"\n        self.build_children()\n        self.set_children_ids()\n        return ClassModel(\n            **self._get_common_attributes(),\n            **self._get_class_specific_attributes(),\n        )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": [
+        "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__STANDALONE_BLOCK-1",
+        "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "_clean_output_directory",
+    "docstring": "Deletes the output directory and all its contents.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-_clean_output_directory",
+    "file_path": "postcode/json_management/json_handler.py",
+    "parent_id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler",
+    "block_type": "FUNCTION",
+    "start_line_num": 118,
+    "end_line_num": 126,
+    "code_content": "\ndef _clean_output_directory(self) -> None:\n    \"\"\"\n        Deletes the output directory and all its contents.\n        \"\"\"\n    output_dir = Path(self.output_directory)\n    if output_dir.exists() and output_dir.is_dir():\n        rmtree(output_dir)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

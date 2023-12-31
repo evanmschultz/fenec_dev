@@ -1,0 +1,48 @@
+{
+    "function_name": "process_standalone_blocks",
+    "docstring": "Processes standalone blocks of code and builds models for each block.\n\nIterates over a list of standalone code blocks, processing each to build a model representing the block. Each block is assigned an identifier and associated with a parent identifier.\n\nArgs:\n    - code_blocks: A list of NodeAndPositionData representing standalone code blocks.\n    - parent_id: The identifier of the parent (usually a module or class).\n    - file_path: The file path of the module containing the standalone blocks.\n\nReturns:\n    - list[StandaloneBlockModelBuilder], each representing a processed standalone block.\n\nExample:\n    ```Python\n    standalone_blocks_models = process_standalone_blocks(standalone_blocks, \"module1\")\n    # Processes standalone blocks and creates models for them.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[StandaloneBlockModelBuilder]",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-process_standalone_blocks",
+    "file_path": "postcode/python_parser/visitors/node_processing/standalone_code_block_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 68,
+    "end_line_num": 102,
+    "code_content": "\n\ndef process_standalone_blocks(\n    code_blocks: list[NodeAndPositionData], parent_id: str, file_path: str\n) -> list[StandaloneBlockModelBuilder]:\n    \"\"\"\n    Processes standalone blocks of code and builds models for each block.\n\n    Iterates over a list of standalone code blocks, processing each to build a model representing the block. Each block is assigned an identifier and associated with a parent identifier.\n\n    Args:\n        - code_blocks: A list of NodeAndPositionData representing standalone code blocks.\n        - parent_id: The identifier of the parent (usually a module or class).\n        - file_path: The file path of the module containing the standalone blocks.\n\n    Returns:\n        - list[StandaloneBlockModelBuilder], each representing a processed standalone block.\n\n    Example:\n        ```Python\n        standalone_blocks_models = process_standalone_blocks(standalone_blocks, \"module1\")\n        # Processes standalone blocks and creates models for them.\n        ```\n    \"\"\"\n\n    models: list[StandaloneBlockModelBuilder] = []\n    for count, code_block in enumerate(code_blocks):\n        models.append(\n            _process_standalone_block(\n                code_block, parent_id, count + 1, file_path=file_path\n            )\n        )\n\n    return models\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_process_standalone_block"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData"
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

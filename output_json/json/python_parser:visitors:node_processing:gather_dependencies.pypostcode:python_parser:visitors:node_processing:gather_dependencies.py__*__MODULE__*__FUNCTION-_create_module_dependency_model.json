@@ -1,0 +1,50 @@
+{
+    "function_name": "_create_module_dependency_model",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "DependencyModel",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_create_module_dependency_model",
+    "file_path": "postcode/python_parser/visitors/node_processing/gather_dependencies.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 211,
+    "end_line_num": 215,
+    "code_content": "\n\ndef _create_module_dependency_model(module_code_block_id: str) -> DependencyModel:\n    return DependencyModel(code_block_id=module_code_block_id)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "re",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "DependencyModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

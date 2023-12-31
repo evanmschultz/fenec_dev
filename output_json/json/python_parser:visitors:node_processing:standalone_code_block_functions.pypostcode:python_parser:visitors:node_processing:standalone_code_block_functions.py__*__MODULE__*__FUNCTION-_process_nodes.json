@@ -1,0 +1,100 @@
+{
+    "function_name": "_process_nodes",
+    "docstring": "Processes the nodes in a standalone block of code and returns the content, variable assignments and important comments.",
+    "decorators": [
+        {
+            "content": "@logging_decorator(syntax_highlighting=True)",
+            "decorator_name": "logging_decorator",
+            "decorator_args": [
+                "syntax_highlighting=True"
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "tuple[str, list[str], list[CommentModel]]",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_process_nodes",
+    "file_path": "postcode/python_parser/visitors/node_processing/standalone_code_block_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 142,
+    "end_line_num": 163,
+    "code_content": "\n\n@logging_decorator(syntax_highlighting=True)\ndef _process_nodes(\n    standalone_block: NodeAndPositionData,\n) -> tuple[str, list[str], list[CommentModel]]:\n    \"\"\"Processes the nodes in a standalone block of code and returns the content, variable assignments and important comments.\"\"\"\n\n    content: str = \"\"\n    variable_assignments: list[str] = []\n    important_comments: list[CommentModel] = []\n\n    for line in standalone_block.nodes:\n        if isinstance(line, libcst.SimpleStatementLine):\n            variable_assignments.extend(_extract_variable_assignments(line))\n\n        important_comments.extend(_process_leading_lines(line))\n        line_content: str = common_functions.extract_stripped_code_content(line)\n        content += line_content + \"\\n\"\n\n    return content, variable_assignments, important_comments\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_process_leading_lines"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_extract_variable_assignments"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging_decorator",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                }
+            ],
+            "imported_from": "postcode.utilities.logger.decorators",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:logger:decorators.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData"
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "_create_edges_for_dependencies",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_create_edges_for_dependencies",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 198,
+    "end_line_num": 221,
+    "code_content": "\ndef _create_edges_for_dependencies(\n    self, block_key: str, dependencies: list[dict[str, Any]]\n) -> None:\n    if not dependencies:\n        return\n\n    for dependency in dependencies:\n        code_block_id: str | None = dependency.get(\"code_block_id\")\n        if code_block_id:\n            source_type: str = self._get_collection_from_id(code_block_id)\n            target_type: str = self._get_collection_from_id(block_key)\n            try:\n                self._upsert_edge(\n                    code_block_id, block_key, source_type, target_type\n                )\n                # logging.info(\n                #     f\"Upserted edge for dependency {block_key} to {code_block_id}\"\n                # )\n            except Exception as e:\n                logging.error(\n                    f\"Error creating edge for dependency {block_key} to {code_block_id}: {e}\"\n                )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,43 @@
+{
+    "class_name": "ParameterModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Class representing a function parameter.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-ParameterModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 80,
+    "end_line_num": 86,
+    "code_content": "\n\nclass ParameterModel(BaseModel):\n    \"\"\"Class representing a function parameter.\"\"\"\n\n    content: str\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

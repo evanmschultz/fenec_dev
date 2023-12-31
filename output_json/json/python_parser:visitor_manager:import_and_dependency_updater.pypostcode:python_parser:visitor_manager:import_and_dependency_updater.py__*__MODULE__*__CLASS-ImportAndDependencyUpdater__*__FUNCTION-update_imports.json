@@ -1,0 +1,20 @@
+{
+    "function_name": "update_imports",
+    "docstring": "Processes each module model builder in the model_builder_list and updates their import\nstatements. This method is the primary entry point for initiating the import update process.\n\nExample:\n    updater = ImportAndDependencyUpdater(model_builders)\n    updater.update_imports()",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportAndDependencyUpdater__*__FUNCTION-update_imports",
+    "file_path": "postcode/python_parser/visitor_manager/import_and_dependency_updater.py",
+    "parent_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportAndDependencyUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 36,
+    "end_line_num": 54,
+    "code_content": "\ndef update_imports(self) -> None:\n    \"\"\"\n        Processes each module model builder in the model_builder_list and updates their import\n        statements. This method is the primary entry point for initiating the import update process.\n\n        Example:\n            updater = ImportAndDependencyUpdater(model_builders)\n            updater.update_imports()\n        \"\"\"\n\n    for model_builder in self.model_builder_tuple:\n        import_updater: ImportUpdater = ImportUpdater(self.model_builder_tuple)\n        import_updater.process_builder(model_builder)\n\n        # for model_builder in self.model_builder_tuple:\n        ...\n    # Track down and add imports for the imports that were defined outside of the module that it is imported from\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,14 @@
+{
+    "id": "postcode:databases:chroma__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "chroma",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "postcode:databases:chroma:setup_chroma.py__*__MODULE",
+        "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE",
+        "postcode:databases:chroma:chromadb_builder.py__*__MODULE",
+        "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE"
+    ],
+    "parent_id": "postcode:databases__*__DIRECTORY",
+    "summary": null
+}

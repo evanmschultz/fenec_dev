@@ -1,0 +1,20 @@
+{
+    "function_name": "_process_file",
+    "docstring": "Processes a single Python file.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ModuleModelBuilder | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_process_file",
+    "file_path": "postcode/python_parser/visitor_manager/visitor_manager.py",
+    "parent_id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 208,
+    "end_line_num": 216,
+    "code_content": "\ndef _process_file(self, file_path: str) -> ModuleModelBuilder | None:\n    \"\"\"Processes a single Python file.\"\"\"\n\n    file_path_obj = Path(file_path)\n    root = str(file_path_obj.parent)\n    self.directory_modules.setdefault(root, []).append(file_path_obj.name)\n    return self._parse_file(file_path)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

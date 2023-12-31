@@ -1,0 +1,20 @@
+{
+    "function_name": "_upsert_vertex",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_upsert_vertex",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 49,
+    "end_line_num": 90,
+    "code_content": "\n# def _process_children(self, parent_model: ModelType) -> None:\n#     if not parent_model.children_ids:\n#         return None\n\n#     for child in parent_model.children_ids:\n#         # if child.id in self.processed_id_set:\n#         #     continue\n\n#         self.processed_id_set.add(child.id)\n#         self._upsert_vertex(\n#             child, helper_functions.pluralize_block_type(child.block_type)\n#         )\n\n#         if child.children:\n#             self._process_children(child)\n\ndef _upsert_vertex(self, model: ModelType, collection_name: str) -> None:\n    model_data: dict[str, Any] = model.model_dump()\n    model_data[\"_key\"] = model.id\n\n    try:\n        self.db_connector.ensure_collection(\n            collection_name, model.model_json_schema()\n        )\n        query: str = f\"\"\"\n            UPSERT {{_key: @key}}\n            INSERT @doc\n            UPDATE @doc\n            IN {collection_name}\n            \"\"\"\n        bind_vars: dict[str, Any] = {\"key\": model.id, \"doc\": model_data}\n        self.db_connector.db.aql.execute(query, bind_vars=bind_vars)\n\n        if not isinstance(model, ModuleModel) and model.parent_id:\n            parent_type: str = self._get_collection_from_id(model.parent_id)\n            self._upsert_edge(\n                model.id, model.parent_id, collection_name, parent_type\n            )\n    except Exception as e:\n        logging.error(f\"Error upserting {collection_name} vertex (ArangoDB): {e}\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

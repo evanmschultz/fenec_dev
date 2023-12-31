@@ -1,0 +1,28 @@
+{
+    "function_name": "save_model_as_json",
+    "docstring": "Saves a parsed ModelType as JSON.",
+    "decorators": [
+        {
+            "content": "@logging_decorator(message=\"Saving model as JSON\")",
+            "decorator_name": "logging_decorator",
+            "decorator_args": [
+                "message=\"Saving model as JSON\""
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-save_model_as_json",
+    "file_path": "postcode/json_management/json_handler.py",
+    "parent_id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler",
+    "block_type": "FUNCTION",
+    "start_line_num": 38,
+    "end_line_num": 50,
+    "code_content": "\n@logging_decorator(message=\"Saving model as JSON\")\ndef save_model_as_json(\n    self,\n    model: ModelType,\n    file_path: str,\n) -> None:\n    \"\"\"Saves a parsed ModelType as JSON.\"\"\"\n\n    json_output_directory: str = self._create_json_output_directory()\n    output_path: str = self._get_json_output_path(file_path, json_output_directory)\n    self._write_json_file(model, output_path)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

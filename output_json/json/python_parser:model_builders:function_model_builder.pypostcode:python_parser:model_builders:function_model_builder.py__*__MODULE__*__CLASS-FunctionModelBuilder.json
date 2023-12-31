@@ -1,0 +1,187 @@
+{
+    "class_name": "FunctionModelBuilder",
+    "decorators": null,
+    "bases": [
+        "BaseModelBuilder"
+    ],
+    "docstring": "A builder class for constructing a model of a Python function.\n\nThis class extends BaseModelBuilder and specializes in building a detailed model of a Python function, capturing various aspects such as function name, docstring, parameters, decorators, return type, and whether the function is a method or asynchronous.\n\nAttributes:\n    - function_attributes (FunctionSpecificAttributes): An instance containing attributes specific to a function.\n\nArgs:\n    - id (str): The unique identifier for the function model.\n    - function_name (str): The name of the function.\n    - parent_id (str): The identifier of the parent model (e.g., module or class containing this function).",
+    "keywords": null,
+    "id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder",
+    "file_path": "postcode/python_parser/model_builders/function_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 13,
+    "end_line_num": 99,
+    "code_content": "\n\nclass FunctionModelBuilder(BaseModelBuilder):\n    \"\"\"\n    A builder class for constructing a model of a Python function.\n\n    This class extends BaseModelBuilder and specializes in building a detailed model of a Python function, capturing various aspects such as function name, docstring, parameters, decorators, return type, and whether the function is a method or asynchronous.\n\n    Attributes:\n        - function_attributes (FunctionSpecificAttributes): An instance containing attributes specific to a function.\n\n    Args:\n        - id (str): The unique identifier for the function model.\n        - function_name (str): The name of the function.\n        - parent_id (str): The identifier of the parent model (e.g., module or class containing this function).\n    \"\"\"\n\n    def __init__(self, id: str, function_name: str, parent_id: str, file_path: str) -> None:\n        super().__init__(\n            id=id,\n            file_path=file_path,\n            block_type=BlockType.FUNCTION,\n            parent_id=parent_id,\n        )\n        self.function_attributes = FunctionSpecificAttributes(\n            function_name=function_name,\n            docstring=None,\n            decorators=None,\n            parameters=None,\n            is_method=False,\n            is_async=False,\n            returns=None,\n        )\n\n    def set_parameters_list(\n        self, parameter_list_model: ParameterListModel | None\n    ) -> \"FunctionModelBuilder\":\n        \"\"\"Adds a parameter to the function model.\"\"\"\n        self.function_attributes.parameters = parameter_list_model\n        return self\n\n    def set_decorators(\n        self, decorators: list[DecoratorModel] | None\n    ) -> \"FunctionModelBuilder\":\n        \"\"\"Adds decorator to the decorators list in the class model.\"\"\"\n        if decorators:\n            self.function_attributes.decorators = decorators\n        else:\n            self.function_attributes.decorators = None\n        return self\n\n    def set_docstring(self, docstring: str | None) -> \"FunctionModelBuilder\":\n        \"\"\"Sets the docstring.\"\"\"\n        self.function_attributes.docstring = docstring\n        return self\n\n    def set_return_annotation(self, return_type: str) -> \"FunctionModelBuilder\":\n        \"\"\"Sets the return type.\"\"\"\n        self.function_attributes.returns = return_type\n        return self\n\n    def set_is_method(self, is_method: bool) -> \"FunctionModelBuilder\":\n        \"\"\"Sets the is_method attribute in the function model.\"\"\"\n        self.function_attributes.is_method = is_method\n        return self\n\n    def set_is_async(self, is_async: bool) -> \"FunctionModelBuilder\":\n        \"\"\"Sets the is_async attribute in the function model.\"\"\"\n        self.function_attributes.is_async = is_async\n        return self\n\n    def _get_function_specific_attributes(self) -> dict[str, Any]:\n        \"\"\"\n        Gets the function specific attributes from the builder.\n        \"\"\"\n        return self.function_attributes.model_dump()\n\n    @logging_decorator(message=\"Building function model\")\n    def build(self) -> FunctionModel:\n        \"\"\"Builds and returns the function model instance after building and setting the children models.\"\"\"\n        self.build_children()\n        self.set_children_ids()\n        return FunctionModel(\n            **self._get_common_attributes(),\n            **self._get_function_specific_attributes(),\n        )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionSpecificAttributes",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionSpecificAttributes",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionSpecificAttributes",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionSpecificAttributes",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.base_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging_decorator",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                }
+            ],
+            "imported_from": "postcode.utilities.logger.decorators",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:logger:decorators.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:enums.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-__init__",
+        "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_parameters_list",
+        "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_decorators",
+        "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_docstring",
+        "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_return_annotation",
+        "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_is_method",
+        "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_is_async",
+        "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-_get_function_specific_attributes",
+        "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-build"
+    ]
+}

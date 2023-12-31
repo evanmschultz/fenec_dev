@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_standalone_block_specific_attributes",
+    "docstring": "Gets the standalone block specific attributes.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "dict[str, Any]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder__*__FUNCTION-_get_standalone_block_specific_attributes",
+    "file_path": "postcode/python_parser/model_builders/standalone_block_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 51,
+    "end_line_num": 55,
+    "code_content": "\ndef _get_standalone_block_specific_attributes(self) -> dict[str, Any]:\n    \"\"\"Gets the standalone block specific attributes.\"\"\"\n    return self.standalone_block_attributes.model_dump()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

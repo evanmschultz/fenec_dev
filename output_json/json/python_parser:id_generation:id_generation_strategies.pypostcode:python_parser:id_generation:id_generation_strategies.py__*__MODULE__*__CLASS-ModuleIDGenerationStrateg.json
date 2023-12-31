@@ -1,0 +1,27 @@
+{
+    "class_name": "ModuleIDGenerationStrategy",
+    "decorators": null,
+    "bases": [
+        "IDGenerationStrategy"
+    ],
+    "docstring": "ID generation strategy for modules.",
+    "keywords": null,
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 27,
+    "end_line_num": 58,
+    "code_content": "\n\nclass ModuleIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for modules.\"\"\"\n\n    @staticmethod\n    def generate_id(file_path: str) -> str:\n        \"\"\"\n        Generates an ID for a module based on the given file path.\n\n        Args:\n            - file_path (str): The file path of the module.\n\n        Returns:\n            - str: The generated ID, incorporating the file path.\n        \"\"\"\n        module_path: str = ModuleIDGenerationStrategy._converted_path_string(file_path)\n        return f\"{module_path}__*__MODULE\"\n\n    @staticmethod\n    def _converted_path_string(file_path: str) -> str:\n        \"\"\"\n        Converts a file path to a valid ID string.\n\n        Args:\n            - file_path (str): The file path to convert.\n\n        Returns:\n            - str: The converted ID string.\n        \"\"\"\n        return file_path.replace(\"/\", \":\")\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy"
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy__*__FUNCTION-generate_id",
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy__*__FUNCTION-_converted_path_string"
+    ]
+}

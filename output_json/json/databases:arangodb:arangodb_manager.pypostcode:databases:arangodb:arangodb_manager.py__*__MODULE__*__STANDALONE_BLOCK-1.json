@@ -1,0 +1,199 @@
+{
+    "variable_assignments": [
+        "ModelType = Union[\n    ModuleModel, ClassModel, FunctionModel, StandaloneCodeBlockModel, DirectoryModel\n]"
+    ],
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__STANDALONE_BLOCK-1",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE",
+    "block_type": "STANDALONE_BLOCK",
+    "start_line_num": 21,
+    "end_line_num": 25,
+    "code_content": "ModelType = Union[\n    ModuleModel, ClassModel, FunctionModel, StandaloneCodeBlockModel, DirectoryModel\n]\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Callable",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": null
+}

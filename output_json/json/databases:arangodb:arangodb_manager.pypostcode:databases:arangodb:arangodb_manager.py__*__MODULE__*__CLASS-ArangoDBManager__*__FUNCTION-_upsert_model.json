@@ -1,0 +1,20 @@
+{
+    "function_name": "_upsert_model",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_upsert_model",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 44,
+    "end_line_num": 49,
+    "code_content": "\ndef _upsert_model(self, model: ModelType) -> None:\n    collection_name: str = self._get_collection_from_id(model.id)\n    self._upsert_vertex(model, collection_name)\n    # self._process_children(module_model)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

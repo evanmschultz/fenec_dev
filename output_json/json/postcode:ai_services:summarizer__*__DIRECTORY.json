@@ -1,0 +1,19 @@
+{
+    "id": "postcode:ai_services:summarizer__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "summarizer",
+    "sub_directories_ids": [
+        "postcode:ai_services:summarizer:prompts__*__DIRECTORY"
+    ],
+    "children_ids": [
+        "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE",
+        "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE",
+        "postcode:ai_services:summarizer:standard_summarization_manager.py__*__MODULE",
+        "postcode:ai_services:summarizer:summarization_context.py__*__MODULE",
+        "postcode:ai_services:summarizer:temp.py__*__MODULE",
+        "postcode:ai_services:summarizer:summarizer_assistant.py__*__MODULE",
+        "postcode:ai_services:summarizer:openai_summarizer.py__*__MODULE"
+    ],
+    "parent_id": "postcode:ai_services__*__DIRECTORY",
+    "summary": null
+}

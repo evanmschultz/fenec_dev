@@ -1,0 +1,67 @@
+{
+    "class_name": "CommentModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Class representing a comment.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 45,
+    "end_line_num": 56,
+    "code_content": "\n\nclass CommentModel(BaseModel):\n    \"\"\"Class representing a comment.\"\"\"\n\n    content: str\n    comment_types: list[CommentType]\n\n    def convert_comment_to_metadata(self) -> str:\n        \"\"\"Converts the comment to a metadata string.\"\"\"\n        return self.model_dump_json()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel__*__FUNCTION-convert_comment_to_metadata"
+    ]
+}

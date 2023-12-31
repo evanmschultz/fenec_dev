@@ -1,0 +1,30 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "main",
+                    "as_name": null,
+                    "local_block_id": "postcode:app.py__*__MODULE__*__FUNCTION-main"
+                }
+            ],
+            "imported_from": "postcode.app",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:app.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:__init__.py__*__MODULE",
+    "file_path": "postcode/__init__.py",
+    "parent_id": "",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 2,
+    "code_content": "from postcode.app import main\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

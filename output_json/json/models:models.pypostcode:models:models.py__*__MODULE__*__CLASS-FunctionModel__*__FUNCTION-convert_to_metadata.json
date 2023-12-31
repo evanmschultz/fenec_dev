@@ -1,0 +1,20 @@
+{
+    "function_name": "convert_to_metadata",
+    "docstring": "Converts the function model to a metadata dictionary.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "dict[str, str | int]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionModel__*__FUNCTION-convert_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 331,
+    "end_line_num": 339,
+    "code_content": "\ndef convert_to_metadata(self) -> dict[str, str | int]:\n    \"\"\"Converts the function model to a metadata dictionary.\"\"\"\n\n    return {\n        **self._convert_base_attributes_to_metadata_dict(),\n        **self._convert_function_attributes_to_metadata_dict(),\n    }\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

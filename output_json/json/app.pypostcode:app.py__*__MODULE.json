@@ -1,0 +1,129 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "QueryResult",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb.api.types",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Collection",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaSetupReturnContext",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE__*__CLASS-ChromaSetupReturnContext"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.setup_chroma",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "GraphDBUpdater",
+                    "as_name": null,
+                    "local_block_id": "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater"
+                }
+            ],
+            "imported_from": "postcode.updaters.graph_db_updater",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:updaters:graph_db_updater.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.types.postcode",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:postcode.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "setup_logging",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:logger:logging_config.py__*__MODULE__*__FUNCTION-setup_logging"
+                }
+            ],
+            "imported_from": "postcode.utilities.logger.logging_config",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:logger:logging_config.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaDBCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:app.py__*__MODULE",
+    "file_path": "postcode/app.py",
+    "parent_id": "",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 90,
+    "code_content": "import logging\nfrom logging import Logger\n\n# from typing import Union\n\n# from postcode.models.models import (\n#     ModuleModel,\n#     ClassModel,\n#     FunctionModel,\n#     StandaloneCodeBlockModel,\n# )\n\nfrom postcode.databases.chroma.setup_chroma import (\n    ChromaSetupReturnContext,\n)\nfrom postcode.updaters.graph_db_updater import GraphDBUpdater\nfrom postcode.types.postcode import ModelType\n\n# ModelType = Union[\n#     ModuleModel,\n#     ClassModel,\n#     FunctionModel,\n#     StandaloneCodeBlockModel,\n# ]\n\nfrom postcode.utilities.logger.logging_config import setup_logging\n\nfrom postcode.databases.chroma.chromadb_collection_manager import (\n    ChromaDBCollectionManager,\n)\n\nfrom chromadb.api.types import (\n    QueryResult,\n)\nfrom chromadb import Collection\n\n# from postcode.updaters.standard_updater import StandardUpdater\n\n\ndef query_chroma(\n    query: str,\n    chroma_collection_manager: ChromaDBCollectionManager,\n    chroma_collection: Collection,\n    logger: Logger,\n) -> None:\n    logger.info(f\"Querying ChromaDB collection {chroma_collection.name}\")\n    results: QueryResult | None = chroma_collection_manager.query_collection(\n        [query],\n        n_results=10,\n        # where_filter={\"block_type\": \"MODULE\"},\n        include_in_result=[\"metadatas\", \"documents\", \"embeddings\"],\n    )\n    logger.info(\"Query results:\")\n    if results:\n        if results[\"ids\"]:\n            for document in results[\"ids\"][0]:\n                print(document)\n\n            print(f\"Total results: {len(results['ids'][0])}\")\n\n\ndef main(\n    directory: str = \".\",\n    output_directory: str = \"output_json\",\n) -> None:\n    setup_logging()\n    logger: Logger = logging.getLogger(__name__)\n\n    #   ==================== GraphDB ====================\n    graph_db_updater = GraphDBUpdater(directory, output_directory, logger)\n    chroma_context: ChromaSetupReturnContext = graph_db_updater.update_all(\n        directory, output_directory, logger\n    )\n    # ==================== End GraphDB ====================\n\n    #   ==================== Standard ====================\n    # chroma_context: ChromaSetupReturnContext = StandardUpdater.update_all(\n    #     directory, output_directory, logger\n    # )\n    # StandardUpdater.update_all(directory, output_directory, logger)\n    # ==================== End Standard ====================\n\n    query: str = \"summarizes code block\"\n    query_chroma(\n        query,\n        chroma_context.chroma_collection_manager,\n        chroma_context.chroma_collection,\n        logger,\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": [
+        "postcode:app.py__*__MODULE__*__FUNCTION-query_chroma",
+        "postcode:app.py__*__MODULE__*__FUNCTION-main"
+    ]
+}

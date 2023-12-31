@@ -1,0 +1,27 @@
+{
+    "function_name": "get_vertex_model_by_id",
+    "docstring": "Retrieves a vertex by its ID and returns it as the appropriate Pydantic model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ModelType | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-get_vertex_model_by_id",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 350,
+    "end_line_num": 389,
+    "code_content": "\ndef get_vertex_model_by_id(self, id: str) -> ModelType | None:\n    \"\"\"\n        Retrieves a vertex by its ID and returns it as the appropriate Pydantic model.\n        \"\"\"\n    try:\n        # Determine the collection name based on the ID.\n        collection_name = self._get_collection_from_id(id)\n        if collection_name == \"unknown\":\n            logging.error(f\"Unknown vertex type for ID: {id}\")\n            return None\n\n        # Retrieve the vertex from the collection.\n        vertex_collection: StandardCollection = self.db_connector.db.collection(\n            collection_name\n        )\n        vertex_result: Result[Json | None] = vertex_collection.get(id)\n\n        # Check if the vertex was found.\n        if not vertex_result or not isinstance(vertex_result, dict):\n            logging.error(\n                f\"Vertex with ID {id} not found or is in an invalid format.\"\n            )\n            return None\n\n        # Convert the vertex to the appropriate Pydantic model.\n        model_class: ModelType | None = self._get_model_class_from_collection_name(\n            collection_name\n        )\n        if not model_class:\n            logging.error(f\"No model class found for collection: {collection_name}\")\n            return None\n\n        # Create and return the model instance.\n        return model_class(**vertex_result)  # type: ignore # FIXME: Fix type error\n\n    except Exception as e:\n        logging.error(f\"Error in get_vertex_by_id: {e}\")\n        return None\n",
+    "important_comments": [
+        {
+            "content": "# type: ignore # FIXME: Fix type error",
+            "comment_types": [
+                "FIXME"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

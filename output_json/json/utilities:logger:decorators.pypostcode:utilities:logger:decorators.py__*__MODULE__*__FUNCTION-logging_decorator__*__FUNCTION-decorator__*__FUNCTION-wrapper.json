@@ -1,0 +1,28 @@
+{
+    "function_name": "wrapper",
+    "docstring": null,
+    "decorators": [
+        {
+            "content": "@wraps(func)",
+            "decorator_name": "wraps",
+            "decorator_args": [
+                "func"
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "Function has no return annotation",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator__*__FUNCTION-decorator__*__FUNCTION-wrapper",
+    "file_path": "postcode/utilities/logger/decorators.py",
+    "parent_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator__*__FUNCTION-decorator",
+    "block_type": "FUNCTION",
+    "start_line_num": 41,
+    "end_line_num": 61,
+    "code_content": "@wraps(func)\ndef wrapper(*args, **kwargs):\n    log_message: str = (\n        message if message else (f\"Calling function: {func.__name__}\")\n    )\n    frame_info: inspect.FrameInfo = inspect.stack()[1]\n    caller_info: LoggingCallerInfo = _get_caller_info(frame_info)\n    code_content: str = _gather_code_content(syntax_highlighting, args)\n    logger: Logger = _get_logger(caller_info.caller_module_name)\n\n    _handle_logging(\n        logger,\n        caller_info,\n        level,\n        log_message,\n        syntax_highlighting,\n        code_content,\n    )\n\n    return func(*args, **kwargs)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

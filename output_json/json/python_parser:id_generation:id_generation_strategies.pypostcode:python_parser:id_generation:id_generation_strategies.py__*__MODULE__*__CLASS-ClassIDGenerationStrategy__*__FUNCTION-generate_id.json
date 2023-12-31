@@ -1,0 +1,26 @@
+{
+    "function_name": "generate_id",
+    "docstring": "Generates an ID for a class based on the given parent ID and class name.\n\nArgs:\n    - parent_id (str): The ID of the parent (module or another class).\n    - class_name (str): The name of the class.\n\nReturns:\n    - str: The generated ID, incorporating the parent ID and class name.",
+    "decorators": [
+        {
+            "content": "@staticmethod",
+            "decorator_name": "staticmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy__*__FUNCTION-generate_id",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy",
+    "block_type": "FUNCTION",
+    "start_line_num": 62,
+    "end_line_num": 76,
+    "code_content": "\n@staticmethod\ndef generate_id(parent_id: str, class_name: str) -> str:\n    \"\"\"\n        Generates an ID for a class based on the given parent ID and class name.\n\n        Args:\n            - parent_id (str): The ID of the parent (module or another class).\n            - class_name (str): The name of the class.\n\n        Returns:\n            - str: The generated ID, incorporating the parent ID and class name.\n        \"\"\"\n    return f\"{parent_id}__*__CLASS-{class_name}\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

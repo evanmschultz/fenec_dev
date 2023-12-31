@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-__init__",
+    "file_path": "postcode/ai_services/summarizer/summarization_mapper.py",
+    "parent_id": "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper",
+    "block_type": "FUNCTION",
+    "start_line_num": 22,
+    "end_line_num": 36,
+    "code_content": "def __init__(\n    self,\n    module_ids_to_update: list[str],\n    all_models: tuple[ModelType, ...],\n    arangodb_manager: ArangoDBManager,\n) -> None:\n    self.module_ids_to_update: list[str] = module_ids_to_update\n    self.all_models: tuple[ModelType, ...] = all_models\n    self.arangodb_manager: ArangoDBManager = arangodb_manager\n\n    self.models_to_update: list[ModelType] = self._set_models_to_update()\n    self.model_visited_in_db: set[str] = set()\n    self.summarization_map: list[ModelType] = []\n    self.temp_map: list[ModelType] = []\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

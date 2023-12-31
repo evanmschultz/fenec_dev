@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-__init__",
+    "file_path": "postcode/ai_services/summarizer/graph_db_summarization_manager.py",
+    "parent_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 24,
+    "end_line_num": 39,
+    "code_content": "def __init__(\n    self,\n    all_models_tuple: tuple[ModelType, ...],\n    summarization_mapper: SummarizationMapper,\n    summarizer: Summarizer,\n    graph_manager: ArangoDBManager,\n) -> None:\n    self.all_models_tuple: tuple[ModelType, ...] = all_models_tuple\n    self.summarization_mapper: SummarizationMapper = summarization_mapper\n    self.summarizer: Summarizer = summarizer\n    self.graph_manager: ArangoDBManager = graph_manager\n\n    self.summarized_code_block_ids: set[str] = set()\n    self.prompt_tokens: int = 0\n    self.completion_tokens: int = 0\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_local_import_summary",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_get_local_import_summary",
+    "file_path": "postcode/ai_services/summarizer/graph_db_summarization_manager.py",
+    "parent_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 238,
+    "end_line_num": 251,
+    "code_content": "\ndef _get_local_import_summary(self, dependency: ImportModel) -> str | None:\n    for model in self.all_models_tuple:\n        if model.id == dependency.local_module_id:\n            import_summary: str | None = None\n            if model.summary:\n                import_summary = model.summary\n            else:\n                if not isinstance(model, DirectoryModel):\n                    import_summary = f\"Imported module ({dependency.local_module_id}) code content:\\n{model.code_content}\\n\"\n\n            return import_summary\n    return None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

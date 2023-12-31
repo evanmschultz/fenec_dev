@@ -1,0 +1,20 @@
+{
+    "function_name": "update_vertex_summary_by_id",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-update_vertex_summary_by_id",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 405,
+    "end_line_num": 435,
+    "code_content": "\ndef update_vertex_summary_by_id(self, id: str, new_summary: str) -> None:\n    try:\n        collection_name: str = self._get_collection_from_id(id)\n        if collection_name == \"unknown\":\n            logging.error(f\"Unknown vertex type for id: {id}\")\n            return\n\n        vertex_collection: StandardCollection = self.db_connector.db.collection(\n            collection_name\n        )\n        vertex_result: Result[Json | None] = vertex_collection.get(id)\n\n        if not vertex_result:\n            logging.error(f\"Vertex with id {id} not found.\")\n            return\n\n        if isinstance(vertex_result, dict):\n            vertex = vertex_result\n        else:\n            logging.error(\"Retrieved vertex is not in a mutable format.\")\n            return None\n\n        vertex[\"summary\"] = new_summary\n\n        vertex_collection.update(vertex)\n        logging.info(f\"Vertex with id {id} updated successfully.\")\n\n    except Exception as e:\n        logging.error(f\"Error in `update_vertex_by_id`: {e}\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

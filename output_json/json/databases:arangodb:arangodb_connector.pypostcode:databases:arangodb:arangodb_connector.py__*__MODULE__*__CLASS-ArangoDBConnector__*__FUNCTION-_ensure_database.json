@@ -1,0 +1,20 @@
+{
+    "function_name": "_ensure_database",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "StandardDatabase",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector__*__FUNCTION-_ensure_database",
+    "file_path": "postcode/databases/arangodb/arangodb_connector.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector",
+    "block_type": "FUNCTION",
+    "start_line_num": 32,
+    "end_line_num": 42,
+    "code_content": "\ndef _ensure_database(self) -> StandardDatabase:\n    sys_db: StandardDatabase = self.client.db(\n        \"_system\", username=self.username, password=self.password\n    )\n    if not sys_db.has_database(self.db_name):\n        sys_db.create_database(self.db_name)\n    return self.client.db(\n        self.db_name, username=self.username, password=self.password\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

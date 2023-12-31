@@ -1,0 +1,49 @@
+{
+    "function_name": "_determine_import_module_type",
+    "docstring": "Determines the type of import a module is.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ImportModuleType",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_determine_import_module_type",
+    "file_path": "postcode/python_parser/visitors/node_processing/module_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 134,
+    "end_line_num": 145,
+    "code_content": "\n\ndef _determine_import_module_type(module_name: str) -> ImportModuleType:\n    \"\"\"Determines the type of import a module is.\"\"\"\n\n    if _is_standard_library_import(module_name):\n        return ImportModuleType.STANDARD_LIBRARY\n    elif _is_third_party_import(module_name):\n        return ImportModuleType.THIRD_PARTY\n    else:\n        return ImportModuleType.LOCAL\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_is_standard_library_import"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_is_third_party_import"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

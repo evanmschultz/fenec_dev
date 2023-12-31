@@ -1,0 +1,96 @@
+{
+    "function_name": "setup_chroma",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "ChromaSetupReturnContext",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:databases:chroma:setup_chroma.py__*__MODULE__*__FUNCTION-setup_chroma",
+    "file_path": "postcode/databases/chroma/setup_chroma.py",
+    "parent_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 47,
+    "end_line_num": 68,
+    "code_content": "\n\ndef setup_chroma(models: list[ModelType], logger: Logger) -> ChromaSetupReturnContext:\n    chroma_settings = chroma_types.Settings(allow_reset=True)\n    chroma_client: chroma_types.ClientAPI = chromadb.PersistentClient(\n        settings=chroma_settings\n    )\n    chroma_client_manager = ChromaDBClientManager(chroma_client)\n\n    logger.debug(f\"Resetting Chroma client\")\n    if chroma_client_manager.reset_client():\n        logger.debug(\"Client reset\")\n\n    chroma_collection: chroma_types.Collection = (\n        chroma_client_manager.get_or_create_collection(\"postcode\")\n    )\n\n    chroma_collection_manager = ChromaDBCollectionManager(chroma_collection)\n    chroma_collection_manager.upsert_models(tuple(models))\n\n    return ChromaSetupReturnContext(chroma_collection_manager, chroma_collection)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE__*__CLASS-ChromaSetupReturnContext"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "chromadb",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaDBClientManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_client_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaDBCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:chroma.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.types.postcode",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:postcode.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

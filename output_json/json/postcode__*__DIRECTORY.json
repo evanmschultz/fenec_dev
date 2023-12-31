@@ -1,0 +1,21 @@
+{
+    "id": "postcode__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "postcode",
+    "sub_directories_ids": [
+        "postcode:databases__*__DIRECTORY",
+        "postcode:types__*__DIRECTORY",
+        "postcode:ai_services__*__DIRECTORY",
+        "postcode:python_parser__*__DIRECTORY",
+        "postcode:models__*__DIRECTORY",
+        "postcode:json_management__*__DIRECTORY",
+        "postcode:utilities__*__DIRECTORY",
+        "postcode:updaters__*__DIRECTORY"
+    ],
+    "children_ids": [
+        "postcode:__init__.py__*__MODULE",
+        "postcode:app.py__*__MODULE"
+    ],
+    "parent_id": ".__*__DIRECTORY",
+    "summary": null
+}

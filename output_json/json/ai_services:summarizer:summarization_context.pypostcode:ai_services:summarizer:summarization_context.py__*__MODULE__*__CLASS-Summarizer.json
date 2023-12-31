@@ -1,0 +1,47 @@
+{
+    "class_name": "Summarizer",
+    "decorators": null,
+    "bases": [
+        "Protocol"
+    ],
+    "docstring": null,
+    "keywords": null,
+    "id": "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer",
+    "file_path": "postcode/ai_services/summarizer/summarization_context.py",
+    "parent_id": "postcode:ai_services:summarizer:summarization_context.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 75,
+    "end_line_num": 147,
+    "code_content": "\n\nclass Summarizer(Protocol):\n    def summarize_code(\n        self,\n        code: str,\n        *,\n        model_id: str,\n        children_summaries: str | None,\n        dependency_summaries: str | None,\n        import_details: str | None,\n        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n    ) -> OpenAIReturnContext | None:\n        \"\"\"\n        Summarizes the provided code snippet using the OpenAI API.\n\n        Args:\n            - code (str): The code snippet to summarize.\n            - configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            ```Python\n            client = OpenAI()\n\n            # Create a summarizer instance with the OpenAI client\n            summarizer = Summarizer(client=client)\n            code_example = \"print('Hello, world')\"\n\n            # Summarize the code snippet\n            summary = summarizer.summarize_code(code_example)\n            print(summary)\n            ```\n        \"\"\"\n        ...\n\n    def test_summarize_code(\n        self,\n        code: str,\n        *,\n        model_id: str,\n        children_summaries: str | None,\n        dependency_summaries: str | None,\n        import_details: str | None,\n        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n    ) -> OpenAIReturnContext | None:\n        \"\"\"\n        A method for testing whether or not a summary path is working as expected.\n\n        Args:\n            - code (str): The code snippet to summarize (pass in dummy string).\n            - configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            ```Python\n            client = OpenAI()\n            summarizer = Summarizer(client=client)\n            code_example = \"print('Hello, world')\"\n\n            # Run summary tester the code snippet\n            summary = summarizer.summarize_code(code_example)\n            print(summary)\n            ```\n        \"\"\"\n        ...\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-SummaryCompletionConfigs"
+        },
+        {
+            "code_block_id": "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-OpenAIReturnContext"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Literal",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Protocol",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer__*__FUNCTION-summarize_code",
+        "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer__*__FUNCTION-test_summarize_code"
+    ]
+}

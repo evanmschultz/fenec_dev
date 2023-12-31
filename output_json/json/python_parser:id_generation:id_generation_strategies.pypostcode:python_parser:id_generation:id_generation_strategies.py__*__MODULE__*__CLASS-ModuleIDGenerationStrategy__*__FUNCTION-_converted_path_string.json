@@ -1,0 +1,26 @@
+{
+    "function_name": "_converted_path_string",
+    "docstring": "Converts a file path to a valid ID string.\n\nArgs:\n    - file_path (str): The file path to convert.\n\nReturns:\n    - str: The converted ID string.",
+    "decorators": [
+        {
+            "content": "@staticmethod",
+            "decorator_name": "staticmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy__*__FUNCTION-_converted_path_string",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy",
+    "block_type": "FUNCTION",
+    "start_line_num": 45,
+    "end_line_num": 58,
+    "code_content": "\n@staticmethod\ndef _converted_path_string(file_path: str) -> str:\n    \"\"\"\n        Converts a file path to a valid ID string.\n\n        Args:\n            - file_path (str): The file path to convert.\n\n        Returns:\n            - str: The converted ID string.\n        \"\"\"\n    return file_path.replace(\"/\", \":\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

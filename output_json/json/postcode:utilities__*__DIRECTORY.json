@@ -1,0 +1,13 @@
+{
+    "id": "postcode:utilities__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "utilities",
+    "sub_directories_ids": [
+        "postcode:utilities:logger__*__DIRECTORY"
+    ],
+    "children_ids": [
+        "postcode:utilities:processing_context.py__*__MODULE"
+    ],
+    "parent_id": null,
+    "summary": null
+}

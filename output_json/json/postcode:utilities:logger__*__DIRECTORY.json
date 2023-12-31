@@ -1,0 +1,12 @@
+{
+    "id": "postcode:utilities:logger__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "logger",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "postcode:utilities:logger:logging_config.py__*__MODULE",
+        "postcode:utilities:logger:decorators.py__*__MODULE"
+    ],
+    "parent_id": "postcode:utilities__*__DIRECTORY",
+    "summary": null
+}

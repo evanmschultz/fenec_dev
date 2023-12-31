@@ -1,0 +1,29 @@
+{
+    "function_name": "check_parent_id",
+    "docstring": "Validates that parent_id is a non-empty string unless block_type is MODULE.",
+    "decorators": [
+        {
+            "content": "@validator(\"parent_id\", always=True)",
+            "decorator_name": "validator",
+            "decorator_args": [
+                "\"parent_id\",",
+                "always=True"
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-check_parent_id",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 116,
+    "end_line_num": 125,
+    "code_content": "\n@validator(\"parent_id\", always=True)\ndef check_parent_id(cls, v, values, **kwargs) -> str | None:\n    \"\"\"Validates that parent_id is a non-empty string unless block_type is MODULE.\"\"\"\n\n    if \"block_type\" in values and values[\"block_type\"] != BlockType.MODULE:\n        if len(v) < 1:\n            raise ValueError(\"parent_id is required!\")\n    return v\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

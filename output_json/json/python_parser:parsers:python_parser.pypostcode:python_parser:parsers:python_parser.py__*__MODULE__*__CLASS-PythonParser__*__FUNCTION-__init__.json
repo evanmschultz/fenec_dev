@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-__init__",
+    "file_path": "postcode/python_parser/parsers/python_parser.py",
+    "parent_id": "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser",
+    "block_type": "FUNCTION",
+    "start_line_num": 49,
+    "end_line_num": 52,
+    "code_content": "\ndef __init__(self, file_path: str) -> None:\n    self.file_path: str = file_path\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

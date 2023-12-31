@@ -1,0 +1,79 @@
+{
+    "function_name": "_get_standalone_block_dependency",
+    "docstring": "Identifies if the given standalone block is a dependency based on variable usage.\n\nThis function checks if any of the variable assignments in the standalone block are used in the given code content.\nIf so, it returns the ID of the standalone block builder.\n\nArgs:\n    builder (StandaloneBlockModelBuilder): The standalone block builder to check for dependencies.\n    code_content (str): The code content to analyze for variable usage.\n\nReturns:\n    str | None: The ID of the standalone block builder if a dependency is found, otherwise None.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "DependencyModel | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_get_standalone_block_dependency",
+    "file_path": "postcode/python_parser/visitors/node_processing/gather_dependencies.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 85,
+    "end_line_num": 115,
+    "code_content": "\n\ndef _get_standalone_block_dependency(\n    builder: StandaloneBlockModelBuilder,\n    code_content: str,\n    dependency_creator: Callable[[str], DependencyModel],\n) -> DependencyModel | None:\n    \"\"\"\n    Identifies if the given standalone block is a dependency based on variable usage.\n\n    This function checks if any of the variable assignments in the standalone block are used in the given code content.\n    If so, it returns the ID of the standalone block builder.\n\n    Args:\n        builder (StandaloneBlockModelBuilder): The standalone block builder to check for dependencies.\n        code_content (str): The code content to analyze for variable usage.\n\n    Returns:\n        str | None: The ID of the standalone block builder if a dependency is found, otherwise None.\n    \"\"\"\n\n    variables: list[\n        str\n    ] | None = builder.standalone_block_attributes.variable_assignments\n    if variables:\n        for variable in variables:\n            if re.search(rf\"\\b{variable}\\b\\s*=\", code_content) is None and re.search(\n                rf\"\\b{variable}\\b\", code_content\n            ):\n                return dependency_creator(builder.id)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "re",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Callable",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "DependencyModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

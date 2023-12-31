@@ -1,0 +1,69 @@
+{
+    "function_name": "query_chroma",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:app.py__*__MODULE__*__FUNCTION-query_chroma",
+    "file_path": "postcode/app.py",
+    "parent_id": "postcode:app.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 36,
+    "end_line_num": 60,
+    "code_content": "\n# from postcode.updaters.standard_updater import StandardUpdater\n\n\ndef query_chroma(\n    query: str,\n    chroma_collection_manager: ChromaDBCollectionManager,\n    chroma_collection: Collection,\n    logger: Logger,\n) -> None:\n    logger.info(f\"Querying ChromaDB collection {chroma_collection.name}\")\n    results: QueryResult | None = chroma_collection_manager.query_collection(\n        [query],\n        n_results=10,\n        # where_filter={\"block_type\": \"MODULE\"},\n        include_in_result=[\"metadatas\", \"documents\", \"embeddings\"],\n    )\n    logger.info(\"Query results:\")\n    if results:\n        if results[\"ids\"]:\n            for document in results[\"ids\"][0]:\n                print(document)\n\n            print(f\"Total results: {len(results['ids'][0])}\")\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaDBCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "QueryResult",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb.api.types",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Collection",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

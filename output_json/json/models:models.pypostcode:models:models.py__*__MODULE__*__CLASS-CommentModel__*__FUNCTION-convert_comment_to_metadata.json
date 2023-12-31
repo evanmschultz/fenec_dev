@@ -1,0 +1,20 @@
+{
+    "function_name": "convert_comment_to_metadata",
+    "docstring": "Converts the comment to a metadata string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel__*__FUNCTION-convert_comment_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 52,
+    "end_line_num": 56,
+    "code_content": "\ndef convert_comment_to_metadata(self) -> str:\n    \"\"\"Converts the comment to a metadata string.\"\"\"\n    return self.model_dump_json()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

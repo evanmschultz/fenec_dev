@@ -1,0 +1,119 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Callable",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Literal",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "overload",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging_decorator",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                }
+            ],
+            "imported_from": "postcode.utilities.logger.decorators",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:logger:decorators.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:enums.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:python_parser:model_builders:builder_factory.py__*__MODULE",
+    "file_path": "postcode/python_parser/model_builders/builder_factory.py",
+    "parent_id": "postcode:python_parser:model_builders__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 197,
+    "code_content": "from typing import Any, Callable, Literal, overload\n\nfrom postcode.utilities.logger.decorators import logging_decorator\n\nfrom postcode.python_parser.model_builders.class_model_builder import ClassModelBuilder\nfrom postcode.python_parser.model_builders.function_model_builder import (\n    FunctionModelBuilder,\n)\nfrom postcode.python_parser.model_builders.module_model_builder import (\n    ModuleModelBuilder,\n)\nfrom postcode.python_parser.model_builders.standalone_block_model_builder import (\n    StandaloneBlockModelBuilder,\n)\n\nfrom postcode.models.enums import BlockType\n\n\nclass BuilderFactory:\n    \"\"\"\n    A factory class for creating instances of different types of model builders.\n\n    This class uses a strategy pattern to map each block type to a corresponding builder creation function. Depending on the block type specified, it creates and returns an instance of the appropriate model builder class.\n\n    The factory supports creating builders for modules, classes, functions, and standalone code blocks.\n\n    Attributes:\n        _creation_strategies (dict[BlockType, Callable[..., Any]]): A dictionary mapping block types to their corresponding builder creation functions.\n    \"\"\"\n\n    _creation_strategies: dict[BlockType, Callable[..., Any]] = {\n        BlockType.MODULE: lambda id, file_path, name, parent_id: ModuleModelBuilder(\n            id=id,\n            file_path=file_path,\n            parent_id=parent_id,\n        ),\n        BlockType.CLASS: lambda id, name, parent_id, file_path: ClassModelBuilder(\n            id=id,\n            class_name=name,\n            parent_id=parent_id,\n            file_path=file_path,\n        ),\n        BlockType.FUNCTION: lambda id, name, parent_id, file_path: FunctionModelBuilder(\n            id=id,\n            function_name=name,\n            parent_id=parent_id,\n            file_path=file_path,\n        ),\n        BlockType.STANDALONE_CODE_BLOCK: lambda id, parent_id, name, file_path: StandaloneBlockModelBuilder(\n            id=id,\n            parent_id=parent_id,\n            file_path=file_path,\n        ),\n    }\n\n    @staticmethod\n    @overload\n    def create_builder_instance(\n        block_type: Literal[BlockType.MODULE],\n        *,\n        id: str,\n        file_path: str,\n        parent_id: str,\n    ) -> ModuleModelBuilder:\n        \"\"\"\n        Creates a ModuleModelBuilder instance for building module models.\n\n        Args:\n            block_type: Specifies that a ModuleModelBuilder is to be created.\n            id (str): The unique identifier for the module model.\n            file_path (str): The file path of the module.\n\n        Returns:\n            ModuleModelBuilder: An instance of ModuleModelBuilder.\n        \"\"\"\n        ...\n\n    @staticmethod\n    @overload\n    def create_builder_instance(\n        block_type: Literal[BlockType.CLASS],\n        *,\n        id: str,\n        name: str,\n        parent_id: str,\n        file_path: str,\n    ) -> ClassModelBuilder:\n        \"\"\"\n        Creates a ClassModelBuilder instance for building class models.\n\n        Args:\n            block_type: Specifies that a ClassModelBuilder is to be created.\n            id (str): The unique identifier for the class model.\n            name (str): The name of the class.\n            parent_id (str): The identifier of the parent model.\n\n        Returns:\n            ClassModelBuilder: An instance of ClassModelBuilder.\n        \"\"\"\n        ...\n\n    @staticmethod\n    @overload\n    def create_builder_instance(\n        block_type: Literal[BlockType.FUNCTION],\n        *,\n        id: str,\n        name: str,\n        parent_id: str,\n        file_path: str,\n    ) -> FunctionModelBuilder:\n        \"\"\"\n        Creates a FunctionModelBuilder instance for building function models.\n\n        Args:\n            block_type: Specifies that a FunctionModelBuilder is to be created.\n            id (str): The unique identifier for the function model.\n            name (str): The name of the function.\n            parent_id (str): The identifier of the parent model.\n\n        Returns:\n            FunctionModelBuilder: An instance of FunctionModelBuilder.\n        \"\"\"\n        ...\n\n    @staticmethod\n    @overload\n    def create_builder_instance(\n        block_type: Literal[BlockType.STANDALONE_CODE_BLOCK],\n        *,\n        id: str,\n        parent_id: str,\n        file_path: str,\n    ) -> StandaloneBlockModelBuilder:\n        \"\"\"\n        Creates a StandaloneBlockModelBuilder instance for building standalone code block models.\n\n        Args:\n            block_type: Specifies that a StandaloneBlockModelBuilder is to be created.\n            id (str): The unique identifier for the standalone code block model.\n            parent_id (str): The identifier of the parent model.\n\n        Returns:\n            StandaloneBlockModelBuilder: An instance of StandaloneBlockModelBuilder.\n        \"\"\"\n        ...\n\n    @logging_decorator()\n    @staticmethod\n    def create_builder_instance(\n        block_type: BlockType,\n        *,\n        id: str,\n        name: str | None = None,\n        parent_id: str | None = None,\n        file_path: str | None = None,\n    ) -> (\n        ModuleModelBuilder\n        | ClassModelBuilder\n        | FunctionModelBuilder\n        | StandaloneBlockModelBuilder\n    ):\n        \"\"\"\n        Creates and returns an instance of a model builder based on the specified block type.\n\n        Depending on the block type (module, class, function, standalone code block), it creates an instance of the corresponding model builder class.\n\n        Args:\n            block_type (BlockType): The type of code block for which the builder is to be created.\n            id (str): The unique identifier for the builder.\n            name (str | None): The name of the code block (relevant for class or function blocks).\n            parent_id (str | None): The identifier of the parent model (if applicable).\n            file_path (str | None): The file path of the module (relevant for module blocks).\n\n        Returns:\n            Union[ModuleModelBuilder, ClassModelBuilder, FunctionModelBuilder, StandaloneBlockModelBuilder]:\n            An instance of the appropriate model builder class.\n\n        Raises:\n            ValueError: If an unknown block type is provided.\n\n        Example:\n            >>> builder = BuilderFactory.create_builder_instance(\n                    block_type=BlockType.CLASS,\n                    id='class1',\n                    name='MyClass',\n                    parent_id='module1'\n                )\n            # This will create an instance of ClassModelBuilder for a class named 'MyClass'.\n        \"\"\"\n\n        if block_type not in BuilderFactory._creation_strategies:\n            raise ValueError(f\"Unknown node type: {block_type}\")\n        return BuilderFactory._creation_strategies[block_type](\n            id=id, name=name, parent_id=parent_id, file_path=file_path\n        )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": [
+        "postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory"
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "_create_edges_for_imports",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_create_edges_for_imports",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 160,
+    "end_line_num": 198,
+    "code_content": "\ndef _create_edges_for_imports(\n    self, module_key: str, imports: list[dict[str, Any]]\n) -> None:\n    if not imports:\n        # logging.debug(f\"No imports found for module {module_key}\")\n        return\n\n    # logging.info(f\"Processing imports for module {module_key}\")\n\n    for _import in imports:\n        import_names: list[dict[str, str]] = _import.get(\"import_names\", [])\n        if not import_names:\n            # logging.debug(f\"No import names found in import {_import}\")\n            continue\n\n        for import_name in import_names:\n            local_block_id: str | None = import_name.get(\"local_block_id\")\n\n            if local_block_id:\n                target_type = self._get_collection_from_id(local_block_id)\n                try:\n                    self._upsert_edge(\n                        local_block_id, module_key, target_type, \"modules\"\n                    )\n\n                    # logging.info(\n                    #     f\"Upserted edge for import {module_key} to {local_block_id}\"\n                    # )\n                except Exception as e:\n                    logging.error(\n                        f\"Error creating edge for import {module_key} to {local_block_id}: {e}\"\n                    )\n            else:\n                # logging.warning(\n                #     f\"Skipped import {import_name} in module {module_key}\"\n                # )\n                ...\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

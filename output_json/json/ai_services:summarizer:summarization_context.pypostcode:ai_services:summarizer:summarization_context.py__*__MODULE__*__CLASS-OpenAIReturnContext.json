@@ -1,0 +1,37 @@
+{
+    "class_name": "OpenAIReturnContext",
+    "decorators": [
+        {
+            "content": "@dataclass",
+            "decorator_name": "dataclass",
+            "decorator_args": null
+        }
+    ],
+    "bases": null,
+    "docstring": "A dataclass for storing the return context of an OpenAI completion.\n\nAttributes:\n    - prompt_tokens (int): The number of tokens in the prompt.\n    - completion_tokens (int): The number of tokens in the completion.\n    - summary (str | None): The summary of the code snippet.",
+    "keywords": null,
+    "id": "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-OpenAIReturnContext",
+    "file_path": "postcode/ai_services/summarizer/summarization_context.py",
+    "parent_id": "postcode:ai_services:summarizer:summarization_context.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 59,
+    "end_line_num": 75,
+    "code_content": "\n\n@dataclass\nclass OpenAIReturnContext:\n    \"\"\"\n    A dataclass for storing the return context of an OpenAI completion.\n\n    Attributes:\n        - prompt_tokens (int): The number of tokens in the prompt.\n        - completion_tokens (int): The number of tokens in the completion.\n        - summary (str | None): The summary of the code snippet.\n    \"\"\"\n\n    prompt_tokens: int\n    completion_tokens: int\n    summary: str | None\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

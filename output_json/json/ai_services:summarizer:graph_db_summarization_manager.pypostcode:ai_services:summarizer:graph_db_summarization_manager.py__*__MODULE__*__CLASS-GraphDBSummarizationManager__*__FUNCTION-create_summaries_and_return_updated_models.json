@@ -1,0 +1,20 @@
+{
+    "function_name": "create_summaries_and_return_updated_models",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[ModelType] | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-create_summaries_and_return_updated_models",
+    "file_path": "postcode/ai_services/summarizer/graph_db_summarization_manager.py",
+    "parent_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 48,
+    "end_line_num": 125,
+    "code_content": "\ndef create_summaries_and_return_updated_models(self) -> list[ModelType] | None:\n    summarization_map: list[\n        ModelType\n    ] = self.summarization_mapper.create_summarization_map()\n    models_to_summarize_count: int = len(summarization_map)\n    models_summarized_count: int = 0\n\n    for model in summarization_map:\n        children_summaries: str | None = None\n        dependency_summaries: str | None = None\n        import_details: str | None = None\n\n        if model.children_ids:\n            if children_summary_list := self._get_child_summaries(model):\n                self._get_child_summaries(model)\n\n                children_summaries: str | None = self._stringify_children_summaries(\n                    children_summary_list\n                )\n\n        # if isinstance(model, DirectoryModel):\n        #     ...\n\n        elif isinstance(model, ModuleModel):\n            if model.imports:\n                dependency_summaries = self._get_dependencies_summaries(model)\n                import_details = \"\"\n                for _import in model.imports:\n                    if import_summary := self._get_import_details(_import):\n                        import_details += f\"\\n{import_summary}\"\n        else:\n            if not isinstance(model, DirectoryModel):\n                if model.dependencies:\n                    dependency_summaries = self._get_dependencies_summaries(model)\n                    import_details = \"\"\n                    for dependency in model.dependencies:\n                        if isinstance(dependency, DependencyModel):\n                            continue\n                        if import_summary := self._get_import_details(dependency):\n                            import_details += f\"\\n{import_summary}\"\n\n        models_summarized_count += 1\n        logging.info(\n            f\"Summarizing model {models_summarized_count} out of {models_to_summarize_count}; {model.id}.\"\n        )\n\n        code_content: str = \"\"\n        if isinstance(model, DirectoryModel):\n            code_content = \"\"\n        else:\n            code_content = model.code_content\n\n        summary_return_context: OpenAIReturnContext | None = (\n            self.summarizer.test_summarize_code(\n                code_content,\n                model_id=model.id,\n                children_summaries=children_summaries,\n                dependency_summaries=dependency_summaries,\n                import_details=import_details,\n            )\n        )\n        if summary_return_context:\n            if summary_return_context.summary:\n                self.graph_manager.update_vertex_summary_by_id(\n                    model.id, summary_return_context.summary\n                )\n            self.prompt_tokens += summary_return_context.prompt_tokens\n            self.completion_tokens += summary_return_context.completion_tokens\n\n    print(len(summarization_map))\n    # pprint([model.id for model in summarization_map][::-1])\n    count = 1\n    for model in summarization_map[::-1]:\n        pprint({\"count\": count, \"id\": model.id})\n        count += 1\n    return self.graph_manager.get_all_vertices() if self.graph_manager else None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

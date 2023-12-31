@@ -1,0 +1,33 @@
+{
+    "function_name": "_get_node_annotation",
+    "docstring": "Retrieves the annotation of a given CSTNode.",
+    "decorators": null,
+    "parameters": null,
+    "returns": " | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_get_node_annotation",
+    "file_path": "postcode/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 189,
+    "end_line_num": 199,
+    "code_content": "\n\ndef _get_node_annotation(node: libcst.CSTNode) -> libcst.Annotation | None:\n    \"\"\"Retrieves the annotation of a given CSTNode.\"\"\"\n\n    if isinstance(node, libcst.Param) or isinstance(node, libcst.AnnAssign):\n        return node.annotation\n    elif isinstance(node, libcst.Annotation):\n        return node\n    return None\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

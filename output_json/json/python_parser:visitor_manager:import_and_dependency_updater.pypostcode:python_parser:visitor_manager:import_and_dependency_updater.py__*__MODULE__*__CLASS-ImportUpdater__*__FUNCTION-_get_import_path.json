@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_import_path",
+    "docstring": "Returns the import path for the given import model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater__*__FUNCTION-_get_import_path",
+    "file_path": "postcode/python_parser/visitor_manager/import_and_dependency_updater.py",
+    "parent_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 148,
+    "end_line_num": 156,
+    "code_content": "\ndef _get_import_path(self, import_model: ImportModel) -> str:\n    \"\"\"Returns the import path for the given import model.\"\"\"\n\n    if import_model.imported_from:\n        return import_model.imported_from.replace(\".\", \":\")\n    else:\n        return import_model.import_names[0].name.replace(\".\", \":\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

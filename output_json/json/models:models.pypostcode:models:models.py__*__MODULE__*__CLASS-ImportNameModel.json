@@ -1,0 +1,43 @@
+{
+    "class_name": "ImportNameModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Class representing the name of an import.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportNameModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 9,
+    "end_line_num": 22,
+    "code_content": "\n\nclass ImportNameModel(BaseModel):\n    \"\"\"Class representing the name of an import.\"\"\"\n\n    name: str\n    as_name: str | None = None\n    local_block_id: str | None = None\n\n    # def convert_import_names_to_metadata(self) -> str:\n    #     \"\"\"Converts the import name to a metadata string.\"\"\"\n\n    #     return self.model_dump_json()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,27 @@
+{
+    "function_name": "get_all_modules",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[ModuleModel] | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-get_all_modules",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 435,
+    "end_line_num": 464,
+    "code_content": "\ndef get_all_modules(self) -> list[ModuleModel] | None:\n    try:\n        # Define the collection name for modules.\n        collection_name = \"modules\"\n        module_collection: StandardCollection = self.db_connector.db.collection(\n            collection_name\n        )\n\n        # Retrieve all documents from the modules collection.\n        cursor: Result[Cursor] = module_collection.all()\n\n        # Convert each document to a ModuleModel instance.\n        modules: list[ModuleModel] = []\n        for doc in cursor:  # type: ignore # FIXME: Fix type error\n            # Ensure the document is a dictionary.\n            try:\n                # Convert the document to a ModuleModel instance and add it to the list.\n                module = ModuleModel(**doc)\n                modules.append(module)\n            except Exception as e:\n                logging.error(f\"Retrieved document is not in a valid format: {e}\")\n                continue\n\n        return modules\n\n    except Exception as e:\n        logging.error(f\"Error in get_all_modules: {e}\")\n        return None\n",
+    "important_comments": [
+        {
+            "content": "# type: ignore # FIXME: Fix type error",
+            "comment_types": [
+                "FIXME"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,290 @@
+{
+    "class_name": "ModuleVisitor",
+    "decorators": null,
+    "bases": [
+        "BaseVisitor"
+    ],
+    "docstring": "Visitor class for traversing and building a model of a Python module.\n\nThis class extends BaseVisitor and is used to visit different nodes in a Python module's concrete\nsyntax tree (CST) using the libcst library. It builds a structured model of the module, including\nimports, classes, and functions.\n\nAttributes:\n    - id (str): The ID of the module to be generated before instantiation.\n    - builder (ModuleModelBuilder): The builder used to construct the module model.\n\nExample:\n    ```Python\n    module_builder = ModuleModelBuilder(id=\"module1\", name=\"example_module\")\n    visitor = ModuleVisitor(id=\"module1\", module_builder=module_builder)\n    libcst.parse_module(\"import os\\nclass MyClass:\\n    pass\").visit(visitor)\n    # This will process the module and build its corresponding model using the provided module builder.\n    ```",
+    "keywords": null,
+    "id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor",
+    "file_path": "postcode/python_parser/visitors/module_visitor.py",
+    "parent_id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 38,
+    "end_line_num": 220,
+    "code_content": "\n\nclass ModuleVisitor(BaseVisitor):\n    \"\"\"\n    Visitor class for traversing and building a model of a Python module.\n\n    This class extends BaseVisitor and is used to visit different nodes in a Python module's concrete\n    syntax tree (CST) using the libcst library. It builds a structured model of the module, including\n    imports, classes, and functions.\n\n    Attributes:\n        - id (str): The ID of the module to be generated before instantiation.\n        - builder (ModuleModelBuilder): The builder used to construct the module model.\n\n    Example:\n        ```Python\n        module_builder = ModuleModelBuilder(id=\"module1\", name=\"example_module\")\n        visitor = ModuleVisitor(id=\"module1\", module_builder=module_builder)\n        libcst.parse_module(\"import os\\\\nclass MyClass:\\\\n    pass\").visit(visitor)\n        # This will process the module and build its corresponding model using the provided module builder.\n        ```\n    \"\"\"\n\n    def __init__(self, id: str, module_builder: ModuleModelBuilder) -> None:\n        super().__init__(id=id)\n        self.builder: ModuleModelBuilder = module_builder\n        self.builder_stack.append(module_builder)\n\n    def visit_Module(self, node: libcst.Module) -> bool | None:\n        \"\"\"\n        Visits the root Module node of the CST.\n\n        Extracts various components of the module such as docstring, header, footer, and code content, and\n        updates the module builder with these details.\n        \"\"\"\n\n        docstring: str | None = node.get_docstring()\n        header: list[str] = module_functions.extract_content_from_empty_lines(\n            node.header\n        )\n        footer: list[str] = module_functions.extract_content_from_empty_lines(\n            node.footer\n        )\n        content: str = node.code if node.code else \"\"\n        position_data: PositionData = self.get_node_position_data(node)\n        (\n            self.builder.set_docstring(docstring)\n            .set_header_content(header)\n            .set_footer_content(footer)\n            .set_code_content(content)\n            .set_start_line_num(position_data.start)\n            .set_end_line_num(position_data.end)\n        )\n        standalone_blocks: list[\n            NodeAndPositionData\n        ] = standalone_code_block_functions.gather_standalone_lines(node.body, self)\n        standalone_block_models: list[\n            StandaloneBlockModelBuilder\n        ] = standalone_code_block_functions.process_standalone_blocks(\n            code_blocks=standalone_blocks,\n            parent_id=self.id,\n            file_path=self.builder.common_attributes.file_path,\n        )\n        for standalone_block_model in standalone_block_models:\n            self.builder.add_child_builder(standalone_block_model)\n\n    def visit_Import(self, node: libcst.Import) -> None:\n        \"\"\"\n        Visits an Import node in the CST.\n\n        Processes the import statement and updates the module builder with the import model.\n        \"\"\"\n\n        import_model: ImportModel = module_functions.process_import(node)\n        self.builder.add_import(import_model)\n\n    def visit_ImportFrom(self, node: libcst.ImportFrom) -> None:\n        \"\"\"\n        Visits an ImportFrom node in the CST.\n\n        Processes the 'from ... import ...' statement and updates the module builder with the import model.\n        \"\"\"\n\n        import_model: ImportModel = module_functions.process_import_from(node)\n        self.builder.add_import(import_model)\n\n    def visit_ClassDef(self, node: libcst.ClassDef) -> None:\n        \"\"\"\n        Visits a ClassDef node in the CST.\n\n        Initiates the process of building a class model from the class definition.\n        \"\"\"\n\n        parent_id: str = self.builder_stack[-1].id\n        class_id: str = ClassIDGenerationStrategy.generate_id(\n            parent_id=parent_id, class_name=node.name.value\n        )\n\n        class_builder: ClassModelBuilder = BuilderFactory.create_builder_instance(\n            block_type=BlockType.CLASS,\n            id=class_id,\n            name=node.name.value,\n            parent_id=parent_id,\n            file_path=self.builder.common_attributes.file_path,\n        )\n\n        builder = self.builder_stack[-1]\n        builder.add_child_builder(class_builder)\n        self.builder_stack.append(class_builder)\n\n        position_data: PositionData = self.get_node_position_data(node)\n        class_def_functions.process_class_def(node, position_data, class_builder)\n\n    def leave_ClassDef(self, original_node: libcst.ClassDef) -> None:\n        \"\"\"\n        Leaves a ClassDef node in the CST.\n\n        Finalizes the class model building process by popping the current builder from the stack.\n        \"\"\"\n\n        self.builder_stack.pop()\n\n    def visit_FunctionDef(self, node: libcst.FunctionDef) -> None:\n        \"\"\"\n        Visits a FunctionDef node in the CST.\n\n        Initiates the process of building a function model from the function definition.\n        \"\"\"\n\n        parent_id: str = self.builder_stack[-1].id\n        func_id: str = FunctionIDGenerationStrategy.generate_id(\n            parent_id=parent_id, function_name=node.name.value\n        )\n\n        func_builder: FunctionModelBuilder = BuilderFactory.create_builder_instance(\n            block_type=BlockType.FUNCTION,\n            id=func_id,\n            name=node.name.value,\n            parent_id=parent_id,\n            file_path=self.builder.common_attributes.file_path,\n        )\n        builder = self.builder_stack[-1]\n        builder.add_child_builder(func_builder)\n        self.builder_stack.append(func_builder)\n\n        position_data: PositionData = self.get_node_position_data(node)\n        function_def_functions.process_func_def(\n            func_id, node, position_data, func_builder\n        )\n\n    def visit_Parameters(self, node: libcst.Parameters) -> None:\n        \"\"\"\n        Visits a Parameters node in the CST.\n\n        Processes the parameters of a function and updates the current function model builder with these parameters.\n        \"\"\"\n\n        builder = self.builder_stack[-1]\n        parameter_list: ParameterListModel | None = (\n            function_def_functions.process_parameters(node)\n        )\n\n        if isinstance(builder, FunctionModelBuilder):\n            builder.set_parameters_list(parameter_list)\n\n    def leave_FunctionDef(self, original_node: libcst.FunctionDef) -> None:\n        \"\"\"\n        Leaves a FunctionDef node in the CST.\n\n        Finalizes the function model building process by popping the current builder from the stack.\n        \"\"\"\n\n        self.builder_stack.pop()\n\n    def leave_Module(self, original_node: libcst.Module) -> None:\n        \"\"\"\n        Leaves the root Module node in the CST.\n\n        Finalizes the module model building process by setting dependencies for children of the module.\n        \"\"\"\n\n        gather_and_set_children_dependencies(self.builder)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy"
+                },
+                {
+                    "name": "FunctionIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-FunctionIDGenerationStrategy"
+                }
+            ],
+            "imported_from": "postcode.python_parser.id_generation.id_generation_strategies",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy"
+                },
+                {
+                    "name": "FunctionIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-FunctionIDGenerationStrategy"
+                }
+            ],
+            "imported_from": "postcode.python_parser.id_generation.id_generation_strategies",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BuilderFactory",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.builder_factory",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:builder_factory.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ParameterListModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ParameterListModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:enums.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseVisitor",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor"
+                }
+            ],
+            "imported_from": "postcode.python_parser.visitors.base_code_block_visitor",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.class_def_functions",
+                    "as_name": "class_def_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.function_def_functions",
+                    "as_name": "function_def_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.module_functions",
+                    "as_name": "module_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.standalone_code_block_functions",
+                    "as_name": "standalone_code_block_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "gather_and_set_children_dependencies",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-gather_and_set_children_dependencies"
+                }
+            ],
+            "imported_from": "postcode.python_parser.visitors.node_processing.gather_dependencies",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-__init__",
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_Module",
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_Import",
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_ImportFrom",
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_ClassDef",
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-leave_ClassDef",
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_FunctionDef",
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_Parameters",
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-leave_FunctionDef",
+        "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-leave_Module"
+    ]
+}

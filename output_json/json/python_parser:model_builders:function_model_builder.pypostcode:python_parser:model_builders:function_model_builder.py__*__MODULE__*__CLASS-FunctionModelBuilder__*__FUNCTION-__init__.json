@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-__init__",
+    "file_path": "postcode/python_parser/model_builders/function_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 29,
+    "end_line_num": 46,
+    "code_content": "\ndef __init__(self, id: str, function_name: str, parent_id: str, file_path: str) -> None:\n    super().__init__(\n        id=id,\n        file_path=file_path,\n        block_type=BlockType.FUNCTION,\n        parent_id=parent_id,\n    )\n    self.function_attributes = FunctionSpecificAttributes(\n        function_name=function_name,\n        docstring=None,\n        decorators=None,\n        parameters=None,\n        is_method=False,\n        is_async=False,\n        returns=None,\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,18 @@
+{
+    "variable_assignments": [],
+    "id": "postcode:updaters:git_updater.py__*__MODULE__*__STANDALONE_BLOCK-1",
+    "file_path": "postcode/updaters/git_updater.py",
+    "parent_id": "postcode:updaters:git_updater.py__*__MODULE",
+    "block_type": "STANDALONE_BLOCK",
+    "start_line_num": 110,
+    "end_line_num": 114,
+    "code_content": "if __name__ == \"__main__\":\n    print(UpdateUsingGit.get_module_names_updated_since_commit(\"e8856d2\"))\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:updaters:git_updater.py__*__MODULE__*__CLASS-UpdateUsingGit"
+        }
+    ],
+    "summary": null,
+    "children_ids": null
+}

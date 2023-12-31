@@ -1,0 +1,20 @@
+{
+    "function_name": "set_return_annotation",
+    "docstring": "Sets the return type.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_return_annotation",
+    "file_path": "postcode/python_parser/model_builders/function_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 68,
+    "end_line_num": 73,
+    "code_content": "\ndef set_return_annotation(self, return_type: str) -> \"FunctionModelBuilder\":\n    \"\"\"Sets the return type.\"\"\"\n    self.function_attributes.returns = return_type\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "open_file",
+    "docstring": "Opens and reads the contents of the Python file specified in the file_path attribute.\n\nReturns:\n    str: The contents of the file as a string.\n\nExample:\n    >>> code = python_parser.open_file()\n    # Reads and returns the contents of the Python file.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-open_file",
+    "file_path": "postcode/python_parser/parsers/python_parser.py",
+    "parent_id": "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser",
+    "block_type": "FUNCTION",
+    "start_line_num": 52,
+    "end_line_num": 67,
+    "code_content": "\ndef open_file(self) -> str:\n    \"\"\"\n        Opens and reads the contents of the Python file specified in the file_path attribute.\n\n        Returns:\n            str: The contents of the file as a string.\n\n        Example:\n            >>> code = python_parser.open_file()\n            # Reads and returns the contents of the Python file.\n        \"\"\"\n\n    with open(self.file_path, \"r\") as file:\n        return file.read()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

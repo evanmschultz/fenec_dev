@@ -1,0 +1,28 @@
+{
+    "function_name": "_get_python_files",
+    "docstring": "Gets all Python files in the specified directory.",
+    "decorators": [
+        {
+            "content": "@logging_decorator(message=\"Getting Python files\")",
+            "decorator_name": "logging_decorator",
+            "decorator_args": [
+                "message=\"Getting Python files\""
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "list[str]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_get_python_files",
+    "file_path": "postcode/python_parser/visitor_manager/visitor_manager.py",
+    "parent_id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 201,
+    "end_line_num": 208,
+    "code_content": "\n@logging_decorator(message=\"Getting Python files\")\ndef _get_python_files(self) -> list[str]:\n    \"\"\"Gets all Python files in the specified directory.\"\"\"\n\n    all_files: list[str] = self._walk_directories()\n    return self._filter_python_files(all_files)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

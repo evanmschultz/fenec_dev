@@ -181,6 +181,6 @@ chroma
 
 # Exclude output directory as output JSON is only for debugging
 output/
-output_json/
+# output_json/
 
 # End of https://www.toptal.com/developers/gitignore/api/python

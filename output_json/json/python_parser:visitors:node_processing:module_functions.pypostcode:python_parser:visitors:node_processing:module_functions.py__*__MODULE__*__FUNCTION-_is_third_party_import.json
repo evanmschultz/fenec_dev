@@ -1,0 +1,24 @@
+{
+    "function_name": "_is_third_party_import",
+    "docstring": "Checks if an import is a third party import.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "bool",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_is_third_party_import",
+    "file_path": "postcode/python_parser/visitors/node_processing/module_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 128,
+    "end_line_num": 134,
+    "code_content": "\n\ndef _is_third_party_import(import_name: str) -> bool:\n    \"\"\"Checks if an import is a third party import.\"\"\"\n\n    return import_name in _third_party_imports()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_third_party_imports"
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

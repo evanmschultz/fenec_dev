@@ -1,0 +1,20 @@
+{
+    "function_name": "build_children",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-build_children",
+    "file_path": "postcode/python_parser/model_builders/base_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 220,
+    "end_line_num": 230,
+    "code_content": "\ndef build_children(\n    self,\n) -> None:\n    if self.child_builders:\n        self.child_models = []\n        for child_builder in self.child_builders:\n            self.child_models.append(child_builder.build())\n            if child_builder.child_models:\n                self.child_models.extend(child_builder.child_models)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

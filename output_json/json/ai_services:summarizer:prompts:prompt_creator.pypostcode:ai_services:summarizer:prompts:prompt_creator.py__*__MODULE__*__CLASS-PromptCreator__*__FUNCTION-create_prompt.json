@@ -1,0 +1,26 @@
+{
+    "function_name": "create_prompt",
+    "docstring": "Dynamically creates a prompt for the summarizer based on the provided arguments.\n\nArgs:\n    - code (str): The code snippet to summarize.\n    - children_summaries (str, optional): The summaries of the children of the code snippet.\n    - dependency_summaries (str, optional): The summaries of the dependencies of the code snippet.\n    - import_details (str, optional): The import details of the code snippet.\n\nReturns:\n    - str: The prompt for the summarizer.\n\nExamples:\n    ```Python\n    # Create a prompt\n    prompt: str | None = PromptCreator.create_prompt(\n        code,\n        children_summaries,\n        dependency_summaries,\n        import_details,\n    )\n    ```",
+    "decorators": [
+        {
+            "content": "@staticmethod",
+            "decorator_name": "staticmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-PromptCreator__*__FUNCTION-create_prompt",
+    "file_path": "postcode/ai_services/summarizer/prompts/prompt_creator.py",
+    "parent_id": "postcode:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-PromptCreator",
+    "block_type": "FUNCTION",
+    "start_line_num": 82,
+    "end_line_num": 130,
+    "code_content": "\n@staticmethod\ndef create_prompt(\n    code: str,\n    children_summaries: str | None = None,\n    dependency_summaries: str | None = None,\n    import_details: str | None = None,\n) -> str | None:\n    \"\"\"\n        Dynamically creates a prompt for the summarizer based on the provided arguments.\n\n        Args:\n            - code (str): The code snippet to summarize.\n            - children_summaries (str, optional): The summaries of the children of the code snippet.\n            - dependency_summaries (str, optional): The summaries of the dependencies of the code snippet.\n            - import_details (str, optional): The import details of the code snippet.\n\n        Returns:\n            - str: The prompt for the summarizer.\n\n        Examples:\n            ```Python\n            # Create a prompt\n            prompt: str | None = PromptCreator.create_prompt(\n                code,\n                children_summaries,\n                dependency_summaries,\n                import_details,\n            )\n            ```\n        \"\"\"\n\n    strategy_key: LiteralString = \"_\".join(\n        [\n            \"children\" if children_summaries else \"nochildren\",\n            \"dependencies\" if dependency_summaries else \"nodependencies\",\n            \"import_details\" if import_details else \"noimport_details\",\n        ]\n    )\n    strategy: Callable[\n        ..., str\n    ] | None = PromptCreator._interpolation_strategies.get(strategy_key)\n    if strategy:\n        return strategy(\n            code, children_summaries, dependency_summaries, import_details\n        )\n    else:\n        raise ValueError(f\"Could not find strategy for {strategy_key}\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "visit_Import",
+    "docstring": "Visits an Import node in the CST.\n\nProcesses the import statement and updates the module builder with the import model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_Import",
+    "file_path": "postcode/python_parser/visitors/module_visitor.py",
+    "parent_id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor",
+    "block_type": "FUNCTION",
+    "start_line_num": 103,
+    "end_line_num": 113,
+    "code_content": "\ndef visit_Import(self, node: libcst.Import) -> None:\n    \"\"\"\n        Visits an Import node in the CST.\n\n        Processes the import statement and updates the module builder with the import model.\n        \"\"\"\n\n    import_model: ImportModel = module_functions.process_import(node)\n    self.builder.add_import(import_model)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

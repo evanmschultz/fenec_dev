@@ -1,0 +1,45 @@
+{
+    "class_name": "DecoratorModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Class representing a decorator.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-DecoratorModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 56,
+    "end_line_num": 68,
+    "code_content": "\n\nclass DecoratorModel(BaseModel):\n    \"\"\"Class representing a decorator.\"\"\"\n\n    content: str\n    decorator_name: str\n    decorator_args: list[str] | None = None\n\n    def convert_decorator_to_metadata(self) -> str:\n        \"\"\"Converts the decorator to a metadata string.\"\"\"\n        return self.model_dump_json()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-DecoratorModel__*__FUNCTION-convert_decorator_to_metadata"
+    ]
+}

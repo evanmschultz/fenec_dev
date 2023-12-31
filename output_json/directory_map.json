@@ -1,0 +1,84 @@
+{
+    "postcode": [
+        "__init__.py",
+        "app.py"
+    ],
+    "postcode/databases/chroma": [
+        "setup_chroma.py",
+        "chromadb_collection_manager.py",
+        "chromadb_builder.py",
+        "chromadb_client_manager.py"
+    ],
+    "postcode/databases/arangodb": [
+        "arangodb_connector.py",
+        "helper_functions.py",
+        "arangodb_manager.py"
+    ],
+    "postcode/types": [
+        "postcode.py",
+        "openai.py",
+        "chroma.py"
+    ],
+    "postcode/ai_services/summarizer": [
+        "graph_db_summarization_manager.py",
+        "summarization_mapper.py",
+        "standard_summarization_manager.py",
+        "summarization_context.py",
+        "temp.py",
+        "summarizer_assistant.py",
+        "openai_summarizer.py"
+    ],
+    "postcode/ai_services/summarizer/prompts": [
+        "prompt_creator.py",
+        "summarization_prompts.py"
+    ],
+    "postcode/python_parser/visitors": [
+        "base_code_block_visitor.py",
+        "module_visitor.py"
+    ],
+    "postcode/python_parser/visitors/node_processing": [
+        "gather_dependencies.py",
+        "class_def_functions.py",
+        "standalone_code_block_functions.py",
+        "common_functions.py",
+        "module_functions.py",
+        "function_def_functions.py"
+    ],
+    "postcode/python_parser/parsers": [
+        "python_parser.py"
+    ],
+    "postcode/python_parser/id_generation": [
+        "id_generation_strategies.py"
+    ],
+    "postcode/python_parser/model_builders": [
+        "module_model_builder.py",
+        "function_model_builder.py",
+        "standalone_block_model_builder.py",
+        "builder_factory.py",
+        "class_model_builder.py",
+        "base_model_builder.py"
+    ],
+    "postcode/python_parser/visitor_manager": [
+        "visitor_manager.py",
+        "import_and_dependency_updater.py"
+    ],
+    "postcode/models": [
+        "enums.py",
+        "models.py"
+    ],
+    "postcode/json_management": [
+        "json_handler.py"
+    ],
+    "postcode/utilities": [
+        "processing_context.py"
+    ],
+    "postcode/utilities/logger": [
+        "logging_config.py",
+        "decorators.py"
+    ],
+    "postcode/updaters": [
+        "standard_updater.py",
+        "graph_db_updater.py",
+        "git_updater.py"
+    ]
+}

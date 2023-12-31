@@ -1,0 +1,370 @@
+{
+    "class_name": "GraphDBUpdater",
+    "decorators": null,
+    "bases": null,
+    "docstring": null,
+    "keywords": null,
+    "id": "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater",
+    "file_path": "postcode/updaters/graph_db_updater.py",
+    "parent_id": "postcode:updaters:graph_db_updater.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 30,
+    "end_line_num": 124,
+    "code_content": "\n\n# ModelType = Union[\n#     ModuleModel,\n#     ClassModel,\n#     FunctionModel,\n#     StandaloneCodeBlockModel,\n#     DirectoryModel,\n# ]\n\n\nclass GraphDBUpdater:\n    def __init__(\n        self,\n        directory: str,\n        output_directory: str,\n        logger: Logger,\n        arango_connector: ArangoDBConnector = ArangoDBConnector(),\n    ) -> None:\n        self.directory: str = directory\n        self.output_directory: str = output_directory\n        self.logger: Logger = logger\n        self.arango_connector: ArangoDBConnector = arango_connector\n\n        self.arango_connector.delete_all_collections()\n        self.arango_connector.ensure_collections()\n        self.graph_manager = ArangoDBManager(arango_connector)\n\n    def update_all(\n        self,\n        directory: str,\n        output_directory: str,\n        logger: Logger,\n    ) -> ChromaSetupReturnContext:\n        logger.info(\"Starting the directory parsing.\")\n\n        visitor_manager = VisitorManager(directory, output_directory)\n        process_files_return: VisitorManagerProcessFilesReturn = (\n            visitor_manager.process_files()\n        )\n\n        models_tuple: tuple[ModelType, ...] = process_files_return.models_tuple\n        module_ids: list[str] = [\n            model.id for model in models_tuple if isinstance(model, ModuleModel)\n        ]\n\n        directory_modules: dict[str, list[str]] = process_files_return.directory_modules\n        self.graph_manager.upsert_models(\n            list(models_tuple)\n        ).process_imports_and_dependencies().get_or_create_graph()\n        summarization_mapper = SummarizationMapper(\n            module_ids, models_tuple, self.graph_manager\n        )\n        client = OpenAI(max_retries=4)\n        summarizer = OpenAISummarizer(client=client)\n        summarization_manager = GraphDBSummarizationManager(\n            models_tuple, summarization_mapper, summarizer, self.graph_manager\n        )\n        finalized_models: list[\n            ModelType\n        ] | None = summarization_manager.create_summaries_and_return_updated_models()\n        logger.info(\"Summarization complete\")\n\n        logger.info(\"Saving models as JSON\")\n\n        directory_modules: dict[str, list[str]] = process_files_return.directory_modules\n        json_manager = JSONHandler(directory, directory_modules, output_directory)\n\n        for model in models_tuple:\n            if isinstance(model, DirectoryModel):\n                output_path: str = model.id\n\n            else:\n                output_path: str = model.file_path + model.id\n            json_manager.save_model_as_json(model, output_path)\n\n        json_manager.save_visited_directories()\n        logger.info(\"JSON save complete\")\n\n        logger.info(\"Directory parsing completed.\")\n\n        if finalized_models:\n            self.graph_manager.upsert_models(\n                list(finalized_models)\n            ).process_imports_and_dependencies().get_or_create_graph()\n\n        if finalized_models:\n            chroma_context: ChromaSetupReturnContext = setup_chroma(\n                finalized_models, logger\n            )\n        else:\n            raise Exception(\"No finalized models returned from summarization.\")\n\n        return chroma_context\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "VisitorManager",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "VisitorManagerProcessFilesReturn",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.python_parser.visitor_manager.visitor_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "VisitorManager",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "VisitorManagerProcessFilesReturn",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.python_parser.visitor_manager.visitor_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OpenAI",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "GraphDBSummarizationManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager"
+                }
+            ],
+            "imported_from": "postcode.ai_services.summarizer.graph_db_summarization_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OpenAISummarizer",
+                    "as_name": null,
+                    "local_block_id": "postcode:ai_services:summarizer:openai_summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer"
+                }
+            ],
+            "imported_from": "postcode.ai_services.summarizer.openai_summarizer",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:summarizer:openai_summarizer.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "SummarizationMapper",
+                    "as_name": null,
+                    "local_block_id": "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper"
+                }
+            ],
+            "imported_from": "postcode.ai_services.summarizer.summarization_mapper",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ArangoDBConnector",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector"
+                }
+            ],
+            "imported_from": "postcode.databases.arangodb.arangodb_connector",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ArangoDBManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager"
+                }
+            ],
+            "imported_from": "postcode.databases.arangodb.arangodb_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaSetupReturnContext",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE__*__CLASS-ChromaSetupReturnContext"
+                },
+                {
+                    "name": "setup_chroma",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE__*__FUNCTION-setup_chroma"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.setup_chroma",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaSetupReturnContext",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE__*__CLASS-ChromaSetupReturnContext"
+                },
+                {
+                    "name": "setup_chroma",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE__*__FUNCTION-setup_chroma"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.setup_chroma",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:setup_chroma.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "JSONHandler",
+                    "as_name": null,
+                    "local_block_id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler"
+                }
+            ],
+            "imported_from": "postcode.json_management.json_handler",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:json_management:json_handler.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.types.postcode",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:postcode.py__*__MODULE"
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-__init__",
+        "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-update_all"
+    ]
+}

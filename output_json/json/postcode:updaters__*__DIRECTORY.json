@@ -1,0 +1,13 @@
+{
+    "id": "postcode:updaters__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "updaters",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "postcode:updaters:standard_updater.py__*__MODULE",
+        "postcode:updaters:graph_db_updater.py__*__MODULE",
+        "postcode:updaters:git_updater.py__*__MODULE"
+    ],
+    "parent_id": null,
+    "summary": null
+}

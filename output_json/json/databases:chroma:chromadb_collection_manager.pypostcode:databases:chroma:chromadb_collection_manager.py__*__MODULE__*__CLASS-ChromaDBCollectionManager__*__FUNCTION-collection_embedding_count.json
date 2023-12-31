@@ -1,0 +1,20 @@
+{
+    "function_name": "collection_embedding_count",
+    "docstring": "Gets the total number of embeddings in the collection.\n\nReturns:\n    - embedding_count (int): The total number of embeddings in the collection.\n\nExamples:\n    ```Python\n    embedding_count: int = collection_manager.get_collection_embedding_count()\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "int | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager__*__FUNCTION-collection_embedding_count",
+    "file_path": "postcode/databases/chroma/chromadb_collection_manager.py",
+    "parent_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 73,
+    "end_line_num": 94,
+    "code_content": "\ndef collection_embedding_count(self) -> int | None:\n    \"\"\"\n        Gets the total number of embeddings in the collection.\n\n        Returns:\n            - embedding_count (int): The total number of embeddings in the collection.\n\n        Examples:\n            ```Python\n            embedding_count: int = collection_manager.get_collection_embedding_count()\n            ```\n        \"\"\"\n    try:\n        embedding_count: int = self.collection.count()\n        logging.info(\n            f\"Collection {self.collection.name} has {embedding_count} embeddings.\"\n        )\n        return embedding_count\n    except Exception as exception:\n        logging.error(exception)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

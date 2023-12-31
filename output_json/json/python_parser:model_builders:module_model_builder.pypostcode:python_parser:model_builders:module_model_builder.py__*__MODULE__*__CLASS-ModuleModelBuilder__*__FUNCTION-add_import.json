@@ -1,0 +1,20 @@
+{
+    "function_name": "add_import",
+    "docstring": "Add an import to the imports list.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder__*__FUNCTION-add_import",
+    "file_path": "postcode/python_parser/model_builders/module_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 76,
+    "end_line_num": 85,
+    "code_content": "\ndef add_import(self, import_model: ImportModel) -> \"ModuleModelBuilder\":\n    \"\"\"Add an import to the imports list.\"\"\"\n    if not self.module_attributes.imports:\n        self.module_attributes.imports = []\n    # if \"OpenAISummarizer\" in [name.name for name in import_model.import_names]:\n    #     print(\"Adding OpenAISummarizer import\")\n    self.module_attributes.imports.append(import_model)\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

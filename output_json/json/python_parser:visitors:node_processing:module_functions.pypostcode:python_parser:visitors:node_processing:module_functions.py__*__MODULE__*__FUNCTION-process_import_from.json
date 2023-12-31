@@ -1,0 +1,111 @@
+{
+    "function_name": "process_import_from",
+    "docstring": "Processes an ImportFrom node to create an ImportModel.\n\nArgs:\n    node: The ImportFrom node to process.\n\nReturns:\n    An ImportModel representing the processed import from statement.\n\nExample:\n    >>> process_import_from(libcst.ImportFrom(module=libcst.Name(\"module\"), names=[libcst.ImportAlias(name=libcst.Name(\"submodule\"))]))\n    # Returns an ImportModel for 'from module import submodule'",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ImportModel",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-process_import_from",
+    "file_path": "postcode/python_parser/visitors/node_processing/module_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 50,
+    "end_line_num": 79,
+    "code_content": "\n\ndef process_import_from(node: libcst.ImportFrom) -> ImportModel:\n    \"\"\"\n    Processes an ImportFrom node to create an ImportModel.\n\n    Args:\n        node: The ImportFrom node to process.\n\n    Returns:\n        An ImportModel representing the processed import from statement.\n\n    Example:\n        >>> process_import_from(libcst.ImportFrom(module=libcst.Name(\"module\"), names=[libcst.ImportAlias(name=libcst.Name(\"submodule\"))]))\n        # Returns an ImportModel for 'from module import submodule'\n    \"\"\"\n\n    module_name: str | None = (\n        _get_full_module_path(node.module) if node.module else None\n    )\n    import_names: list[ImportNameModel] = _build_import_from_name_models(node)\n    import_module_type: ImportModuleType = _get_import_from_module_type(module_name)\n\n    import_model = ImportModel(\n        import_names=import_names,\n        imported_from=module_name,\n        import_module_type=import_module_type,\n    )\n    return import_model\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-process_import"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_import_from_module_type"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_full_module_path"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_build_import_from_name_models"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": []
+}

@@ -1,0 +1,158 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "WhitespaceInclusivePositionProvider",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "CodeRange",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "libcst.metadata",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "_UNDEFINED_DEFAULT",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "libcst._metadata_dependent",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE",
+    "file_path": "postcode/python_parser/visitors/base_code_block_visitor.py",
+    "parent_id": "postcode:python_parser:visitors__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 91,
+    "code_content": "from typing import Union\nimport libcst\nfrom libcst.metadata import (\n    WhitespaceInclusivePositionProvider,\n    CodeRange,\n)\nfrom libcst._metadata_dependent import _UNDEFINED_DEFAULT\nfrom postcode.python_parser.model_builders.class_model_builder import ClassModelBuilder\nfrom postcode.python_parser.model_builders.function_model_builder import (\n    FunctionModelBuilder,\n)\nfrom postcode.python_parser.model_builders.module_model_builder import (\n    ModuleModelBuilder,\n)\nfrom postcode.python_parser.model_builders.standalone_block_model_builder import (\n    StandaloneBlockModelBuilder,\n)\n\n# from postcode.types.postcode import BuilderType\nfrom postcode.models.models import CommentModel\nimport postcode.python_parser.visitors.node_processing.common_functions as common_functions\nfrom postcode.utilities.processing_context import PositionData\n\n\nBuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]\n\n\nclass BaseVisitor(libcst.CSTVisitor):\n    \"\"\"\n    Base visitor class for traversing and processing nodes in a CST (Concrete Syntax Tree).\n\n    This abstract class provides the foundational functionality for processing various nodes in a CST, using the libcst library. It is designed to be extended by more specific visitor classes like ModuleVisitor.\n\n    Attributes:\n        id (str): An identifier for the visitor instance.\n        builder_stack (list[BuilderType]): A stack of model builders for handling different CST nodes.\n\n    METADATA_DEPENDENCIES (tuple): Metadata dependencies required for processing the CST nodes.\n    \"\"\"\n\n    METADATA_DEPENDENCIES: tuple[type[WhitespaceInclusivePositionProvider]] = (\n        WhitespaceInclusivePositionProvider,\n    )\n\n    def __init__(self, id: str) -> None:\n        self.id: str = id\n        self.builder_stack: list[BuilderType] = []\n\n    def visit_Comment(self, node: libcst.Comment) -> None:\n        \"\"\"\n        Visits a Comment node in the CST.\n\n        Extracts important comments from the node and adds them to the current builder in the stack.\n        \"\"\"\n\n        parent_builder = self.builder_stack[-1]\n        content: CommentModel | None = common_functions.extract_important_comment(node)\n        if content:\n            parent_builder.add_important_comment(content)\n\n    def get_node_position_data(\n        self,\n        node: libcst.CSTNode,\n    ) -> PositionData:\n        \"\"\"\n        Retrieves position data for a given CST node.\n\n        Extracts the start and end line numbers of the node in the source code.\n\n        Args:\n            node (libcst.CSTNode): The CST node to get position data for.\n\n        Returns:\n            PositionData: An object containing start and end line numbers of the node.\n        \"\"\"\n\n        position_data: CodeRange | type[_UNDEFINED_DEFAULT] = self.get_metadata(\n            WhitespaceInclusivePositionProvider, node\n        )\n\n        start, end = 0, 0\n        if isinstance(position_data, CodeRange):\n            start: int = position_data.start.line\n            end: int = position_data.end.line\n        return PositionData(start=start, end=end)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": [
+        "postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__STANDALONE_BLOCK-1",
+        "postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor"
+    ]
+}

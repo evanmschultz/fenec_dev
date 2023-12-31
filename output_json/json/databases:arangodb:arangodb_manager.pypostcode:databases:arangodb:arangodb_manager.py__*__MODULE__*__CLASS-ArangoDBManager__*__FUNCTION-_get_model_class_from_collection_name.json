@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_model_class_from_collection_name",
+    "docstring": "Maps the collection name to the corresponding Pydantic model class.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ModelType | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_get_model_class_from_collection_name",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 389,
+    "end_line_num": 405,
+    "code_content": "\ndef _get_model_class_from_collection_name(\n    self, collection_name: str\n) -> ModelType | None:\n    \"\"\"\n        Maps the collection name to the corresponding Pydantic model class.\n        \"\"\"\n\n    model_class_map: dict = {\n        \"modules\": ModuleModel,\n        \"classes\": ClassModel,\n        \"functions\": FunctionModel,\n        \"standalone_blocks\": StandaloneCodeBlockModel,\n        \"directories\": DirectoryModel,\n    }\n    return model_class_map.get(collection_name)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}

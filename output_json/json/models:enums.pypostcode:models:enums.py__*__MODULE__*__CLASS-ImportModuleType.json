@@ -1,0 +1,36 @@
+{
+    "class_name": "ImportModuleType",
+    "decorators": null,
+    "bases": [
+        "str",
+        "Enum"
+    ],
+    "docstring": "Enum of import module types.",
+    "keywords": null,
+    "id": "postcode:models:enums.py__*__MODULE__*__CLASS-ImportModuleType",
+    "file_path": "postcode/models/enums.py",
+    "parent_id": "postcode:models:enums.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 2,
+    "end_line_num": 13,
+    "code_content": "\n\nclass ImportModuleType(str, Enum):\n    \"\"\"Enum of import module types.\"\"\"\n\n    STANDARD_LIBRARY = \"STANDARD_LIBRARY\"\n    LOCAL = \"LOCAL\"\n    THIRD_PARTY = \"THIRD_PARTY\"\n\n    def __str__(self) -> str:\n        return self.value\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "Enum",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "enum",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": null,
+    "children_ids": [
+        "postcode:models:enums.py__*__MODULE__*__CLASS-ImportModuleType__*__FUNCTION-__str__"
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_collection_from_id",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_get_collection_from_id",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 120,
+    "end_line_num": 138,
+    "code_content": "\ndef _get_collection_from_id(self, block_id: str) -> str:\n    block_id_parts: list[str] = block_id.split(\"__*__\")\n    block_type_part: str = block_id_parts[-1]\n\n    block_type_functions: dict[str, Callable[..., str]] = {\n        \"MODULE\": lambda: \"modules\",\n        \"CLASS\": lambda: \"classes\",\n        \"FUNCTION\": lambda: \"functions\",\n        \"STANDALONE_BLOCK\": lambda: \"standalone_blocks\",\n        \"DIRECTORY\": lambda: \"directories\",\n    }\n\n    for key, func in block_type_functions.items():\n        if block_type_part.startswith(key):\n            return func()\n\n    return \"unknown\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": null,
+    "children_ids": []
+}
