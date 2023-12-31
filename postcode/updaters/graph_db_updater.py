@@ -92,10 +92,14 @@ class GraphDBUpdater:
 
         logger.info("Saving models as JSON")
 
-        directory_modules: dict[str, list[str]] = process_files_return.directory_modules
-        json_manager = JSONHandler(directory, directory_modules, output_directory)
+        json_manager = JSONHandler(
+            directory, process_files_return.directory_modules, output_directory
+        )
 
-        for model in models_tuple:
+        if not finalized_models:
+            raise Exception("No finalized models returned from summarization.")
+
+        for model in finalized_models:
             if isinstance(model, DirectoryModel):
                 output_path: str = model.id
 

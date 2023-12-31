@@ -196,7 +196,7 @@ class GraphDBSummarizationManager:
                         ):
                             dependency_summary_list.append(import_from_dependency)
 
-        dependency_summaries = self._stringify_dependencies_summaries(
+        dependency_summaries: str | None = self._stringify_dependencies_summaries(
             dependency_summary_list
         )
 
