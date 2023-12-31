@@ -12,7 +12,7 @@
     "block_type": "FUNCTION",
     "start_line_num": 26,
     "end_line_num": 38,
-    "code_content": "def __init__(\n    self,\n    directory: str,\n    directory_modules: dict[str, list[str]],\n    output_directory: str = \"../output\",\n) -> None:\n    self.directory: str = directory\n    self.output_directory: str = output_directory\n    self.directory_modules: dict[str, list[str]] = directory_modules\n\n    self._clean_output_directory()\n    self._create_output_directory()\n",
+    "code_content": "def __init__(\n    self,\n    directory: str,\n    directory_modules: dict[str, list[str]],\n    output_directory: str = \"output_json\",\n) -> None:\n    self.directory: str = directory\n    self.output_directory: str = output_directory\n    self.directory_modules: dict[str, list[str]] = directory_modules\n\n    self._clean_output_directory()\n    self._create_output_directory()\n",
     "important_comments": null,
     "dependencies": null,
     "summary": "\nSummary:\n\n        postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-__init__\n\n        None, None, None\n        ",

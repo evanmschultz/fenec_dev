@@ -1,0 +1,20 @@
+{
+    "function_name": "_map_and_summarize_models",
+    "docstring": "Maps and summarizes the models.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[ModelType] | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_map_and_summarize_models",
+    "file_path": "postcode/updaters/graph_db_updater.py",
+    "parent_id": "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 112,
+    "end_line_num": 136,
+    "code_content": "\ndef _map_and_summarize_models(\n    self,\n    models_tuple: tuple[ModelType, ...],\n    logger: Logger,\n) -> list[ModelType] | None:\n    \"\"\"Maps and summarizes the models.\"\"\"\n\n    module_ids: list[str] = self._get_module_ids(models_tuple)\n    summarization_mapper = SummarizationMapper(\n        module_ids, models_tuple, self.graph_manager\n    )\n    client = OpenAI(max_retries=4)\n    summarizer = OpenAISummarizer(client=client)\n    summarization_manager = GraphDBSummarizationManager(\n        models_tuple, summarization_mapper, summarizer, self.graph_manager\n    )\n\n    finalized_models: list[\n        ModelType\n    ] | None = summarization_manager.create_summaries_and_return_updated_models()\n    logger.info(\"Summarization complete\")\n\n    return finalized_models if finalized_models else None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_map_and_summarize_models\n\n        None, None, None\n        ",
+    "children_ids": []
+}

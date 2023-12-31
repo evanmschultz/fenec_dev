@@ -8,35 +8,20 @@
     "file_path": "postcode/updaters/graph_db_updater.py",
     "parent_id": "postcode:updaters:graph_db_updater.py__*__MODULE",
     "block_type": "CLASS",
-    "start_line_num": 30,
-    "end_line_num": 132,
-    "code_content": "\n\n# ModelType = Union[\n#     ModuleModel,\n#     ClassModel,\n#     FunctionModel,\n#     StandaloneCodeBlockModel,\n#     DirectoryModel,\n# ]\n\n\nclass GraphDBUpdater:\n    def __init__(\n        self,\n        directory: str,\n        output_directory: str,\n        logger: Logger,\n        arango_connector: ArangoDBConnector = ArangoDBConnector(),\n    ) -> None:\n        self.directory: str = directory\n        self.output_directory: str = output_directory\n        self.logger: Logger = logger\n        self.arango_connector: ArangoDBConnector = arango_connector\n\n        self.arango_connector.delete_all_collections()\n        self.arango_connector.ensure_collections()\n        self.graph_manager = ArangoDBManager(arango_connector)\n\n    def update_all(\n        self,\n        directory: str,\n        output_directory: str,\n        logger: Logger,\n    ) -> ChromaSetupReturnContext:\n        process_files_return: VisitorManagerProcessFilesReturn = (\n            self._visit_and_parse_files(directory, output_directory, logger)\n        )\n        models_tuple: tuple[ModelType, ...] = process_files_return.models_tuple\n        module_ids: list[str] = [\n            model.id for model in models_tuple if isinstance(model, ModuleModel)\n        ]\n\n        self.graph_manager.upsert_models(\n            list(models_tuple)\n        ).process_imports_and_dependencies().get_or_create_graph()\n        summarization_mapper = SummarizationMapper(\n            module_ids, models_tuple, self.graph_manager\n        )\n        client = OpenAI(max_retries=4)\n        summarizer = OpenAISummarizer(client=client)\n        summarization_manager = GraphDBSummarizationManager(\n            models_tuple, summarization_mapper, summarizer, self.graph_manager\n        )\n        finalized_models: list[\n            ModelType\n        ] | None = summarization_manager.create_summaries_and_return_updated_models()\n        logger.info(\"Summarization complete\")\n\n        logger.info(\"Saving models as JSON\")\n\n        json_manager = JSONHandler(\n            directory, process_files_return.directory_modules, output_directory\n        )\n\n        if not finalized_models:\n            raise Exception(\"No finalized models returned from summarization.\")\n\n        for model in finalized_models:\n            if isinstance(model, DirectoryModel):\n                output_path: str = model.id\n\n            else:\n                output_path: str = model.file_path + model.id\n            json_manager.save_model_as_json(model, output_path)\n\n        json_manager.save_visited_directories()\n        logger.info(\"JSON save complete\")\n\n        logger.info(\"Directory parsing completed.\")\n\n        if finalized_models:\n            self.graph_manager.upsert_models(\n                list(finalized_models)\n            ).process_imports_and_dependencies().get_or_create_graph()\n\n        if finalized_models:\n            chroma_context: ChromaSetupReturnContext = setup_chroma(\n                finalized_models, logger\n            )\n        else:\n            raise Exception(\"No finalized models returned from summarization.\")\n\n        return chroma_context\n\n    def _visit_and_parse_files(\n        self, directory: str, output_directory: str, logger: Logger\n    ) -> VisitorManagerProcessFilesReturn:\n        \"\"\"Visits and parses the files in the directory.\"\"\"\n        logger.info(\"Starting the directory parsing.\")\n        visitor_manager = VisitorManager(directory)\n\n        return visitor_manager.process_files()\n",
+    "start_line_num": 26,
+    "end_line_num": 136,
+    "code_content": "\n\nclass GraphDBUpdater:\n    def __init__(\n        self,\n        directory: str,\n        output_directory: str,\n        logger: Logger,\n        arango_connector: ArangoDBConnector = ArangoDBConnector(),\n    ) -> None:\n        self.directory: str = directory\n        self.output_directory: str = output_directory\n        self.logger: Logger = logger\n        self.arango_connector: ArangoDBConnector = arango_connector\n\n        self.graph_manager = ArangoDBManager(arango_connector)\n\n    def update_all(\n        self,\n        directory: str,\n        output_directory: str,\n        logger: Logger,\n    ) -> ChromaSetupReturnContext:\n        self.arango_connector.delete_all_collections()\n        self.arango_connector.ensure_collections()\n\n        process_files_return: VisitorManagerProcessFilesReturn = (\n            self._visit_and_parse_files(directory, logger)\n        )\n        models_tuple: tuple[ModelType, ...] = process_files_return.models_tuple\n\n        self._upsert_models_to_graph_db(models_tuple)\n\n        finalized_models: list[ModelType] | None = self._map_and_summarize_models(\n            models_tuple, logger\n        )\n\n        if not finalized_models:\n            raise Exception(\"No finalized models returned from summarization.\")\n\n        json_manager = JSONHandler(\n            directory, process_files_return.directory_modules, output_directory\n        )\n        self._save_json(finalized_models, json_manager, logger)\n        self._upsert_models_to_graph_db(tuple(finalized_models))\n\n        return setup_chroma(finalized_models, logger)\n\n    def _visit_and_parse_files(\n        self, directory: str, logger: Logger\n    ) -> VisitorManagerProcessFilesReturn:\n        \"\"\"Visits and parses the files in the directory.\"\"\"\n\n        logger.info(\"Starting the directory parsing.\")\n        visitor_manager = VisitorManager(directory)\n\n        return visitor_manager.process_files()\n\n    def _get_module_ids(self, models_tuple: tuple[ModelType, ...]) -> list[str]:\n        \"\"\"Returns a list of module IDs from the models tuple.\"\"\"\n\n        return [model.id for model in models_tuple if isinstance(model, ModuleModel)]\n\n    def _upsert_models_to_graph_db(self, models_tuple: tuple[ModelType, ...]) -> None:\n        \"\"\"Upserts the models to the graph database.\"\"\"\n\n        self.graph_manager.upsert_models(\n            list(models_tuple)\n        ).process_imports_and_dependencies().get_or_create_graph()\n\n    def _save_json(\n        self, models: list[ModelType], json_manager: JSONHandler, logger: Logger\n    ) -> None:\n        \"\"\"Saves the models as JSON.\"\"\"\n\n        logger.info(\"Saving models as JSON\")\n        for model in models:\n            if isinstance(model, DirectoryModel):\n                output_path: str = model.id\n\n            else:\n                output_path: str = model.file_path + model.id\n            json_manager.save_model_as_json(model, output_path)\n\n        json_manager.save_visited_directories()\n        logger.info(\"JSON save complete\")\n\n    def _map_and_summarize_models(\n        self,\n        models_tuple: tuple[ModelType, ...],\n        logger: Logger,\n    ) -> list[ModelType] | None:\n        \"\"\"Maps and summarizes the models.\"\"\"\n\n        module_ids: list[str] = self._get_module_ids(models_tuple)\n        summarization_mapper = SummarizationMapper(\n            module_ids, models_tuple, self.graph_manager\n        )\n        client = OpenAI(max_retries=4)\n        summarizer = OpenAISummarizer(client=client)\n        summarization_manager = GraphDBSummarizationManager(\n            models_tuple, summarization_mapper, summarizer, self.graph_manager\n        )\n\n        finalized_models: list[\n            ModelType\n        ] | None = summarization_manager.create_summaries_and_return_updated_models()\n        logger.info(\"Summarization complete\")\n\n        return finalized_models if finalized_models else None\n",
     "important_comments": null,
     "dependencies": [
         {
             "import_names": [
                 {
-                    "name": "ClassModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
                     "name": "DirectoryModel",
                     "as_name": null,
                     "local_block_id": null
                 },
                 {
-                    "name": "FunctionModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
                     "name": "ModuleModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "StandaloneCodeBlockModel",
                     "as_name": null,
                     "local_block_id": null
                 }
@@ -48,123 +33,12 @@
         {
             "import_names": [
                 {
-                    "name": "ClassModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
                     "name": "DirectoryModel",
                     "as_name": null,
                     "local_block_id": null
                 },
                 {
-                    "name": "FunctionModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
                     "name": "ModuleModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "StandaloneCodeBlockModel",
-                    "as_name": null,
-                    "local_block_id": null
-                }
-            ],
-            "imported_from": "postcode.models.models",
-            "import_module_type": "LOCAL",
-            "local_module_id": null
-        },
-        {
-            "import_names": [
-                {
-                    "name": "ClassModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "DirectoryModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "FunctionModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "ModuleModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "StandaloneCodeBlockModel",
-                    "as_name": null,
-                    "local_block_id": null
-                }
-            ],
-            "imported_from": "postcode.models.models",
-            "import_module_type": "LOCAL",
-            "local_module_id": null
-        },
-        {
-            "import_names": [
-                {
-                    "name": "ClassModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "DirectoryModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "FunctionModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "ModuleModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "StandaloneCodeBlockModel",
-                    "as_name": null,
-                    "local_block_id": null
-                }
-            ],
-            "imported_from": "postcode.models.models",
-            "import_module_type": "LOCAL",
-            "local_module_id": null
-        },
-        {
-            "import_names": [
-                {
-                    "name": "ClassModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "DirectoryModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "FunctionModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "ModuleModel",
-                    "as_name": null,
-                    "local_block_id": null
-                },
-                {
-                    "name": "StandaloneCodeBlockModel",
                     "as_name": null,
                     "local_block_id": null
                 }
@@ -216,18 +90,6 @@
                 }
             ],
             "imported_from": "logging",
-            "import_module_type": "STANDARD_LIBRARY",
-            "local_module_id": null
-        },
-        {
-            "import_names": [
-                {
-                    "name": "Union",
-                    "as_name": null,
-                    "local_block_id": null
-                }
-            ],
-            "imported_from": "typing",
             "import_module_type": "STANDARD_LIBRARY",
             "local_module_id": null
         },
@@ -362,10 +224,14 @@
             "local_module_id": "postcode:types:postcode.py__*__MODULE"
         }
     ],
-    "summary": "\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater\n\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-__init__\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-update_all\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_visit_and_parse_files\n\n        None, None, None\n        , None, None\n        ",
+    "summary": "\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater\n\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-__init__\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-update_all\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_visit_and_parse_files\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_get_module_ids\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_upsert_models_to_graph_db\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_save_json\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_map_and_summarize_models\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-__init__",
         "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-update_all",
-        "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_visit_and_parse_files"
+        "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_visit_and_parse_files",
+        "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_get_module_ids",
+        "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_upsert_models_to_graph_db",
+        "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_save_json",
+        "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_map_and_summarize_models"
     ]
 }

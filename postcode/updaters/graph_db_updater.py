@@ -38,8 +38,6 @@ class GraphDBUpdater:
         self.logger: Logger = logger
         self.arango_connector: ArangoDBConnector = arango_connector
 
-        self.arango_connector.delete_all_collections()
-        self.arango_connector.ensure_collections()
         self.graph_manager = ArangoDBManager(arango_connector)
 
     def update_all(
@@ -48,6 +46,9 @@ class GraphDBUpdater:
         output_directory: str,
         logger: Logger,
     ) -> ChromaSetupReturnContext:
+        self.arango_connector.delete_all_collections()
+        self.arango_connector.ensure_collections()
+
         process_files_return: VisitorManagerProcessFilesReturn = (
             self._visit_and_parse_files(directory, logger)
         )
