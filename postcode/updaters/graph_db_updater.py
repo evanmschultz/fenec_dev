@@ -26,50 +26,111 @@ from postcode.types.postcode import ModelType
 
 
 class GraphDBUpdater:
+    """
+    Graph DB based updater.
+
+    Updates parses the files in a directory, saves the models as JSON, in the graph database, and in a ChromaDB collection.
+
+    Args:
+        - directory (str): The directory of the project to update.
+        - output_directory (str): The directory to save the JSON files.
+        - logger (Logger): The logger to use for logging.
+        - graph_connector (ArangoDBConnector): The ArangoDB connector to use for connecting to the graph database.
+            - default: ArangoDBConnector() - instantiates a new ArangoDBConnector with its default values
+
+    Example:
+        ```Python
+        from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
+        from postcode.updaters.graph_db_updater import GraphDBUpdater
+
+        # Create the ArangoDB connector.
+        arango_connector = ArangoDBConnector()
+
+        # Create the GraphDBUpdater.
+        graph_updater = GraphDBUpdater(directory, output_directory, logger, arango_connector)
+
+        # Update all the models for the project and setup Chroma.
+        chroma_context = graph_updater.update_all()
+
+        # Get the Chroma collection and collection manager from the returned dataclass.
+        chroma_collection = chroma_context.chroma_collection
+        chroma_manager = chroma_context.chroma_collection_manager
+        ```
+    """
+
     def __init__(
         self,
         directory: str,
         output_directory: str,
         logger: Logger,
-        arango_connector: ArangoDBConnector = ArangoDBConnector(),
+        graph_connector: ArangoDBConnector = ArangoDBConnector(),
     ) -> None:
         self.directory: str = directory
         self.output_directory: str = output_directory
         self.logger: Logger = logger
-        self.arango_connector: ArangoDBConnector = arango_connector
+        self.graph_connector: ArangoDBConnector = graph_connector
 
-        self.graph_manager = ArangoDBManager(arango_connector)
+        self.graph_manager = ArangoDBManager(graph_connector)
 
-    def update_all(
-        self,
-        directory: str,
-        output_directory: str,
-        logger: Logger,
-    ) -> ChromaSetupReturnContext:
-        self.arango_connector.delete_all_collections()
-        self.arango_connector.ensure_collections()
+    def update_all(self) -> ChromaSetupReturnContext:
+        """
+        Updates all the models for a project using the graph database.
+
+        Note:
+            This method will delete all the existing collections in the graph database, summarize every code block in the project,
+            and save the new models in the graph database and as JSON. Use with caution as it is expensive with respect to time, resources,
+            and money.
+
+        Args:
+            - directory (str): The directory of the project to update.
+            - output_directory (str): The directory to save the JSON files.
+            - logger (Logger): The logger to use for logging.
+
+        Returns:
+            - ChromaSetupReturnContext: The context for setting up Chroma.
+
+        Raises:
+            - Exception: If no finalized models are returned from summarization.
+
+        Example:
+            ```Python
+            graph_updater = GraphDBUpdater(directory, output_directory, logger)
+
+            # Update all the models for the project and setup Chroma.
+            chroma_context = graph_updater.update_all()
+
+            # Get the Chroma collection and collection manager from the returned dataclass.
+            chroma_collection = chroma_context.chroma_collection
+            chroma_manager = chroma_context.chroma_collection_manager
+            ```
+        """
+
+        self.graph_connector.delete_all_collections()
+        self.graph_connector.ensure_collections()
 
         process_files_return: VisitorManagerProcessFilesReturn = (
-            self._visit_and_parse_files(directory, logger)
+            self._visit_and_parse_files(self.directory, self.logger)
         )
         models_tuple: tuple[ModelType, ...] = process_files_return.models_tuple
 
         self._upsert_models_to_graph_db(models_tuple)
 
         finalized_models: list[ModelType] | None = self._map_and_summarize_models(
-            models_tuple, logger
+            models_tuple
         )
 
         if not finalized_models:
             raise Exception("No finalized models returned from summarization.")
 
         json_manager = JSONHandler(
-            directory, process_files_return.directory_modules, output_directory
+            self.directory,
+            process_files_return.directory_modules,
+            self.output_directory,
         )
-        self._save_json(finalized_models, json_manager, logger)
+        self._save_json(finalized_models, json_manager)
         self._upsert_models_to_graph_db(tuple(finalized_models))
 
-        return setup_chroma(finalized_models, logger)
+        return setup_chroma(finalized_models, self.logger)
 
     def _visit_and_parse_files(
         self, directory: str, logger: Logger
@@ -93,12 +154,10 @@ class GraphDBUpdater:
             list(models_tuple)
         ).process_imports_and_dependencies().get_or_create_graph()
 
-    def _save_json(
-        self, models: list[ModelType], json_manager: JSONHandler, logger: Logger
-    ) -> None:
+    def _save_json(self, models: list[ModelType], json_manager: JSONHandler) -> None:
         """Saves the models as JSON."""
 
-        logger.info("Saving models as JSON")
+        self.logger.info("Saving models as JSON")
         for model in models:
             if isinstance(model, DirectoryModel):
                 output_path: str = model.id
@@ -108,12 +167,11 @@ class GraphDBUpdater:
             json_manager.save_model_as_json(model, output_path)
 
         json_manager.save_visited_directories()
-        logger.info("JSON save complete")
+        self.logger.info("JSON save complete")
 
     def _map_and_summarize_models(
         self,
         models_tuple: tuple[ModelType, ...],
-        logger: Logger,
     ) -> list[ModelType] | None:
         """Maps and summarizes the models."""
 
@@ -130,6 +188,6 @@ class GraphDBUpdater:
         finalized_models: list[
             ModelType
         ] | None = summarization_manager.create_summaries_and_return_updated_models()
-        logger.info("Summarization complete")
+        self.logger.info("Summarization complete")
 
         return finalized_models if finalized_models else None
