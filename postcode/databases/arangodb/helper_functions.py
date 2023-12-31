@@ -9,13 +9,7 @@ from postcode.models.models import (
     DirectoryModel,
 )
 
-ModelType = Union[
-    ModuleModel,
-    ClassModel,
-    FunctionModel,
-    StandaloneCodeBlockModel,
-    DirectoryModel,
-]
+from postcode.types.postcode import ModelType
 
 
 def pluralized_and_lowered_block_types() -> list[str]:

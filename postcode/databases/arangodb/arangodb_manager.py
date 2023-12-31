@@ -393,11 +393,13 @@ class ArangoDBManager:
         """
         Maps the collection name to the corresponding Pydantic model class.
         """
+
         model_class_map: dict = {
             "modules": ModuleModel,
             "classes": ClassModel,
             "functions": FunctionModel,
             "standalone_blocks": StandaloneCodeBlockModel,
+            "directories": DirectoryModel,
         }
         return model_class_map.get(collection_name)
 
@@ -459,3 +461,31 @@ class ArangoDBManager:
         except Exception as e:
             logging.error(f"Error in get_all_modules: {e}")
             return None
+
+    def get_all_vertices(self) -> list[ModelType] | None:
+        all_vertices = []
+        # Assuming you have a method or a list of all the collection names.
+        vertex_collections = helper_functions.pluralized_and_lowered_block_types()
+
+        for collection_name in vertex_collections:
+            try:
+                collection = self.db_connector.db.collection(collection_name)
+                cursor = collection.all()
+
+                # Convert each document to the appropriate model and add to the list.
+                for doc in cursor:  # type: ignore # FIXME: Fix type error
+                    model_class = self._get_model_class_from_collection_name(
+                        collection_name
+                    )
+                    if model_class:
+                        model = model_class(**doc)  # type: ignore # FIXME: Fix type error
+                        all_vertices.append(model)
+                    else:
+                        logging.warning(
+                            f"No model class found for collection: {collection_name}"
+                        )
+
+            except Exception as e:
+                logging.error(f"Error fetching vertices from {collection_name}: {e}")
+
+        return all_vertices

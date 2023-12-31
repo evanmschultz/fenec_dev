@@ -124,8 +124,8 @@ class SummarizationMapper:
                 summary_map.append(model)
                 summary_ids.add(model.id)
 
-        # return summary_map[::-1]
-        pprint([model.id for model in summary_map[::-1]])
+        # pprint([model.id for model in summary_map[::-1]])
+
         return summary_map[::-1]
 
     # def old_create_summarization_map(self) -> list[list[ModelType]]:

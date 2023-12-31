@@ -85,19 +85,12 @@ class GraphDBUpdater:
         summarization_manager = GraphDBSummarizationManager(
             models_tuple, summarization_mapper, summarizer, self.graph_manager
         )
-        finalized_module_models: list[
-            ModuleModel
+        finalized_models: list[
+            ModelType
         ] | None = summarization_manager.create_summaries_and_return_updated_models()
         logger.info("Summarization complete")
 
         logger.info("Saving models as JSON")
-        # json_manager = JSONHandler(directory, directory_modules, output_directory)
-
-        # for module_model in module_models_tuple:
-        #     json_manager.save_model_as_json(module_model, module_model.file_path)
-
-        # json_manager.save_visited_directories()
-        # logger.info("JSON save complete")
 
         directory_modules: dict[str, list[str]] = process_files_return.directory_modules
         json_manager = JSONHandler(directory, directory_modules, output_directory)
@@ -115,15 +108,14 @@ class GraphDBUpdater:
 
         logger.info("Directory parsing completed.")
 
-        logger.info("Directory parsing completed.")
+        if finalized_models:
+            self.graph_manager.upsert_models(
+                list(finalized_models)
+            ).process_imports_and_dependencies().get_or_create_graph()
 
-        # self.graph_manager.upsert_models(
-        #     list(finalized_module_models)
-        # ).process_imports_and_dependencies().get_or_create_graph()
-
-        if finalized_module_models:
+        if finalized_models:
             chroma_context: ChromaSetupReturnContext = setup_chroma(
-                finalized_module_models, logger
+                finalized_models, logger
             )
         else:
             raise Exception("No finalized models returned from summarization.")
