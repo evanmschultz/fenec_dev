@@ -19,17 +19,18 @@ class FunctionModelBuilder(BaseModelBuilder):
     This class extends BaseModelBuilder and specializes in building a detailed model of a Python function, capturing various aspects such as function name, docstring, parameters, decorators, return type, and whether the function is a method or asynchronous.
 
     Attributes:
-        function_attributes (FunctionSpecificAttributes): An instance containing attributes specific to a function.
+        - function_attributes (FunctionSpecificAttributes): An instance containing attributes specific to a function.
 
     Args:
-        id (str): The unique identifier for the function model.
-        function_name (str): The name of the function.
-        parent_id (str): The identifier of the parent model (e.g., module or class containing this function).
+        - id (str): The unique identifier for the function model.
+        - function_name (str): The name of the function.
+        - parent_id (str): The identifier of the parent model (e.g., module or class containing this function).
     """
 
-    def __init__(self, id: str, function_name: str, parent_id: str) -> None:
+    def __init__(self, id: str, function_name: str, parent_id: str, file_path: str) -> None:
         super().__init__(
             id=id,
+            file_path=file_path,
             block_type=BlockType.FUNCTION,
             parent_id=parent_id,
         )
@@ -89,7 +90,8 @@ class FunctionModelBuilder(BaseModelBuilder):
     @logging_decorator(message="Building function model")
     def build(self) -> FunctionModel:
         """Builds and returns the function model instance after building and setting the children models."""
-        self.build_and_set_children()
+        self.build_children()
+        self.set_children_ids()
         return FunctionModel(
             **self._get_common_attributes(),
             **self._get_function_specific_attributes(),

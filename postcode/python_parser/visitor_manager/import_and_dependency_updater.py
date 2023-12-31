@@ -231,7 +231,7 @@ class ImportUpdater:
         """
 
         new_import_name_models: list = []
-        for child_builder in external_builder.children_builders:
+        for child_builder in external_builder.child_builders:
             for import_name in import_names:
                 child_builder_id_split: list[str] = child_builder.id.split("-")
 
@@ -300,8 +300,8 @@ class DependencyUpdater:
         import_model_list: list[
             ImportModel
         ] | None = model_builder.module_attributes.imports
-        if model_builder.children_builders:
-            for child_builder in model_builder.children_builders:
+        if model_builder.child_builders:
+            for child_builder in model_builder.child_builders:
                 if (
                     not child_builder.common_attributes.dependencies
                     or not import_model_list

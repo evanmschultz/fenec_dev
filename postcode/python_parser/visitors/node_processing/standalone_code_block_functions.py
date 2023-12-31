@@ -68,7 +68,7 @@ def gather_standalone_lines(
 
 
 def process_standalone_blocks(
-    code_blocks: list[NodeAndPositionData], parent_id: str
+    code_blocks: list[NodeAndPositionData], parent_id: str, file_path: str
 ) -> list[StandaloneBlockModelBuilder]:
     """
     Processes standalone blocks of code and builds models for each block.
@@ -76,20 +76,27 @@ def process_standalone_blocks(
     Iterates over a list of standalone code blocks, processing each to build a model representing the block. Each block is assigned an identifier and associated with a parent identifier.
 
     Args:
-        code_blocks: A list of NodeAndPositionData representing standalone code blocks.
-        parent_id: The identifier of the parent (usually a module or class).
+        - code_blocks: A list of NodeAndPositionData representing standalone code blocks.
+        - parent_id: The identifier of the parent (usually a module or class).
+        - file_path: The file path of the module containing the standalone blocks.
 
     Returns:
-        A list of StandaloneBlockModelBuilder, each representing a processed standalone block.
+        - list[StandaloneBlockModelBuilder], each representing a processed standalone block.
 
     Example:
-        >>> standalone_blocks_models = process_standalone_blocks(standalone_blocks, "module1")
+        ```Python
+        standalone_blocks_models = process_standalone_blocks(standalone_blocks, "module1")
         # Processes standalone blocks and creates models for them.
+        ```
     """
 
     models: list[StandaloneBlockModelBuilder] = []
     for count, code_block in enumerate(code_blocks):
-        models.append(_process_standalone_block(code_block, parent_id, count + 1))
+        models.append(
+            _process_standalone_block(
+                code_block, parent_id, count + 1, file_path=file_path
+            )
+        )
 
     return models
 
@@ -110,7 +117,7 @@ def _is_import_statement(statement: libcst.CSTNode) -> bool:
 
 # TODO: Fix important comment logic
 def _process_standalone_block(
-    standalone_block: NodeAndPositionData, parent_id: str, count: int
+    standalone_block: NodeAndPositionData, parent_id: str, count: int, file_path: str
 ) -> StandaloneBlockModelBuilder:
     """Processes a standalone block of code and sets the attributes in the model builder, returns the builder instance."""
 
@@ -119,6 +126,7 @@ def _process_standalone_block(
         block_type=BlockType.STANDALONE_CODE_BLOCK,
         id=id,
         parent_id=parent_id,
+        file_path=file_path,
     )
     content, variable_assignments, important_comments = _process_nodes(standalone_block)
     (

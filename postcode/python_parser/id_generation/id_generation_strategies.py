@@ -35,24 +35,24 @@ class ModuleIDGenerationStrategy(IDGenerationStrategy):
         Generates an ID for a module based on the given file path.
 
         Args:
-            file_path (str): The file path of the module.
+            - file_path (str): The file path of the module.
 
         Returns:
-            str: The generated ID, incorporating the file path.
+            - str: The generated ID, incorporating the file path.
         """
-        module_path: str = ModuleIDGenerationStrategy.converted_path_string(file_path)
+        module_path: str = ModuleIDGenerationStrategy._converted_path_string(file_path)
         return f"{module_path}__*__MODULE"
 
     @staticmethod
-    def converted_path_string(file_path: str) -> str:
+    def _converted_path_string(file_path: str) -> str:
         """
         Converts a file path to a valid ID string.
 
         Args:
-            file_path (str): The file path to convert.
+            - file_path (str): The file path to convert.
 
         Returns:
-            str: The converted ID string.
+            - str: The converted ID string.
         """
         return file_path.replace("/", ":")
 
@@ -66,11 +66,11 @@ class ClassIDGenerationStrategy(IDGenerationStrategy):
         Generates an ID for a class based on the given parent ID and class name.
 
         Args:
-            parent_id (str): The ID of the parent (module or another class).
-            class_name (str): The name of the class.
+            - parent_id (str): The ID of the parent (module or another class).
+            - class_name (str): The name of the class.
 
         Returns:
-            str: The generated ID, incorporating the parent ID and class name.
+            - str: The generated ID, incorporating the parent ID and class name.
         """
         return f"{parent_id}__*__CLASS-{class_name}"
 
@@ -84,11 +84,11 @@ class FunctionIDGenerationStrategy(IDGenerationStrategy):
         Generates an ID for a function based on the given parent ID and function name.
 
         Args:
-            parent_id (str): The ID of the parent (module or class).
-            function_name (str): The name of the function.
+            - parent_id (str): The ID of the parent (module or class).
+            - function_name (str): The name of the function.
 
         Returns:
-            str: The generated ID, incorporating the parent ID and function name.
+            - str: The generated ID, incorporating the parent ID and function name.
         """
         return f"{parent_id}__*__FUNCTION-{function_name}"
 
@@ -102,10 +102,43 @@ class StandaloneCodeBlockIDGenerationStrategy(IDGenerationStrategy):
         Generates an ID for a standalone code block based on the given parent ID and a count.
 
         Args:
-            parent_id (str): The ID of the parent (typically a module).
-            count (int): A unique count or index for the standalone block within its parent.
+            - parent_id (str): The ID of the parent (typically a module).
+            - count (int): A unique count or index for the standalone block within its parent.
 
         Returns:
-            str: The generated ID, incorporating the parent ID and the count.
+            - str: The generated ID, incorporating the parent ID and the count.
         """
         return f"{parent_id}__*__STANDALONE_BLOCK-{count}"
+
+
+class DirectoryIDGenerationStrategy(IDGenerationStrategy):
+    """ID generation strategy for directories."""
+
+    @staticmethod
+    def generate_id(directory_path: str) -> str:
+        """
+        Generates an ID for a directory based on the given directory path.
+
+        Args:
+            - directory_path (str): The path to the directory.
+
+        Returns:
+            - str: The generated ID, incorporating the file path.
+        """
+        directory_path_str: str = DirectoryIDGenerationStrategy._converted_path_string(
+            directory_path
+        )
+        return f"{directory_path_str}__*__DIRECTORY"
+
+    @staticmethod
+    def _converted_path_string(file_path: str) -> str:
+        """
+        Converts a file path to a valid ID string.
+
+        Args:
+            - file_path (str): The file path to convert.
+
+        Returns:
+            - str: The converted ID string.
+        """
+        return file_path.replace("/", ":")

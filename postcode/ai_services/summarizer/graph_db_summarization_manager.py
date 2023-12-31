@@ -1,8 +1,7 @@
-# FIXME: This file is not currently being used. It is a work in progress as the summarization mapper isn't getting returning all of the project models.
+# TODO: Add logic to gather all child summaries of a directory (modules and directories within the directory)
 
 import logging
 from pprint import pprint
-from typing import Union
 
 from postcode.ai_services.summarizer.summarization_context import (
     Summarizer,
@@ -11,40 +10,32 @@ from postcode.ai_services.summarizer.summarization_context import (
 from postcode.ai_services.summarizer.summarization_mapper import SummarizationMapper
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
 
-# from postcode.types.postcode import ModelType
+from postcode.types.postcode import ModelType
 
 from postcode.models.models import (
-    ClassModel,
     DependencyModel,
-    FunctionModel,
+    DirectoryModel,
     ImportModel,
     ModuleModel,
-    StandaloneCodeBlockModel,
 )
-
-ModelType = Union[
-    ModuleModel,
-    ClassModel,
-    FunctionModel,
-    StandaloneCodeBlockModel,
-]
 
 
 class GraphDBSummarizationManager:
     def __init__(
         self,
-        module_models_tuple: tuple[ModuleModel, ...],
+        all_models_tuple: tuple[ModelType, ...],
         summarization_mapper: SummarizationMapper,
         summarizer: Summarizer,
         graph_manager: ArangoDBManager,
     ) -> None:
-        self.module_models_tuple: tuple[ModuleModel, ...] = module_models_tuple
+        self.all_models_tuple: tuple[ModelType, ...] = all_models_tuple
         self.summarization_mapper: SummarizationMapper = summarization_mapper
         self.summarizer: Summarizer = summarizer
+        self.graph_manager: ArangoDBManager = graph_manager
+
         self.summarized_code_block_ids: set[str] = set()
         self.prompt_tokens: int = 0
         self.completion_tokens: int = 0
-        self.graph_manager: ArangoDBManager = graph_manager
 
     @property
     def total_cost(self) -> float:
@@ -55,7 +46,7 @@ class GraphDBSummarizationManager:
         )  # Costs 3 cents per 1,000 tokens
         return (prompt_cost + completion_cost) / 100_000  # Convert to dollars
 
-    def create_summaries_and_return_updated_models(self) -> list[ModuleModel] | None:
+    def create_summaries_and_return_updated_models(self) -> list[ModelType] | None:
         summarization_map: list[
             ModelType
         ] = self.summarization_mapper.create_summarization_map()
@@ -67,11 +58,18 @@ class GraphDBSummarizationManager:
             dependency_summaries: str | None = None
             import_details: str | None = None
 
-            if model.children:
-                children_summaries: str | None = self._stringify_children_summaries(
+            if model.children_ids:
+                if children_summary_list := self._get_child_summaries(model):
                     self._get_child_summaries(model)
-                )
-            if isinstance(model, ModuleModel):
+
+                    children_summaries: str | None = self._stringify_children_summaries(
+                        children_summary_list
+                    )
+
+            # if isinstance(model, DirectoryModel):
+            #     ...
+
+            elif isinstance(model, ModuleModel):
                 if model.imports:
                     dependency_summaries = self._get_dependencies_summaries(model)
                     import_details = ""
@@ -79,23 +77,30 @@ class GraphDBSummarizationManager:
                         if import_summary := self._get_import_details(_import):
                             import_details += f"\n{import_summary}"
             else:
-                if model.dependencies:
-                    dependency_summaries = self._get_dependencies_summaries(model)
-                    import_details = ""
-                    for dependency in model.dependencies:
-                        if isinstance(dependency, DependencyModel):
-                            continue
-                        if import_summary := self._get_import_details(dependency):
-                            import_details += f"\n{import_summary}"
+                if not isinstance(model, DirectoryModel):
+                    if model.dependencies:
+                        dependency_summaries = self._get_dependencies_summaries(model)
+                        import_details = ""
+                        for dependency in model.dependencies:
+                            if isinstance(dependency, DependencyModel):
+                                continue
+                            if import_summary := self._get_import_details(dependency):
+                                import_details += f"\n{import_summary}"
 
             models_summarized_count += 1
             logging.info(
                 f"Summarizing model {models_summarized_count} out of {models_to_summarize_count}; {model.id}."
             )
 
+            code_content: str = ""
+            if isinstance(model, DirectoryModel):
+                code_content = ""
+            else:
+                code_content = model.code_content
+
             summary_return_context: OpenAIReturnContext | None = (
                 self.summarizer.test_summarize_code(
-                    model.code_content,
+                    code_content,
                     model_id=model.id,
                     children_summaries=children_summaries,
                     dependency_summaries=dependency_summaries,
@@ -110,44 +115,40 @@ class GraphDBSummarizationManager:
                 self.prompt_tokens += summary_return_context.prompt_tokens
                 self.completion_tokens += summary_return_context.completion_tokens
 
-                # for module_model in self.module_models_tuple:
-                #     if isinstance(model, ModuleModel):
-                #         if module_model.id == model.id:
-                #             module_model.summary = model.summary
-                #             break
-                #         else:
-                #             continue
-                #     else:
-                #         module_id_for_model: str = model.id.split("MODULE")[0]
-                #         if (
-                #             module_model.children
-                #             and module_id_for_model in module_model.id
-                #         ):
-                #             for child_model in module_model.children:
-                #                 if child_model.id == model.id:
-                #                     # child_model.summary = model.summary
-                #                     break
-                #         else:
-                #             continue
-
-        # pprint([model.id for model in summarization_map[::-1]])
         print(len(summarization_map))
-        pprint([model.id for model in summarization_map])
+        # pprint([model.id for model in summarization_map][::-1])
+        count = 1
+        for model in summarization_map[::-1]:
+            pprint({"count": count, "id": model.id})
+            count += 1
+        return self.graph_manager.get_all_vertices() if self.graph_manager else None
 
-        return self.graph_manager.get_all_modules() if self.graph_manager else None
-
-    def _get_child_summaries(self, model: ModelType) -> list[str]:
+    def _get_child_summaries(self, model: ModelType) -> list[str] | None:
         """Gathers summaries of child models."""
+
         child_summary_list: list[str] = []
-        if model.children:
-            for child in model.children:
-                if child.summary:
-                    child_summary: str = child.summary
-                else:
-                    child_summary = (
-                        f"Child ({child.id}) code content:\n{child.code_content}\n"
-                    )
-                child_summary_list.append(child_summary)
+        if model.children_ids:
+            for child_id in model.children_ids:
+                if child := self.graph_manager.get_vertex_model_by_id(child_id):
+                    if child.summary:
+                        child_summary: str = child.summary
+
+                    else:
+                        # TODO: Add logic to gather all child summaries of a directory (modules and directories within the directory)
+                        if isinstance(child, DirectoryModel):
+                            # for child_child_id in child.children_ids:
+                            #     if child_child := self.graph_manager.get_vertex_model_by_id(
+                            #         child_child_id
+                            #     ):
+                            #         if child_child.summary:
+                            #             child_summary = child_child.summary
+                            #             break
+                            continue
+
+                        child_summary = (
+                            f"Child ({child_id}) code content:\n{child.code_content}\n"
+                        )
+                    child_summary_list.append(child_summary)
         return child_summary_list
 
     def _stringify_children_summaries(self, children_summary_list: list[str]) -> str:
@@ -161,6 +162,9 @@ class GraphDBSummarizationManager:
     def _get_dependencies_summaries(self, model: ModelType) -> str | None:
         dependency_list: list[ImportModel | DependencyModel] | list[ImportModel] = []
         dependency_summary_list: list[str] = []
+
+        if isinstance(model, DirectoryModel):
+            return None
 
         if isinstance(model, ModuleModel):
             if not model.imports:
@@ -198,42 +202,26 @@ class GraphDBSummarizationManager:
 
         return dependency_summaries
 
-    # def _get_import_details_for_dependencies(
-    #     self, dependencies: list[ImportModel | DependencyModel]
-    # ) -> str | None:
-    #     import_details: str | None = None
-    #     for dependency in dependencies:
-    #         if isinstance(dependency, ImportModel):
-    #             if dependency.import_module_type == "LOCAL":
-    #                 continue
-    #             else:
-    #                 import_detail: str | None = self._get_import_details(dependency)
-    #                 if not import_detail:
-    #                     continue
-    #                 if not import_details:
-    #                     import_details = ""
-    #                 import_details += f"\n{import_detail}"
-    #     return import_details
-
     def _get_local_dependency_summary(
         self,
         dependency: DependencyModel,
         model: ModelType,
     ) -> str | None:
         """Gets a summary for a dependency local to the module."""
-        if not model.children:
+        if not model.children_ids:
             return None
 
-        for child_model in model.children:
-            if child_model.id == dependency.code_block_id:
-                child_summary: str | None = None
+        for child_id in model.children_ids:
+            if child_id == dependency.code_block_id:
+                for model in self.all_models_tuple:
+                    if model.id == child_id:
+                        if isinstance(model, DirectoryModel):
+                            return None
 
-                if child_model.summary:
-                    child_summary = child_model.summary
-                else:
-                    child_summary = f"Dependency ({dependency.code_block_id}) code content:\n{child_model.code_content}\n"
-
-                return child_summary
+                        if model.summary:
+                            return model.summary
+                        else:
+                            return f"Dependency ({dependency.code_block_id}) code content:\n{model.code_content}\n"
         return None
 
     def _stringify_dependencies_summaries(
@@ -249,32 +237,31 @@ class GraphDBSummarizationManager:
         return dependency_summaries
 
     def _get_local_import_summary(self, dependency: ImportModel) -> str | None:
-        for module_model in self.module_models_tuple:
-            if module_model.id == dependency.local_module_id:
+        for model in self.all_models_tuple:
+            if model.id == dependency.local_module_id:
                 import_summary: str | None = None
-                if module_model.summary:
-                    import_summary = module_model.summary
+                if model.summary:
+                    import_summary = model.summary
                 else:
-                    import_summary = f"Imported module ({dependency.local_module_id}) code content:\n{module_model.code_content}\n"
+                    if not isinstance(model, DirectoryModel):
+                        import_summary = f"Imported module ({dependency.local_module_id}) code content:\n{model.code_content}\n"
+
                 return import_summary
         return None
 
     def _get_local_import_from_summary(self, dependency: ImportModel) -> str | None:
         for import_name in dependency.import_names:
-            for module_model in self.module_models_tuple:
-                if module_model.id == dependency.local_module_id:
-                    if module_model.children:
-                        for child_model in module_model.children:
-                            if (
-                                child_model.id == import_name.local_block_id
-                                and child_model.id
-                            ):
-                                import_summary: str | None = None
-                                if child_model.summary:
-                                    import_summary = child_model.summary
-                                else:
-                                    import_summary = f"Imported code block ({dependency.local_module_id}) code content:\n{module_model.code_content}\n"
-                                return import_summary
+            for model in self.all_models_tuple:
+                if model.id == import_name.local_block_id:
+                    if isinstance(model, DirectoryModel):
+                        return None
+
+                    import_summary: str = ""
+                    if model.summary:
+                        import_summary = model.summary
+                    else:
+                        import_summary = f"Imported code block ({dependency.local_module_id}) code content:\n{model.code_content}\n"
+                    return import_summary
         return None
 
     def _get_import_details(self, import_model: ImportModel) -> str | None:

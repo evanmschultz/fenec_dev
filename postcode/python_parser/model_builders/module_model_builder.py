@@ -1,4 +1,5 @@
-from typing import Any
+from ctypes import Union
+from typing import TYPE_CHECKING, Any
 
 from postcode.python_parser.model_builders.base_model_builder import BaseModelBuilder
 
@@ -11,6 +12,13 @@ from postcode.models.models import (
 from postcode.models.enums import BlockType
 
 
+from postcode.models.models import (
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+)
+
+
 class ModuleModelBuilder(BaseModelBuilder):
     """
     A builder class for constructing a model of a Python module.
@@ -18,23 +26,26 @@ class ModuleModelBuilder(BaseModelBuilder):
     This class extends BaseModelBuilder and specializes in building a detailed model of a Python module, capturing various aspects such as the module's docstring, header content, footer content, and imports. It allows for the incremental construction of the module model by adding or setting various components.
 
     Attributes:
-        module_attributes (ModuleSpecificAttributes): An instance containing attributes specific to a module, like file path, docstring, header, footer, and imports.
+        - module_attributes (ModuleSpecificAttributes): An instance containing attributes specific to a module, like file path, docstring, header, footer, and imports.
 
     Args:
-        id (str): The unique identifier for the module model.
-        file_path (str): The file path of the module being modeled.
+        - id (str): The unique identifier for the module model.
+        - file_path (str): The file path of the module being modeled.
 
     Example:
-        >>> module_builder = ModuleModelBuilder(id='module1', file_path='/path/to/module.py')
-        >>> module_builder.set_docstring("This is a docstring").add_import(some_import_model)
+        ```Python
+        module_builder = ModuleModelBuilder(id='module1', file_path='/path/to/module.py')
+        module_builder.set_docstring("This is a docstring").add_import(some_import_model)
         # Configures the module builder with a docstring and an import.
+        ```
     """
 
-    def __init__(self, id: str, file_path: str) -> None:
-        super().__init__(id=id, block_type=BlockType.MODULE, parent_id=None)
+    def __init__(self, id: str, file_path: str, parent_id: str) -> None:
+        super().__init__(
+            id=id, block_type=BlockType.MODULE, parent_id=parent_id, file_path=file_path
+        )
 
         self.module_attributes = ModuleSpecificAttributes(
-            file_path=file_path,
             docstring=None,
             header=None,
             footer=None,
@@ -124,9 +135,18 @@ class ModuleModelBuilder(BaseModelBuilder):
         return self.module_attributes.model_dump()
 
     @logging_decorator(message="Building module model")
-    def build(self) -> ModuleModel:
+    def build(
+        self,
+    ) -> tuple[
+        ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None
+    ]:
         """Builds and returns the module model instance after building and setting the children models."""
-        self.build_and_set_children()
-        return ModuleModel(
-            **self._get_common_attributes(), **self._get_module_specific_attributes()
+        self.build_children()
+        self.set_children_ids()
+        return (
+            ModuleModel(
+                **self._get_common_attributes(),
+                **self._get_module_specific_attributes(),
+            ),
+            self.child_models,
         )

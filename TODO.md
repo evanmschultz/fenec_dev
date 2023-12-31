@@ -21,6 +21,8 @@
 
 ## Roadmap for future
 
+-   [ ] Add tests and improve error handling
+-   [ ] Make into pypi package
 -   [ ] Update summaries and DB's based on version control
 -   [ ] Add logic to track down where an import is defined and update import and dependency models
 -   [x] Remove output json from version control

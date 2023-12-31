@@ -2,56 +2,71 @@ import logging
 from pprint import pprint
 from typing import Union
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
-from postcode.models.models import (
-    ClassModel,
-    FunctionModel,
-    ModuleModel,
-    StandaloneCodeBlockModel,
-)
 
-# from postcode.types.postcode import ModelType
+# from postcode.models.models import (
+#     ClassModel,
+#     FunctionModel,
+#     ModuleModel,
+#     StandaloneCodeBlockModel,
+#     DirectoryModel,
+# )
 
-ModelType = Union[
-    ModuleModel,
-    ClassModel,
-    FunctionModel,
-    StandaloneCodeBlockModel,
-]
+from postcode.types.postcode import ModelType
+
+# ModelType = Union[
+#     ModuleModel, ClassModel, FunctionModel, StandaloneCodeBlockModel, DirectoryModel
+# ]
 
 
 class SummarizationMapper:
     def __init__(
         self,
         module_ids_to_update: list[str],
-        module_models: tuple[ModuleModel, ...],
+        all_models: tuple[ModelType, ...],
         arangodb_manager: ArangoDBManager,
     ) -> None:
         self.module_ids_to_update: list[str] = module_ids_to_update
-        self.module_models: tuple[ModuleModel, ...] = module_models
+        self.all_models: tuple[ModelType, ...] = all_models
         self.arangodb_manager: ArangoDBManager = arangodb_manager
-        self.models_to_update: list[ModelType] = []
+
+        self.models_to_update: list[ModelType] = self._set_models_to_update()
         self.model_visited_in_db: set[str] = set()
         self.summarization_map: list[ModelType] = []
         self.temp_map: list[ModelType] = []
 
-    def _set_child_models_to_update(self, model: ModelType) -> None:
-        if model.children:
-            for child in model.children:
-                # logging.info(f"Setting child model to update: {child.id}")
-                self._set_child_models_to_update(child)
-                child.summary = None
-                self.models_to_update.append(child)
-            self.models_to_update.append(model)
+    def _set_models_to_update(self) -> list[ModelType]:
+        """Returns all models that need to be updated."""
 
-    def _set_models_to_update(self) -> None:
-        for model in self.module_models:
-            if model.id in self.module_ids_to_update:
-                if model.children:
-                    for child in model.children:
-                        self._set_child_models_to_update(child)
+        models_to_update: list[ModelType] = []
+        for model in self.all_models:
+            for module_id in self.module_ids_to_update:
+                if module_id in model.id:
+                    models_to_update.append(model)
+                    break
 
-                model.summary = None
-                self.models_to_update.append(model)
+        return models_to_update
+
+    # def _set_child_models_to_update(self, model: ModelType) -> None:
+    #     if isinstance(model, DirectoryModel):
+    #         return None
+
+    #     if model.children_ids:
+    #         for child_id in model.children_ids:
+    #             # logging.info(f"Setting child model to update: {child.id}")
+    #             self._set_child_models_to_update(child_id)
+    #             child.summary = None
+    #             self.models_to_update.append(child)
+    #         self.models_to_update.append(model)
+
+    # def _set_models_to_update(self) -> None:
+    #     for model in self.all_models:
+    #         if model.id in self.module_ids_to_update:
+    #             if model.children_ids:
+    #                 for child in model.children_ids:
+    #                     self._set_child_models_to_update(child)
+
+    #             model.summary = None
+    #             self.models_to_update.append(model)
 
     def _set_inbound_models_in_summarization_map(self, model_id: str) -> None:
         if model_id in self.model_visited_in_db:
@@ -59,7 +74,6 @@ class SummarizationMapper:
         self.model_visited_in_db.add(model_id)
         if inbound_models := self.arangodb_manager.get_inbound_models(model_id):
             for model in inbound_models:
-                # logging.info(f"Setting inbound models in summarization map: {model.id}")
                 self.model_visited_in_db.add(model_id)
                 self._set_inbound_models_in_summarization_map(model.id)
 
@@ -71,11 +85,7 @@ class SummarizationMapper:
 
         if outbound_models := self.arangodb_manager.get_outbound_models(model_id):
             for model in outbound_models[::-1]:
-                # logging.info(
-                #     f"Setting outbound models in summarization map: {model.id}"
-                # )
                 self.model_visited_in_db.add(model_id)
-                # self._set_outbound_models_in_summarization_map(model.id)``
 
                 if model.id in self.models_to_update:
                     model.summary = None
@@ -114,8 +124,8 @@ class SummarizationMapper:
                 summary_map.append(model)
                 summary_ids.add(model.id)
 
-        # return summary_map[::-1]
-        pprint([model.id for model in summary_map[::-1]])
+        # pprint([model.id for model in summary_map[::-1]])
+
         return summary_map[::-1]
 
     # def old_create_summarization_map(self) -> list[list[ModelType]]:

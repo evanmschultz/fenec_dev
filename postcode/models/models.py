@@ -103,6 +103,7 @@ class BaseCodeBlockModel(BaseModel):
     """Attributes common to all code block models."""
 
     id: str
+    file_path: str = Field(min_length=1)
     parent_id: str | None = None
     block_type: BlockType
     start_line_num: int
@@ -111,13 +112,7 @@ class BaseCodeBlockModel(BaseModel):
     important_comments: list[CommentModel] | None = None
     dependencies: list[ImportModel | DependencyModel] | None = None
     summary: str | None = None
-    children: list[
-        Union[
-            "ClassModel",
-            "FunctionModel",
-            "StandaloneCodeBlockModel",
-        ]
-    ] | None = []
+    children_ids: list[str] | None = []
 
     @validator("parent_id", always=True)
     def check_parent_id(cls, v, values, **kwargs) -> str | None:
@@ -168,19 +163,14 @@ class BaseCodeBlockModel(BaseModel):
     def _convert_children_to_metadata(self) -> str:
         """Converts the children to a metadata string."""
 
-        children_str: str = ""
-
-        if self.children:
-            for child in self.children:
-                children_str += f"{child.id}\n"
-
-        return children_str
+        return str(self.children_ids) if self.children_ids else ""
 
     def _convert_base_attributes_to_metadata_dict(self) -> dict[str, str | int]:
         """Converts the base attributes to a metadata dictionary."""
 
         return {
             "id": self.id,
+            "file_path": self.file_path,
             "parent_id": self._convert_parent_id_to_metadata(),
             "block_type": self._convert_block_type_to_metadata(),
             "start_line_num": self.start_line_num,
@@ -196,7 +186,6 @@ class BaseCodeBlockModel(BaseModel):
 class ModuleSpecificAttributes(BaseModel):
     """Module specific attributes."""
 
-    file_path: str = Field(min_length=1)
     docstring: str | None = None
     header: list[str] | None = None
     footer: list[str] | None = None
@@ -223,7 +212,6 @@ class ModuleSpecificAttributes(BaseModel):
         """Converts the module attributes to a metadata dictionary."""
 
         return {
-            "file_path": self.file_path,
             "docstring": self._convert_docstring_to_metadata(),
             "header": self._convert_header_to_metadata(),
             "footer": self._convert_footer_to_metadata(),
@@ -379,4 +367,29 @@ class StandaloneCodeBlockModel(
         return {
             **self._convert_base_attributes_to_metadata_dict(),
             **self._convert_standalone_block_attributes_to_metadata_dict(),
+        }
+
+
+class DirectoryModel(BaseModel):
+    """Model for a directory."""
+
+    id: str
+    block_type: BlockType = BlockType.DIRECTORY
+    directory_name: str
+    sub_directories_ids: list[str]
+    children_ids: list[str]
+    parent_id: str | None
+    summary: str | None = None
+
+    def convert_to_metadata(self) -> dict[str, str | int]:
+        """Converts the directory model to a metadata dictionary."""
+
+        return {
+            "directory_name": self.directory_name,
+            "sub_directories": str(self.sub_directories_ids)
+            if self.sub_directories_ids
+            else "",
+            "children_ids": self.model_dump_json() if self.children_ids else "",
+            "parent_id": self.parent_id if self.parent_id else "",
+            "summary": self.summary if self.summary else "",
         }

@@ -1,25 +1,27 @@
 import logging
 from logging import Logger
-from typing import Union
 
-from postcode.models.models import (
-    ModuleModel,
-    ClassModel,
-    FunctionModel,
-    StandaloneCodeBlockModel,
-)
+# from typing import Union
+
+# from postcode.models.models import (
+#     ModuleModel,
+#     ClassModel,
+#     FunctionModel,
+#     StandaloneCodeBlockModel,
+# )
 
 from postcode.databases.chroma.setup_chroma import (
     ChromaSetupReturnContext,
 )
 from postcode.updaters.graph_db_updater import GraphDBUpdater
+from postcode.types.postcode import ModelType
 
-ModelType = Union[
-    ModuleModel,
-    ClassModel,
-    FunctionModel,
-    StandaloneCodeBlockModel,
-]
+# ModelType = Union[
+#     ModuleModel,
+#     ClassModel,
+#     FunctionModel,
+#     StandaloneCodeBlockModel,
+# ]
 
 from postcode.utilities.logger.logging_config import setup_logging
 
@@ -32,7 +34,7 @@ from chromadb.api.types import (
 )
 from chromadb import Collection
 
-from postcode.updaters.standard_updater import StandardUpdater
+# from postcode.updaters.standard_updater import StandardUpdater
 
 
 def query_chroma(
@@ -75,12 +77,13 @@ def main(
     # chroma_context: ChromaSetupReturnContext = StandardUpdater.update_all(
     #     directory, output_directory, logger
     # )
+    # StandardUpdater.update_all(directory, output_directory, logger)
     # ==================== End Standard ====================
 
-    # query: str = "summarizes code block"
-    # query_chroma(
-    #     query,
-    #     chroma_context.chroma_collection_manager,
-    #     chroma_context.chroma_collection,
-    #     logger,
-    # )
+    query: str = "summarizes code block"
+    query_chroma(
+        query,
+        chroma_context.chroma_collection_manager,
+        chroma_context.chroma_collection,
+        logger,
+    )

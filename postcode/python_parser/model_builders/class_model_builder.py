@@ -4,7 +4,12 @@ from typing import TYPE_CHECKING, Any
 from postcode.utilities.logger.decorators import logging_decorator
 
 from postcode.python_parser.model_builders.base_model_builder import BaseModelBuilder
-from postcode.models.models import ClassSpecificAttributes, ClassModel
+from postcode.models.models import (
+    ClassSpecificAttributes,
+    ClassModel,
+    FunctionModel,
+    StandaloneCodeBlockModel,
+)
 from postcode.models.enums import BlockType
 
 
@@ -22,16 +27,20 @@ class ClassModelBuilder(BaseModelBuilder):
     This class extends BaseModelBuilder and is specialized for building a model of a Python class, capturing details such as decorators, base classes, documentation strings, class attributes, and class-specific keywords.
 
     Attributes:
-        class_attributes (ClassSpecificAttributes): An instance containing attributes specific to a class, like name, decorators, bases, etc.
+        - class_attributes (ClassSpecificAttributes): An instance containing attributes specific to a class, like name, decorators, bases, etc.
 
     Args:
-        id (str): The unique identifier for the class model.
-        class_name (str): The name of the class.
-        parent_id (str): The identifier of the parent model (e.g., module or class containing this class).
+        - id (str): The unique identifier for the class model.
+        - class_name (str): The name of the class.
+        - parent_id (str): The identifier of the parent model (e.g., module or class containing this class).
     """
 
-    def __init__(self, id: str, class_name: str, parent_id: str) -> None:
-        super().__init__(id=id, block_type=BlockType.CLASS, parent_id=parent_id)
+    def __init__(
+        self, id: str, class_name: str, parent_id: str, file_path: str
+    ) -> None:
+        super().__init__(
+            id=id, block_type=BlockType.CLASS, parent_id=parent_id, file_path=file_path
+        )
 
         self.class_attributes = ClassSpecificAttributes(
             class_name=class_name,
@@ -81,9 +90,12 @@ class ClassModelBuilder(BaseModelBuilder):
         return self.class_attributes.model_dump()
 
     @logging_decorator(message="Building ClassModel")
-    def build(self) -> ClassModel:
+    def build(
+        self,
+    ) -> ClassModel:
         """Creates a ClassModel instance after building and setting the children models."""
-        self.build_and_set_children()
+        self.build_children()
+        self.set_children_ids()
         return ClassModel(
             **self._get_common_attributes(),
             **self._get_class_specific_attributes(),

@@ -1,33 +1,34 @@
 import logging
 from typing import Any, Mapping, Union
 
-from postcode.models.models import ModuleModel
 import postcode.types.chroma as chroma_types
-from chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings
-from chromadb.api import ClientAPI
-from chromadb.api.types import (
-    DataLoader,
-    CollectionMetadata,
-    GetResult,
-    QueryResult,
-    Where,
-    WhereDocument,
-    Include,
-    URIs,
-    Loadable,
-    Metadata,
-    Embedding,
-)
-from chromadb import Collection
-from chromadb import EmbeddingFunction
-# from postcode.types.postcode import ModelType
-from postcode.models.models import ModuleModel, ClassModel, FunctionModel, StandaloneCodeBlockModel
-ModelType = Union[
-    ModuleModel,
-    ClassModel,
-    FunctionModel,
-    StandaloneCodeBlockModel,
-]
+# from chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings
+# from chromadb.api import ClientAPI
+# from chromadb.api.types import (
+#     DataLoader,
+#     CollectionMetadata,
+#     GetResult,
+#     QueryResult,
+#     Where,
+#     WhereDocument,
+#     Include,
+#     URIs,
+#     Loadable,
+#     Metadata,
+#     Embedding,
+# )
+# from chromadb import Collection
+# from chromadb import EmbeddingFunction
+
+from postcode.types.postcode import ModelType
+# from postcode.models.models import (
+#     ModuleModel,
+#     ClassModel,
+#     FunctionModel,
+#     StandaloneCodeBlockModel,
+#     DecoratorModel,
+# )
+
 
 
 class ChromaDBCollectionManager:
@@ -67,8 +68,8 @@ class ChromaDBCollectionManager:
         ```
     """
 
-    def __init__(self, collection: Collection) -> None:
-        self.collection: Collection = collection
+    def __init__(self, collection:chroma_types.Collection) -> None:
+        self.collection: chroma_types.Collection = collection
 
     def collection_embedding_count(self) -> int | None:
         """
@@ -138,11 +139,11 @@ class ChromaDBCollectionManager:
         self,
         ids: list[str] | None,
         *,
-        where_filter: Where | None = None,
+        where_filter: chroma_types.Where | None = None,
         limit: int | None = None,
-        where_document_filter: WhereDocument | None = None,
-        include_in_result: Include = ["metadatas", "documents"],
-    ) -> GetResult | None:
+        where_document_filter: chroma_types.WhereDocument | None = None,
+        include_in_result: chroma_types.Include = ["metadatas", "documents"],
+    ) -> chroma_types.GetResult | None:
         """
         Gets embeddings and their metadata from the collection in the form of a TypedDict.
 
@@ -205,10 +206,10 @@ class ChromaDBCollectionManager:
         self,
         queries: list[str],
         n_results: int = 10,
-        where_filter: Where | None = None,
-        where_document_filter: WhereDocument | None = None,
-        include_in_result: Include = ["metadatas", "documents"],
-    ) -> QueryResult | None:
+        where_filter: chroma_types.Where | None = None,
+        where_document_filter: chroma_types.WhereDocument | None = None,
+        include_in_result: chroma_types.Include = ["metadatas", "documents"],
+    ) -> chroma_types.QueryResult | None:
         """
         Queries and returns the `n` nearest neighbors from the collection.
 
@@ -454,7 +455,7 @@ class ChromaDBCollectionManager:
         )
         self.collection.delete(ids_to_delete)
 
-    def upsert_models(self, module_models: tuple[ModuleModel, ...]) -> None:
+    def upsert_models(self, models: tuple[ModelType, ...]) -> None:
         """
         Loads or updates the embeddings of the provided module models into the collection.
 
@@ -477,20 +478,20 @@ class ChromaDBCollectionManager:
         documents: list[str] = []
         metadatas: list[Mapping[str, str | int | float | bool]] = []
 
-        for module_model in module_models:
-            if module_model.summary:
-                ids.append(module_model.id)
-                documents.append(module_model.summary)
-                metadatas.append(module_model.convert_to_metadata())
+        for model in models:
+            if model.summary:
+                ids.append(model.id)
+                documents.append(model.summary)
+                metadatas.append(model.convert_to_metadata())
 
-            if module_model.children:
-                for child in module_model.children:
-                    child_data: dict[str, Any] = self._recursively_gather_child_data(
-                        child
-                    )
-                    ids.extend(child_data["ids"])
-                    documents.extend(child_data["documents"])
-                    metadatas.extend(child_data["metadatas"])
+            # if model.children_ids:
+            #     for child in model.children_ids:
+            #         child_data: dict[str, Any] = self._recursively_gather_child_data(
+            #             child
+            #         )
+            #         ids.extend(child_data["ids"])
+            #         documents.extend(child_data["documents"])
+            #         metadatas.extend(child_data["metadatas"])
 
         logging.info(
             f"{self.collection.name} has {self.collection_embedding_count()} embeddings."
@@ -500,25 +501,25 @@ class ChromaDBCollectionManager:
             f"After upsert {self.collection.name} has {self.collection_embedding_count()} embeddings."
         )
 
-    def _recursively_gather_child_data(self, model: ModelType) -> dict[str, Any]:
-        ids: list[str] = []
-        documents: list[str] = []
-        metadatas: list[Mapping[str, str | int | float | bool]] = []
-        if model.summary:
-            ids.append(model.id)
-            documents.append(model.summary)
-            metadatas.append(model.convert_to_metadata())
-        else:
-            logging.warning(f"Child {model.id} has no summary.")
-        if model.children:
-            for child in model.children:
-                child_data: dict[str, Any] = self._recursively_gather_child_data(child)
-                ids.extend(child_data["ids"])
-                documents.extend(child_data["documents"])
-                metadatas.extend(child_data["metadatas"])
+    # def _recursively_gather_child_data(self, model: ModelType) -> dict[str, Any]:
+    #     ids: list[str] = []
+    #     documents: list[str] = []
+    #     metadatas: list[Mapping[str, str | int | float | bool]] = []
+    #     if model.summary:
+    #         ids.append(model.id)
+    #         documents.append(model.summary)
+    #         metadatas.append(model.convert_to_metadata())
+    #     else:
+    #         logging.warning(f"Child {model.id} has no summary.")
+    #     # if model.children_ids:
+    #     #     for child in model.children_ids:
+    #     #         child_data: dict[str, Any] = self._recursively_gather_child_data(child)
+    #     #         ids.extend(child_data["ids"])
+    #     #         documents.extend(child_data["documents"])
+    #     #         metadatas.extend(child_data["metadatas"])
 
-        return {
-            "ids": ids,
-            "documents": documents,
-            "metadatas": metadatas,
-        }
+    #     return {
+    #         "ids": ids,
+    #         "documents": documents,
+    #         "metadatas": metadatas,
+    #     }

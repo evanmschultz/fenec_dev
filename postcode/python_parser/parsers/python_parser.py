@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING, Union
 import libcst
 from libcst.metadata import MetadataWrapper
 from postcode.python_parser.id_generation.id_generation_strategies import (
@@ -10,6 +11,24 @@ from postcode.python_parser.model_builders.module_model_builder import (
 
 from postcode.python_parser.visitors.module_visitor import ModuleVisitor
 from postcode.models.enums import BlockType
+
+from postcode.python_parser.model_builders.class_model_builder import (
+    ClassModelBuilder,
+)
+from postcode.python_parser.model_builders.function_model_builder import (
+    FunctionModelBuilder,
+)
+from postcode.python_parser.model_builders.standalone_block_model_builder import (
+    StandaloneBlockModelBuilder,
+)
+
+
+BuilderType = Union[
+    ModuleModelBuilder,
+    ClassModelBuilder,
+    FunctionModelBuilder,
+    StandaloneBlockModelBuilder,
+]
 
 
 class PythonParser:
@@ -46,7 +65,7 @@ class PythonParser:
         with open(self.file_path, "r") as file:
             return file.read()
 
-    def parse(self, code: str) -> ModuleModelBuilder | None:
+    def parse(self, code: str, parent_id: str) -> ModuleModelBuilder | None:
         """
         Parses the provided Python code into a structured module model.
 
@@ -54,15 +73,17 @@ class PythonParser:
         along with it hierarchy of child builders.
 
         Args:
-            code (str): The Python code to be parsed.
+            - code (str): The Python code to be parsed.
 
         Returns:
-            ModuleModelBuilder | None: The module model builder for the provided code.
+            - ModuleModelBuilder | None: The module model builder for the provided code.
 
         Example:
-            >>> code = python_parser.open_file()
-            >>> module_model = python_parser.parse(code)
+            ```Python
+            code = python_parser.open_file()
+            module_model = python_parser.parse(code)
             # Parses the provided code and returns a module model builder.
+            ```
         """
 
         wrapper = MetadataWrapper(libcst.parse_module(code))
@@ -70,9 +91,16 @@ class PythonParser:
             file_path=self.file_path
         )
         module_builder: ModuleModelBuilder = BuilderFactory.create_builder_instance(
-            block_type=BlockType.MODULE, id=module_id, file_path=self.file_path
+            block_type=BlockType.MODULE,
+            id=module_id,
+            file_path=self.file_path,
+            parent_id=parent_id,
         )
         visitor = ModuleVisitor(id=module_id, module_builder=module_builder)
         wrapper.visit(visitor)
 
-        return visitor.builder_stack[0]  # type: ignore
+        return (
+            visitor.builder_stack[0]
+            if isinstance(visitor.builder_stack[0], ModuleModelBuilder)
+            else None
+        )
