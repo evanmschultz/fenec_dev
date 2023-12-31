@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "post-code"
+name = "postcode"
 version = "0.1.0"
 description = ""
 authors = ["Evan Schultz <evan@postulate.llc>"]
