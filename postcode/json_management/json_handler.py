@@ -27,7 +27,7 @@ class JSONHandler:
         self,
         directory: str,
         directory_modules: dict[str, list[str]],
-        output_directory: str = "../output",
+        output_directory: str = "output_json",
     ) -> None:
         self.directory: str = directory
         self.output_directory: str = output_directory

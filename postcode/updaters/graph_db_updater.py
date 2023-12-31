@@ -1,5 +1,4 @@
 from logging import Logger
-from typing import Union
 
 from openai import OpenAI
 from postcode.ai_services.summarizer.graph_db_summarization_manager import (
@@ -16,26 +15,14 @@ from postcode.databases.chroma.setup_chroma import (
 )
 from postcode.json_management.json_handler import JSONHandler
 from postcode.models.models import (
-    ClassModel,
     DirectoryModel,
-    FunctionModel,
     ModuleModel,
-    StandaloneCodeBlockModel,
 )
 from postcode.python_parser.visitor_manager.visitor_manager import (
     VisitorManager,
     VisitorManagerProcessFilesReturn,
 )
 from postcode.types.postcode import ModelType
-
-
-# ModelType = Union[
-#     ModuleModel,
-#     ClassModel,
-#     FunctionModel,
-#     StandaloneCodeBlockModel,
-#     DirectoryModel,
-# ]
 
 
 class GraphDBUpdater:
@@ -61,45 +48,57 @@ class GraphDBUpdater:
         output_directory: str,
         logger: Logger,
     ) -> ChromaSetupReturnContext:
-        logger.info("Starting the directory parsing.")
-
-        visitor_manager = VisitorManager(directory, output_directory)
         process_files_return: VisitorManagerProcessFilesReturn = (
-            visitor_manager.process_files()
+            self._visit_and_parse_files(directory, logger)
         )
-
         models_tuple: tuple[ModelType, ...] = process_files_return.models_tuple
-        module_ids: list[str] = [
-            model.id for model in models_tuple if isinstance(model, ModuleModel)
-        ]
 
-        directory_modules: dict[str, list[str]] = process_files_return.directory_modules
-        self.graph_manager.upsert_models(
-            list(models_tuple)
-        ).process_imports_and_dependencies().get_or_create_graph()
-        summarization_mapper = SummarizationMapper(
-            module_ids, models_tuple, self.graph_manager
-        )
-        client = OpenAI(max_retries=4)
-        summarizer = OpenAISummarizer(client=client)
-        summarization_manager = GraphDBSummarizationManager(
-            models_tuple, summarization_mapper, summarizer, self.graph_manager
-        )
-        finalized_models: list[
-            ModelType
-        ] | None = summarization_manager.create_summaries_and_return_updated_models()
-        logger.info("Summarization complete")
+        self._upsert_models_to_graph_db(models_tuple)
 
-        logger.info("Saving models as JSON")
-
-        json_manager = JSONHandler(
-            directory, process_files_return.directory_modules, output_directory
+        finalized_models: list[ModelType] | None = self._map_and_summarize_models(
+            models_tuple, logger
         )
 
         if not finalized_models:
             raise Exception("No finalized models returned from summarization.")
 
-        for model in finalized_models:
+        json_manager = JSONHandler(
+            directory, process_files_return.directory_modules, output_directory
+        )
+        self._save_json(finalized_models, json_manager, logger)
+        self._upsert_models_to_graph_db(tuple(finalized_models))
+
+        return setup_chroma(finalized_models, logger)
+
+    def _visit_and_parse_files(
+        self, directory: str, logger: Logger
+    ) -> VisitorManagerProcessFilesReturn:
+        """Visits and parses the files in the directory."""
+
+        logger.info("Starting the directory parsing.")
+        visitor_manager = VisitorManager(directory)
+
+        return visitor_manager.process_files()
+
+    def _get_module_ids(self, models_tuple: tuple[ModelType, ...]) -> list[str]:
+        """Returns a list of module IDs from the models tuple."""
+
+        return [model.id for model in models_tuple if isinstance(model, ModuleModel)]
+
+    def _upsert_models_to_graph_db(self, models_tuple: tuple[ModelType, ...]) -> None:
+        """Upserts the models to the graph database."""
+
+        self.graph_manager.upsert_models(
+            list(models_tuple)
+        ).process_imports_and_dependencies().get_or_create_graph()
+
+    def _save_json(
+        self, models: list[ModelType], json_manager: JSONHandler, logger: Logger
+    ) -> None:
+        """Saves the models as JSON."""
+
+        logger.info("Saving models as JSON")
+        for model in models:
             if isinstance(model, DirectoryModel):
                 output_path: str = model.id
 
@@ -110,18 +109,26 @@ class GraphDBUpdater:
         json_manager.save_visited_directories()
         logger.info("JSON save complete")
 
-        logger.info("Directory parsing completed.")
+    def _map_and_summarize_models(
+        self,
+        models_tuple: tuple[ModelType, ...],
+        logger: Logger,
+    ) -> list[ModelType] | None:
+        """Maps and summarizes the models."""
 
-        if finalized_models:
-            self.graph_manager.upsert_models(
-                list(finalized_models)
-            ).process_imports_and_dependencies().get_or_create_graph()
+        module_ids: list[str] = self._get_module_ids(models_tuple)
+        summarization_mapper = SummarizationMapper(
+            module_ids, models_tuple, self.graph_manager
+        )
+        client = OpenAI(max_retries=4)
+        summarizer = OpenAISummarizer(client=client)
+        summarization_manager = GraphDBSummarizationManager(
+            models_tuple, summarization_mapper, summarizer, self.graph_manager
+        )
 
-        if finalized_models:
-            chroma_context: ChromaSetupReturnContext = setup_chroma(
-                finalized_models, logger
-            )
-        else:
-            raise Exception("No finalized models returned from summarization.")
+        finalized_models: list[
+            ModelType
+        ] | None = summarization_manager.create_summaries_and_return_updated_models()
+        logger.info("Summarization complete")
 
-        return chroma_context
+        return finalized_models if finalized_models else None
