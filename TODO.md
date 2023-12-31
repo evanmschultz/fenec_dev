@@ -1,5 +1,10 @@
 # TODO List
 
+## ArangoDB Docker Setup
+
+-   docker pull arangodb/arangodb:3.11.6
+-   docker run -e ARANGO_ROOT_PASSWORD=openSesame -p 8529:8529 -d arangodb/arangodb:3.11.6
+
 ## Things to do before showing
 
 -   [ ] Finish `StandardUpdater`, only the `update_all` method, class to replace `main.py` for parsing, summarization, and DB insertion as an interface
