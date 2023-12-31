@@ -13,6 +13,7 @@ from postcode.models.models import (
     FunctionModel,
     ModuleModel,
     StandaloneCodeBlockModel,
+    DirectoryModel,
 )
 
 from postcode.python_parser.model_builders.class_model_builder import ClassModelBuilder
@@ -31,6 +32,7 @@ ModelType = Union[
     ClassModel,
     FunctionModel,
     StandaloneCodeBlockModel,
+    DirectoryModel,
 ]
 
 BuilderType = Union[

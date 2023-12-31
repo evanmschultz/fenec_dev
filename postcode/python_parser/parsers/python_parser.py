@@ -65,7 +65,7 @@ class PythonParser:
         with open(self.file_path, "r") as file:
             return file.read()
 
-    def parse(self, code: str) -> ModuleModelBuilder | None:
+    def parse(self, code: str, parent_id: str) -> ModuleModelBuilder | None:
         """
         Parses the provided Python code into a structured module model.
 
@@ -91,7 +91,10 @@ class PythonParser:
             file_path=self.file_path
         )
         module_builder: ModuleModelBuilder = BuilderFactory.create_builder_instance(
-            block_type=BlockType.MODULE, id=module_id, file_path=self.file_path
+            block_type=BlockType.MODULE,
+            id=module_id,
+            file_path=self.file_path,
+            parent_id=parent_id,
         )
         visitor = ModuleVisitor(id=module_id, module_builder=module_builder)
         wrapper.visit(visitor)

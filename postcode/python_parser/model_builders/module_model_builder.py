@@ -40,9 +40,9 @@ class ModuleModelBuilder(BaseModelBuilder):
         ```
     """
 
-    def __init__(self, id: str, file_path: str) -> None:
+    def __init__(self, id: str, file_path: str, parent_id: str) -> None:
         super().__init__(
-            id=id, block_type=BlockType.MODULE, parent_id=None, file_path=file_path
+            id=id, block_type=BlockType.MODULE, parent_id=parent_id, file_path=file_path
         )
 
         self.module_attributes = ModuleSpecificAttributes(

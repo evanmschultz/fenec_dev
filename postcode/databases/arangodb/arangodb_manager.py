@@ -15,14 +15,12 @@ from postcode.models.models import (
     FunctionModel,
     ModuleModel,
     StandaloneCodeBlockModel,
+    DirectoryModel,
 )
 import postcode.databases.arangodb.helper_functions as helper_functions
 
 ModelType = Union[
-    ModuleModel,
-    ClassModel,
-    FunctionModel,
-    StandaloneCodeBlockModel,
+    ModuleModel, ClassModel, FunctionModel, StandaloneCodeBlockModel, DirectoryModel
 ]
 
 # NOTE: Remember, when adding logic to connect dependencies, the `from` the external dependency `to` the internal definition using it
@@ -39,30 +37,31 @@ class ArangoDBManager:
         self.processed_id_set = set()
         self.default_graph_name: str = default_graph_name
 
-    def upsert_models(self, module_models: list[ModuleModel]) -> "ArangoDBManager":
+    def upsert_models(self, module_models: list[ModelType]) -> "ArangoDBManager":
         for model in module_models:
             self._upsert_model(model)
         return self
 
-    def _upsert_model(self, module_model: ModuleModel) -> None:
-        self._upsert_vertex(module_model, "modules")
-        self._process_children(module_model)
+    def _upsert_model(self, model: ModelType) -> None:
+        collection_name: str = self._get_collection_from_id(model.id)
+        self._upsert_vertex(model, collection_name)
+        # self._process_children(module_model)
 
-    def _process_children(self, parent_model: ModelType) -> None:
-        if not parent_model.children_ids:
-            return None
+    # def _process_children(self, parent_model: ModelType) -> None:
+    #     if not parent_model.children_ids:
+    #         return None
 
-        for child in parent_model.children_ids:
-            # if child.id in self.processed_id_set:
-            #     continue
+    #     for child in parent_model.children_ids:
+    #         # if child.id in self.processed_id_set:
+    #         #     continue
 
-            self.processed_id_set.add(child.id)
-            self._upsert_vertex(
-                child, helper_functions.pluralize_block_type(child.block_type)
-            )
+    #         self.processed_id_set.add(child.id)
+    #         self._upsert_vertex(
+    #             child, helper_functions.pluralize_block_type(child.block_type)
+    #         )
 
-            if child.children:
-                self._process_children(child)
+    #         if child.children:
+    #             self._process_children(child)
 
     def _upsert_vertex(self, model: ModelType, collection_name: str) -> None:
         model_data: dict[str, Any] = model.model_dump()
@@ -128,6 +127,7 @@ class ArangoDBManager:
             "CLASS": lambda: "classes",
             "FUNCTION": lambda: "functions",
             "STANDALONE_BLOCK": lambda: "standalone_blocks",
+            "DIRECTORY": lambda: "directories",
         }
 
         for key, func in block_type_functions.items():
@@ -348,7 +348,7 @@ class ArangoDBManager:
             logging.error(f"Error in get_all_upstream_vertices: {e}")
             return None
 
-    def get_vertex_by_id(self, id: str) -> ModelType | None:
+    def get_vertex_model_by_id(self, id: str) -> ModelType | None:
         """
         Retrieves a vertex by its ID and returns it as the appropriate Pydantic model.
         """

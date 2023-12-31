@@ -377,7 +377,8 @@ class DirectoryModel(BaseModel):
     block_type: BlockType = BlockType.DIRECTORY
     directory_name: str
     sub_directories_ids: list[str]
-    module_ids: list[str]
+    children_ids: list[str]
+    parent_id: str | None
     summary: str | None = None
 
     def convert_to_metadata(self) -> dict[str, str | int]:
@@ -388,6 +389,7 @@ class DirectoryModel(BaseModel):
             "sub_directories": str(self.sub_directories_ids)
             if self.sub_directories_ids
             else "",
-            "module_ids": self.model_dump_json() if self.module_ids else "",
+            "children_ids": self.model_dump_json() if self.children_ids else "",
+            "parent_id": self.parent_id if self.parent_id else "",
             "summary": self.summary if self.summary else "",
         }

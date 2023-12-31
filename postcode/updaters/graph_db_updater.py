@@ -1,4 +1,5 @@
 from logging import Logger
+from typing import Union
 
 from openai import OpenAI
 from postcode.ai_services.summarizer.graph_db_summarization_manager import (
@@ -16,6 +17,7 @@ from postcode.databases.chroma.setup_chroma import (
 from postcode.json_management.json_handler import JSONHandler
 from postcode.models.models import (
     ClassModel,
+    DirectoryModel,
     FunctionModel,
     ModuleModel,
     StandaloneCodeBlockModel,
@@ -24,6 +26,16 @@ from postcode.python_parser.visitor_manager.visitor_manager import (
     VisitorManager,
     VisitorManagerProcessFilesReturn,
 )
+from postcode.types.postcode import ModelType
+
+
+# ModelType = Union[
+#     ModuleModel,
+#     ClassModel,
+#     FunctionModel,
+#     StandaloneCodeBlockModel,
+#     DirectoryModel,
+# ]
 
 
 class GraphDBUpdater:
@@ -56,21 +68,22 @@ class GraphDBUpdater:
             visitor_manager.process_files()
         )
 
-        module_models_tuple: tuple[
-            ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel, ...
-        ] = process_files_return.models_tuple
-        module_ids: list[str] = [model.id for model in module_models_tuple]
+        models_tuple: tuple[ModelType, ...] = process_files_return.models_tuple
+        module_ids: list[str] = [
+            model.id for model in models_tuple if isinstance(model, ModuleModel)
+        ]
+
         directory_modules: dict[str, list[str]] = process_files_return.directory_modules
         self.graph_manager.upsert_models(
-            list(module_models_tuple)
+            list(models_tuple)
         ).process_imports_and_dependencies().get_or_create_graph()
         summarization_mapper = SummarizationMapper(
-            module_ids, module_models_tuple, self.graph_manager
+            module_ids, models_tuple, self.graph_manager
         )
         client = OpenAI(max_retries=4)
         summarizer = OpenAISummarizer(client=client)
         summarization_manager = GraphDBSummarizationManager(
-            module_models_tuple, summarization_mapper, summarizer, self.graph_manager
+            models_tuple, summarization_mapper, summarizer, self.graph_manager
         )
         finalized_module_models: list[
             ModuleModel
@@ -78,13 +91,29 @@ class GraphDBUpdater:
         logger.info("Summarization complete")
 
         logger.info("Saving models as JSON")
+        # json_manager = JSONHandler(directory, directory_modules, output_directory)
+
+        # for module_model in module_models_tuple:
+        #     json_manager.save_model_as_json(module_model, module_model.file_path)
+
+        # json_manager.save_visited_directories()
+        # logger.info("JSON save complete")
+
+        directory_modules: dict[str, list[str]] = process_files_return.directory_modules
         json_manager = JSONHandler(directory, directory_modules, output_directory)
 
-        for module_model in module_models_tuple:
-            json_manager.save_model_as_json(module_model, module_model.file_path)
+        for model in models_tuple:
+            if isinstance(model, DirectoryModel):
+                output_path: str = model.id
+
+            else:
+                output_path: str = model.file_path + model.id
+            json_manager.save_model_as_json(model, output_path)
 
         json_manager.save_visited_directories()
         logger.info("JSON save complete")
+
+        logger.info("Directory parsing completed.")
 
         logger.info("Directory parsing completed.")
 

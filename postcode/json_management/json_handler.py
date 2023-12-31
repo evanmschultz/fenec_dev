@@ -1,6 +1,7 @@
 import json
 import logging
 from pathlib import Path
+from shutil import rmtree
 from typing import Union
 
 from postcode.models.models import (
@@ -32,6 +33,7 @@ class JSONHandler:
         self.output_directory: str = output_directory
         self.directory_modules: dict[str, list[str]] = directory_modules
 
+        self._clean_output_directory()
         self._create_output_directory()
 
     @logging_decorator(message="Saving model as JSON")
@@ -113,3 +115,11 @@ class JSONHandler:
 
         with open(output_path, "w") as json_file:
             json.dump(self.directory_modules, json_file, indent=4)
+
+    def _clean_output_directory(self) -> None:
+        """
+        Deletes the output directory and all its contents.
+        """
+        output_dir = Path(self.output_directory)
+        if output_dir.exists() and output_dir.is_dir():
+            rmtree(output_dir)

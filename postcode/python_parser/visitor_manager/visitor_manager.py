@@ -35,6 +35,7 @@ from postcode.python_parser.id_generation.id_generation_strategies import (
     ModuleIDGenerationStrategy,
     DirectoryIDGenerationStrategy,
 )
+from postcode.types.postcode import ModelType
 
 
 BuilderType = Union[
@@ -43,6 +44,14 @@ BuilderType = Union[
     FunctionModelBuilder,
     StandaloneBlockModelBuilder,
 ]
+
+# ModelType = Union[
+#     ModuleModel,
+#     ClassModel,
+#     FunctionModel,
+#     StandaloneCodeBlockModel,
+#     DirectoryModel,
+# ]
 
 EXCLUDED_DIRECTORIES: set[str] = {".venv", "node_modules", "__pycache__", ".git"}
 
@@ -58,14 +67,7 @@ class VisitorManagerProcessFilesReturn:
             This is used to keep track of the modules present in each directory.
     """
 
-    models_tuple: tuple[
-        ModuleModel
-        | ClassModel
-        | FunctionModel
-        | StandaloneCodeBlockModel
-        | DirectoryModel,
-        ...,
-    ]
+    models_tuple: tuple[ModelType, ...]
     directory_modules: dict[str, list[str]]
 
 
@@ -170,25 +172,12 @@ class VisitorManager:
             )
             directory_models_list.append(directory_model)
 
-        all_models: list[
-            ModuleModel
-            | ClassModel
-            | FunctionModel
-            | StandaloneCodeBlockModel
-            | DirectoryModel
-        ] = [
+        all_models: list[ModelType] = [
             *models_list,
             *directory_models_list,
         ]
 
-        models_tuple: tuple[
-            ModuleModel
-            | ClassModel
-            | FunctionModel
-            | StandaloneCodeBlockModel
-            | DirectoryModel,
-            ...,
-        ] = tuple(all_models)
+        models_tuple: tuple[ModelType, ...] = tuple(all_models)
 
         return VisitorManagerProcessFilesReturn(
             models_tuple=models_tuple, directory_modules=self.directory_modules
@@ -231,7 +220,12 @@ class VisitorManager:
 
         parser = PythonParser(file_path)
         code: str = parser.open_file()
-        module_model_builder: ModuleModelBuilder | None = parser.parse(code)
+
+        parent_id: str | None = self._get_parent_directory_id(file_path)
+        if not parent_id:
+            parent_id = ""
+
+        module_model_builder: ModuleModelBuilder | None = parser.parse(code, parent_id)
 
         return module_model_builder if module_model_builder else None
 
@@ -258,11 +252,15 @@ class VisitorManager:
     def _build_directory_model(self, directory_path: str) -> DirectoryModel:
         """Builds a directory model for the given directory path."""
 
+        id: str = DirectoryIDGenerationStrategy().generate_id(directory_path)
+        parent_id: str | None = self._get_parent_directory_id(directory_path)
+
         return DirectoryModel(
-            id=DirectoryIDGenerationStrategy().generate_id(directory_path),
+            id=id,
+            parent_id=parent_id,
             directory_name=self._get_directory_name(directory_path),
             sub_directories_ids=self._get_subdirectory_ids(directory_path),
-            module_ids=self._generate_module_ids(directory_path),
+            children_ids=self._generate_module_ids(directory_path),
         )
 
     def _get_subdirectory_ids(self, directory_path: str) -> list[str]:
@@ -298,3 +296,12 @@ class VisitorManager:
             ModuleIDGenerationStrategy.generate_id(str(Path(directory_path) / module))
             for module in python_files
         ]
+
+    def _get_parent_directory_id(self, directory_path: str) -> str | None:
+        """Gets the parent id of the given directory."""
+
+        parent_path: str = str(Path(directory_path).parent)
+        if parent_path == self.directory:
+            return None
+        else:
+            return DirectoryIDGenerationStrategy().generate_id(parent_path)

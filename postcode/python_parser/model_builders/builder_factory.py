@@ -32,6 +32,7 @@ class BuilderFactory:
         BlockType.MODULE: lambda id, file_path, name, parent_id: ModuleModelBuilder(
             id=id,
             file_path=file_path,
+            parent_id=parent_id,
         ),
         BlockType.CLASS: lambda id, name, parent_id, file_path: ClassModelBuilder(
             id=id,
@@ -59,6 +60,7 @@ class BuilderFactory:
         *,
         id: str,
         file_path: str,
+        parent_id: str,
     ) -> ModuleModelBuilder:
         """
         Creates a ModuleModelBuilder instance for building module models.
