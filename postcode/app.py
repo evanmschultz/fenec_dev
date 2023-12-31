@@ -1,25 +1,27 @@
 import logging
 from logging import Logger
-from typing import Union
 
-from postcode.models.models import (
-    ModuleModel,
-    ClassModel,
-    FunctionModel,
-    StandaloneCodeBlockModel,
-)
+# from typing import Union
+
+# from postcode.models.models import (
+#     ModuleModel,
+#     ClassModel,
+#     FunctionModel,
+#     StandaloneCodeBlockModel,
+# )
 
 from postcode.databases.chroma.setup_chroma import (
     ChromaSetupReturnContext,
 )
 from postcode.updaters.graph_db_updater import GraphDBUpdater
+from postcode.types.postcode import ModelType
 
-ModelType = Union[
-    ModuleModel,
-    ClassModel,
-    FunctionModel,
-    StandaloneCodeBlockModel,
-]
+# ModelType = Union[
+#     ModuleModel,
+#     ClassModel,
+#     FunctionModel,
+#     StandaloneCodeBlockModel,
+# ]
 
 from postcode.utilities.logger.logging_config import setup_logging
 
