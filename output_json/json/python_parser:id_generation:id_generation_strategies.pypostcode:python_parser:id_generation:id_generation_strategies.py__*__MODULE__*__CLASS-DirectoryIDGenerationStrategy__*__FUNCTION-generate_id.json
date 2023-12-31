@@ -21,6 +21,6 @@
     "code_content": "\n@staticmethod\ndef generate_id(directory_path: str) -> str:\n    \"\"\"\n        Generates an ID for a directory based on the given directory path.\n\n        Args:\n            - directory_path (str): The path to the directory.\n\n        Returns:\n            - str: The generated ID, incorporating the file path.\n        \"\"\"\n    directory_path_str: str = DirectoryIDGenerationStrategy._converted_path_string(\n        directory_path\n    )\n    return f\"{directory_path_str}__*__DIRECTORY\"\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-DirectoryIDGenerationStrategy__*__FUNCTION-generate_id\n\n        None, None, None\n        ",
     "children_ids": []
 }

@@ -21,6 +21,6 @@
     "code_content": "\n@staticmethod\ndef get_module_names_updated_since_last_commit() -> list[str]:\n    \"\"\"\n        Returns a list of the modules that have been changed since the last commit.\n\n        Runs the following command using subprocess:\n            (git ls-files --others --exclude-standard; git diff --name-only HEAD) | sort | uniq\n\n        Returns:\n            - list[str]: A list of the modules that have been changed since the last commit.\n\n        Raises:\n            - Exception: If the git command fails.\n        \"\"\"\n\n    git_command = \"(git ls-files --others --exclude-standard; git diff --name-only HEAD) | sort | uniq\"\n\n    result: subprocess.CompletedProcess[str] = subprocess.run(\n        git_command, shell=True, capture_output=True, text=True\n    )\n    if result.returncode != 0:\n        raise Exception(\"Git command failed: \" + result.stderr)\n\n    changed_files: list[str] = result.stdout.strip().split(\"\\n\")\n\n    return [file for file in changed_files if file.endswith(\".py\")]\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:updaters:git_updater.py__*__MODULE__*__CLASS-UpdateUsingGit__*__FUNCTION-get_module_names_updated_since_last_commit\n\n        None, None, None\n        ",
     "children_ids": []
 }

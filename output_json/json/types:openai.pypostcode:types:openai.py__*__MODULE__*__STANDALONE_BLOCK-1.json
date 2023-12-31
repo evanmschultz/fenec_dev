@@ -9,6 +9,6 @@
     "code_content": "\"\"\"\nOpenAI Types\n------------\n\nThis module contains types defined by the openai third-party library.\nThese types are used for easy implementation in the postcode project and\nprovide convenience for users of the postcode library.\n\"\"\"\n",
     "important_comments": null,
     "dependencies": [],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:types:openai.py__*__MODULE__*__STANDALONE_BLOCK-1\n\n        None, None, None\n        ",
     "children_ids": null
 }

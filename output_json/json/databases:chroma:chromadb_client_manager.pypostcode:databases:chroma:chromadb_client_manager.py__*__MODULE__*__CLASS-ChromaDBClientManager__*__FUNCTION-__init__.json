@@ -15,6 +15,6 @@
     "code_content": "\ndef __init__(self, client: chroma_types.ClientAPI) -> None:\n    self.client: chroma_types.ClientAPI = client\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-__init__\n\n        None, None, None\n        ",
     "children_ids": []
 }

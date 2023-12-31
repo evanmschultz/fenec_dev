@@ -31,6 +31,6 @@
             "local_module_id": "postcode:models:enums.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:arangodb:helper_functions.py__*__MODULE__*__FUNCTION-pluralized_and_lowered_block_types\n\n        None, \nImported code block (postcode:models:enums.py__*__MODULE) code content:\n\n\nclass BlockType(str, Enum):\n    \"\"\"Enum of code block types.\"\"\"\n\n    STANDALONE_CODE_BLOCK = \"STANDALONE_BLOCK\"\n    CLASS = \"CLASS\"\n    FUNCTION = \"FUNCTION\"\n    MODULE = \"MODULE\"\n    DIRECTORY = \"DIRECTORY\"\n\n    def __str__(self) -> str:\n        return self.value\n\n, \n        ",
     "children_ids": []
 }

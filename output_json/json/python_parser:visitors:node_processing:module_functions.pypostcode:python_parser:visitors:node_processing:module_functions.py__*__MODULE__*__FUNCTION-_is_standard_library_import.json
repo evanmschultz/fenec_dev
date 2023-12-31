@@ -28,6 +28,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_is_standard_library_import\n\n        None, None, \nimport sys\n        ",
     "children_ids": []
 }

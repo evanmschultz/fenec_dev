@@ -15,6 +15,6 @@
     "code_content": "\ndef _get_function_specific_attributes(self) -> dict[str, Any]:\n    \"\"\"\n        Gets the function specific attributes from the builder.\n        \"\"\"\n    return self.function_attributes.model_dump()\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-_get_function_specific_attributes\n\n        None, None, None\n        ",
     "children_ids": []
 }

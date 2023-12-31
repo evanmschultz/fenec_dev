@@ -60,7 +60,7 @@
             "local_module_id": "postcode:ai_services:summarizer:prompts:summarization_prompts.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-PromptCreator\n\n        \n\nSummary:\n\n        postcode:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-PromptCreator__*__FUNCTION-_interpolate_prompt_string\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-PromptCreator__*__FUNCTION-create_prompt\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-PromptCreator__*__FUNCTION-_interpolate_prompt_string",
         "postcode:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-PromptCreator__*__FUNCTION-create_prompt"

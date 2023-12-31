@@ -41,7 +41,7 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes\n\n        \n\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_docstring_to_metadata\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_header_to_metadata\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_footer_to_metadata\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_imports_to_metadata\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_module_attributes_to_metadata_dict\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_docstring_to_metadata",
         "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_header_to_metadata",

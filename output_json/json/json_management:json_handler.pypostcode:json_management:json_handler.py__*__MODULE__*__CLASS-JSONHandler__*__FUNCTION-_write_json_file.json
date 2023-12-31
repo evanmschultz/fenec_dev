@@ -15,6 +15,6 @@
     "code_content": "\ndef _write_json_file(\n    self,\n    module_model: ModelType,\n    output_path: str,\n) -> None:\n    \"\"\"Writes a JSON file containing the parsed data from a ModuleModel.\"\"\"\n\n    parsed_data_json: str = module_model.model_dump_json(indent=4)\n    with open(output_path, \"w\") as json_file:\n        json_file.write(parsed_data_json)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-_write_json_file\n\n        None, None, None\n        ",
     "children_ids": []
 }

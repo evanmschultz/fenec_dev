@@ -15,6 +15,6 @@
     "code_content": "\ndef __str__(self) -> str:\n    return self.value\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:enums.py__*__MODULE__*__CLASS-BlockType__*__FUNCTION-__str__\n\n        None, None, None\n        ",
     "children_ids": []
 }

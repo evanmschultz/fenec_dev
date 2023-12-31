@@ -15,6 +15,6 @@
     "code_content": "\ndef build_children(\n    self,\n) -> None:\n    if self.child_builders:\n        self.child_models = []\n        for child_builder in self.child_builders:\n            self.child_models.append(child_builder.build())\n            if child_builder.child_models:\n                self.child_models.extend(child_builder.child_models)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-build_children\n\n        None, None, None\n        ",
     "children_ids": []
 }

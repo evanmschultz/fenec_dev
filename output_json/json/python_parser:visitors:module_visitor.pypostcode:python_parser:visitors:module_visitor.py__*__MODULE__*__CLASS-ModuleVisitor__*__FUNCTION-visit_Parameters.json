@@ -15,6 +15,6 @@
     "code_content": "\ndef visit_Parameters(self, node: libcst.Parameters) -> None:\n    \"\"\"\n        Visits a Parameters node in the CST.\n\n        Processes the parameters of a function and updates the current function model builder with these parameters.\n        \"\"\"\n\n    builder = self.builder_stack[-1]\n    parameter_list: ParameterListModel | None = (\n        function_def_functions.process_parameters(node)\n    )\n\n    if isinstance(builder, FunctionModelBuilder):\n        builder.set_parameters_list(parameter_list)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_Parameters\n\n        None, None, None\n        ",
     "children_ids": []
 }

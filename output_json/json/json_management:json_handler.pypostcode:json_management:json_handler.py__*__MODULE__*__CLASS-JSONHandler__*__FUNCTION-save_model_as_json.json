@@ -23,6 +23,6 @@
     "code_content": "\n@logging_decorator(message=\"Saving model as JSON\")\ndef save_model_as_json(\n    self,\n    model: ModelType,\n    file_path: str,\n) -> None:\n    \"\"\"Saves a parsed ModelType as JSON.\"\"\"\n\n    json_output_directory: str = self._create_json_output_directory()\n    output_path: str = self._get_json_output_path(file_path, json_output_directory)\n    self._write_json_file(model, output_path)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-save_model_as_json\n\n        None, None, None\n        ",
     "children_ids": []
 }

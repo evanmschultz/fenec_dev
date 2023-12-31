@@ -15,6 +15,6 @@
     "code_content": "\ndef set_is_async(self, is_async: bool) -> \"FunctionModelBuilder\":\n    \"\"\"Sets the is_async attribute in the function model.\"\"\"\n    self.function_attributes.is_async = is_async\n    return self\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_is_async\n\n        None, None, None\n        ",
     "children_ids": []
 }

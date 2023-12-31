@@ -15,6 +15,6 @@
     "code_content": "\ndef _get_collection_from_id(self, block_id: str) -> str:\n    block_id_parts: list[str] = block_id.split(\"__*__\")\n    block_type_part: str = block_id_parts[-1]\n\n    block_type_functions: dict[str, Callable[..., str]] = {\n        \"MODULE\": lambda: \"modules\",\n        \"CLASS\": lambda: \"classes\",\n        \"FUNCTION\": lambda: \"functions\",\n        \"STANDALONE_BLOCK\": lambda: \"standalone_blocks\",\n        \"DIRECTORY\": lambda: \"directories\",\n    }\n\n    for key, func in block_type_functions.items():\n        if block_type_part.startswith(key):\n            return func()\n\n    return \"unknown\"\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_get_collection_from_id\n\n        None, None, None\n        ",
     "children_ids": []
 }

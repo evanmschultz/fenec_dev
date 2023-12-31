@@ -15,6 +15,6 @@
     "code_content": "\ndef _create_user_message(self, content: str) -> ChatCompletionUserMessageParam:\n    \"\"\"Creates a user message for chat completion using OpenAi's ChatCompletionUserMessageParam class.\"\"\"\n    return ChatCompletionUserMessageParam(content=content, role=\"user\")\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:openai_summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-_create_user_message\n\n        None, None, None\n        ",
     "children_ids": []
 }

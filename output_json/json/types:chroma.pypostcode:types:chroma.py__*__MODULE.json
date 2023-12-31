@@ -273,7 +273,7 @@
     "code_content": "\"\"\"\nChromaDB Types\n--------------\n\nThis module contains types defined by the chromadb third-party library.\nThese types are used for easy implementation in the postcode project and\nprovide convenience for users of the postcode library.\n\"\"\"\n\nimport chromadb.utils.embedding_functions as ef\n\nfrom chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings\nfrom chromadb.api import ClientAPI\nfrom chromadb.api.types import (\n    DataLoader,\n    CollectionMetadata,\n    GetResult,\n    QueryResult,\n    Where,\n    WhereDocument,\n    Include,\n    URIs,\n    Loadable,\n    Metadata,\n    Embedding,\n)\nfrom chromadb import Collection\nfrom chromadb import EmbeddingFunction\n\nfrom chromadb.api.types import (\n    CollectionMetadata,\n    Documents,\n    Embeddable,\n    EmbeddingFunction,\n    DataLoader,\n    Embeddings,\n    IDs,\n    Include,\n    Loadable,\n    Metadatas,\n    URIs,\n    Where,\n    QueryResult,\n    GetResult,\n    WhereDocument,\n)\nfrom chromadb.config import Component, Settings\nfrom chromadb.types import Database, Tenant\nimport chromadb.utils.embedding_functions as ef\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:types:chroma.py__*__MODULE\n\n        \n\nSummary:\n\n        postcode:types:chroma.py__*__MODULE__*__STANDALONE_BLOCK-1\n\n        None, None, \nimport chromadb.utils.embedding_functions as ef\nimport chromadb.utils.embedding_functions as ef\n        , None, None\n        ",
     "children_ids": [
         "postcode:types:chroma.py__*__MODULE__*__STANDALONE_BLOCK-1"
     ]

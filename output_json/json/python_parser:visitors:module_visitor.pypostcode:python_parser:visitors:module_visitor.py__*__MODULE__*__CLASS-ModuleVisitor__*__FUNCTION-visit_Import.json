@@ -15,6 +15,6 @@
     "code_content": "\ndef visit_Import(self, node: libcst.Import) -> None:\n    \"\"\"\n        Visits an Import node in the CST.\n\n        Processes the import statement and updates the module builder with the import model.\n        \"\"\"\n\n    import_model: ImportModel = module_functions.process_import(node)\n    self.builder.add_import(import_model)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_Import\n\n        None, None, None\n        ",
     "children_ids": []
 }

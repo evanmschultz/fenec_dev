@@ -15,6 +15,6 @@
     "code_content": "\ndef _create_json_output_directory(self) -> str:\n    \"\"\"Creates the JSON output directory if it does not already exist.\"\"\"\n\n    json_output_directory: Path = Path(self.output_directory) / \"json\"\n    json_output_directory.mkdir(exist_ok=True)\n    return str(json_output_directory)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-_create_json_output_directory\n\n        None, None, None\n        ",
     "children_ids": []
 }

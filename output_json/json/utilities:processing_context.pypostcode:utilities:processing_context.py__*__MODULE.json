@@ -37,7 +37,7 @@
     "code_content": "from dataclasses import dataclass\n\nimport libcst\n\n\n@dataclass\nclass PositionData:\n    \"\"\"Positional data for a node in the syntax tree.\"\"\"\n\n    start: int\n    end: int\n\n\n@dataclass\nclass NodeAndPositionData:\n    \"\"\"A node in the syntax tree and its positional data.\"\"\"\n\n    nodes: list[libcst.CSTNode]\n    start: int\n    end: int\n\n\n@dataclass\nclass LoggingCallerInfo:\n    \"\"\"Information about the caller of a function that is being logged. Used for `logging_decorator`.\"\"\"\n\n    caller_module_name: str\n    caller_file_path: str\n    caller_line_no: int\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:utilities:processing_context.py__*__MODULE\n\n        \n\nSummary:\n\n        postcode:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData\n\n        None, None, \nfrom dataclasses import dataclass\n        \n\nSummary:\n\n        postcode:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData\n\n        None, None, \nfrom dataclasses import dataclass\nimport libcst\n        \n\nSummary:\n\n        postcode:utilities:processing_context.py__*__MODULE__*__CLASS-LoggingCallerInfo\n\n        None, None, \nfrom dataclasses import dataclass\n        , None, None\n        ",
     "children_ids": [
         "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData",
         "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData",

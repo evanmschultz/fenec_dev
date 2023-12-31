@@ -19,7 +19,7 @@
             "code_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy\n\n        \n\nSummary:\n\n        postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy__*__FUNCTION-generate_id\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy__*__FUNCTION-generate_id"
     ]

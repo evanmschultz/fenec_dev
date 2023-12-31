@@ -15,6 +15,6 @@
     "code_content": "\ndef _walk_directories(self) -> list[str]:\n    \"\"\"Walks the specified directory and returns a list of all files.\"\"\"\n\n    all_files: list[str] = []\n    for file_path in Path(self.directory).rglob(\"*\"):\n        if not any(\n            excluded in file_path.parts for excluded in EXCLUDED_DIRECTORIES\n        ):\n            all_files.append(str(file_path))\n    return all_files\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_walk_directories\n\n        None, None, None\n        ",
     "children_ids": []
 }

@@ -15,6 +15,6 @@
     "code_content": "\ndef _create_system_message(self, content: str) -> ChatCompletionSystemMessageParam:\n    \"\"\"Creates a system message for chat completion using OpenAi's ChatCompletionSystemMessageParam class.\"\"\"\n    return ChatCompletionSystemMessageParam(content=content, role=\"system\")\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:openai_summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-_create_system_message\n\n        None, None, None\n        ",
     "children_ids": []
 }

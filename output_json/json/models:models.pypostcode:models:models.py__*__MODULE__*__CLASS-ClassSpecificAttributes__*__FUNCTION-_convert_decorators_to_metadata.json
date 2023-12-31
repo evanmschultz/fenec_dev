@@ -15,6 +15,6 @@
     "code_content": "# attributes: list[dict] | None = None\n\ndef _convert_decorators_to_metadata(self) -> str:\n    \"\"\"Converts the decorators to a metadata string.\"\"\"\n    decorators_str: str = self.model_dump_json() if self.decorators else \"\"\n    return f\"{decorators_str}\"\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ClassSpecificAttributes__*__FUNCTION-_convert_decorators_to_metadata\n\n        None, None, None\n        ",
     "children_ids": []
 }

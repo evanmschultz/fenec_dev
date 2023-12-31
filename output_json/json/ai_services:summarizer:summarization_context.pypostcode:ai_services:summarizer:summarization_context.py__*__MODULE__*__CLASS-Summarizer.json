@@ -39,7 +39,7 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer\n\n        \n\nSummary:\n\n        postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer__*__FUNCTION-summarize_code\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer__*__FUNCTION-test_summarize_code\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer__*__FUNCTION-summarize_code",
         "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer__*__FUNCTION-test_summarize_code"

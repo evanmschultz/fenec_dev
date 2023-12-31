@@ -194,7 +194,7 @@
             "local_module_id": "postcode:models:enums.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory\n\n        \n\nSummary:\n\n        postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory__*__FUNCTION-create_builder_instance\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory__*__FUNCTION-create_builder_instance\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory__*__FUNCTION-create_builder_instance\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory__*__FUNCTION-create_builder_instance\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory__*__FUNCTION-create_builder_instance\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory__*__FUNCTION-create_builder_instance",
         "postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory__*__FUNCTION-create_builder_instance",

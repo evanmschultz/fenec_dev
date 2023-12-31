@@ -15,6 +15,6 @@
     "code_content": "\ndef add_important_comment(\n    self, comment: CommentModel\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Adds an important comment to the model instance.\"\"\"\n    if not self.common_attributes.important_comments:\n        self.common_attributes.important_comments = []\n    self.common_attributes.important_comments.append(comment)\n    return self\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-add_important_comment\n\n        None, None, None\n        ",
     "children_ids": []
 }

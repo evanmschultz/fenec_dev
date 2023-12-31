@@ -61,6 +61,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__STANDALONE_BLOCK-1\n\n        None, None, \nfrom typing import TYPE_CHECKING, Any\n        ",
     "children_ids": null
 }

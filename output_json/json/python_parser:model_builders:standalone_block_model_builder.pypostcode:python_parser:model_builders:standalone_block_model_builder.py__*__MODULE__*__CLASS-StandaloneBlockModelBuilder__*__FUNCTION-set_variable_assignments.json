@@ -15,6 +15,6 @@
     "code_content": "\ndef set_variable_assignments(\n    self, variable_declarations: list[str]\n) -> \"StandaloneBlockModelBuilder\":\n    \"\"\"Sets the list of variable declarations to the standalone code block model.\"\"\"\n    self.standalone_block_attributes.variable_assignments = variable_declarations\n    return self\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder__*__FUNCTION-set_variable_assignments\n\n        None, None, None\n        ",
     "children_ids": []
 }

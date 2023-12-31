@@ -32,6 +32,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData\n\n        None, None, \nfrom dataclasses import dataclass\n        ",
     "children_ids": []
 }

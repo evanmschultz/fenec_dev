@@ -23,6 +23,6 @@
     "code_content": "\n@logging_decorator(message=\"Building module model\")\ndef build(\n    self,\n) -> tuple[\n    ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None\n]:\n    \"\"\"Builds and returns the module model instance after building and setting the children models.\"\"\"\n    self.build_children()\n    self.set_children_ids()\n    return (\n        ModuleModel(\n            **self._get_common_attributes(),\n            **self._get_module_specific_attributes(),\n        ),\n        self.child_models,\n    )\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder__*__FUNCTION-build\n\n        None, None, None\n        ",
     "children_ids": []
 }

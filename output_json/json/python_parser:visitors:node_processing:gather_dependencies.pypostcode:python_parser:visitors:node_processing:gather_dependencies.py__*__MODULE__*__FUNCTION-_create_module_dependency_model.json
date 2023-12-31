@@ -45,6 +45,6 @@
             "local_module_id": "postcode:models:models.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_create_module_dependency_model\n\n        None, \nImported code block (postcode:models:models.py__*__MODULE) code content:\n\n\nclass ImportModel(BaseModel):\n    \"\"\"Class representing an import statement.\"\"\"\n\n    import_names: list[ImportNameModel]\n    imported_from: str | None = None\n    import_module_type: ImportModuleType = ImportModuleType.STANDARD_LIBRARY\n    local_module_id: str | None = None\n\n    def convert_import_to_metadata(self) -> str:\n        \"\"\"Converts the import to a metadata string.\"\"\"\n        return self.model_dump_json()\n\n, \nimport re\n        ",
     "children_ids": []
 }

@@ -15,6 +15,6 @@
     "code_content": "def __init__(\n    self,\n    db_connector: ArangoDBConnector,\n    default_graph_name: str = \"codebase_graph\",\n) -> None:\n    self.db_connector: ArangoDBConnector = db_connector\n\n    self.processed_id_set = set()\n    self.default_graph_name: str = default_graph_name\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-__init__\n\n        None, None, None\n        ",
     "children_ids": []
 }

@@ -32,6 +32,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-DirectoryDetails\n\n        None, None, \nfrom dataclasses import dataclass\n        ",
     "children_ids": []
 }

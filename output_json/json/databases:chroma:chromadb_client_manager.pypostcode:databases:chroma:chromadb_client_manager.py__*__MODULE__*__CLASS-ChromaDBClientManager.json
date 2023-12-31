@@ -91,7 +91,7 @@
             "local_module_id": "postcode:types:chroma.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager\n\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-__init__\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-get_or_create_collection\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-delete_collection\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-list_collections\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-get_client_settings\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-reset_client\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-__init__",
         "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-get_or_create_collection",

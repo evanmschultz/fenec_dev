@@ -15,6 +15,6 @@
     "code_content": "\ndef __init__(self, model_builder_tuple: tuple[ModuleModelBuilder, ...]) -> None:\n    self.model_builder_tuple: tuple[ModuleModelBuilder, ...] = model_builder_tuple\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater__*__FUNCTION-__init__\n\n        None, None, None\n        ",
     "children_ids": []
 }

@@ -80,7 +80,7 @@
             "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-DependencyUpdater\n\n        \n\nSummary:\n\n        postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-DependencyUpdater__*__FUNCTION-update_dependencies\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-DependencyUpdater__*__FUNCTION-update_dependencies"
     ]

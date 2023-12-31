@@ -57,6 +57,6 @@
             "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_process_leading_lines\n\n        None, \nImported code block (postcode:models:models.py__*__MODULE) code content:\n\n\nclass CommentModel(BaseModel):\n    \"\"\"Class representing a comment.\"\"\"\n\n    content: str\n    comment_types: list[CommentType]\n\n    def convert_comment_to_metadata(self) -> str:\n        \"\"\"Converts the comment to a metadata string.\"\"\"\n        return self.model_dump_json()\n\n, \nimport libcst\n        ",
     "children_ids": []
 }

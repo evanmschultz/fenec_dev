@@ -15,6 +15,6 @@
     "code_content": "\ndef _stringify_children_summaries(self, children_summary_list: list[str]) -> str:\n    \"\"\"Converts all of the child summaries to a single string to be used in the prompt.\"\"\"\n\n    children_summaries: str = \"\"\n    for child_summary in children_summary_list:\n        children_summaries += f\"\\n{child_summary}\"\n    return children_summaries\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_stringify_children_summaries\n\n        None, None, None\n        ",
     "children_ids": []
 }

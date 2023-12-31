@@ -29,7 +29,7 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:enums.py__*__MODULE__*__CLASS-BlockType\n\n        \n\nSummary:\n\n        postcode:models:enums.py__*__MODULE__*__CLASS-BlockType__*__FUNCTION-__str__\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:models:enums.py__*__MODULE__*__CLASS-BlockType__*__FUNCTION-__str__"
     ]

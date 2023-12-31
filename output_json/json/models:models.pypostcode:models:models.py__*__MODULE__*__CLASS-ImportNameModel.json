@@ -38,6 +38,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ImportNameModel\n\n        None, None, \nfrom pydantic import BaseModel, Field, validator\n        ",
     "children_ids": []
 }

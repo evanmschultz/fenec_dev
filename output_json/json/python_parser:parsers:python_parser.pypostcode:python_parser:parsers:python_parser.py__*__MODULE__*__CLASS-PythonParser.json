@@ -98,7 +98,7 @@
             "local_module_id": "postcode:models:enums.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser\n\n        \n\nSummary:\n\n        postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-__init__\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-open_file\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-parse\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-__init__",
         "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-open_file",

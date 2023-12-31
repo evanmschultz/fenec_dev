@@ -43,6 +43,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:utilities:logger:logging_config.py__*__MODULE__*__FUNCTION-setup_logging\n\n        None, None, \nimport logging\nfrom rich.syntax import Syntax\n        ",
     "children_ids": []
 }

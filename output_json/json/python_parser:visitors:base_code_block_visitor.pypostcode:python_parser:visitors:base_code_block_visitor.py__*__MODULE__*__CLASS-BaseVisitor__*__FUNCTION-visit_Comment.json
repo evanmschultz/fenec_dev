@@ -15,6 +15,6 @@
     "code_content": "\ndef visit_Comment(self, node: libcst.Comment) -> None:\n    \"\"\"\n        Visits a Comment node in the CST.\n\n        Extracts important comments from the node and adds them to the current builder in the stack.\n        \"\"\"\n\n    parent_builder = self.builder_stack[-1]\n    content: CommentModel | None = common_functions.extract_important_comment(node)\n    if content:\n        parent_builder.add_important_comment(content)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-visit_Comment\n\n        None, None, None\n        ",
     "children_ids": []
 }

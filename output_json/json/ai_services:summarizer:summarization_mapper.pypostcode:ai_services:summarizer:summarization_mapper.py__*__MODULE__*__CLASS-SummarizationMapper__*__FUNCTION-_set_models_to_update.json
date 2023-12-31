@@ -15,6 +15,6 @@
     "code_content": "\ndef _set_models_to_update(self) -> list[ModelType]:\n    \"\"\"Returns all models that need to be updated.\"\"\"\n\n    models_to_update: list[ModelType] = []\n    for model in self.all_models:\n        for module_id in self.module_ids_to_update:\n            if module_id in model.id:\n                models_to_update.append(model)\n                break\n\n    return models_to_update\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-_set_models_to_update\n\n        None, None, None\n        ",
     "children_ids": []
 }

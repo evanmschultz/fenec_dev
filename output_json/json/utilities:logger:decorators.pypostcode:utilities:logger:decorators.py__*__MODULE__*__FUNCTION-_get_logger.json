@@ -45,6 +45,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_get_logger\n\n        None, None, \nimport logging\nfrom logging import LogRecord, Logger\n        ",
     "children_ids": []
 }

@@ -15,6 +15,6 @@
     "code_content": "\ndef convert_to_metadata(self) -> dict[str, str | int]:\n    \"\"\"Converts the function model to a metadata dictionary.\"\"\"\n\n    return {\n        **self._convert_base_attributes_to_metadata_dict(),\n        **self._convert_function_attributes_to_metadata_dict(),\n    }\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-FunctionModel__*__FUNCTION-convert_to_metadata\n\n        None, None, None\n        ",
     "children_ids": []
 }

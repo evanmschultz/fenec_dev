@@ -15,6 +15,6 @@
     "code_content": "\ndef _stringify_dependencies_summaries(\n    self, dependencies_summary_list: list[str] | None\n) -> str | None:\n    \"\"\"Converts all of the dependency summaries to a single string to be used in the prompt.\"\"\"\n    if not dependencies_summary_list:\n        return None\n\n    dependency_summaries: str = \"\"\n    for dependency_summary in dependencies_summary_list:\n        dependency_summaries += f\"\\n{dependency_summary}\"\n    return dependency_summaries\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_stringify_dependencies_summaries\n\n        None, None, None\n        ",
     "children_ids": []
 }

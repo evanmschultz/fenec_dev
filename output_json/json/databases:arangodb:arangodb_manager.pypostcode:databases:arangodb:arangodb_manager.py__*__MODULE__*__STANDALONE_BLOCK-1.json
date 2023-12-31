@@ -194,6 +194,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__STANDALONE_BLOCK-1\n\n        None, None, \nfrom typing import Any, Callable, Union\n        ",
     "children_ids": null
 }

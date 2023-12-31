@@ -15,6 +15,6 @@
     "code_content": "\ndef modify_collection_metadata(\n    self, metadata: dict[str, Any] | None = None\n) -> None:\n    \"\"\"\n        Modifies the metadata of the collection managed by this class.\n\n        Args:\n            - metadata (dict[str, Any] | None): The new metadata to assign to the collection. If None, no change is made.\n\n        Examples:\n            ```Python\n            # Update metadata of the collection\n            new_metadata = {\"description\": \"Updated collection metadata\"}\n            collection_manager.modify_collection_metadata(new_metadata)\n            ```\n        \"\"\"\n\n    self.collection.modify(metadata=metadata)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager__*__FUNCTION-modify_collection_metadata\n\n        None, None, None\n        ",
     "children_ids": []
 }

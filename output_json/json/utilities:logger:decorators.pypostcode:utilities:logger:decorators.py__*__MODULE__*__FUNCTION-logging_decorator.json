@@ -134,7 +134,7 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator\n\n        \n\nSummary:\n\n        postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator__*__FUNCTION-decorator\n\n        \n\nSummary:\n\n        postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator__*__FUNCTION-decorator__*__FUNCTION-wrapper\n\n        None, None, None\n        , None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator__*__FUNCTION-decorator"
     ]

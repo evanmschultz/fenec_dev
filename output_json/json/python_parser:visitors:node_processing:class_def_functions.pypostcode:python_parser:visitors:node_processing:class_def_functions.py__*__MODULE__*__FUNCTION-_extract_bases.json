@@ -40,6 +40,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_bases\n\n        None, None, \nfrom typing import Sequence\nimport libcst\n        ",
     "children_ids": []
 }

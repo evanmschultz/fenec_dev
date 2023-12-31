@@ -22,6 +22,6 @@
         }
     ],
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector__*__FUNCTION-_get_current_schema\n\n        None, None, None\n        ",
     "children_ids": []
 }

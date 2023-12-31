@@ -15,6 +15,6 @@
     "code_content": "\ndef set_return_annotation(self, return_type: str) -> \"FunctionModelBuilder\":\n    \"\"\"Sets the return type.\"\"\"\n    self.function_attributes.returns = return_type\n    return self\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_return_annotation\n\n        None, None, None\n        ",
     "children_ids": []
 }

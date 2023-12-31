@@ -15,6 +15,6 @@
     "code_content": "\ndef upsert_models(self, module_models: list[ModelType]) -> \"ArangoDBManager\":\n    for model in module_models:\n        self._upsert_model(model)\n    return self\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-upsert_models\n\n        None, None, None\n        ",
     "children_ids": []
 }

@@ -15,6 +15,6 @@
     "code_content": "\ndef _convert_module_attributes_to_metadata_dict(self) -> dict[str, str | int]:\n    \"\"\"Converts the module attributes to a metadata dictionary.\"\"\"\n\n    return {\n        \"docstring\": self._convert_docstring_to_metadata(),\n        \"header\": self._convert_header_to_metadata(),\n        \"footer\": self._convert_footer_to_metadata(),\n        \"imports\": self._convert_imports_to_metadata(),\n    }\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_module_attributes_to_metadata_dict\n\n        None, None, None\n        ",
     "children_ids": []
 }

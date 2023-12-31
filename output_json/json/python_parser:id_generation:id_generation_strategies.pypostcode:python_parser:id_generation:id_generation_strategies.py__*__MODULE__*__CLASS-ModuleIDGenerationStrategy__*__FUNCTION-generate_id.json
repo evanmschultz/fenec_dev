@@ -21,6 +21,6 @@
     "code_content": "\n@staticmethod\ndef generate_id(file_path: str) -> str:\n    \"\"\"\n        Generates an ID for a module based on the given file path.\n\n        Args:\n            - file_path (str): The file path of the module.\n\n        Returns:\n            - str: The generated ID, incorporating the file path.\n        \"\"\"\n    module_path: str = ModuleIDGenerationStrategy._converted_path_string(file_path)\n    return f\"{module_path}__*__MODULE\"\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy__*__FUNCTION-generate_id\n\n        None, None, None\n        ",
     "children_ids": []
 }

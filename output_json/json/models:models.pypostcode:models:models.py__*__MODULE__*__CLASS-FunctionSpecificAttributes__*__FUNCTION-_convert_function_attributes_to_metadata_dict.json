@@ -15,6 +15,6 @@
     "code_content": "\ndef _convert_function_attributes_to_metadata_dict(self) -> dict[str, str | bool]:\n    \"\"\"Converts the function attributes to a metadata dictionary.\"\"\"\n\n    return {\n        \"function_name\": self.function_name,\n        \"docstring\": self._convert_docstring_to_metadata(),\n        \"decorators\": self._convert_decorators_to_metadata(),\n        \"parameters\": self._convert_parameters_to_metadata(),\n        \"returns\": self._convert_returns_to_metadata(),\n        \"is_method\": self.is_method,\n        \"is_async\": self.is_async,\n    }\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes__*__FUNCTION-_convert_function_attributes_to_metadata_dict\n\n        None, None, None\n        ",
     "children_ids": []
 }

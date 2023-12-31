@@ -58,6 +58,6 @@
             "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-gather_standalone_lines\n\n        None, \nImported code block (postcode:utilities:processing_context.py__*__MODULE) code content:\n\n\n@dataclass\nclass NodeAndPositionData:\n    \"\"\"A node in the syntax tree and its positional data.\"\"\"\n\n    nodes: list[libcst.CSTNode]\n    start: int\n    end: int\n\n, \nfrom typing import Sequence\nimport libcst\n        ",
     "children_ids": []
 }

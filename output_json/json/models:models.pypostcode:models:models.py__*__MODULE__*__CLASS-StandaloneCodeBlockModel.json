@@ -23,7 +23,7 @@
             "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockSpecificAttributes"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel\n\n        \n\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel__*__FUNCTION-convert_to_metadata\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel__*__FUNCTION-convert_to_metadata"
     ]

@@ -15,6 +15,6 @@
     "code_content": "\ndef set_end_line_num(\n    self, line_num: int\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Sets the end line number of the code block model instance.\"\"\"\n    self.common_attributes.end_line_num = line_num\n    return self\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-set_end_line_num\n\n        None, None, None\n        ",
     "children_ids": []
 }

@@ -15,6 +15,6 @@
     "code_content": "\ndef _add_missing_imports(\n    self,\n    new_import_name_models: list[ImportNameModel],\n    existing_import_names: list[ImportNameModel],\n) -> list[ImportNameModel]:\n    for import_name_model in existing_import_names:\n        if import_name_model.name not in [\n            name.name for name in new_import_name_models\n        ]:\n            new_import_name_models.append(import_name_model)\n\n    return new_import_name_models\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater__*__FUNCTION-_add_missing_imports\n\n        None, None, None\n        ",
     "children_ids": []
 }

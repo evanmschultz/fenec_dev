@@ -15,6 +15,6 @@
     "code_content": "\ndef _convert_important_comments_to_metadata(self) -> str:\n    \"\"\"Converts the important comments to a metadata string.\"\"\"\n\n    important_comments: str = (\n        self.model_dump_json() if self.important_comments else \"\"\n    )\n\n    return f\"{important_comments}\"\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_important_comments_to_metadata\n\n        None, None, None\n        ",
     "children_ids": []
 }

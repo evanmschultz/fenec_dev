@@ -79,6 +79,6 @@
             "local_module_id": "postcode:types:postcode.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManagerProcessFilesReturn\n\n        None, None, \nfrom dataclasses import dataclass\n        ",
     "children_ids": []
 }

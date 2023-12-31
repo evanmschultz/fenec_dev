@@ -22,6 +22,6 @@
         }
     ],
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_get_child_summaries\n\n        None, None, None\n        ",
     "children_ids": []
 }

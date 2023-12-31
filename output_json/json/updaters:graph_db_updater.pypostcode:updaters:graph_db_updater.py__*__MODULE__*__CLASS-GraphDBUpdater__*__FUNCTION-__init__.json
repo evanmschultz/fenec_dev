@@ -15,6 +15,6 @@
     "code_content": "def __init__(\n    self,\n    directory: str,\n    output_directory: str,\n    logger: Logger,\n    arango_connector: ArangoDBConnector = ArangoDBConnector(),\n) -> None:\n    self.directory: str = directory\n    self.output_directory: str = output_directory\n    self.logger: Logger = logger\n    self.arango_connector: ArangoDBConnector = arango_connector\n\n    self.arango_connector.delete_all_collections()\n    self.arango_connector.ensure_collections()\n    self.graph_manager = ArangoDBManager(arango_connector)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-__init__\n\n        None, None, None\n        ",
     "children_ids": []
 }

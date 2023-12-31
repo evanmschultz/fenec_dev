@@ -74,7 +74,7 @@
             "local_module_id": "postcode:types:postcode.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper\n\n        \n\nSummary:\n\n        postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-__init__\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-_set_models_to_update\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-_set_inbound_models_in_summarization_map\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-_set_outbound_models_in_summarization_map\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-create_summarization_map\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-__init__",
         "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-_set_models_to_update",

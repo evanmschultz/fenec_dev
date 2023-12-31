@@ -15,6 +15,6 @@
     "code_content": "\ndef _get_import_details(self, import_model: ImportModel) -> str | None:\n    \"\"\"Retrieves details of import statements to be used in the prompt.\"\"\"\n    if import_model.import_module_type == \"LOCAL\" or not import_model.import_names:\n        return None\n\n    import_names_list: list[str] = []\n    for import_name in import_model.import_names:\n        if import_name.as_name:\n            import_names_list.append(f\"{import_name.name} as {import_name.as_name}\")\n        else:\n            import_names_list.append(f\"{import_name.name}\")\n\n    if import_model.imported_from:\n        import_details: str = f\"from {import_model.imported_from} import {', '.join(import_names_list)}\"\n    else:\n        import_details = f\"import {', '.join(import_names_list)}\"\n\n    return import_details\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_get_import_details\n\n        None, None, None\n        ",
     "children_ids": []
 }

@@ -57,6 +57,6 @@
             "local_module_id": "postcode:ai_services:summarizer:prompts:summarization_prompts.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-SummaryCompletionConfigs\n\n        None, None, \nfrom typing import Literal, Protocol\nfrom pydantic import BaseModel\n        ",
     "children_ids": []
 }

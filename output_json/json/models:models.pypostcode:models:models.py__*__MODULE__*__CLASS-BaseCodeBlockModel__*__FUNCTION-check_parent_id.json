@@ -24,6 +24,6 @@
     "code_content": "\n@validator(\"parent_id\", always=True)\ndef check_parent_id(cls, v, values, **kwargs) -> str | None:\n    \"\"\"Validates that parent_id is a non-empty string unless block_type is MODULE.\"\"\"\n\n    if \"block_type\" in values and values[\"block_type\"] != BlockType.MODULE:\n        if len(v) < 1:\n            raise ValueError(\"parent_id is required!\")\n    return v\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-check_parent_id\n\n        None, None, None\n        ",
     "children_ids": []
 }

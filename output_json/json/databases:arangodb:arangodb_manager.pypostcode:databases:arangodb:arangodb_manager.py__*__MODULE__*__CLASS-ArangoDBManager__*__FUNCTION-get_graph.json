@@ -15,6 +15,6 @@
     "code_content": "\ndef get_graph(self, graph_name: str | None = None) -> Graph | None:\n    if not graph_name:\n        graph_name = self.default_graph_name\n    try:\n        return self.db_connector.db.graph(self.default_graph_name)\n    except Exception as e:\n        logging.error(f\"Error getting graph '{self.default_graph_name}': {e}\")\n        return None\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-get_graph\n\n        None, None, None\n        ",
     "children_ids": []
 }

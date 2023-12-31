@@ -15,6 +15,6 @@
     "code_content": "\ndef collection_embedding_count(self) -> int | None:\n    \"\"\"\n        Gets the total number of embeddings in the collection.\n\n        Returns:\n            - embedding_count (int): The total number of embeddings in the collection.\n\n        Examples:\n            ```Python\n            embedding_count: int = collection_manager.get_collection_embedding_count()\n            ```\n        \"\"\"\n    try:\n        embedding_count: int = self.collection.count()\n        logging.info(\n            f\"Collection {self.collection.name} has {embedding_count} embeddings.\"\n        )\n        return embedding_count\n    except Exception as exception:\n        logging.error(exception)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager__*__FUNCTION-collection_embedding_count\n\n        None, None, None\n        ",
     "children_ids": []
 }

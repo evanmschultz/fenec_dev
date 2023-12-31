@@ -15,6 +15,6 @@
     "code_content": "\ndef modify_collection_name(self, name: str) -> None:\n    \"\"\"\n        Modifies the name of the collection managed by this class.\n\n        Args:\n            - name (str): The new name to assign to the collection.\n\n        Examples:\n            ```Python\n            # Rename the collection to 'new_collection_name'\n            collection_manager.modify_collection_name('new_collection_name')\n            ```\n        \"\"\"\n\n    self.collection.modify(name=name)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaDBCollectionManager__*__FUNCTION-modify_collection_name\n\n        None, None, None\n        ",
     "children_ids": []
 }

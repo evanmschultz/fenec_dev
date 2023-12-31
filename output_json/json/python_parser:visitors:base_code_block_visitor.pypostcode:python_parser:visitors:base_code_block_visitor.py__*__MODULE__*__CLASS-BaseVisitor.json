@@ -108,7 +108,7 @@
             "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor\n\n        \n\nSummary:\n\n        postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-__init__\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-visit_Comment\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-get_node_position_data\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-__init__",
         "postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-visit_Comment",

@@ -34,6 +34,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_type_annotation\n\n        None, None, \nimport libcst\n        ",
     "children_ids": []
 }

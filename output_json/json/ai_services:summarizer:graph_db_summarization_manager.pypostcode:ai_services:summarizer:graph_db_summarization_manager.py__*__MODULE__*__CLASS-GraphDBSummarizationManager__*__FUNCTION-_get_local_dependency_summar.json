@@ -15,6 +15,6 @@
     "code_content": "\ndef _get_local_dependency_summary(\n    self,\n    dependency: DependencyModel,\n    model: ModelType,\n) -> str | None:\n    \"\"\"Gets a summary for a dependency local to the module.\"\"\"\n    if not model.children_ids:\n        return None\n\n    for child_id in model.children_ids:\n        if child_id == dependency.code_block_id:\n            for model in self.all_models_tuple:\n                if model.id == child_id:\n                    if isinstance(model, DirectoryModel):\n                        return None\n\n                    if model.summary:\n                        return model.summary\n                    else:\n                        return f\"Dependency ({dependency.code_block_id}) code content:\\n{model.code_content}\\n\"\n    return None\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_get_local_dependency_summary\n\n        None, None, None\n        ",
     "children_ids": []
 }

@@ -15,6 +15,6 @@
     "code_content": "\ndef _create_messages_list(\n    self,\n    system_message: str,\n    user_message: str,\n) -> list[ChatCompletionMessageParam]:\n    \"\"\"\n        Creates a list of messages for chat completion, including both system and user messages.\n\n        Args:\n            - system_message (str): The system message content.\n            - user_message (str): The user message content.\n\n        Returns:\n            - list[ChatCompletionMessageParam]: A list containing the system and user messages as OpenAI's\n                ChatCompletionMessageParam classes.\n        \"\"\"\n\n    return [\n        self._create_system_message(system_message),\n        self._create_user_message(user_message),\n    ]\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:openai_summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer__*__FUNCTION-_create_messages_list\n\n        None, None, None\n        ",
     "children_ids": []
 }

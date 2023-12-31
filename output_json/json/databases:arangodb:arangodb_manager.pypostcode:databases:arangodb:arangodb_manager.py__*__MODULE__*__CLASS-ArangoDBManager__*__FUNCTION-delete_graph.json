@@ -15,6 +15,6 @@
     "code_content": "\ndef delete_graph(self, graph_name: str | None = None) -> None:\n    if not graph_name:\n        graph_name = self.default_graph_name\n    try:\n        self.db_connector.db.delete_graph(graph_name)\n        logging.info(f\"Graph '{graph_name}' deleted successfully.\")\n    except Exception as e:\n        logging.error(f\"Error deleting graph '{graph_name}': {e}\")\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-delete_graph\n\n        None, None, None\n        ",
     "children_ids": []
 }

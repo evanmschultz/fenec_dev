@@ -21,6 +21,6 @@
     "code_content": "\n@staticmethod\ndef _converted_path_string(file_path: str) -> str:\n    \"\"\"\n        Converts a file path to a valid ID string.\n\n        Args:\n            - file_path (str): The file path to convert.\n\n        Returns:\n            - str: The converted ID string.\n        \"\"\"\n    return file_path.replace(\"/\", \":\")\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy__*__FUNCTION-_converted_path_string\n\n        None, None, None\n        ",
     "children_ids": []
 }

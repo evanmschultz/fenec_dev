@@ -15,6 +15,6 @@
     "code_content": "\ndef set_decorators(\n    self, decorators: list[DecoratorModel] | None\n) -> \"FunctionModelBuilder\":\n    \"\"\"Adds decorator to the decorators list in the class model.\"\"\"\n    if decorators:\n        self.function_attributes.decorators = decorators\n    else:\n        self.function_attributes.decorators = None\n    return self\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_decorators\n\n        None, None, None\n        ",
     "children_ids": []
 }

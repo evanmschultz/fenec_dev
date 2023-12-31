@@ -139,6 +139,6 @@
         }
     ],
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:chroma:chromadb_builder.py__*__MODULE\n\n        None, None, None\n        ",
     "children_ids": []
 }

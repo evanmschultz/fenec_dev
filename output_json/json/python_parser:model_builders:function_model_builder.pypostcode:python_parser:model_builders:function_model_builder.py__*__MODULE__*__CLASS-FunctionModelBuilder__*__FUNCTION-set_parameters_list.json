@@ -15,6 +15,6 @@
     "code_content": "\ndef set_parameters_list(\n    self, parameter_list_model: ParameterListModel | None\n) -> \"FunctionModelBuilder\":\n    \"\"\"Adds a parameter to the function model.\"\"\"\n    self.function_attributes.parameters = parameter_list_model\n    return self\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_parameters_list\n\n        None, None, None\n        ",
     "children_ids": []
 }

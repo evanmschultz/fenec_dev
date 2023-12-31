@@ -38,7 +38,7 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel\n\n        \n\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel__*__FUNCTION-convert_class_keyword_to_metadata\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel__*__FUNCTION-convert_class_keyword_to_metadata"
     ]

@@ -15,6 +15,6 @@
     "code_content": "\ndef __init__(self, file_path: str) -> None:\n    self.file_path: str = file_path\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-__init__\n\n        None, None, None\n        ",
     "children_ids": []
 }

@@ -15,6 +15,6 @@
     "code_content": "\ndef set_docstring(self, docstring: str | None) -> \"ModuleModelBuilder\":\n    \"\"\"Set the docstring.\"\"\"\n    if docstring:\n        self.module_attributes.docstring = docstring\n    return self\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder__*__FUNCTION-set_docstring\n\n        None, None, None\n        ",
     "children_ids": []
 }

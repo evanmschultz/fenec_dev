@@ -15,6 +15,6 @@
     "code_content": "\ndef test_summarize_code(\n    self,\n    code: str,\n    *,\n    model_id: str,\n    children_summaries: str | None,\n    dependency_summaries: str | None,\n    import_details: str | None,\n    configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n) -> OpenAIReturnContext | None:\n    \"\"\"\n        A method for testing whether or not a summary path is working as expected.\n\n        Args:\n            - code (str): The code snippet to summarize (pass in dummy string).\n            - configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            ```Python\n            client = OpenAI()\n            summarizer = Summarizer(client=client)\n            code_example = \"print('Hello, world')\"\n\n            # Run summary tester the code snippet\n            summary = summarizer.summarize_code(code_example)\n            print(summary)\n            ```\n        \"\"\"\n    ...\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer__*__FUNCTION-test_summarize_code\n\n        None, None, None\n        ",
     "children_ids": []
 }

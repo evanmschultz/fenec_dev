@@ -45,6 +45,6 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_get_caller_info\n\n        None, None, \nfrom inspect import FrameInfo\n        ",
     "children_ids": []
 }

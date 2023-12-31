@@ -15,6 +15,6 @@
     "code_content": "\ndef _clean_output_directory(self) -> None:\n    \"\"\"\n        Deletes the output directory and all its contents.\n        \"\"\"\n    output_dir = Path(self.output_directory)\n    if output_dir.exists() and output_dir.is_dir():\n        rmtree(output_dir)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-_clean_output_directory\n\n        None, None, None\n        ",
     "children_ids": []
 }

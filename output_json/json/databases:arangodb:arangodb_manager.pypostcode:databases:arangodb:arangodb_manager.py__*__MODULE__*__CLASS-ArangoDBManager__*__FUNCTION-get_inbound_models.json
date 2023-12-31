@@ -22,6 +22,6 @@
         }
     ],
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-get_inbound_models\n\n        None, None, None\n        ",
     "children_ids": []
 }

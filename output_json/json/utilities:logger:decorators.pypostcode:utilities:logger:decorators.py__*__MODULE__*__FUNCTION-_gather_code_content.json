@@ -69,6 +69,6 @@
             "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_gather_code_content\n\n        None, None, \nimport logging\nimport libcst\n        ",
     "children_ids": []
 }

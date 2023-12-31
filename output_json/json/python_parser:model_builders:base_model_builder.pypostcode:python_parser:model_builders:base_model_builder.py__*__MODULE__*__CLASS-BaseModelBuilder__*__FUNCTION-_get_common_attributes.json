@@ -15,6 +15,6 @@
     "code_content": "\ndef _get_common_attributes(self) -> dict[str, Any]:\n    \"\"\"\n        Returns a dictionary containing the attributes common to all code block models.\n        \"\"\"\n    return self.common_attributes.model_dump()\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-_get_common_attributes\n\n        None, None, None\n        ",
     "children_ids": []
 }

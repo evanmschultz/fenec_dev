@@ -61,7 +61,7 @@
     "code_content": "\"\"\"\nOpenAI Types\n------------\n\nThis module contains types defined by the openai third-party library.\nThese types are used for easy implementation in the postcode project and\nprovide convenience for users of the postcode library.\n\"\"\"\n\nfrom openai.types.chat.chat_completion_system_message_param import (\n    ChatCompletionSystemMessageParam,\n)\nfrom openai.types.chat.chat_completion_user_message_param import (\n    ChatCompletionUserMessageParam,\n)\nfrom openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam\nfrom openai.types.chat.chat_completion import ChatCompletion\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:types:openai.py__*__MODULE\n\n        \n\nSummary:\n\n        postcode:types:openai.py__*__MODULE__*__STANDALONE_BLOCK-1\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:types:openai.py__*__MODULE__*__STANDALONE_BLOCK-1"
     ]

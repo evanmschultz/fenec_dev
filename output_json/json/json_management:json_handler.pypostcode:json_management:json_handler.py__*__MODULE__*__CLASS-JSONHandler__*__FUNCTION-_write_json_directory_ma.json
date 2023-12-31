@@ -15,6 +15,6 @@
     "code_content": "\ndef _write_json_directory_map(self, output_path: str) -> None:\n    \"\"\"Writes the directory map JSON file.\"\"\"\n\n    with open(output_path, \"w\") as json_file:\n        json.dump(self.directory_modules, json_file, indent=4)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-_write_json_directory_map\n\n        None, None, None\n        ",
     "children_ids": []
 }

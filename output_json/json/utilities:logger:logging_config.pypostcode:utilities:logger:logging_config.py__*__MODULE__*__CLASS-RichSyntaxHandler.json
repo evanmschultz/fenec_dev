@@ -52,7 +52,7 @@
             "local_module_id": null
         }
     ],
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:utilities:logger:logging_config.py__*__MODULE__*__CLASS-RichSyntaxHandler\n\n        \n\nSummary:\n\n        postcode:utilities:logger:logging_config.py__*__MODULE__*__CLASS-RichSyntaxHandler__*__FUNCTION-emit\n\n        None, None, None\n        , None, None\n        ",
     "children_ids": [
         "postcode:utilities:logger:logging_config.py__*__MODULE__*__CLASS-RichSyntaxHandler__*__FUNCTION-emit"
     ]

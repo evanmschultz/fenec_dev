@@ -15,6 +15,6 @@
     "code_content": "\ndef list_collections(self) -> Sequence[chroma_types.Collection]:\n    \"\"\"\n        Lists all ChromaDB collections.\n\n        Returns:\n            - client_list (Sequence[chroma.Collection]): A list of all ChromaDB collections A collection object is a Pydantic\n                Model with the following attributes:\n                    - name: str\n                    - id: UUID\n                    - metadata: CollectionMetadata | None\n                    - tenant: str | None\n                    - database: str | None\n\n        Examples:\n            ```Python\n            collections_list: Sequence[chroma_types.Collection] = client_manager.list_collections()\n            ```\n        \"\"\"\n\n    return self.client.list_collections()\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaDBClientManager__*__FUNCTION-list_collections\n\n        None, None, None\n        ",
     "children_ids": []
 }

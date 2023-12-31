@@ -15,6 +15,6 @@
     "code_content": "\ndef get_node_position_data(\n    self,\n    node: libcst.CSTNode,\n) -> PositionData:\n    \"\"\"\n        Retrieves position data for a given CST node.\n\n        Extracts the start and end line numbers of the node in the source code.\n\n        Args:\n            node (libcst.CSTNode): The CST node to get position data for.\n\n        Returns:\n            PositionData: An object containing start and end line numbers of the node.\n        \"\"\"\n\n    position_data: CodeRange | type[_UNDEFINED_DEFAULT] = self.get_metadata(\n        WhitespaceInclusivePositionProvider, node\n    )\n\n    start, end = 0, 0\n    if isinstance(position_data, CodeRange):\n        start: int = position_data.start.line\n        end: int = position_data.end.line\n    return PositionData(start=start, end=end)\n",
     "important_comments": null,
     "dependencies": null,
-    "summary": null,
+    "summary": "\nSummary:\n\n        postcode:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-get_node_position_data\n\n        None, None, None\n        ",
     "children_ids": []
 }
