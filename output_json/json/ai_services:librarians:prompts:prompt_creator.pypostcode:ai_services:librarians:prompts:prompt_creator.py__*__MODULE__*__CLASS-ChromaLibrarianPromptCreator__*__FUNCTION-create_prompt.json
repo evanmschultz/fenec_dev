@@ -1,0 +1,26 @@
+{
+    "function_name": "create_prompt",
+    "docstring": "Creates a prompt for the Chroma Librarian by interpolating the given prompt template with the given user question and queries count.\n\nArgs:\n    - user_question (str): The user's question.\n    - prompt_template (str): The template to interpolate.\n        - default: DEFAULT_CHROMA_LIBRARIAN_PROMPT defined in `chroma_librarian_prompts.py`.\n    - queries_count (int): The number of queries to make.\n        - default: 3",
+    "decorators": [
+        {
+            "content": "@staticmethod",
+            "decorator_name": "staticmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:librarians:prompts:prompt_creator.py__*__MODULE__*__CLASS-ChromaLibrarianPromptCreator__*__FUNCTION-create_prompt",
+    "file_path": "postcode/ai_services/librarians/prompts/prompt_creator.py",
+    "parent_id": "postcode:ai_services:librarians:prompts:prompt_creator.py__*__MODULE__*__CLASS-ChromaLibrarianPromptCreator",
+    "block_type": "FUNCTION",
+    "start_line_num": 21,
+    "end_line_num": 44,
+    "code_content": "\n@staticmethod\ndef create_prompt(\n    user_question: str,\n    prompt_template: str = prompts.DEFAULT_CHROMA_LIBRARIAN_PROMPT,\n    queries_count: int = 3,\n) -> str:\n    \"\"\"\n        Creates a prompt for the Chroma Librarian by interpolating the given prompt template with the given user question and queries count.\n\n        Args:\n            - user_question (str): The user's question.\n            - prompt_template (str): The template to interpolate.\n                - default: DEFAULT_CHROMA_LIBRARIAN_PROMPT defined in `chroma_librarian_prompts.py`.\n            - queries_count (int): The number of queries to make.\n                - default: 3\n        \"\"\"\n\n    return prompt_template.format(\n        user_question=user_question,\n        prompt_template=prompt_template,\n        queries_count=queries_count,\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:librarians:prompts:prompt_creator.py__*__MODULE__*__CLASS-ChromaLibrarianPromptCreator__*__FUNCTION-create_prompt\n\n        None, None, None\n        ",
+    "children_ids": []
+}

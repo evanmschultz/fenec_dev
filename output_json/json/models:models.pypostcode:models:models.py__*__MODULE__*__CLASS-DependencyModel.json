@@ -38,7 +38,7 @@
             "local_module_id": null
         }
     ],
-    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel\n\n        \n\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel__*__FUNCTION-convert_dependency_to_metadata\n\n        None, None, None\n        , None, None\n        ",
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel\n\n        \nChild (postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel__*__FUNCTION-convert_dependency_to_metadata) code content:\n\ndef convert_dependency_to_metadata(self) -> str:\n    \"\"\"Converts the dependency to a metadata string.\"\"\"\n    return self.model_dump_json()\n\n, None, None\n        ",
     "children_ids": [
         "postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel__*__FUNCTION-convert_dependency_to_metadata"
     ]

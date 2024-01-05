@@ -91,16 +91,16 @@ class VisitorManager:
     """
     Manages the visiting and processing of Python files in a given directory.
 
-    This class scans a specified directory, filters for Python files, parses them, and saves the parsed data in a structured JSON format. It also maintains a mapping of directories to the Python files they contain.
+    This class scans a specified directory, filters for Python files, parses them, and saves the parsed data in a structured JSON format.
+    It also maintains a mapping of directories to the Python files they contain.
 
     Attributes:
         - directory (str): The root directory to scan for Python files.
-        - output_directory (str): The directory where output JSON files will be saved.
-        - directory_modules (dict): A mapping of directories to their contained Python files.
+        - directory_modules (dict[str, list[str]]): A mapping of directories to their contained Python files.
 
     Example:
         ```Python
-        visitor_manager = VisitorManager("/path/to/python/code", "output")
+        visitor_manager = VisitorManager("/path/to/python/code")
         visitor_manager.process_files()
         # This will process all Python files in /path/to/python/code and save their parsed data in the output directory.
         ```

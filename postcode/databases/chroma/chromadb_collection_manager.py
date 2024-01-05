@@ -1,37 +1,11 @@
 import logging
-from typing import Any, Mapping, Union
+from typing import Any, Mapping
 
 import postcode.types.chroma as chroma_types
-# from chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings
-# from chromadb.api import ClientAPI
-# from chromadb.api.types import (
-#     DataLoader,
-#     CollectionMetadata,
-#     GetResult,
-#     QueryResult,
-#     Where,
-#     WhereDocument,
-#     Include,
-#     URIs,
-#     Loadable,
-#     Metadata,
-#     Embedding,
-# )
-# from chromadb import Collection
-# from chromadb import EmbeddingFunction
-
 from postcode.types.postcode import ModelType
-# from postcode.models.models import (
-#     ModuleModel,
-#     ClassModel,
-#     FunctionModel,
-#     StandaloneCodeBlockModel,
-#     DecoratorModel,
-# )
 
 
-
-class ChromaDBCollectionManager:
+class ChromaCollectionManager:
     """
     Manages a collection within ChromaDB instance, providing functionalities for adding, retrieving,
     and querying embeddings, and their associated metadata.
@@ -68,7 +42,7 @@ class ChromaDBCollectionManager:
         ```
     """
 
-    def __init__(self, collection:chroma_types.Collection) -> None:
+    def __init__(self, collection: chroma_types.Collection) -> None:
         self.collection: chroma_types.Collection = collection
 
     def collection_embedding_count(self) -> int | None:
@@ -457,20 +431,20 @@ class ChromaDBCollectionManager:
 
     def upsert_models(self, models: tuple[ModelType, ...]) -> None:
         """
-        Loads or updates the embeddings of the provided module models into the collection.
+        Loads or updates the embeddings of the provided models into the collection.
 
         The Pydantic models are converted to a dictionary with a format that ChromaDB can use, then the ids, documents, and metadatas
         are added to their respective lists. The lists are then either added to or updated in the collection depending on whether or
         not the code blocks were in the the collection to begin with.
 
         Args:
-            - module_models (tuple[ModuleModel, ...]): The module models to load or update into the collection.
+            - models (tuple[ModelType, ...]): The models to load or update into the collection.
 
         Examples:
             ```Python
-            # Upsert module models into the collection
-            module_models = (module_model1, module_model2)
-            collection_manager.upsert_models(module_models)
+            # Upsert models into the collection
+            models = (model1, model2)
+            collection_manager.upsert_models(models)
             ```
         """
 
@@ -484,15 +458,6 @@ class ChromaDBCollectionManager:
                 documents.append(model.summary)
                 metadatas.append(model.convert_to_metadata())
 
-            # if model.children_ids:
-            #     for child in model.children_ids:
-            #         child_data: dict[str, Any] = self._recursively_gather_child_data(
-            #             child
-            #         )
-            #         ids.extend(child_data["ids"])
-            #         documents.extend(child_data["documents"])
-            #         metadatas.extend(child_data["metadatas"])
-
         logging.info(
             f"{self.collection.name} has {self.collection_embedding_count()} embeddings."
         )
@@ -500,26 +465,3 @@ class ChromaDBCollectionManager:
         logging.info(
             f"After upsert {self.collection.name} has {self.collection_embedding_count()} embeddings."
         )
-
-    # def _recursively_gather_child_data(self, model: ModelType) -> dict[str, Any]:
-    #     ids: list[str] = []
-    #     documents: list[str] = []
-    #     metadatas: list[Mapping[str, str | int | float | bool]] = []
-    #     if model.summary:
-    #         ids.append(model.id)
-    #         documents.append(model.summary)
-    #         metadatas.append(model.convert_to_metadata())
-    #     else:
-    #         logging.warning(f"Child {model.id} has no summary.")
-    #     # if model.children_ids:
-    #     #     for child in model.children_ids:
-    #     #         child_data: dict[str, Any] = self._recursively_gather_child_data(child)
-    #     #         ids.extend(child_data["ids"])
-    #     #         documents.extend(child_data["documents"])
-    #     #         metadatas.extend(child_data["metadatas"])
-
-    #     return {
-    #         "ids": ids,
-    #         "documents": documents,
-    #         "metadatas": metadatas,
-    #     }

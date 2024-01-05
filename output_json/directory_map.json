@@ -4,9 +4,9 @@
         "app.py"
     ],
     "postcode/databases/chroma": [
-        "setup_chroma.py",
         "chromadb_collection_manager.py",
         "chromadb_builder.py",
+        "chroma_setup.py",
         "chromadb_client_manager.py"
     ],
     "postcode/databases/arangodb": [
@@ -18,6 +18,13 @@
         "postcode.py",
         "openai.py",
         "chroma.py"
+    ],
+    "postcode/ai_services/librarians": [
+        "chroma_librarians.py"
+    ],
+    "postcode/ai_services/librarians/prompts": [
+        "prompt_creator.py",
+        "chroma_librarian_prompts.py"
     ],
     "postcode/ai_services/summarizer": [
         "graph_db_summarization_manager.py",

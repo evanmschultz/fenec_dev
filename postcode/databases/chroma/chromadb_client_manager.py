@@ -3,28 +3,8 @@ from typing import Any, Sequence
 
 import postcode.types.chroma as chroma_types
 
-# import chromadb.utils.embedding_functions as ef
 
-# from chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings
-# from chromadb.api import ClientAPI
-# from chromadb.api.types import (
-#     DataLoader,
-#     CollectionMetadata,
-#     GetResult,
-#     QueryResult,
-#     Where,
-#     WhereDocument,
-#     Include,
-#     URIs,
-#     Loadable,
-#     Metadata,
-#     Embedding,
-# )
-# from chromadb import Collection
-# from chromadb import EmbeddingFunction
-
-
-class ChromaDBClientManager:
+class ChromaClientHandler:
     """
     Class for managing a ChromaDB client.
 
@@ -103,11 +83,14 @@ class ChromaDBClientManager:
         """
 
         logging.info(f"Getting or creating collection: {name}")
-        return self.client.get_or_create_collection(
-            name,
-            metadata=metadata,
-            embedding_function=embedding_function,  # type: ignore # FIXME: Fix type error in chroma as it Images are not yet supported, and we won't use them
-        )
+        try:
+            return self.client.get_or_create_collection(
+                name,
+                metadata=metadata,
+                embedding_function=embedding_function,  # type: ignore # FIXME: Fix type error in chroma as it Images are not yet supported, and we won't use them
+            )
+        except Exception as e:
+            raise ValueError(f"Error getting or creating ChromaDB collection: {e}")
 
     def delete_collection(self, name: str) -> None:
         """

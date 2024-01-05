@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager__*__FUNCTION-__init__",
+    "file_path": "postcode/databases/chroma/chromadb_collection_manager.py",
+    "parent_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 44,
+    "end_line_num": 47,
+    "code_content": "\ndef __init__(self, collection: chroma_types.Collection) -> None:\n    self.collection: chroma_types.Collection = collection\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nSummary:\n\n        postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager__*__FUNCTION-__init__\n\n        None, None, None\n        ",
+    "children_ids": []
+}

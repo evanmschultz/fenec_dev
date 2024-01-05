@@ -1,4 +1,4 @@
-from logging import Logger
+import logging
 
 from openai import OpenAI
 from postcode.ai_services.summarizer.graph_db_summarization_manager import (
@@ -9,10 +9,10 @@ from postcode.ai_services.summarizer.summarization_mapper import SummarizationMa
 from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
 
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
-from postcode.databases.chroma.setup_chroma import (
-    ChromaSetupReturnContext,
-    setup_chroma,
+from postcode.databases.chroma.chromadb_collection_manager import (
+    ChromaCollectionManager,
 )
+import postcode.databases.chroma.chroma_setup as chroma_setup
 from postcode.json_management.json_handler import JSONHandler
 from postcode.models.models import (
     DirectoryModel,
@@ -34,7 +34,6 @@ class GraphDBUpdater:
     Args:
         - directory (str): The directory of the project to update.
         - output_directory (str): The directory to save the JSON files.
-        - logger (Logger): The logger to use for logging.
         - graph_connector (ArangoDBConnector): The ArangoDB connector to use for connecting to the graph database.
             - default: ArangoDBConnector() - instantiates a new ArangoDBConnector with its default values
 
@@ -47,14 +46,10 @@ class GraphDBUpdater:
         arango_connector = ArangoDBConnector()
 
         # Create the GraphDBUpdater.
-        graph_updater = GraphDBUpdater(directory, output_directory, logger, arango_connector)
+        graph_updater = GraphDBUpdater(directory, output_directory, arango_connector)
 
         # Update all the models for the project and setup Chroma.
-        chroma_context = graph_updater.update_all()
-
-        # Get the Chroma collection and collection manager from the returned dataclass.
-        chroma_collection = chroma_context.chroma_collection
-        chroma_manager = chroma_context.chroma_collection_manager
+        chroma__collection_manager = graph_updater.update_all()
         ```
     """
 
@@ -62,17 +57,15 @@ class GraphDBUpdater:
         self,
         directory: str,
         output_directory: str,
-        logger: Logger,
         graph_connector: ArangoDBConnector = ArangoDBConnector(),
     ) -> None:
         self.directory: str = directory
         self.output_directory: str = output_directory
-        self.logger: Logger = logger
         self.graph_connector: ArangoDBConnector = graph_connector
 
         self.graph_manager = ArangoDBManager(graph_connector)
 
-    def update_all(self) -> ChromaSetupReturnContext:
+    def update_all(self) -> ChromaCollectionManager:
         """
         Updates all the models for a project using the graph database.
 
@@ -84,24 +77,19 @@ class GraphDBUpdater:
         Args:
             - directory (str): The directory of the project to update.
             - output_directory (str): The directory to save the JSON files.
-            - logger (Logger): The logger to use for logging.
 
         Returns:
-            - ChromaSetupReturnContext: The context for setting up Chroma.
+            - chroma_collection_manager (ChromaDBCollectionManager): The ChromaDB collection manager.
 
         Raises:
             - Exception: If no finalized models are returned from summarization.
 
         Example:
             ```Python
-            graph_updater = GraphDBUpdater(directory, output_directory, logger)
+            graph_updater = GraphDBUpdater(directory, output_directory)
 
             # Update all the models for the project and setup Chroma.
-            chroma_context = graph_updater.update_all()
-
-            # Get the Chroma collection and collection manager from the returned dataclass.
-            chroma_collection = chroma_context.chroma_collection
-            chroma_manager = chroma_context.chroma_collection_manager
+            chroma_manager = graph_updater.update_all()
             ```
         """
 
@@ -109,7 +97,7 @@ class GraphDBUpdater:
         self.graph_connector.ensure_collections()
 
         process_files_return: VisitorManagerProcessFilesReturn = (
-            self._visit_and_parse_files(self.directory, self.logger)
+            self._visit_and_parse_files(self.directory)
         )
         models_tuple: tuple[ModelType, ...] = process_files_return.models_tuple
 
@@ -130,14 +118,14 @@ class GraphDBUpdater:
         self._save_json(finalized_models, json_manager)
         self._upsert_models_to_graph_db(tuple(finalized_models))
 
-        return setup_chroma(finalized_models, self.logger)
+        return chroma_setup.setup_chroma(finalized_models)
 
     def _visit_and_parse_files(
-        self, directory: str, logger: Logger
+        self, directory: str
     ) -> VisitorManagerProcessFilesReturn:
         """Visits and parses the files in the directory."""
 
-        logger.info("Starting the directory parsing.")
+        logging.info("Starting the directory parsing.")
         visitor_manager = VisitorManager(directory)
 
         return visitor_manager.process_files()
@@ -157,7 +145,7 @@ class GraphDBUpdater:
     def _save_json(self, models: list[ModelType], json_manager: JSONHandler) -> None:
         """Saves the models as JSON."""
 
-        self.logger.info("Saving models as JSON")
+        logging.info("Saving models as JSON")
         for model in models:
             if isinstance(model, DirectoryModel):
                 output_path: str = model.id
@@ -167,7 +155,7 @@ class GraphDBUpdater:
             json_manager.save_model_as_json(model, output_path)
 
         json_manager.save_visited_directories()
-        self.logger.info("JSON save complete")
+        logging.info("JSON save complete")
 
     def _map_and_summarize_models(
         self,
@@ -188,6 +176,6 @@ class GraphDBUpdater:
         finalized_models: list[
             ModelType
         ] | None = summarization_manager.create_summaries_and_return_updated_models()
-        self.logger.info("Summarization complete")
+        logging.info("Summarization complete")
 
         return finalized_models if finalized_models else None

@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian__*__FUNCTION-__init__",
+    "file_path": "postcode/ai_services/librarians/chroma_librarians.py",
+    "parent_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian",
+    "block_type": "FUNCTION",
+    "start_line_num": 44,
+    "end_line_num": 52,
+    "code_content": "def __init__(\n    self,\n    collection_manager: ChromaCollectionManager,\n    model: str = \"gpt-3.5-turbo-0613\",\n) -> None:\n    self.collection_manager: ChromaCollectionManager = collection_manager\n    self.model: str = model\n    self.client = OpenAI()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian__*__FUNCTION-__init__\n\n        None, None, None\n        ",
+    "children_ids": []
+}

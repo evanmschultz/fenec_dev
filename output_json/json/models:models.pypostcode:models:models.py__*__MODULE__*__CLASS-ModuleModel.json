@@ -23,7 +23,7 @@
             "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes"
         }
     ],
-    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleModel\n\n        \n\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleModel__*__FUNCTION-convert_to_metadata\n\n        None, None, None\n        , None, None\n        ",
+    "summary": "\nSummary:\n\n        postcode:models:models.py__*__MODULE__*__CLASS-ModuleModel\n\n        \nChild (postcode:models:models.py__*__MODULE__*__CLASS-ModuleModel__*__FUNCTION-convert_to_metadata) code content:\n\ndef convert_to_metadata(self) -> dict[str, str | int]:\n    \"\"\"Converts the module model to a metadata dictionary.\"\"\"\n\n    return {\n        **self._convert_base_attributes_to_metadata_dict(),\n        **self._convert_module_attributes_to_metadata_dict(),\n    }\n\n, None, None\n        ",
     "children_ids": [
         "postcode:models:models.py__*__MODULE__*__CLASS-ModuleModel__*__FUNCTION-convert_to_metadata"
     ]

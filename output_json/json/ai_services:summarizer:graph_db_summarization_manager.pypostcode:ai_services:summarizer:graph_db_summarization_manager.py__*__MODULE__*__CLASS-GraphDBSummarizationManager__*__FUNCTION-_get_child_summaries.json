@@ -10,8 +10,8 @@
     "file_path": "postcode/ai_services/summarizer/graph_db_summarization_manager.py",
     "parent_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
     "block_type": "FUNCTION",
-    "start_line_num": 125,
-    "end_line_num": 153,
+    "start_line_num": 124,
+    "end_line_num": 152,
     "code_content": "\ndef _get_child_summaries(self, model: ModelType) -> list[str] | None:\n    \"\"\"Gathers summaries of child models.\"\"\"\n\n    child_summary_list: list[str] = []\n    if model.children_ids:\n        for child_id in model.children_ids:\n            if child := self.graph_manager.get_vertex_model_by_id(child_id):\n                if child.summary:\n                    child_summary: str = child.summary\n\n                else:\n                    # TODO: Add logic to gather all child summaries of a directory (modules and directories within the directory)\n                    if isinstance(child, DirectoryModel):\n                        # for child_child_id in child.children_ids:\n                        #     if child_child := self.graph_manager.get_vertex_model_by_id(\n                        #         child_child_id\n                        #     ):\n                        #         if child_child.summary:\n                        #             child_summary = child_child.summary\n                        #             break\n                        continue\n\n                    child_summary = (\n                        f\"Child ({child_id}) code content:\\n{child.code_content}\\n\"\n                    )\n                child_summary_list.append(child_summary)\n    return child_summary_list\n",
     "important_comments": [
         {

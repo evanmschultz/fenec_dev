@@ -1,7 +1,6 @@
 # TODO: Add logic to gather all child summaries of a directory (modules and directories within the directory)
 
 import logging
-from pprint import pprint
 
 from postcode.ai_services.summarizer.summarization_context import (
     Summarizer,
@@ -115,11 +114,11 @@ class GraphDBSummarizationManager:
                 self.prompt_tokens += summary_return_context.prompt_tokens
                 self.completion_tokens += summary_return_context.completion_tokens
 
-        print(len(summarization_map))
+        logging.debug(f"Summarization map length: {len(summarization_map)}")
         # pprint([model.id for model in summarization_map][::-1])
         count = 1
         for model in summarization_map[::-1]:
-            pprint({"count": count, "id": model.id})
+            # pprint({"count": count, "id": model.id})
             count += 1
         return self.graph_manager.get_all_vertices() if self.graph_manager else None
 

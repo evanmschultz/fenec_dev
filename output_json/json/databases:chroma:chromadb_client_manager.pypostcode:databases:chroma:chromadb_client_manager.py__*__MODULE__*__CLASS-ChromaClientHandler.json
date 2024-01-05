@@ -1,0 +1,96 @@
+{
+    "class_name": "ChromaClientHandler",
+    "decorators": null,
+    "bases": null,
+    "docstring": "Class for managing a ChromaDB client.\n\nProvides functionality for managing a ChromaDB client, including creating, deleting, and listing collections.\nThis class is part of the postcode library, offering default values and extended functionality.\n\nAttributes:\n    client (chroma.ClientAPI): The ChromaDB client being managed.\n\nMethods:\n    - `get_or_create_collection`: Gets or creates a ChromaDB collection with the given name.\n    - `delete_collection`: Deletes a ChromaDB collection with the given name.\n    - `list_collections`: Lists all ChromaDB collections.\n    - `get_client_settings`: Gets the settings of the ChromaDB client.\n    - `reset_client`: Resets the ChromaDB client to its initial state.\n\nNotes:\n    Import defined in postcode.databases.chroma `__init__.py`. Import using:\n        `from postcode.databases.chroma import ChromaDBClientManager`\n\nExamples:\n    ```Python\n    from postcode.databases.chroma import ChromaDBClientBuilder, ChromaDBClientManager\n\n    # Create a persistent ChromaDB client\n    client: chroma.ClientAPI = ChromaDBClientBuilder.create_persistent_client()\n\n    # Create a ChromaDB client manager instance\n    client_manager = ChromaDBClientManager(client)\n    ```",
+    "keywords": null,
+    "id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler",
+    "file_path": "postcode/databases/chroma/chromadb_client_manager.py",
+    "parent_id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 5,
+    "end_line_num": 185,
+    "code_content": "\n\nclass ChromaClientHandler:\n    \"\"\"\n    Class for managing a ChromaDB client.\n\n    Provides functionality for managing a ChromaDB client, including creating, deleting, and listing collections.\n    This class is part of the postcode library, offering default values and extended functionality.\n\n    Attributes:\n        client (chroma.ClientAPI): The ChromaDB client being managed.\n\n    Methods:\n        - `get_or_create_collection`: Gets or creates a ChromaDB collection with the given name.\n        - `delete_collection`: Deletes a ChromaDB collection with the given name.\n        - `list_collections`: Lists all ChromaDB collections.\n        - `get_client_settings`: Gets the settings of the ChromaDB client.\n        - `reset_client`: Resets the ChromaDB client to its initial state.\n\n    Notes:\n        Import defined in postcode.databases.chroma `__init__.py`. Import using:\n            `from postcode.databases.chroma import ChromaDBClientManager`\n\n    Examples:\n        ```Python\n        from postcode.databases.chroma import ChromaDBClientBuilder, ChromaDBClientManager\n\n        # Create a persistent ChromaDB client\n        client: chroma.ClientAPI = ChromaDBClientBuilder.create_persistent_client()\n\n        # Create a ChromaDB client manager instance\n        client_manager = ChromaDBClientManager(client)\n        ```\n    \"\"\"\n\n    def __init__(self, client: chroma_types.ClientAPI) -> None:\n        self.client: chroma_types.ClientAPI = client\n\n    def get_or_create_collection(\n        self,\n        name: str,\n        metadata: dict[str, Any] | None = None,\n        embedding_function: chroma_types.EmbeddingFunction[list[str]]\n        | None = chroma_types.ef.DefaultEmbeddingFunction(),\n    ) -> chroma_types.Collection:\n        \"\"\"\n        Gets or creates a ChromaDB collection with the given name.\n\n        Checks if the collection exists and returns it if it does. Otherwise, creates the collection and returns it.\n\n        Args:\n            - name (str): The name of the collection to get or create.\n            - metadata (dict[str, Any]): The metadata for the collection.\n            - embedding_function (chroma_types.EmbeddingFunction): The embedding function for the collection.\n\n        Returns:\n            - collection (chroma.Collection): The collection object with the given name. The collection object is a Pydantic Model\n                with the following attributes:\n                    - name: str\n                    - id: UUID\n                    - metadata: CollectionMetadata | None\n                    - tenant: str | None\n                    - database: str | None\n\n        Notes:\n            - This is done this way for logging purposes as opposed simply using chromadb's `get_or_create_collection` method\n                directly.\n\n        Examples:\n            ```Python\n            from postcode.databases.chroma import ChromaDBClientBuilder, ChromaDBClientManager\n            import postcode.types.chromadb.types as chroma_types\n\n            from example_module_with_manager_defined import client_manager\n\n            # Create or get a collection using the client_manager instance\n            collection: chroma_types.Collection = client_manager.get_or_create_collection(\"my_collection\")\n            ```\n        \"\"\"\n\n        logging.info(f\"Getting or creating collection: {name}\")\n        try:\n            return self.client.get_or_create_collection(\n                name,\n                metadata=metadata,\n                embedding_function=embedding_function,  # type: ignore # FIXME: Fix type error in chroma as it Images are not yet supported, and we won't use them\n            )\n        except Exception as e:\n            raise ValueError(f\"Error getting or creating ChromaDB collection: {e}\")\n\n    def delete_collection(self, name: str) -> None:\n        \"\"\"\n        Deletes a ChromaDB collection with the given name.\n\n        Args:\n            - name (str): The name of the collection to delete.\n\n        Raises:\n            - ValueError: If the collection does not exist.\n\n        Examples:\n            ```Python\n            client_manager.delete_collection(\"my_collection\")\n            ```\n        \"\"\"\n\n        if self.client.get_collection(name):\n            logging.info(f\"Deleting collection {name}\")\n            self.client.delete_collection(name)\n        else:\n            raise ValueError(f\"Collection {name} does not exist.\")\n\n    def list_collections(self) -> Sequence[chroma_types.Collection]:\n        \"\"\"\n        Lists all ChromaDB collections.\n\n        Returns:\n            - client_list (Sequence[chroma.Collection]): A list of all ChromaDB collections A collection object is a Pydantic\n                Model with the following attributes:\n                    - name: str\n                    - id: UUID\n                    - metadata: CollectionMetadata | None\n                    - tenant: str | None\n                    - database: str | None\n\n        Examples:\n            ```Python\n            collections_list: Sequence[chroma_types.Collection] = client_manager.list_collections()\n            ```\n        \"\"\"\n\n        return self.client.list_collections()\n\n    def get_client_settings(self) -> chroma_types.Settings:\n        \"\"\"\n        Gets the setting used to instantiate the ChromaDB client.\n\n        Returns:\n            - settings (chroma_types.Settings): The client settings as a settings object defined by ChromaDB.\n\n        Examples:\n            ```Python\n            settings: chroma_types.Settings = client_manager.get_client_settings()\n            ```\n        \"\"\"\n\n        return self.client.get_settings()\n\n    def reset_client(self) -> None:\n        \"\"\"\n        Resets the ChromaDB client to its initial state.\n\n        This method resets the client settings and clears any cached or temporary data. It iterates over the collections,\n        logging their names, and then resets the client. If the reset operation is unsuccessful, it raises a ValueError.\n\n        Raises:\n            ValueError: If the client reset operation is unsuccessful.\n\n        Notes:\n            This method loops through the collections_list as opposed to immediately calling ChromaDB's\n                `reset` method for logging purposes.\n\n        Examples:\n            ```Python\n            client_manager.reset_client()  # Resets the client and logs the collections\n            ```\n        \"\"\"\n        reset_successful: bool = self.client.reset()\n        if reset_successful:\n            logging.info(\"Resetting client with:\")\n\n            if collections := self.list_collections():\n                for collection in collections:\n                    print(f\"\\t\\t\\t\\tCollection: {collection.name}\")\n            else:\n                print(\"\\t\\t\\t\\tNo collections.\\n\")\n\n            logging.info(\"Client reset successful.\")\n        else:\n            raise ValueError(\"Client reset unsuccessful.\")\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:chroma.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:chroma.py__*__MODULE"
+        }
+    ],
+    "summary": "\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler\n\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-__init__\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-get_or_create_collection\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-delete_collection\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-list_collections\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-get_client_settings\n\n        None, None, None\n        \n\nSummary:\n\n        postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-reset_client\n\n        None, None, None\n        , None, None\n        ",
+    "children_ids": [
+        "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-__init__",
+        "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-get_or_create_collection",
+        "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-delete_collection",
+        "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-list_collections",
+        "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-get_client_settings",
+        "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-reset_client"
+    ]
+}

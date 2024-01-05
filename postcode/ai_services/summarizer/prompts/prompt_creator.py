@@ -1,9 +1,9 @@
 from typing import Callable, LiteralString
 
-from postcode.ai_services.summarizer.prompts import summarization_prompts as prompts
+import postcode.ai_services.summarizer.prompts.summarization_prompts as prompts
 
 
-class PromptCreator:
+class SummarizationPromptCreator:
     """
     Class for creating prompts for the summarizer.
 
@@ -23,47 +23,47 @@ class PromptCreator:
     """
 
     _interpolation_strategies: dict[str, Callable[..., str]] = {
-        "children_dependencies_import_details": lambda code, children_summaries, dependencies, import_details: PromptCreator._interpolate_prompt_string(
+        "children_dependencies_import_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.COD_SUMMARIZATION_PROMPT_WITH_EVERYTHING,
             code=code,
             children_summaries=children_summaries,
             dependencies=dependencies,
             import_details=import_details,
         ),
-        "children_dependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: PromptCreator._interpolate_prompt_string(
+        "children_dependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.COD_SUMMARIZATION_PROMPT_NO_IMPORTS,
             code=code,
             children_summaries=children_summaries,
             dependencies=dependencies,
         ),
-        "children_nodependencies_import_details": lambda code, children_summaries, dependencies, import_details: PromptCreator._interpolate_prompt_string(
+        "children_nodependencies_import_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES,
             code=code,
             children_summaries=children_summaries,
             import_details=import_details,
         ),
-        "children_nodependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: PromptCreator._interpolate_prompt_string(
+        "children_nodependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_IMPORTS,
             code=code,
             children_summaries=children_summaries,
         ),
-        "nochildren_dependencies_import_details": lambda code, children_summaries, dependencies, import_details: PromptCreator._interpolate_prompt_string(
+        "nochildren_dependencies_import_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.COD_SUMMARIZATION_PROMPT_NO_CHILDREN,
             code=code,
             dependencies=dependencies,
             import_details=import_details,
         ),
-        "nochildren_dependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: PromptCreator._interpolate_prompt_string(
+        "nochildren_dependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.COD_SUMMARIZATION_PROMPT_NO_CHILDREN_NO_IMPORTS,
             code=code,
             dependencies=dependencies,
         ),
-        "nochildren_nodependencies_import_details": lambda code, children_summaries, dependencies, import_details: PromptCreator._interpolate_prompt_string(
+        "nochildren_nodependencies_import_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_CHILDREN,
             code=code,
             import_details=import_details,
         ),
-        "nochildren_nodependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: PromptCreator._interpolate_prompt_string(
+        "nochildren_nodependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.COD_SUMMARIZATION_PROMPT_WITHOUT_ANYTHING,
             code=code,
         ),
@@ -120,7 +120,9 @@ class PromptCreator:
         )
         strategy: Callable[
             ..., str
-        ] | None = PromptCreator._interpolation_strategies.get(strategy_key)
+        ] | None = SummarizationPromptCreator._interpolation_strategies.get(
+            strategy_key
+        )
         if strategy:
             return strategy(
                 code, children_summaries, dependency_summaries, import_details

@@ -1,0 +1,20 @@
+{
+    "function_name": "query_chroma",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": " | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian__*__FUNCTION-query_chroma",
+    "file_path": "postcode/ai_services/librarians/chroma_librarians.py",
+    "parent_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian",
+    "block_type": "FUNCTION",
+    "start_line_num": 52,
+    "end_line_num": 61,
+    "code_content": "\ndef query_chroma(self, user_question: str) -> chroma_types.QueryResult | None:\n    queries: list[str] | None = self._get_chroma_queries(user_question)\n    if not queries:\n        return None\n\n    print(queries)\n\n    return self._query_collection(queries)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nSummary:\n\n        postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian__*__FUNCTION-query_chroma\n\n        None, None, None\n        ",
+    "children_ids": []
+}

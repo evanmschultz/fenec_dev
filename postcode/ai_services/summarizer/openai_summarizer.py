@@ -10,7 +10,9 @@ from openai.types.chat.chat_completion_user_message_param import (
 from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
 from openai.types.chat.chat_completion import ChatCompletion
 
-from postcode.ai_services.summarizer.prompts.prompt_creator import PromptCreator
+from postcode.ai_services.summarizer.prompts.prompt_creator import (
+    SummarizationPromptCreator,
+)
 from postcode.ai_services.summarizer.summarization_context import (
     OpenAIReturnContext,
     SummaryCompletionConfigs,
@@ -94,7 +96,7 @@ class OpenAISummarizer:
         dependency_summaries: str | None,
         import_details: str | None,
     ) -> str:
-        prompt_creator: PromptCreator = PromptCreator()
+        prompt_creator: SummarizationPromptCreator = SummarizationPromptCreator()
         prompt: str | None = prompt_creator.create_prompt(
             code,
             children_summaries,

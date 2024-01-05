@@ -1,21 +1,7 @@
 import logging
-from pprint import pprint
-from typing import Union
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
 
-# from postcode.models.models import (
-#     ClassModel,
-#     FunctionModel,
-#     ModuleModel,
-#     StandaloneCodeBlockModel,
-#     DirectoryModel,
-# )
-
 from postcode.types.postcode import ModelType
-
-# ModelType = Union[
-#     ModuleModel, ClassModel, FunctionModel, StandaloneCodeBlockModel, DirectoryModel
-# ]
 
 
 class SummarizationMapper:
@@ -46,28 +32,6 @@ class SummarizationMapper:
 
         return models_to_update
 
-    # def _set_child_models_to_update(self, model: ModelType) -> None:
-    #     if isinstance(model, DirectoryModel):
-    #         return None
-
-    #     if model.children_ids:
-    #         for child_id in model.children_ids:
-    #             # logging.info(f"Setting child model to update: {child.id}")
-    #             self._set_child_models_to_update(child_id)
-    #             child.summary = None
-    #             self.models_to_update.append(child)
-    #         self.models_to_update.append(model)
-
-    # def _set_models_to_update(self) -> None:
-    #     for model in self.all_models:
-    #         if model.id in self.module_ids_to_update:
-    #             if model.children_ids:
-    #                 for child in model.children_ids:
-    #                     self._set_child_models_to_update(child)
-
-    #             model.summary = None
-    #             self.models_to_update.append(model)
-
     def _set_inbound_models_in_summarization_map(self, model_id: str) -> None:
         if model_id in self.model_visited_in_db:
             return
@@ -95,23 +59,17 @@ class SummarizationMapper:
         self._set_models_to_update()
         logging.info("Set models to update")
 
-        # pprint([model.id for model in self.models_to_update])
-
         for model in self.models_to_update:
-            # self.model_visited_in_db = set()
-            # logging.info(f"Setting inbound models in summarization map: {model.id}")
+            logging.debug(f"Setting inbound models in summarization map: {model.id}")
             self._set_inbound_models_in_summarization_map(model.id)
             self.temp_map.append(model)
 
             self.model_visited_in_db.remove(model.id)
-            # logging.info(f"Setting outbound models in summarization map: {model.id}")
-            # self._set_outbound_models_in_summarization_map(model.id)
             self.summarization_map.extend(self.temp_map)
             self.temp_map = []
 
         for model in self.models_to_update:
-            self.model_visited_in_db = set()
-            # logging.info(f"Setting outbound models in summarization map: {model.id}")
+            logging.debug(f"Setting outbound models in summarization map: {model.id}")
             self._set_outbound_models_in_summarization_map(model.id)
             self.summarization_map.extend(self.temp_map)
             self.temp_map = []
@@ -124,45 +82,4 @@ class SummarizationMapper:
                 summary_map.append(model)
                 summary_ids.add(model.id)
 
-        # pprint([model.id for model in summary_map[::-1]])
-
         return summary_map[::-1]
-
-    # def old_create_summarization_map(self) -> list[list[ModelType]]:
-    #     for module_id in self.module_ids_to_update:
-    #         models_to_update: list[ModelType] = []
-
-    #         upstream_models: list[
-    #             ModelType
-    #         ] | None = self.arangodb_manager.get_all_upstream_vertices(module_id)
-    #         downstream_models: list[
-    #             ModelType
-    #         ] | None = self.arangodb_manager.get_all_downstream_vertices(module_id)
-
-    #         ids_from_db: list[str] = []
-    #         if upstream_models:
-    #             upstream_ids_to_update: list[str] = [
-    #                 model.id for model in upstream_models
-    #             ]
-    #             ids_from_db.extend(upstream_ids_to_update)
-
-    #         ids_from_db.append(module_id)
-
-    #         if downstream_models:
-    #             downstream_ids_to_update: list[str] = [
-    #                 model.id for model in downstream_models
-    #             ]
-    #             ids_from_db.extend(downstream_ids_to_update)
-
-    #         for id in ids_from_db:
-    #             for model in self.module_models:
-    #                 if model.id == id:
-    #                     models_to_update.append(model)
-    #                 elif model.children:
-    #                     for child in model.children:
-    #                         if child.id == id:
-    #                             models_to_update.append(child)
-
-    #         self.summarization_map.append(models_to_update)
-
-    #     return self.summarization_map
