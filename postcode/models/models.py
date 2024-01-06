@@ -1,5 +1,4 @@
-from typing import Union
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 from postcode.models.enums import (
     BlockType,
@@ -114,7 +113,7 @@ class BaseCodeBlockModel(BaseModel):
     summary: str | None = None
     children_ids: list[str] | None = []
 
-    @validator("parent_id", always=True)
+    @field_validator("parent_id")
     def check_parent_id(cls, v, values, **kwargs) -> str | None:
         """Validates that parent_id is a non-empty string unless block_type is MODULE."""
 
