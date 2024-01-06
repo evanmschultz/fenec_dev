@@ -6,6 +6,8 @@ from postcode.databases.chroma.chromadb_collection_manager import (
     ChromaCollectionManager,
 )
 from postcode.ai_services.librarians.chroma_librarians import ChromaLibrarian
+from postcode.databases.chroma.chroma_setup import setup_chroma
+from postcode.ai_services.chat.openai_agents import OpenAIChatAgent
 
 
 # from postcode.updaters.standard_updater import StandardUpdater
@@ -18,18 +20,12 @@ def main(
     setup_logging()
 
     #   ==================== GraphDB ====================
-    graph_db_updater = GraphDBUpdater(directory, output_directory)
-    chroma_collection_manager: ChromaCollectionManager = graph_db_updater.update_all()
+    # graph_db_updater = GraphDBUpdater(directory, output_directory)
+    # chroma_collection_manager: ChromaCollectionManager = graph_db_updater.update_all()
+    chroma_collection_manager: ChromaCollectionManager = setup_chroma()
     chroma_librarian = ChromaLibrarian(chroma_collection_manager)
-    chroma_results: chroma_types.QueryResult | None = chroma_librarian.query_chroma(
-        "what code builds the models?"
-    )
-    if not chroma_results:
-        print("No results")
-        return None
-
-    for result in chroma_results["ids"]:
-        print(result)
+    openai_chat_agent = OpenAIChatAgent(chroma_librarian)
+    print(openai_chat_agent.get_response("Which models are inherited by others?"))
     #   =================== End GraphDB ====================
 
     #   ==================== Standard ====================
