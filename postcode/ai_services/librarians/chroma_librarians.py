@@ -109,7 +109,6 @@ class ChromaLibrarian:
                 content_model = OpenAIResponseContent(
                     query_list=content_json["query_list"]
                 )
-                print(content_model)
 
                 if content:
                     queries: list[str] = content_model.query_list
