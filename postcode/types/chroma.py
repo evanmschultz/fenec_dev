@@ -23,6 +23,7 @@ from chromadb.api.types import (
     Loadable,
     Metadata,
     Embedding,
+    Document,
 )
 from chromadb import Collection
 from chromadb import EmbeddingFunction
