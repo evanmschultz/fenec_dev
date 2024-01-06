@@ -13,6 +13,26 @@ from postcode.ai_services.chat.prompts.prompts import (
 
 
 class OpenAIChatAgent:
+    """
+    Represents an agent that interacts with the OpenAI API for generating responses to user questions.
+
+    Args:
+        - chroma_librarian (ChromaLibrarian): The librarian handling Chroma queries.
+        - model (str, optional): The OpenAI model to use. Defaults to "gpt-4-1106-preview".
+
+    Methods:
+        - get_response(user_question, prompt_template=DEFAULT_PROMPT_TEMPLATE):
+            Generates a response to the user's question using the specified prompt template.
+
+        - _format_prompt(context, user_question, prompt_template):
+            Formats the prompt for the OpenAI API based on the context and user's question.
+
+    Attributes:
+        - chroma_librarian (ChromaLibrarian): The Chroma librarian instance.
+        - model (str): The OpenAI model being used.
+        - client: The OpenAI API client.
+    """
+
     def __init__(
         self,
         chroma_librarian: ChromaLibrarian,
@@ -25,36 +45,73 @@ class OpenAIChatAgent:
     def get_response(
         self, user_question: str, prompt_template: str = DEFAULT_PROMPT_TEMPLATE
     ) -> str | None:
-        chroma_results: chroma_types.QueryResult | None = (
-            self.chroma_librarian.query_chroma(user_question)
-        )
+        """
+        Generates a response to the user's question using the OpenAI API.
 
-        if not chroma_results:
-            return "I don't know how to answer that question."
+        Args:
+            - user_question (str): The user's question.
+            - prompt_template (str, optional): The template for formatting the prompt.
+                Defaults to DEFAULT_PROMPT_TEMPLATE.
 
-        documents: list[list[str]] | None = chroma_results["documents"]
+        Returns:
+            - str | None: The generated response or None if the response could not be generated.
 
-        if not documents:
-            return "I don't know how to answer that question."
+        Raises:
+            - ValueError: If user_question is empty.
+            - RuntimeError: If there is an issue with the OpenAI API request.
+            - KeyError: If the prompt template is missing required keys.
 
-        context: str = ""
-        for document in documents:
-            context += "\n".join(document) + "\n"
+        Example:
+            ```python
+            agent = OpenAIChatAgent(chroma_librarian, model="gpt-4-1106-preview")
+            try:
+                response = agent.get_response("What is the capital of France?")
+                print(response)
+            except ValueError as ve:
+                print(f"ValueError: {ve}")
+            except RuntimeError as re:
+                print(f"RuntimeError: {re}")
+            except KeyError as ke:
+                print(f"KeyError: {ke}")
+            ```
+        """
+        if not user_question:
+            raise ValueError("User question cannot be empty.")
 
-        prompt: str = self._format_prompt(context, user_question, prompt_template)
+        try:
+            chroma_results: chroma_types.QueryResult | None = (
+                self.chroma_librarian.query_chroma(user_question)
+            )
 
-        messages: Sequence[dict[str, str]] = [
-            {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ]
+            if not chroma_results:
+                return "I don't know how to answer that question."
 
-        response: openai_types.ChatCompletion = self.client.chat.completions.create(
-            model=self.model,
-            messages=messages,  # type: ignore # FIXME: fix type hinting error
-            temperature=0.1,
-            # response_format={"type": "json_object"},
-        )
-        return response.choices[0].message.content
+            documents: list[list[str]] | None = chroma_results["documents"]
+
+            if not documents:
+                return "I don't know how to answer that question."
+
+            context: str = ""
+            for document in documents:
+                context += "\n".join(document) + "\n"
+
+            prompt: str = self._format_prompt(context, user_question, prompt_template)
+
+            messages: Sequence[dict[str, str]] = [
+                {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ]
+
+            response: openai_types.ChatCompletion = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,  # type: ignore # FIXME: fix type hinting error
+                temperature=0.1,
+                # response_format={"type": "json_object"},
+            )
+            return response.choices[0].message.content
+
+        except Exception as e:
+            raise RuntimeError(f"Error interacting with OpenAI API: {e}") from e
 
     def _format_prompt(
         self,
@@ -62,6 +119,27 @@ class OpenAIChatAgent:
         user_question: str,
         prompt_template: str,
     ) -> str:
+        """
+        Formats the prompt for the OpenAI API based on the provided context, user's question, and template.
+
+        Args:
+            - context (str): The context derived from Chroma query results.
+            - user_question (str): The user's question.
+            - prompt_template (str): The template for formatting the prompt.
+
+        Returns:
+            - str: The formatted prompt.
+
+        Raises:
+            - KeyError: If the prompt template is missing required keys.
+
+        Example:
+            ```python
+            prompt = agent._format_prompt("Context here", "What is the meaning of life?", "Template {context} {user_question}")
+            print(prompt)
+            ```
+        """
+
         try:
             return prompt_template.format(context=context, user_question=user_question)
 

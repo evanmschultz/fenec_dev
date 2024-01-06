@@ -22,13 +22,15 @@ class ImportAndDependencyUpdater:
     across the provided module model builders.
 
     Attributes:
-        model_builder_list (list[ModuleModelBuilder]): A list of ModuleModelBuilder instances
+        - model_builder_tuple (tuple[ModuleModelBuilder, ...]): A tuple of ModuleModelBuilder instances
         to be processed for import and dependency updates.
 
     Example:
+        ```Python
         model_builders = [ModuleModelBuilder(), ModuleModelBuilder()]
         updater = ImportAndDependencyUpdater(model_builders)
         updater.update_imports()
+        ```
     """
 
     def __init__(self, model_builder_tuple: tuple[ModuleModelBuilder, ...]) -> None:
@@ -36,12 +38,14 @@ class ImportAndDependencyUpdater:
 
     def update_imports(self) -> None:
         """
-        Processes each module model builder in the model_builder_list and updates their import
+        Processes each module model builder in the model_builder_tuple and updates their import
         statements. This method is the primary entry point for initiating the import update process.
 
         Example:
+            ```Python
             updater = ImportAndDependencyUpdater(model_builders)
             updater.update_imports()
+            ```
         """
 
         for model_builder in self.model_builder_tuple:
@@ -62,14 +66,16 @@ class ImportUpdater:
     to changes in the module models.
 
     Attributes:
-        model_builder_list (list[ModuleModelBuilder]): A list of ModuleModelBuilder
+        - model_builder_tuple (tuple[ModuleModelBuilder, ...]): A tuple of ModuleModelBuilder
         instances to be processed for import updates.
 
     Example:
+        ```Python
         model_builders = [ModuleModelBuilder(), ModuleModelBuilder()]
         import_updater = ImportUpdater(model_builders)
         for builder in model_builders:
             import_updater.process_builder(builder)
+        ```
     """
 
     def __init__(self, model_builder_tuple: tuple[ModuleModelBuilder, ...]) -> None:
@@ -80,7 +86,7 @@ class ImportUpdater:
         Processes a single module model builder to update its import statements.
 
         Args:
-            builder (ModuleModelBuilder): The module model builder to process.
+            - builder (ModuleModelBuilder): The module model builder to process.
         """
 
         if module_imports := builder.module_attributes.imports:
@@ -95,8 +101,8 @@ class ImportUpdater:
         Handles the import models for a given builder and updates them as necessary.
 
         Args:
-            builder (ModuleModelBuilder): The builder whose import models are to be handled.
-            module_imports (tuple[ImportModel]): A tuple of import models to process.
+            - builder (ModuleModelBuilder): The builder whose import models are to be handled.
+            - module_imports (tuple[ImportModel]): A tuple of import models to process.
         """
 
         # module_imports_tuple = tuple(module_imports)
@@ -115,8 +121,14 @@ class ImportUpdater:
         and if so, updates the import path and names accordingly.
 
         Args:
-            builder (ModuleModelBuilder): The builder that owns the import model.
-            import_model (ImportModel): The import model to be updated.
+            - builder (ModuleModelBuilder): The builder that owns the import model.
+            - import_model (ImportModel): The import model to be updated.
+
+        Example:
+            ```Python
+            updater = ImportUpdater(model_builder_tuple)
+            updater._update_import_for_builder(builder_instance, import_model_instance)
+            ```
         """
 
         if self._is_local_import(import_model):
@@ -139,7 +151,7 @@ class ImportUpdater:
                 )
 
     def _is_local_import(self, import_model: ImportModel) -> bool:
-        """Returns True if the import is local."""
+        """Returns boolean indicating whether the import is local to the project."""
         return import_model.import_module_type == ImportModuleType.LOCAL
 
     def _get_import_names(self, import_model: ImportModel) -> list[str]:
@@ -180,13 +192,18 @@ class ImportUpdater:
         Updates the import model with new import names and assigns the local module ID to the external builder.
 
         Args:
-            import_model (ImportModel): The import model to be updated.
-            import_names (list[str] | None): The list of new import names.
-            builder (ModuleModelBuilder): The module model builder.
-            external_builder (ModuleModelBuilder): The external module model builder.
+            - import_model (ImportModel): The import model to be updated.
+            - import_names (list[str] | None): The list of new import names.
+            - builder (ModuleModelBuilder): The module model builder.
+            - external_builder (ModuleModelBuilder): The external module model builder.
 
         Returns:
-            None
+            - None
+
+        Example:
+            ```Python
+            import_updater._update_import_model(import_model_instance, import_names_list, builder_instance, external_builder_instance)
+            ```
         """
         new_import_model: ImportModel = import_model.model_copy()
         new_import_model.local_module_id = external_builder.id
@@ -222,12 +239,17 @@ class ImportUpdater:
         Returns a list of new ImportNameModel objects based on the given import names.
 
         Args:
-            external_builder (ModuleModelBuilder): The external module builder.
-            import_names (list[str]): The list of import names.
-            import_model (ImportModel): The import model.
+            - external_builder (ModuleModelBuilder): The external module builder.
+            - import_names (list[str]): The list of import names.
+            - import_model (ImportModel): The import model.
 
         Returns:
-            list[ImportNameModel]: The list of new ImportNameModel objects.
+            - list[ImportNameModel]: The list of new ImportNameModel objects.
+
+        Example:
+            ```Python
+            new_import_name_models = import_updater._get_new_import_name_models(external_builder_instance, import_names_list, import_model_instance)
+            ```
         """
 
         new_import_name_models: list = []
@@ -255,6 +277,22 @@ class ImportUpdater:
         new_import_name_models: list[ImportNameModel],
         existing_import_names: list[ImportNameModel],
     ) -> list[ImportNameModel]:
+        """
+        Adds missing import names to the list of new ImportNameModel objects.
+
+        Args:
+            - new_import_name_models (list[ImportNameModel]): The list of new ImportNameModel objects.
+            - existing_import_names (list[ImportNameModel]): The list of existing ImportNameModel objects.
+
+        Returns:
+            - list[ImportNameModel]: The updated list of new ImportNameModel objects.
+
+        Example:
+            ```Python
+            updated_import_names = import_updater._add_missing_imports(new_import_name_models_list, existing_import_names_list)
+            ```
+        """
+
         for import_name_model in existing_import_names:
             if import_name_model.name not in [
                 name.name for name in new_import_name_models
@@ -297,6 +335,7 @@ class DependencyUpdater:
             DependencyUpdater.update_dependencies(model_builder)
             ```
         """
+
         import_model_list: list[
             ImportModel
         ] | None = model_builder.module_attributes.imports

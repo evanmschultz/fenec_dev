@@ -20,6 +20,36 @@ from postcode.models.models import (
 
 
 class GraphDBSummarizationManager:
+    """
+    A class for managing summarization of models in a graph database.
+
+    Args:
+        - all_models_tuple (tuple[ModelType, ...]): Tuple of all models available for summarization.
+        - summarization_mapper (SummarizationMapper): The SummarizationMapper instance for creating a summarization map.
+        - summarizer (Summarizer): The Summarizer instance for generating code summaries.
+        - graph_manager (ArangoDBManager): The ArangoDBManager instance for handling database interactions.
+
+    Properties:
+        - total_cost (float): Provides the total cost of the summarization process.
+
+    Methods:
+        - create_summaries_and_return_updated_models(): Creates summaries and updates models in the graph database.
+
+    Example:
+        ```python
+        # Instantiate GraphDBSummarizationManager
+        summarization_manager = GraphDBSummarizationManager(
+            all_models_tuple=(ModuleModel(id="module_1"), FunctionModel(id="function_1")),
+            summarization_mapper=my_summarization_mapper_instance,
+            summarizer=my_summarizer_instance,
+            graph_manager=my_arangodb_manager_instance
+        )
+
+        # Create summaries and update models
+        updated_models = summarization_manager.create_summaries_and_return_updated_models()
+        ```
+    """
+
     def __init__(
         self,
         all_models_tuple: tuple[ModelType, ...],
@@ -46,6 +76,12 @@ class GraphDBSummarizationManager:
         return (prompt_cost + completion_cost) / 100_000  # Convert to dollars
 
     def create_summaries_and_return_updated_models(self) -> list[ModelType] | None:
+        """
+        Creates summaries and updates models in the graph database.
+
+        Returns:
+            - list[ModelType] | None: Updated models in the graph database or None if graph_manager is not provided.
+        """
         summarization_map: list[
             ModelType
         ] = self.summarization_mapper.create_summarization_map()
@@ -123,7 +159,15 @@ class GraphDBSummarizationManager:
         return self.graph_manager.get_all_vertices() if self.graph_manager else None
 
     def _get_child_summaries(self, model: ModelType) -> list[str] | None:
-        """Gathers summaries of child models."""
+        """
+        Gathers summaries of child models.
+
+        Args:
+            - model (ModelType): The model to gather child summaries for.
+
+        Returns:
+            - list[str] | None: A list of child summaries or None if the model has no children.
+        """
 
         child_summary_list: list[str] = []
         if model.children_ids:
@@ -151,7 +195,15 @@ class GraphDBSummarizationManager:
         return child_summary_list
 
     def _stringify_children_summaries(self, children_summary_list: list[str]) -> str:
-        """Converts all of the child summaries to a single string to be used in the prompt."""
+        """
+        Converts all of the child summaries to a single string to be used in the prompt.
+
+        Args:
+            - children_summary_list (list[str]): A list of child summaries.
+
+        Returns:
+            - str: A string of all of the child summaries.
+        """
 
         children_summaries: str = ""
         for child_summary in children_summary_list:
@@ -159,6 +211,16 @@ class GraphDBSummarizationManager:
         return children_summaries
 
     def _get_dependencies_summaries(self, model: ModelType) -> str | None:
+        """
+        Gathers summaries of dependencies and returns them as a string to be used in the prompt.
+
+        Args:
+            - model (ModelType): The model to gather dependency summaries for.
+
+        Returns:
+            - str | None: A string of dependency summaries or None if the model has no dependencies.
+        """
+
         dependency_list: list[ImportModel | DependencyModel] | list[ImportModel] = []
         dependency_summary_list: list[str] = []
 
@@ -206,7 +268,16 @@ class GraphDBSummarizationManager:
         dependency: DependencyModel,
         model: ModelType,
     ) -> str | None:
-        """Gets a summary for a dependency local to the module."""
+        """
+        Retrieves the summary of a local dependency to be used in the prompt.
+
+        Args:
+            - dependency (DependencyModel): The dependency to retrieve the summary for.
+            - model (ModelType): The model to retrieve the summary for.
+
+        Returns:
+            - str | None: The summary of the local dependency or None if the dependency is not local.
+        """
         if not model.children_ids:
             return None
 
@@ -226,7 +297,15 @@ class GraphDBSummarizationManager:
     def _stringify_dependencies_summaries(
         self, dependencies_summary_list: list[str] | None
     ) -> str | None:
-        """Converts all of the dependency summaries to a single string to be used in the prompt."""
+        """
+        Converts all of the dependency summaries to a single string to be used in the prompt.
+
+        Args:
+            - dependencies_summary_list (list[str] | None): A list of dependency summaries.
+
+        Returns:
+            - str | None: A string of all of the dependency summaries or None if the list is empty.
+        """
         if not dependencies_summary_list:
             return None
 
@@ -236,6 +315,16 @@ class GraphDBSummarizationManager:
         return dependency_summaries
 
     def _get_local_import_summary(self, dependency: ImportModel) -> str | None:
+        """
+        Retrieves the summary of a local import to be used in the prompt.
+
+        Args:
+            - dependency (ImportModel): The import to retrieve the summary for.
+
+        Returns:
+            - str | None: The summary of the local import or None if the import is not local.
+        """
+
         for model in self.all_models_tuple:
             if model.id == dependency.local_module_id:
                 import_summary: str | None = None
@@ -249,6 +338,16 @@ class GraphDBSummarizationManager:
         return None
 
     def _get_local_import_from_summary(self, dependency: ImportModel) -> str | None:
+        """
+        Retrieves the summary of a local import from to be used in the prompt.
+
+        Args:
+            - dependency (ImportModel): The import to retrieve the summary for.
+
+        Returns:
+            - str | None: The summary of the local import from or None if the import is not local.
+        """
+
         for import_name in dependency.import_names:
             for model in self.all_models_tuple:
                 if model.id == import_name.local_block_id:
@@ -264,7 +363,16 @@ class GraphDBSummarizationManager:
         return None
 
     def _get_import_details(self, import_model: ImportModel) -> str | None:
-        """Retrieves details of import statements to be used in the prompt."""
+        """
+        Returns the import details to be used in the prompt.
+
+        Args:
+            - import_model (ImportModel): The import to retrieve the details for.
+
+        Returns:
+            - str | None: The import details or None if the import is local.
+        """
+
         if import_model.import_module_type == "LOCAL" or not import_model.import_names:
             return None
 

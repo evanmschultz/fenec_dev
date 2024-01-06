@@ -13,7 +13,7 @@ class ImportModuleType(str, Enum):
 
 
 class CommentType(str, Enum):
-    """Class representing the different types of important comments."""
+    """Enum representing the different types of important comments."""
 
     TODO = "TODO"
     FIXME = "FIXME"

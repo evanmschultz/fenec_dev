@@ -1,5 +1,3 @@
-from typing import Union
-
 from postcode.models.enums import BlockType
 from postcode.models.models import (
     ModuleModel,

@@ -39,12 +39,15 @@ class PythonParser:
     module model using the libcst library. It is designed to work with a specific file at a time.
 
     Attributes:
-        file_path (str): The path to the Python file to be parsed.
+        - file_path (str): The path to the Python file to be parsed.
 
     Example:
-        >>> python_parser = PythonParser("/path/to/python/file.py")
-        >>> module_model = python_parser.parse(python_parser.open_file())
-        # This will parse the specified Python file and return a structured module model.
+        ```Python
+        python_parser = PythonParser("/path/to/python/file.py")
+        code = python_parser.open_file()
+        module_model = python_parser.parse(code, parent_id="parent_module_id")
+        # Parses the provided code and returns a structured module model.
+        ```
     """
 
     def __init__(self, file_path: str) -> None:
@@ -55,11 +58,14 @@ class PythonParser:
         Opens and reads the contents of the Python file specified in the file_path attribute.
 
         Returns:
-            str: The contents of the file as a string.
+            - str: The contents of the file as a string.
 
         Example:
-            >>> code = python_parser.open_file()
+            ```Python
+            python_parser = PythonParser("/path/to/python/file.py")
+            code = python_parser.open_file()
             # Reads and returns the contents of the Python file.
+            ```
         """
 
         with open(self.file_path, "r") as file:
@@ -70,18 +76,20 @@ class PythonParser:
         Parses the provided Python code into a structured module model.
 
         Uses libcst to parse the provided code using the ModuleVisitor class. A ModuleModelBuilder instance is returned
-        along with it hierarchy of child builders.
+        along with its hierarchy of child builders.
 
         Args:
             - code (str): The Python code to be parsed.
+            - parent_id (str): The ID of the parent module or block.
 
         Returns:
             - ModuleModelBuilder | None: The module model builder for the provided code.
 
         Example:
             ```Python
+            python_parser = PythonParser("/path/to/python/file.py")
             code = python_parser.open_file()
-            module_model = python_parser.parse(code)
+            module_model = python_parser.parse(code, parent_id="parent_module_id")
             # Parses the provided code and returns a module model builder.
             ```
         """

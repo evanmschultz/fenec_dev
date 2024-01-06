@@ -14,14 +14,16 @@ def extract_content_from_empty_lines(
     Extracts comments from a sequence of EmptyLine nodes.
 
     Args:
-        sequence: A sequence of libcst.EmptyLine nodes to process.
+        - sequence (Sequence[libcst.EmptyLine]): A sequence of libcst.EmptyLine nodes to process.
 
     Returns:
-        A list of string comments extracted from the EmptyLine nodes.
+        - list[str]: A list of string comments extracted from the EmptyLine nodes.
 
     Example:
-        >>> extract_content_from_empty_lines([libcst.EmptyLine(comment=libcst.Comment("# Comment"))])
-        ['# Comment']
+        ```Python
+        extract_content_from_empty_lines([libcst.EmptyLine(comment=libcst.Comment("# Comment"))])
+        # Returns: ['# Comment']
+        ```
     """
 
     return [line.comment.value for line in sequence if line.comment]
@@ -32,14 +34,15 @@ def process_import(node: libcst.Import) -> ImportModel:
     Processes an Import node to create an ImportModel.
 
     Args:
-        node: The Import node to process.
+        - node (libcst.Import): The Import node to process.
 
     Returns:
-        An ImportModel representing the processed import.
+        - ImportModel: An ImportModel representing the processed import.
 
     Example:
-        >>> process_import(libcst.Import(names=[libcst.ImportAlias(name=libcst.Name("module"))]))
-        # Returns an ImportModel for 'module'
+        ```Python
+        import_model = process_import(libcst.Import(names=[libcst.ImportAlias(name=libcst.Name("module"))]))
+        ```
     """
 
     import_name_model: ImportNameModel = _build_import_name_model(node)
@@ -54,14 +57,15 @@ def process_import_from(node: libcst.ImportFrom) -> ImportModel:
     Processes an ImportFrom node to create an ImportModel.
 
     Args:
-        node: The ImportFrom node to process.
+        - node (libcst.ImportFrom): The ImportFrom node to process.
 
     Returns:
-        An ImportModel representing the processed import from statement.
+        - ImportModel: An ImportModel representing the processed import from statement.
 
     Example:
-        >>> process_import_from(libcst.ImportFrom(module=libcst.Name("module"), names=[libcst.ImportAlias(name=libcst.Name("submodule"))]))
-        # Returns an ImportModel for 'from module import submodule'
+        ```Python
+        import_model = process_import_from(libcst.ImportFrom(module=libcst.Name("module"), names=[libcst.ImportAlias(name=libcst.Name("submodule"))]))
+        ```
     """
 
     module_name: str | None = (

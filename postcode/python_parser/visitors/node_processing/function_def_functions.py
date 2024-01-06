@@ -26,18 +26,21 @@ def process_func_def(
     """
     Processes a libcst.FunctionDef node to build a function model.
 
-    Extracts various components of a function definition such as its docstring, code content, decorators, and return annotations, and updates the provided FunctionModelBuilder with these details.
+    Extracts various components of a function definition such as its docstring, code content, decorators, and return annotations,
+    and updates the provided FunctionModelBuilder with these details.
 
     Args:
-        func_id (str): The unique identifier for the function.
-        node (libcst.FunctionDef): The function definition node from the CST.
-        position_data (PositionData): Positional data for the function in the source code.
-        func_builder (FunctionModelBuilder): The builder used to construct the function model.
+        - func_id (str): The unique identifier for the function.
+        - node (libcst.FunctionDef): The function definition node from the CST.
+        - position_data (PositionData): Positional data for the function in the source code.
+        - func_builder (FunctionModelBuilder): The builder used to construct the function model.
 
     Example:
-        >>> func_builder = FunctionModelBuilder(id="func1", ...)
-        >>> process_func_def("func1", function_node, position_data, func_builder)
+        ```Python
+        func_builder = FunctionModelBuilder(id="func1", ...)
+        process_func_def("func1", function_node, position_data, func_builder)
         # Processes the function definition and updates the function builder.
+        ```
     """
 
     docstring: str | None = node.get_docstring()
@@ -71,17 +74,20 @@ def process_parameters(
     """
     Processes libcst.Parameters node to create a ParameterListModel.
 
-    Extracts parameters, keyword-only parameters, positional-only parameters, and special arguments (like *args and **kwargs) from the function definition and forms a model representing these parameters.
+    Extracts parameters, keyword-only parameters, positional-only parameters, and special arguments (like *args and **kwargs)
+    from the function definition and forms a model representing these parameters.
 
     Args:
-        node (libcst.Parameters): The parameters node from a function definition.
+        - node (libcst.Parameters): The parameters node from a function definition.
 
     Returns:
-        ParameterListModel | None: A model representing the function's parameters, or None if there are no parameters.
+        - ParameterListModel | None: A model representing the function's parameters, or None if there are no parameters.
 
     Example:
-        >>> parameters_model = process_parameters(function_node.params)
+        ```Python
+        parameters_model = process_parameters(function_node.params)
         # Processes the function parameters and returns a parameter model.
+        ```
     """
 
     params: list[ParameterModel] | None = (
@@ -120,13 +126,29 @@ def process_parameters(
 
 
 def _func_is_method(id: str) -> bool:
-    """Returns true if an ancestor of the function is a class."""
+    """
+    Returns true if an ancestor of the function is a class.
+
+    Args:
+        - id (str): The identifier of the function.
+
+    Returns:
+        - bool: True if the function is a method, False otherwise.
+    """
 
     return str(BlockType.CLASS) in id
 
 
 def _func_is_async(node: libcst.FunctionDef) -> bool:
-    """Returns true if the function is async."""
+    """
+    Returns true if the function is async.
+
+    Args:
+        - node (libcst.FunctionDef): The function definition node.
+
+    Returns:
+        - bool: True if the function is async, False otherwise.
+    """
 
     return True if node.asynchronous else False
 
@@ -134,7 +156,15 @@ def _func_is_async(node: libcst.FunctionDef) -> bool:
 def _get_parameters_list(
     parameter_sequence: Sequence[libcst.Param],
 ) -> list[ParameterModel] | None:
-    """Returns a list of ParameterModel representing the parameters in a function definition."""
+    """
+    Returns a list of ParameterModel representing the parameters in a function definition.
+
+    Args:
+        - parameter_sequence (Sequence[libcst.Param]): The sequence of parameters from the function definition.
+
+    Returns:
+        - list[ParameterModel] | None: A list of ParameterModel instances or None if there are no parameters.
+    """
 
     params: list[ParameterModel] | None = None
 
@@ -152,7 +182,15 @@ def _get_parameters_list(
 def _extract_return_annotation(
     node_returns: libcst.Annotation | None,
 ) -> str:
-    """Extracts the return annotation from a function definition."""
+    """ "
+    Extracts the return annotation from a function definition.
+
+    Args:
+        - node_returns (libcst.Annotation | None): The return annotation node.
+
+    Returns:
+        - str: The extracted return annotation or "No return annotation" if none is found.
+    """
 
     if isinstance(node_returns, libcst.Annotation) and node_returns:
         annotation: str | None = common_functions.extract_type_annotation(node_returns)

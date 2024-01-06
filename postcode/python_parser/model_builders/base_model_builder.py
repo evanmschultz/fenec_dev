@@ -38,8 +38,11 @@ class BaseModelBuilder(ABC):
 
     Attributes:
         - id (str): The unique identifier for the code block.
-        - children_builders (list[Union[ClassModelBuilder, FunctionModelBuilder, StandaloneBlockModelBuilder]]):
+        - child_builders (list[Union[ClassModelBuilder, FunctionModelBuilder, StandaloneBlockModelBuilder]]):
             A list of builders for the children code blocks.
+        - child_models (list[
+            ClassModel | FunctionModel | StandaloneCodeBlockModel
+        ] | None): A list of child models built by this builder.
         - common_attributes (BaseCodeBlockModel): An instance containing common attributes shared across different code block models.
 
     Example:
@@ -53,6 +56,20 @@ class BaseModelBuilder(ABC):
         builder.set_start_line_num(1).set_end_line_num(10)
         # Sets the start and end line numbers for the code block.
         ```
+
+    Methods:
+        - `set_start_line_num(line_num: int) -> Union[...]`: Sets the start line number of the code block model instance.
+        - `set_end_line_num(line_num: int) -> Union[...]`: Sets the end line number of the code block model instance.
+        - `set_code_content(code_content: str) -> Union[...]`: Adds the string containing the content of the code block to the model instance.
+        - `add_important_comment(comment: CommentModel) -> Union[...]`: Adds an important comment to the model instance.
+        - `add_summary(summary: str) -> Union[...]`: Adds a summary to the model instance.
+        - `add_child_builder(child: Union[...]) -> Union[...]`: Adds a child code block to the model instance.
+        - `set_dependencies(dependencies: list[ImportModel | DependencyModel] | None) -> Union[...]`: Sets the dependencies of the model instance.
+        - `update_import_dependency(new_import_model: ImportModel, old_import_model: ImportModel) -> Union[...]`: Updates an import in the model instance.
+        - `build_children() -> None`: Builds the child models of the code block.
+        - `set_children_ids() -> Union[...]`: Sets the children ids of the model instance.
+        - `_get_common_attributes() -> dict[str, Any]`: Returns a dictionary containing the attributes common to all code block models.
+        - `@abstractmethod build() -> None`: Builds and returns the code block model instance.
     """
 
     def __init__(
@@ -184,11 +201,11 @@ class BaseModelBuilder(ABC):
         Updates an import in the model instance.
 
         Args:
-            new_import_model (ImportModel): The updated import model.
-            old_import_model
+            - new_import_model (ImportModel): The updated import model.
+            - old_import_model
 
         Returns:
-            BaseModelBuilder: The base model builder instance.
+            - BaseModelBuilder: The base model builder instance.
         """
 
         if self.common_attributes.dependencies:
@@ -221,6 +238,7 @@ class BaseModelBuilder(ABC):
     def build_children(
         self,
     ) -> None:
+        """Builds the child models of the code block."""
         if self.child_builders:
             self.child_models = []
             for child_builder in self.child_builders:

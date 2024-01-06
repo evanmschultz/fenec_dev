@@ -18,8 +18,6 @@ from postcode.ai_services.summarizer.summarization_context import (
     SummaryCompletionConfigs,
 )
 
-# from postcode.ai_services.summarizer.temp import code_example
-
 
 class OpenAISummarizer:
     """
@@ -33,9 +31,6 @@ class OpenAISummarizer:
         - prompt_list (list[str]): A list of summary prompts.
         - default_prompt (str): The default summary prompt.
 
-    Methods:
-        - `summarize_code`: Summarizes the provided code snippet using the OpenAI API.
-
     Examples:
         ```Python
         client = OpenAI()
@@ -48,6 +43,9 @@ class OpenAISummarizer:
         summary = summarizer.summarize_code(code_example)
         print(summary)
         ```
+
+    Methods:
+        - `summarize_code`: Summarizes the provided code snippet using the OpenAI API.
     """
 
     def __init__(
@@ -235,18 +233,3 @@ class OpenAISummarizer:
         )
 
         return summary_context
-
-
-# if __name__ == "__main__":
-#     client = OpenAI()
-#     summarizer = OpenAISummarizer(client=client)
-#     children_summaries = ""
-#     dependency_summaries = ""
-#     summary = summarizer.summarize_code(
-#         code_example,
-#         model_id="test",
-#         children_summaries=children_summaries,
-#         dependency_summaries=dependency_summaries,
-#         import_details=None,
-#     )
-#     print(summary)

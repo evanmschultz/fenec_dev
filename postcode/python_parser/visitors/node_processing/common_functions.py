@@ -15,14 +15,16 @@ def extract_code_content(
     This function converts a CST node to its string representation, maintaining the original code format.
 
     Args:
-        node (libcst.CSTNode): The CST node to extract code from.
+        - node (libcst.CSTNode): The CST node to extract code from.
 
     Returns:
-        str: The string representation of the code for the given CST node.
+        - str: The string representation of the code for the given CST node.
 
     Example:
-        >>> extract_code_content(some_cst_node)
+        ```Python
+        extract_code_content(some_cst_node)
         # Returns the code content as a string.
+        ```
     """
 
     return libcst.Module([]).code_for_node(node)
@@ -37,14 +39,16 @@ def extract_stripped_code_content(
     Similar to extract_code_content, but also strips leading and trailing whitespace from the code string.
 
     Args:
-        node (libcst.CSTNode): The CST node to extract code from.
+        - node (libcst.CSTNode): The CST node to extract code from.
 
     Returns:
-        str: The stripped string representation of the code for the CST node.
+        - str: The stripped string representation of the code for the CST node.
 
     Example:
-        >>> extract_stripped_code_content(some_cst_node)
+        ```Python
+        extract_stripped_code_content(some_cst_node)
         # Returns the stripped code content as a string.
+        ```
     """
 
     return extract_code_content(node).strip()
@@ -59,14 +63,16 @@ def extract_important_comment(
     Processes a libcst.Comment or libcst.EmptyLine node to extract important comments, categorizing them based on predefined types.
 
     Args:
-        comment_or_empty_line_node (libcst.CSTNode): A CST node representing a comment or an empty line with a comment.
+        - comment_or_empty_line_node (libcst.CSTNode): A CST node representing a comment or an empty line with a comment.
 
     Returns:
-        CommentModel | None: A CommentModel object if an important comment is found, otherwise None.
+        - CommentModel | None: A CommentModel object if an important comment is found, otherwise None.
 
     Example:
-        >>> extract_important_comment(some_comment_node)
+        ```Python
+        extract_important_comment(some_comment_node)
         # Returns a CommentModel for the comment, or None if not important.
+        ```
     """
 
     comment_text: str | None = None
@@ -102,14 +108,16 @@ def extract_decorators(
     Processes each decorator node to form a model representing the decorator's name and its arguments, if any.
 
     Args:
-        decorators (Sequence[libcst.Decorator]): A sequence of libcst.Decorator nodes.
+        - decorators (Sequence[libcst.Decorator]): A sequence of libcst.Decorator nodes.
 
     Returns:
-        list[DecoratorModel] | None: A list of DecoratorModel objects, or None if no decorators are found.
+        - list[DecoratorModel] | None: A list of DecoratorModel objects, or None if no decorators are found.
 
     Example:
-        >>> extract_decorators(function_node.decorators)
+        ```Python
+        extract_decorators(function_node.decorators)
         # Returns a list of DecoratorModel objects representing each decorator in the function.
+        ```
     """
 
     decorators_list: list[DecoratorModel] = []
@@ -129,14 +137,16 @@ def extract_decorator(
     Processes a single decorator node to create a model representing the decorator's name and arguments.
 
     Args:
-        decorator (libcst.Decorator): A libcst.Decorator node.
+        - decorator (libcst.Decorator): A libcst.Decorator node.
 
     Returns:
-        DecoratorModel | None: A DecoratorModel object if the decorator is valid, otherwise None.
+        - DecoratorModel | None: A DecoratorModel object if the decorator is valid, otherwise None.
 
     Example:
-        >>> extract_decorator(some_decorator_node)
+        ```Python
+        extract_decorator(some_decorator_node)
         # Returns a DecoratorModel object for the decorator.
+        ```
     """
 
     decorator_name: str = ""
@@ -173,13 +183,20 @@ def extract_type_annotation(node: libcst.CSTNode) -> str | None:
     """
     Extracts the type annotation from a node.
 
-    Processes a libcst.CSTNode to extract the type annotation, if present. It handles various forms of type annotations, including generics and unions.
+    Processes a libcst.CSTNode to extract the type annotation, if present.
+    It handles various forms of type annotations, including generics and unions.
 
     Args:
-        node (libcst.CSTNode): The node to extract the type annotation from.
+        - node (libcst.CSTNode): The node to extract the type annotation from.
 
     Returns:
-        str | None: The extracted type annotation as a string, or None if no type annotation is found.
+        - str | None: The extracted type annotation as a string, or None if no type annotation is found.
+
+    Example:
+        ```Python
+        extract_type_annotation(some_cst_node)
+        # Returns the type annotation as a string, or None if not present.
+        ```
     """
 
     annotation: libcst.Annotation | None = _get_node_annotation(node)
@@ -189,7 +206,15 @@ def extract_type_annotation(node: libcst.CSTNode) -> str | None:
 
 
 def _get_node_annotation(node: libcst.CSTNode) -> libcst.Annotation | None:
-    """Retrieves the annotation of a given CSTNode."""
+    """
+    Retrieves the annotation of a given CSTNode.
+
+    Args:
+        - node (libcst.CSTNode): The CSTNode to retrieve the annotation from.
+
+    Returns:
+        - libcst.Annotation | None: The annotation of the CSTNode if present, otherwise None.
+    """
 
     if isinstance(node, libcst.Param) or isinstance(node, libcst.AnnAssign):
         return node.annotation
@@ -199,7 +224,15 @@ def _get_node_annotation(node: libcst.CSTNode) -> libcst.Annotation | None:
 
 
 def _process_type_annotation_expression(expression: libcst.BaseExpression) -> str:
-    """Process the type annotation expression and return a string representation recursively."""
+    """
+    Process the type annotation expression and return a string representation recursively.
+
+    Args:
+        - expression (libcst.BaseExpression): The type annotation expression to process.
+
+    Returns:
+        - str: The string representation of the processed type annotation expression.
+    """
 
     if isinstance(expression, libcst.Subscript):
         return _extract_generic_types_from_subscript(expression)
@@ -215,7 +248,15 @@ def _process_type_annotation_expression(expression: libcst.BaseExpression) -> st
 def _extract_generic_types_from_subscript(
     node: libcst.Subscript | libcst.BaseExpression,
 ) -> str:
-    """Recursively extracts generic types from a Subscript node or a BaseExpression node."""
+    """
+    Recursively extracts generic types from a Subscript node or a BaseExpression node.
+
+    Args:
+        - node (libcst.Subscript | libcst.BaseExpression): The Subscript or BaseExpression node to extract generic types from.
+
+    Returns:
+        - str: The string representation of the extracted generic types.
+    """
 
     if isinstance(node, libcst.Subscript):
         generics: list[str] = []

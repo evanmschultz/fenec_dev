@@ -75,6 +75,8 @@ class OpenAIReturnContext:
 
 
 class Summarizer(Protocol):
+    """A protocol for summary classes."""
+
     def summarize_code(
         self,
         code: str,

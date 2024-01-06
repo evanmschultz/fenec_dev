@@ -23,19 +23,22 @@ def gather_standalone_lines(
     """
     Gathers standalone lines of code that are not part of class or function definitions or import statements.
 
-    This function iterates over a sequence of CSTNodes, identifying blocks of code that stand alone. Standalone blocks are those not encapsulated in class or function definitions and not part of import statements.
+    This function iterates over a sequence of libcst.CSTNode, identifying blocks of code that stand alone.
+    Standalone blocks are those not encapsulated in class or function definitions and not part of import statements.
 
     Args:
-        node_body: A sequence of libcst.CSTNode representing the body of a module or a block.
-        visitor_instance: An instance of a visitor class that provides additional context and utilities.
+        - node_body (Sequence[libcst.CSTNode]): A sequence of CSTNodes representing the body of a module or a block.
+        - visitor_instance: An instance of a visitor class that provides additional context and utilities.
 
     Returns:
-        A list of NodeAndPositionData, each representing a standalone block of code with its start and end line numbers.
+        - list[NodeAndPositionData]: A list of NodeAndPositionData, each representing a standalone block of code with its start and end line numbers.
 
     Example:
-        >>> visitor_instance = ModuleVisitor(id="module1", ...)
-        >>> standalone_blocks = gather_standalone_lines(module_ast.body, visitor_instance)
+        ```Python
+        visitor_instance = ModuleVisitor(id="module1", ...)
+        standalone_blocks = gather_standalone_lines(module_ast.body, visitor_instance)
         # This will process the module AST and return standalone blocks of code.
+        ```
     """
 
     standalone_blocks: list[NodeAndPositionData] = []
@@ -73,15 +76,16 @@ def process_standalone_blocks(
     """
     Processes standalone blocks of code and builds models for each block.
 
-    Iterates over a list of standalone code blocks, processing each to build a model representing the block. Each block is assigned an identifier and associated with a parent identifier.
+    Iterates over a list of standalone code blocks, processing each to build a model representing the block.
+    Each block is assigned an identifier and associated with a parent identifier.
 
     Args:
-        - code_blocks: A list of NodeAndPositionData representing standalone code blocks.
-        - parent_id: The identifier of the parent (usually a module or class).
-        - file_path: The file path of the module containing the standalone blocks.
+        - code_blocks (list[NodeAndPositionData]): A list of NodeAndPositionData representing standalone code blocks.
+        - parent_id (str): The identifier of the parent (usually a module or class).
+        - file_path (str): The file path of the module containing the standalone blocks.
 
     Returns:
-        - list[StandaloneBlockModelBuilder], each representing a processed standalone block.
+        - list[StandaloneBlockModelBuilder]: A list of StandaloneBlockModelBuilder, each representing a processed standalone block.
 
     Example:
         ```Python

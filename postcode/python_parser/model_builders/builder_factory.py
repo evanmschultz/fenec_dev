@@ -25,7 +25,31 @@ class BuilderFactory:
     The factory supports creating builders for modules, classes, functions, and standalone code blocks.
 
     Attributes:
-        _creation_strategies (dict[BlockType, Callable[..., Any]]): A dictionary mapping block types to their corresponding builder creation functions.
+        - _creation_strategies (dict[BlockType, Callable[..., Any]]): A dictionary mapping block types to their corresponding builder creation functions.
+
+    Example:
+        ```Python
+        # This example demonstrates how to create a builder instance using the BuilderFactory.
+        builder = BuilderFactory.create_builder_instance(
+            block_type=BlockType.CLASS,
+            id='class1',
+            name='MyClass',
+            parent_id='module1'
+        )
+        # This will create an instance of ClassModelBuilder for a class named 'MyClass'.
+        ```
+
+    Methods:
+        - `@overload create_builder_instance(block_type: Literal[BlockType.MODULE], *, id: str, file_path: str, parent_id: str) -> ModuleModelBuilder`:
+            Creates a ModuleModelBuilder instance for building module models.
+        - `@overload create_builder_instance(block_type: Literal[BlockType.CLASS], *, id: str, name: str, parent_id: str, file_path: str) -> ClassModelBuilder`:
+            Creates a ClassModelBuilder instance for building class models.
+        - `@overload create_builder_instance(block_type: Literal[BlockType.FUNCTION], *, id: str, name: str, parent_id: str, file_path: str) -> FunctionModelBuilder`:
+            Creates a FunctionModelBuilder instance for building function models.
+        - `@overload create_builder_instance(block_type: Literal[BlockType.STANDALONE_CODE_BLOCK], *, id: str, parent_id: str, file_path: str) -> StandaloneBlockModelBuilder`:
+            Creates a StandaloneBlockModelBuilder instance for building standalone code block models.
+        - `@logging_decorator() @staticmethod create_builder_instance(block_type: BlockType, *, id: str, name: str | None = None, parent_id: str | None = None, file_path: str | None = None) -> Union[ModuleModelBuilder, ClassModelBuilder, FunctionModelBuilder, StandaloneBlockModelBuilder]`:
+            Creates and returns an instance of a model builder based on the specified block type.
     """
 
     _creation_strategies: dict[BlockType, Callable[..., Any]] = {
@@ -66,12 +90,12 @@ class BuilderFactory:
         Creates a ModuleModelBuilder instance for building module models.
 
         Args:
-            block_type: Specifies that a ModuleModelBuilder is to be created.
-            id (str): The unique identifier for the module model.
-            file_path (str): The file path of the module.
+            - block_type: Specifies that a ModuleModelBuilder is to be created.
+            - id (str): The unique identifier for the module model.
+            - file_path (str): The file path of the module.
 
         Returns:
-            ModuleModelBuilder: An instance of ModuleModelBuilder.
+            - ModuleModelBuilder: An instance of ModuleModelBuilder.
         """
         ...
 
@@ -89,13 +113,13 @@ class BuilderFactory:
         Creates a ClassModelBuilder instance for building class models.
 
         Args:
-            block_type: Specifies that a ClassModelBuilder is to be created.
-            id (str): The unique identifier for the class model.
-            name (str): The name of the class.
-            parent_id (str): The identifier of the parent model.
+            - block_type: Specifies that a ClassModelBuilder is to be created.
+            - id (str): The unique identifier for the class model.
+            - name (str): The name of the class.
+            - parent_id (str): The identifier of the parent model.
 
         Returns:
-            ClassModelBuilder: An instance of ClassModelBuilder.
+            - ClassModelBuilder: An instance of ClassModelBuilder.
         """
         ...
 
@@ -113,13 +137,13 @@ class BuilderFactory:
         Creates a FunctionModelBuilder instance for building function models.
 
         Args:
-            block_type: Specifies that a FunctionModelBuilder is to be created.
-            id (str): The unique identifier for the function model.
-            name (str): The name of the function.
-            parent_id (str): The identifier of the parent model.
+            - block_type: Specifies that a FunctionModelBuilder is to be created.
+            - id (str): The unique identifier for the function model.
+            - name (str): The name of the function.
+            - parent_id (str): The identifier of the parent model.
 
         Returns:
-            FunctionModelBuilder: An instance of FunctionModelBuilder.
+            - FunctionModelBuilder: An instance of FunctionModelBuilder.
         """
         ...
 
@@ -136,12 +160,12 @@ class BuilderFactory:
         Creates a StandaloneBlockModelBuilder instance for building standalone code block models.
 
         Args:
-            block_type: Specifies that a StandaloneBlockModelBuilder is to be created.
-            id (str): The unique identifier for the standalone code block model.
-            parent_id (str): The identifier of the parent model.
+            - block_type: Specifies that a StandaloneBlockModelBuilder is to be created.
+            - id (str): The unique identifier for the standalone code block model.
+            - parent_id (str): The identifier of the parent model.
 
         Returns:
-            StandaloneBlockModelBuilder: An instance of StandaloneBlockModelBuilder.
+            - StandaloneBlockModelBuilder: An instance of StandaloneBlockModelBuilder.
         """
         ...
 
@@ -166,8 +190,8 @@ class BuilderFactory:
         Depending on the block type (module, class, function, standalone code block), it creates an instance of the corresponding model builder class.
 
         Args:
-            block_type (BlockType): The type of code block for which the builder is to be created.
-            id (str): The unique identifier for the builder.
+            - block_type (BlockType): The type of code block for which the builder is to be created.
+            - id (str): The unique identifier for the builder.
             name (str | None): The name of the code block (relevant for class or function blocks).
             parent_id (str | None): The identifier of the parent model (if applicable).
             file_path (str | None): The file path of the module (relevant for module blocks).
@@ -180,13 +204,16 @@ class BuilderFactory:
             ValueError: If an unknown block type is provided.
 
         Example:
-            >>> builder = BuilderFactory.create_builder_instance(
-                    block_type=BlockType.CLASS,
-                    id='class1',
-                    name='MyClass',
-                    parent_id='module1'
-                )
+            ```Python
+            # This example demonstrates how to create a builder instance using the BuilderFactory.
+            builder = BuilderFactory.create_builder_instance(
+                block_type=BlockType.CLASS,
+                id='class1',
+                name='MyClass',
+                parent_id='module1'
+            )
             # This will create an instance of ClassModelBuilder for a class named 'MyClass'.
+            ```
         """
 
         if block_type not in BuilderFactory._creation_strategies:

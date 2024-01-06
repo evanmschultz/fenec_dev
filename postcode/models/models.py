@@ -165,7 +165,7 @@ class BaseCodeBlockModel(BaseModel):
         return str(self.children_ids) if self.children_ids else ""
 
     def _convert_base_attributes_to_metadata_dict(self) -> dict[str, str | int]:
-        """Converts the base attributes to a metadata dictionary."""
+        """Converts the base attributes to a metadata dictionary for ChromaDB."""
 
         return {
             "id": self.id,
@@ -208,7 +208,7 @@ class ModuleSpecificAttributes(BaseModel):
         return f"{imports_str}"
 
     def _convert_module_attributes_to_metadata_dict(self) -> dict[str, str | int]:
-        """Converts the module attributes to a metadata dictionary."""
+        """Converts the module attributes to a metadata dictionary for ChromaDB."""
 
         return {
             "docstring": self._convert_docstring_to_metadata(),
@@ -219,10 +219,33 @@ class ModuleSpecificAttributes(BaseModel):
 
 
 class ModuleModel(BaseCodeBlockModel, ModuleSpecificAttributes):
-    """Model for a module."""
+    """
+    Model for a module.
+
+    Attributes:
+        - id (str): The unique identifier for the module.
+        - file_path (str): The path to the Python file that the module represents.
+        - parent_id (str | None): The identifier of the parent (usually a directory).
+        - block_type (BlockType): The type of code block that the module represents.
+        - start_line_num (int): The line number of the first line of the module.
+        - end_line_num (int): The line number of the last line of the module.
+        - code_content (str): The string content of the module.
+        - important_comments (list[CommentModel] | None): A list of important comments in the module.
+        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the module.
+        - summary (str | None): A summary of the module.
+        - children_ids (list[str] | None): A list of the identifiers of the children of the module.
+        - docstring (str | None): The docstring of the module.
+        - header (list[str] | None): The header of the module.
+        - footer (list[str] | None): The footer of the module.
+        - imports (list[ImportModel] | None): A list of import statements in the module.
+
+    Methods:
+        - `convert_to_metadata() -> dict[str, str | int]`:
+            Converts the module model to a metadata dictionary for ChromaDB.
+    """
 
     def convert_to_metadata(self) -> dict[str, str | int]:
-        """Converts the module model to a metadata dictionary."""
+        """Converts the module model to a metadata dictionary for ChromaDB."""
 
         return {
             **self._convert_base_attributes_to_metadata_dict(),
@@ -271,10 +294,35 @@ class ClassSpecificAttributes(BaseModel):
 
 
 class ClassModel(BaseCodeBlockModel, ClassSpecificAttributes):
-    """Model for a class."""
+    """
+    Model for a class.
+
+    Attributes:
+        - id (str): The unique identifier for the class.
+        - file_path (str): The path to the Python file that the class represents.
+        - parent_id (str | None): The identifier of the parent (usually a module).
+        - block_type (BlockType): The type of code block that the class represents.
+        - start_line_num (int): The line number of the first line of the class.
+        - end_line_num (int): The line number of the last line of the class.
+        - code_content (str): The string content of the class.
+        - important_comments (list[CommentModel] | None): A list of important comments in the class.
+        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the class.
+        - summary (str | None): A summary of the class.
+        - children_ids (list[str] | None): A list of the identifiers of the children of the class.
+        - class_name (str): The name of the class.
+        - decorators (list[DecoratorModel] | None): A list of decorators for the class.
+        - bases (list[str] | None): A list of base classes for the class.
+        - docstring (str | None): The docstring of the class.
+        - keywords (list[ClassKeywordModel] | None): A list of keywords for the class.
+
+
+    Methods:
+        - `convert_to_metadata() -> dict[str, str | int]`:
+            Converts the class model to a metadata dictionary for ChromaDB.
+    """
 
     def convert_to_metadata(self) -> dict[str, str | int]:
-        """Converts the class model to a metadata dictionary."""
+        """Converts the class model to a metadata dictionary for ChromaDB."""
         return {
             **self._convert_base_attributes_to_metadata_dict(),
             **self._convert_class_attributes_to_metadata_dict(),
@@ -312,7 +360,7 @@ class FunctionSpecificAttributes(BaseModel):
         return f"{self.returns}" if self.returns else ""
 
     def _convert_function_attributes_to_metadata_dict(self) -> dict[str, str | bool]:
-        """Converts the function attributes to a metadata dictionary."""
+        """Converts the function attributes to a metadata dictionary for ChromaDB."""
 
         return {
             "function_name": self.function_name,
@@ -326,10 +374,36 @@ class FunctionSpecificAttributes(BaseModel):
 
 
 class FunctionModel(BaseCodeBlockModel, FunctionSpecificAttributes):
-    """Model for a function."""
+    """
+    A model for a function.
+
+    Attributes:
+        - id (str): The unique identifier for the function.
+        - file_path (str): The path to the Python file that the function represents.
+        - parent_id (str | None): The identifier of the parent (usually a module or class).
+        - block_type (BlockType): The type of code block that the function represents.
+        - start_line_num (int): The line number of the first line of the function.
+        - end_line_num (int): The line number of the last line of the function.
+        - code_content (str): The string content of the function.
+        - important_comments (list[CommentModel] | None): A list of important comments in the function.
+        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the function.
+        - summary (str | None): A summary of the function.
+        - children_ids (list[str] | None): A list of the identifiers of the children of the function.
+        - function_name (str): The name of the function.
+        - docstring (str | None): The docstring of the function.
+        - decorators (list[DecoratorModel] | None): A list of decorators for the function.
+        - parameters (ParameterListModel | None): A model representing the function's parameters.
+        - returns (str | None): A string representing the function's return annotation.
+        - is_method (bool): True if the function is a method, False otherwise.
+        - is_async (bool): True if the function is asynchronous, False otherwise.
+
+    Methods:
+        - `convert_to_metadata() -> dict[str, str | int]`:
+            Converts the function model to a metadata dictionary for ChromaDB.
+    """
 
     def convert_to_metadata(self) -> dict[str, str | int]:
-        """Converts the function model to a metadata dictionary."""
+        """Converts the function model to a metadata dictionary for ChromaDB."""
 
         return {
             **self._convert_base_attributes_to_metadata_dict(),
@@ -349,7 +423,7 @@ class StandaloneCodeBlockSpecificAttributes(BaseModel):
     def _convert_standalone_block_attributes_to_metadata_dict(
         self,
     ) -> dict[str, str | int]:
-        """Converts the standalone code block attributes to a metadata dictionary."""
+        """Converts the standalone code block attributes to a metadata dictionary for ChromaDB."""
         return {
             "variable_assignments": self._convert_variable_assignments_to_metadata(),
         }
@@ -358,10 +432,30 @@ class StandaloneCodeBlockSpecificAttributes(BaseModel):
 class StandaloneCodeBlockModel(
     BaseCodeBlockModel, StandaloneCodeBlockSpecificAttributes
 ):
-    """Model for a standalone code block."""
+    """
+    Model for a standalone code block.
+    
+    Attributes:
+        - id (str): The unique identifier for the standalone code block.
+        - file_path (str): The path to the Python file that the standalone code block represents.
+        - parent_id (str | None): The identifier of the parent (usually a module or class).
+        - block_type (BlockType): The type of code block that the standalone code block represents.
+        - start_line_num (int): The line number of the first line of the standalone code block.
+        - end_line_num (int): The line number of the last line of the standalone code block.
+        - code_content (str): The string content of the standalone code block.
+        - important_comments (list[CommentModel] | None): A list of important comments in the standalone code block.
+        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the standalone code block.
+        - summary (str | None): A summary of the standalone code block.
+        - children_ids (list[str] | None): A list of the identifiers of the children of the standalone code block.
+        - variable_assignments (list[str] | None): A list of variable assignments in the standalone code block.
+
+    Methods:
+        - `convert_to_metadata() -> dict[str, str | int]`:
+            Converts the standalone code block model to a metadata dictionary for ChromaDB.
+    """
 
     def convert_to_metadata(self) -> dict[str, str | int]:
-        """Converts the standalone code block model to a metadata dictionary."""
+        """Converts the standalone code block model to a metadata dictionary for ChromaDB."""
 
         return {
             **self._convert_base_attributes_to_metadata_dict(),
@@ -370,7 +464,22 @@ class StandaloneCodeBlockModel(
 
 
 class DirectoryModel(BaseModel):
-    """Model for a directory."""
+    """
+    Model for a directory.
+    
+    Attributes:
+        - id (str): The unique identifier for the directory.
+        - block_type (BlockType): The type of code block that the directory represents.
+        - directory_name (str): The name of the directory.
+        - sub_directories_ids (list[str]): A list of the identifiers of the sub-directories of the directory.
+        - children_ids (list[str]): A list of the identifiers of the children of the directory.
+        - parent_id (str | None): The identifier of the parent (usually a directory).
+        - summary (str | None): A summary of the directory.
+
+    Methods:
+        - `convert_to_metadata() -> dict[str, str | int]`:
+            Converts the directory model to a metadata dictionary for ChromaDB.
+    """
 
     id: str
     block_type: BlockType = BlockType.DIRECTORY
@@ -381,7 +490,7 @@ class DirectoryModel(BaseModel):
     summary: str | None = None
 
     def convert_to_metadata(self) -> dict[str, str | int]:
-        """Converts the directory model to a metadata dictionary."""
+        """Converts the directory model to a metadata dictionary for ChromaDB."""
 
         return {
             "directory_name": self.directory_name,
