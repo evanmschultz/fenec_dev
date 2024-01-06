@@ -1,0 +1,45 @@
+{
+    "function_name": "mock_collection_manager",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "Mock",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-mock_collection_manager",
+    "file_path": "postcode/tests/ai_services/librarians/test_chroma_librarians.py",
+    "parent_id": "postcode:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 6,
+    "end_line_num": 11,
+    "code_content": "\n\n@pytest.fixture\ndef mock_collection_manager() -> Mock:\n    return Mock()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "pytest",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Mock",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "unittest.mock",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nSummary:\n\n        postcode:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-mock_collection_manager\n\n        None, None, \n        ",
+    "children_ids": []
+}

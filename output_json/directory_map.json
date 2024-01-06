@@ -39,6 +39,9 @@
         "prompt_creator.py",
         "summarization_prompts.py"
     ],
+    "postcode/tests/ai_services/librarians": [
+        "test_chroma_librarians.py"
+    ],
     "postcode/python_parser/visitors": [
         "base_code_block_visitor.py",
         "module_visitor.py"

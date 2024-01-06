@@ -6,6 +6,7 @@
         "postcode:databases__*__DIRECTORY",
         "postcode:types__*__DIRECTORY",
         "postcode:ai_services__*__DIRECTORY",
+        "postcode:tests__*__DIRECTORY",
         "postcode:python_parser__*__DIRECTORY",
         "postcode:models__*__DIRECTORY",
         "postcode:json_management__*__DIRECTORY",

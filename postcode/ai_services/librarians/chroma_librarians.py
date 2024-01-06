@@ -1,7 +1,8 @@
 import logging
-from typing import Any
+import json
 
 from openai import OpenAI
+from pydantic import BaseModel
 import postcode.types.openai as openai_types
 from postcode.databases.chroma.chromadb_collection_manager import (
     ChromaCollectionManager,
@@ -40,11 +41,15 @@ import postcode.types.chroma as chroma_types
 # ]
 
 
+class OpenAIResponseContent(BaseModel):
+    query_list: list[str]
+
+
 class ChromaLibrarian:
     def __init__(
         self,
         collection_manager: ChromaCollectionManager,
-        model: str = "gpt-3.5-turbo-0613",
+        model: str = "gpt-3.5-turbo-1106",
     ) -> None:
         self.collection_manager: ChromaCollectionManager = collection_manager
         self.model: str = model
@@ -71,7 +76,7 @@ class ChromaLibrarian:
         )
 
     def _get_chroma_queries(
-        self, user_question: str, queries_count: int = 5, retries: int = 3
+        self, user_question: str, queries_count: int = 3, retries: int = 3
     ) -> list[str] | None:
         while retries > 0:
             retries -= 1
@@ -86,6 +91,7 @@ class ChromaLibrarian:
                 completion: openai_types.ChatCompletion = (
                     self.client.chat.completions.create(
                         model=self.model,
+                        response_format={"type": "json_object"},
                         messages=[
                             {
                                 "role": "system",
@@ -96,14 +102,18 @@ class ChromaLibrarian:
                     )
                 )
                 content: str | None = completion.choices[0].message.content
+                if not content:
+                    continue
+
+                content_json = json.loads(content)
+                content_model = OpenAIResponseContent(
+                    query_list=content_json["query_list"]
+                )
+                print(content_model)
 
                 if content:
-                    queries_str: str = content.split("QUERIES_LIST:")[-1]
-                    queries_list: list[str] = queries_str.split("\n")
-                    queries: list[str] = [
-                        query.strip("- ") for query in queries_list if len(query) > 0
-                    ]
-                    if len(queries) >= 1:
+                    queries: list[str] = content_model.query_list
+                    if queries and len(queries) == queries_count:
                         return queries
 
             except Exception as e:
