@@ -7,8 +7,8 @@
 
 ## Things to do before showing
 
--   [ ] Create simple chat agent
--   [ ] Update docstrings
+-   [x] Create simple chat agent
+-   [x] Update docstrings
 -   [ ] Add logic to construct dbs from json
 -   [x] Finish `StandardUpdater`, only the `update_all` method, class to replace `main.py` for parsing, summarization, and DB insertion as an interface
 
@@ -16,6 +16,7 @@
 
 -   [x] Create AI tools to retrieve from ChromaDB
 -   [ ] Add chatbot interface
+-   [ ] Add summarization logic for the directory models
 -   [ ] Create 3-4 more simple agents to show off capabilities
 
     -   [ ] Starting with general 'agent', question answering
