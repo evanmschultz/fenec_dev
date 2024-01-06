@@ -177,7 +177,7 @@ pyrightconfig.json
 .DS_Store
 
 # Exclude chromadb 
-chroma
+# chroma
 
 # Exclude output directory as output JSON is only for debugging
 output/
