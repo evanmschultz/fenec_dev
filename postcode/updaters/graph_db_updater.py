@@ -118,7 +118,7 @@ class GraphDBUpdater:
         self._save_json(finalized_models, json_manager)
         self._upsert_models_to_graph_db(tuple(finalized_models))
 
-        return chroma_setup.setup_chroma(finalized_models)
+        return chroma_setup.setup_chroma_with_update(finalized_models)
 
     def _visit_and_parse_files(
         self, directory: str
