@@ -39,6 +39,17 @@ Add configuration logic and update readme.
 
 If you find issues or have suggestions for improvement, feel free to open an issue or submit a pull request. Contributions are greatly welcome!
 
+## Philosophical Question
+
+-   Does an an AI chatbot work better with knowledge of what code does or why it does it?
+
+    -   A bottom up approach while summarizing a codebase helps with the what
+    -   A top down approach while summarizing a codebase helps with the why
+    -   A combination, where summaries are built from bottom-up then redone from top-down would be expensive, yet likely improve results, but by how much?
+        -   Also, how many iterations of that process would it take to get diminishing returns?
+
+-   Chain of density summarization doesn't work for code bases. Update summary prompt to create larger more diverse summaries as they will help with RAG.
+
 <!-- ## License
 
 This project is licensed under the [MIT License](LICENSE). -->
