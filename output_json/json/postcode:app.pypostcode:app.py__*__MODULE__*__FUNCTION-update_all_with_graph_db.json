@@ -1,0 +1,57 @@
+{
+    "function_name": "update_all_with_graph_db",
+    "docstring": "Parses and summarizes all code snippets in the specified directory and updates the graph database and sets up a\nChromaDB collection.\n\nArgs:\n    - directory (str, optional): The directory containing code snippets to parse and summarize. Defaults to \".\".\n    - output_directory (str, optional): The directory to output the parsed and summarized code snippets.\n        Defaults to \"output_json\".\n\nReturns:\n    - ChromaCollectionManager: An instance of ChromaCollectionManager for the specified collection.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ChromaCollectionManager",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:app.py__*__MODULE__*__FUNCTION-update_all_with_graph_db",
+    "file_path": "postcode/app.py",
+    "parent_id": "postcode:app.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 12,
+    "end_line_num": 36,
+    "code_content": "\n\n# from postcode.updaters.standard_updater import StandardUpdater\n\n\ndef update_all_with_graph_db(\n    directory: str = \".\", output_directory: str = \"output_json\"\n) -> ChromaCollectionManager:\n    \"\"\"\n    Parses and summarizes all code snippets in the specified directory and updates the graph database and sets up a\n    ChromaDB collection.\n\n    Args:\n        - directory (str, optional): The directory containing code snippets to parse and summarize. Defaults to \".\".\n        - output_directory (str, optional): The directory to output the parsed and summarized code snippets.\n            Defaults to \"output_json\".\n\n    Returns:\n        - ChromaCollectionManager: An instance of ChromaCollectionManager for the specified collection.\n    \"\"\"\n    setup_logging()\n\n    graph_db_updater = GraphDBUpdater(directory, output_directory)\n    return graph_db_updater.update_all()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "GraphDBUpdater",
+                    "as_name": null,
+                    "local_block_id": "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater"
+                }
+            ],
+            "imported_from": "postcode.updaters.graph_db_updater",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:updaters:graph_db_updater.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "setup_logging",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:logger:logging_config.py__*__MODULE__*__FUNCTION-setup_logging"
+                }
+            ],
+            "imported_from": "postcode.utilities.logger.logging_config",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:logger:logging_config.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe `update_all_with_graph_db` function in Python is designed to parse and summarize code snippets from a specified directory, update a graph database, and set up a ChromaDB collection. It accepts two optional string arguments: `directory`, which defaults to the current directory, and `output_directory`, which defaults to \"output_json\". The function initializes logging by calling `setup_logging()` and then creates an instance of `GraphDBUpdater` using the provided directories. It concludes by invoking the `update_all` method on the `GraphDBUpdater` instance, which presumably updates the graph database with the parsed code summaries and returns a `ChromaCollectionManager` object for further management of the updated collection.",
+    "children_ids": []
+}

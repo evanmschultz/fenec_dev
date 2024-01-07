@@ -1,0 +1,40 @@
+{
+    "class_name": "ImportAndDependencyUpdater",
+    "decorators": null,
+    "bases": null,
+    "docstring": "The ImportAndDependencyUpdater class is designed to update import statements and\ndependencies in a set of module model builders. It manages two main tasks: updating\nimport statements using an ImportUpdater and updating dependencies using a DependencyUpdater.\nThis class ensures that both imports and dependencies are consistent and up-to-date\nacross the provided module model builders.\n\nAttributes:\n    - model_builder_tuple (tuple[ModuleModelBuilder, ...]): A tuple of ModuleModelBuilder instances\n    to be processed for import and dependency updates.\n\nExample:\n    ```Python\n    model_builders = [ModuleModelBuilder(), ModuleModelBuilder()]\n    updater = ImportAndDependencyUpdater(model_builders)\n    updater.update_imports()\n    ```",
+    "keywords": null,
+    "id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportAndDependencyUpdater",
+    "file_path": "postcode/python_parser/visitor_manager/import_and_dependency_updater.py",
+    "parent_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 14,
+    "end_line_num": 58,
+    "code_content": "\n\nclass ImportAndDependencyUpdater:\n    \"\"\"\n    The ImportAndDependencyUpdater class is designed to update import statements and\n    dependencies in a set of module model builders. It manages two main tasks: updating\n    import statements using an ImportUpdater and updating dependencies using a DependencyUpdater.\n    This class ensures that both imports and dependencies are consistent and up-to-date\n    across the provided module model builders.\n\n    Attributes:\n        - model_builder_tuple (tuple[ModuleModelBuilder, ...]): A tuple of ModuleModelBuilder instances\n        to be processed for import and dependency updates.\n\n    Example:\n        ```Python\n        model_builders = [ModuleModelBuilder(), ModuleModelBuilder()]\n        updater = ImportAndDependencyUpdater(model_builders)\n        updater.update_imports()\n        ```\n    \"\"\"\n\n    def __init__(self, model_builder_tuple: tuple[ModuleModelBuilder, ...]) -> None:\n        self.model_builder_tuple: tuple[ModuleModelBuilder, ...] = model_builder_tuple\n\n    def update_imports(self) -> None:\n        \"\"\"\n        Processes each module model builder in the model_builder_tuple and updates their import\n        statements. This method is the primary entry point for initiating the import update process.\n\n        Example:\n            ```Python\n            updater = ImportAndDependencyUpdater(model_builders)\n            updater.update_imports()\n            ```\n        \"\"\"\n\n        for model_builder in self.model_builder_tuple:\n            import_updater: ImportUpdater = ImportUpdater(self.model_builder_tuple)\n            import_updater.process_builder(model_builder)\n\n            # for model_builder in self.model_builder_tuple:\n            ...\n        # Track down and add imports for the imports that were defined outside of the module that it is imported from\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-DependencyUpdater"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        }
+    ],
+    "summary": "\n\nThe `ImportAndDependencyUpdater` class is designed to maintain and update import statements and dependencies within a collection of `ModuleModelBuilder` instances. Upon initialization, the class stores a tuple of these builders in the `model_builder_tuple` attribute. The primary functionality is provided by the `update_imports` method, which iterates over each `ModuleModelBuilder` in the tuple. For each builder, it creates an instance of `ImportUpdater`, passing the tuple of builders to it, and then calls the `process_builder` method to update the import statements. This ensures that the import statements across all module builders are consistent and reflect the current dependencies, thereby preserving the integrity of the modular system's imports.",
+    "children_ids": [
+        "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportAndDependencyUpdater__*__FUNCTION-__init__",
+        "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportAndDependencyUpdater__*__FUNCTION-update_imports"
+    ]
+}

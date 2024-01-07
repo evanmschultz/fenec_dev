@@ -1,0 +1,50 @@
+{
+    "function_name": "_get_logger",
+    "docstring": "Retrieves and returns a Logger instance for the specified module name.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Logger",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_get_logger",
+    "file_path": "postcode/utilities/logger/decorators.py",
+    "parent_id": "postcode:utilities:logger:decorators.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 90,
+    "end_line_num": 96,
+    "code_content": "\n\ndef _get_logger(caller_module_name: str) -> Logger:\n    \"\"\"Retrieves and returns a Logger instance for the specified module name.\"\"\"\n\n    return logging.getLogger(caller_module_name)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "LogRecord",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe `_get_logger` function is a concise utility that employs the `logging` module to provide a Logger instance for a specified module name, with clear type annotations for the string input and Logger return type, ensuring structured logging and type correctness in Python applications.",
+    "children_ids": []
+}

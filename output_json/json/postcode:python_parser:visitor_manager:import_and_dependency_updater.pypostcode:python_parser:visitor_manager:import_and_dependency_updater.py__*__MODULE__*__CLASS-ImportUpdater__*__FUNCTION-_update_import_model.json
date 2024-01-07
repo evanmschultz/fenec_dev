@@ -1,0 +1,27 @@
+{
+    "function_name": "_update_import_model",
+    "docstring": "Updates the import model with new import names and assigns the local module ID to the external builder.\n\nArgs:\n    - import_model (ImportModel): The import model to be updated.\n    - import_names (list[str] | None): The list of new import names.\n    - builder (ModuleModelBuilder): The module model builder.\n    - external_builder (ModuleModelBuilder): The external module model builder.\n\nReturns:\n    - None\n\nExample:\n    ```Python\n    import_updater._update_import_model(import_model_instance, import_names_list, builder_instance, external_builder_instance)\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater__*__FUNCTION-_update_import_model",
+    "file_path": "postcode/python_parser/visitor_manager/import_and_dependency_updater.py",
+    "parent_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 183,
+    "end_line_num": 231,
+    "code_content": "\ndef _update_import_model(\n    self,\n    import_model: ImportModel,\n    import_names: list[str] | None,\n    builder: ModuleModelBuilder,\n    external_builder: ModuleModelBuilder,\n) -> None:\n    \"\"\"\n        Updates the import model with new import names and assigns the local module ID to the external builder.\n\n        Args:\n            - import_model (ImportModel): The import model to be updated.\n            - import_names (list[str] | None): The list of new import names.\n            - builder (ModuleModelBuilder): The module model builder.\n            - external_builder (ModuleModelBuilder): The external module model builder.\n\n        Returns:\n            - None\n\n        Example:\n            ```Python\n            import_updater._update_import_model(import_model_instance, import_names_list, builder_instance, external_builder_instance)\n            ```\n        \"\"\"\n    new_import_model: ImportModel = import_model.model_copy()\n    new_import_model.local_module_id = external_builder.id\n\n    if not import_model.imported_from:\n        builder.update_import(new_import_model, import_model)\n        return\n\n    if import_names:\n        new_import_name_models: list[\n            ImportNameModel\n        ] = self._get_new_import_name_models(\n            external_builder, import_names, import_model\n        )\n        # print(f\"{len(new_import_name_models)} : {len(import_model.import_names)}\")\n        if len(new_import_name_models) < len(import_model.import_names):\n            # TODO: Add logic to track down the import's definition location\n\n            new_import_name_models = self._add_missing_imports(\n                new_import_name_models, import_model.import_names\n            )\n\n        new_import_model.import_names = new_import_name_models\n        builder.update_import(new_import_model, import_model)\n",
+    "important_comments": [
+        {
+            "content": "# TODO: Add logic to track down the import's definition location",
+            "comment_types": [
+                "TODO"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": "\nThe `_update_import_model` method takes an `ImportModel`, an optional list of import names, and two `ModuleModelBuilder` instances to update the import model. It creates a copy to preserve the original, sets the local module ID, and conditionally updates import names if provided. The method uses `builder.update_import` to apply changes and includes a check to determine if additional logic is needed for missing imports, with an early return if `imported_from` is not set. An example usage is documented within the method's docstring.",
+    "children_ids": []
+}

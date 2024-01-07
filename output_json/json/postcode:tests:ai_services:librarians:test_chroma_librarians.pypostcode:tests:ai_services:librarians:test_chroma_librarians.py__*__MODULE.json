@@ -1,0 +1,125 @@
+{
+    "docstring": null,
+    "header": [
+        "# TODO: Complete tests for ChromaLibrarian"
+    ],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "json",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Generator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "pytest",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "patch",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "MagicMock",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "unittest.mock",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaLibrarian",
+                    "as_name": null,
+                    "local_block_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian"
+                }
+            ],
+            "imported_from": "postcode.ai_services.librarians.chroma_librarians",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:chroma.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE",
+    "file_path": "postcode/tests/ai_services/librarians/test_chroma_librarians.py",
+    "parent_id": "postcode:tests:ai_services:librarians__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 51,
+    "code_content": "# TODO: Complete tests for ChromaLibrarian\n\nimport json\nfrom typing import Any, Generator\nimport pytest\nfrom unittest.mock import patch, MagicMock\n\nfrom postcode.ai_services.librarians.chroma_librarians import ChromaLibrarian\nfrom postcode.databases.chroma.chromadb_collection_manager import (\n    ChromaCollectionManager,\n)\n\nimport postcode.types.chroma as chroma_types\n\n\n@pytest.fixture\ndef mock_openai_client() -> Generator[MagicMock, Any, None]:\n    with patch(\"openai.OpenAI\") as mock_openai:\n        yield mock_openai()\n\n\n@pytest.fixture\ndef mock_chroma_collection_manager() -> Generator[MagicMock, Any, None]:\n    with patch(\n        \"postcode.databases.chroma.chromadb_collection_manager.ChromaCollectionManager\"\n    ) as mock_manager:\n        yield mock_manager()\n\n\ndef test_query_chroma(\n    mock_chroma_collection_manager: MagicMock, mock_openai_client: MagicMock\n) -> None:\n    librarian = ChromaLibrarian(mock_chroma_collection_manager)\n\n    mock_openai_client.chat.completions.create.return_value = MagicMock(\n        choices=[\n            MagicMock(\n                message=MagicMock(\n                    content=json.dumps({\"query_list\": [\"query1\", \"query2\", \"query3\"]})\n                )\n            )\n        ]\n    )\n\n    mock_chroma_collection_manager.query_collection.return_value = MagicMock()\n\n    result: chroma_types.QueryResult | None = librarian.query_chroma(\"user_question\")\n\n    assert result is not None\n    assert mock_chroma_collection_manager.query_collection.called\n",
+    "important_comments": [
+        {
+            "content": "# TODO: Complete tests for ChromaLibrarian",
+            "comment_types": [
+                "TODO"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": "\n\nThe provided Python code is designed to test the `ChromaLibrarian` class, specifically its `query_chroma` method, which handles user queries to a chroma collection. The code includes two pytest fixtures: `mock_openai_client` and `mock_chroma_collection_manager`. The `mock_openai_client` fixture patches the `openai.OpenAI` class to return a mock object for testing without actual OpenAI service calls, while `mock_chroma_collection_manager` patches `ChromaCollectionManager` to yield a mock object for database interaction isolation. The `test_query_chroma` function initializes a `ChromaLibrarian` with the mocked collection manager, sets up the OpenAI client mock to return a JSON-encoded list of queries, and asserts that the `query_chroma` method returns a non-None `QueryResult` and that the collection manager's `query_collection` method is invoked. The test leverages the `json` module for response data serialization and `unittest.mock` for creating mock objects and patching dependencies.",
+    "children_ids": [
+        "postcode:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-mock_openai_client",
+        "postcode:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-mock_chroma_collection_manager",
+        "postcode:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-test_query_chroma"
+    ]
+}

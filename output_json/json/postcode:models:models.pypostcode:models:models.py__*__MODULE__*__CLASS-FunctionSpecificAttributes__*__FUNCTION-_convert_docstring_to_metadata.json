@@ -1,0 +1,20 @@
+{
+    "function_name": "_convert_docstring_to_metadata",
+    "docstring": "Converts the docstring to a metadata string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes__*__FUNCTION-_convert_docstring_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes",
+    "block_type": "FUNCTION",
+    "start_line_num": 343,
+    "end_line_num": 347,
+    "code_content": "\ndef _convert_docstring_to_metadata(self) -> str:\n    \"\"\"Converts the docstring to a metadata string.\"\"\"\n    return f\"{self.docstring}\" if self.docstring else \"\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe class method `_convert_docstring_to_metadata` utilizes a ternary operator to return the instance's `docstring` attribute as a string, or an empty string if the attribute is unset.",
+    "children_ids": []
+}

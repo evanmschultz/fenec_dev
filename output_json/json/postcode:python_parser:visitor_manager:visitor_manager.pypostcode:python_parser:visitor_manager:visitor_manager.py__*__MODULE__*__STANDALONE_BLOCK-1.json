@@ -1,0 +1,250 @@
+{
+    "variable_assignments": [
+        "BuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]",
+        "EXCLUDED_DIRECTORIES: set[str] = {\".venv\", \"node_modules\", \"__pycache__\", \".git\"}"
+    ],
+    "id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__STANDALONE_BLOCK-1",
+    "file_path": "postcode/python_parser/visitor_manager/visitor_manager.py",
+    "parent_id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE",
+    "block_type": "STANDALONE_BLOCK",
+    "start_line_num": 39,
+    "end_line_num": 57,
+    "code_content": "BuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]\n# ModelType = Union[\n#     ModuleModel,\n#     ClassModel,\n#     FunctionModel,\n#     StandaloneCodeBlockModel,\n#     DirectoryModel,\n# ]\n\nEXCLUDED_DIRECTORIES: set[str] = {\".venv\", \"node_modules\", \"__pycache__\", \".git\"}\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.types.postcode",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:postcode.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe code defines a type alias `BuilderType` using Python's `Union` from the `typing` module, which can refer to any of the following classes: `ModuleModelBuilder`, `ClassModelBuilder`, `FunctionModelBuilder`, or `StandaloneBlockModelBuilder`. Additionally, it specifies a set of directory names, `EXCLUDED_DIRECTORIES`, which includes common directories that are not typically processed in code analysis or deployment, such as virtual environments, node modules, cache directories, and version control system directories. The commented-out `ModelType` alias suggests that the code may be part of a larger system for building and representing different types of code models, although the details of these models are not provided in the code or the dependency summaries.",
+    "children_ids": null
+}

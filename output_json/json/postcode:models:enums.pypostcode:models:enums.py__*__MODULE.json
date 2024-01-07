@@ -1,0 +1,34 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Enum",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "enum",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "id": "postcode:models:enums.py__*__MODULE",
+    "file_path": "postcode/models/enums.py",
+    "parent_id": "postcode:models__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 47,
+    "code_content": "from enum import Enum\n\n\nclass ImportModuleType(str, Enum):\n    \"\"\"Enum of import module types.\"\"\"\n\n    STANDARD_LIBRARY = \"STANDARD_LIBRARY\"\n    LOCAL = \"LOCAL\"\n    THIRD_PARTY = \"THIRD_PARTY\"\n\n    def __str__(self) -> str:\n        return self.value\n\n\nclass CommentType(str, Enum):\n    \"\"\"Enum representing the different types of important comments.\"\"\"\n\n    TODO = \"TODO\"\n    FIXME = \"FIXME\"\n    NOTE = \"NOTE\"\n    HACK = \"HACK\"\n    XXX = \"XXX\"\n    REVIEW = \"REVIEW\"\n    OPTIMIZE = \"OPTIMIZE\"\n    CHANGED = \"CHANGED\"\n    QUESTION = \"QUESTION\"\n    Q = \"Q\"\n    DEPRECATED = \"@deprecated\"\n    NOSONAR = \"NOSONAR\"\n    TODO_FIXME = \"TODO-FIXME\"\n\n    def __str__(self) -> str:\n        return self.value\n\n\nclass BlockType(str, Enum):\n    \"\"\"Enum of code block types.\"\"\"\n\n    STANDALONE_CODE_BLOCK = \"STANDALONE_BLOCK\"\n    CLASS = \"CLASS\"\n    FUNCTION = \"FUNCTION\"\n    MODULE = \"MODULE\"\n    DIRECTORY = \"DIRECTORY\"\n\n    def __str__(self) -> str:\n        return self.value\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe code introduces three Enums for categorization in Python: `ImportModuleType` differentiates between STANDARD_LIBRARY, LOCAL, and THIRD_PARTY modules; `CommentType` enumerates various comment tags including TODO, FIXME, and DEPRECATED; and `BlockType` classifies code constructs like CLASS, FUNCTION, and MODULE. Each Enum class contains a `__str__` method, ensuring that the string representation of the enum instances corresponds to their assigned values.",
+    "children_ids": [
+        "postcode:models:enums.py__*__MODULE__*__CLASS-ImportModuleType",
+        "postcode:models:enums.py__*__MODULE__*__CLASS-CommentType",
+        "postcode:models:enums.py__*__MODULE__*__CLASS-BlockType"
+    ]
+}

@@ -1,0 +1,75 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Literal",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Protocol",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "summarization_prompts",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.ai_services.summarizer.prompts",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:summarizer:prompts:summarization_prompts.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:ai_services:summarizer:summarization_context.py__*__MODULE",
+    "file_path": "postcode/ai_services/summarizer/summarization_context.py",
+    "parent_id": "postcode:ai_services:summarizer__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 149,
+    "code_content": "from typing import Literal, Protocol\nfrom dataclasses import dataclass\n\nfrom pydantic import BaseModel\n\nfrom postcode.ai_services.summarizer.prompts import summarization_prompts\n\n\nclass SummaryCompletionConfigs(BaseModel):\n    \"\"\"\n    Configs for the summarization completion.\n\n    Used to set the chat completion parameters for the OpenAI chat completions method call.\n\n    Args:\n        - system_message (str): The system message used for chat completion.\n        - model (str): The model to use for the completion. Default is \"gpt-4-1106-preview\".\n        - max_tokens (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - stream (bool): Whether to stream back partial progress. Default is False.\n        - temperature (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - model must be a valid OpenAI model name.\n\n    Examples:\n        ```Python\n        system_message = \"Summarize the following code.\"\n        summary_completion_configs = SummaryCompletionConfigs(\n            system_message=system_message,\n            model=\"gpt-4-1106-preview\",\n            max_tokens=100,\n            presence_penalty=0.0,\n            stream=False,\n            temperature=0.0,\n        )\n        ```\n    \"\"\"\n\n    system_message: str = summarization_prompts.SUMMARIZER_DEFAULT_INSTRUCTIONS\n    model: Literal[\n        \"gpt-4-1106-preview\",\n        \"gpt-4-vision-preview\",\n        \"gpt-4\",\n        \"gpt-4-0314\",\n        \"gpt-4-0613\",\n        \"gpt-4-32k\",\n        \"gpt-4-32k-0314\",\n        \"gpt-4-32k-0613\",\n        \"gpt-3.5-turbo-1106\",\n        \"gpt-3.5-turbo\",\n        \"gpt-3.5-turbo-16k\",\n        \"gpt-3.5-turbo-0301\",\n        \"gpt-3.5-turbo-0613\",\n        \"gpt-3.5-turbo-16k-0613\",\n    ] = \"gpt-4-1106-preview\"\n    max_tokens: int | None = None\n    stream: bool = False\n    temperature: float = 0.0\n\n\n@dataclass\nclass OpenAIReturnContext:\n    \"\"\"\n    A dataclass for storing the return context of an OpenAI completion.\n\n    Attributes:\n        - prompt_tokens (int): The number of tokens in the prompt.\n        - completion_tokens (int): The number of tokens in the completion.\n        - summary (str | None): The summary of the code snippet.\n    \"\"\"\n\n    prompt_tokens: int\n    completion_tokens: int\n    summary: str | None\n\n\nclass Summarizer(Protocol):\n    \"\"\"A protocol for summary classes.\"\"\"\n\n    def summarize_code(\n        self,\n        code: str,\n        *,\n        model_id: str,\n        children_summaries: str | None,\n        dependency_summaries: str | None,\n        import_details: str | None,\n        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n    ) -> OpenAIReturnContext | None:\n        \"\"\"\n        Summarizes the provided code snippet using the OpenAI API.\n\n        Args:\n            - code (str): The code snippet to summarize.\n            - configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            ```Python\n            client = OpenAI()\n\n            # Create a summarizer instance with the OpenAI client\n            summarizer = Summarizer(client=client)\n            code_example = \"print('Hello, world')\"\n\n            # Summarize the code snippet\n            summary = summarizer.summarize_code(code_example)\n            print(summary)\n            ```\n        \"\"\"\n        ...\n\n    def test_summarize_code(\n        self,\n        code: str,\n        *,\n        model_id: str,\n        children_summaries: str | None,\n        dependency_summaries: str | None,\n        import_details: str | None,\n        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),\n    ) -> OpenAIReturnContext | None:\n        \"\"\"\n        A method for testing whether or not a summary path is working as expected.\n\n        Args:\n            - code (str): The code snippet to summarize (pass in dummy string).\n            - configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.\n                Defaults to SummaryCompletionConfigs().\n\n        Returns:\n            str: The summary of the provided code snippet.\n\n        Examples:\n            ```Python\n            client = OpenAI()\n            summarizer = Summarizer(client=client)\n            code_example = \"print('Hello, world')\"\n\n            # Run summary tester the code snippet\n            summary = summarizer.summarize_code(code_example)\n            print(summary)\n            ```\n        \"\"\"\n        ...\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe provided Python code defines a system for summarizing code snippets using the OpenAI API. It consists of two main components: `SummaryCompletionConfigs` and `OpenAIReturnContext`, along with a `Summarizer` protocol. `SummaryCompletionConfigs` is a subclass of `pydantic.BaseModel` that sets up configuration parameters for OpenAI's chat completion, including the system message, model, token limits, streaming option, and temperature, with a default model set to \"gpt-4-1106-preview\". `OpenAIReturnContext` is a dataclass that captures the result of an OpenAI completion, including the number of tokens in the prompt and completion, and the generated summary. The `Summarizer` protocol outlines two methods, `summarize_code` and `test_summarize_code`, which are intended to summarize code snippets and test the summarization process, respectively. Both methods accept a code snippet and configuration settings, and return an `OpenAIReturnContext` object containing the summary. The code leverages Python 3.10's type hinting and the `Literal` type from the `typing` module to ensure type safety and valid model names.",
+    "children_ids": [
+        "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-SummaryCompletionConfigs",
+        "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-OpenAIReturnContext",
+        "postcode:ai_services:summarizer:summarization_context.py__*__MODULE__*__CLASS-Summarizer"
+    ]
+}

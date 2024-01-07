@@ -1,0 +1,20 @@
+{
+    "function_name": "_format_prompt",
+    "docstring": "Formats the prompt for the OpenAI API based on the provided context, user's question, and template.\n\nArgs:\n    - context (str): The context derived from Chroma query results.\n    - user_question (str): The user's question.\n    - prompt_template (str): The template for formatting the prompt.\n\nReturns:\n    - str: The formatted prompt.\n\nRaises:\n    - KeyError: If the prompt template is missing required keys.\n\nExample:\n    ```python\n    prompt = agent._format_prompt(\"Context here\", \"What is the meaning of life?\", \"Template {context} {user_question}\")\n    print(prompt)\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:chat:openai_agents.py__*__MODULE__*__CLASS-OpenAIChatAgent__*__FUNCTION-_format_prompt",
+    "file_path": "postcode/ai_services/chat/openai_agents.py",
+    "parent_id": "postcode:ai_services:chat:openai_agents.py__*__MODULE__*__CLASS-OpenAIChatAgent",
+    "block_type": "FUNCTION",
+    "start_line_num": 115,
+    "end_line_num": 148,
+    "code_content": "\ndef _format_prompt(\n    self,\n    context: str,\n    user_question: str,\n    prompt_template: str,\n) -> str:\n    \"\"\"\n        Formats the prompt for the OpenAI API based on the provided context, user's question, and template.\n\n        Args:\n            - context (str): The context derived from Chroma query results.\n            - user_question (str): The user's question.\n            - prompt_template (str): The template for formatting the prompt.\n\n        Returns:\n            - str: The formatted prompt.\n\n        Raises:\n            - KeyError: If the prompt template is missing required keys.\n\n        Example:\n            ```python\n            prompt = agent._format_prompt(\"Context here\", \"What is the meaning of life?\", \"Template {context} {user_question}\")\n            print(prompt)\n            ```\n        \"\"\"\n\n    try:\n        return prompt_template.format(context=context, user_question=user_question)\n\n    except KeyError as e:\n        raise KeyError(f\"Prompt template is missing the following key: {e}\") from e\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_format_prompt` method, part of an undefined class, dynamically constructs a prompt for the OpenAI API by interpolating `context` and `user_question` into a `prompt_template` string. It employs Python's `format` method for substitution and robustly handles missing placeholders by raising a `KeyError`, which is accompanied by a descriptive error message specifying the missing key.",
+    "children_ids": []
+}

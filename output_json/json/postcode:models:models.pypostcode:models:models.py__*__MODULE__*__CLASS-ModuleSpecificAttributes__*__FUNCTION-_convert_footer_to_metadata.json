@@ -1,0 +1,20 @@
+{
+    "function_name": "_convert_footer_to_metadata",
+    "docstring": "Converts the header and footer to a metadata string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_footer_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes",
+    "block_type": "FUNCTION",
+    "start_line_num": 201,
+    "end_line_num": 205,
+    "code_content": "\ndef _convert_footer_to_metadata(self) -> str:\n    \"\"\"Converts the header and footer to a metadata string.\"\"\"\n    return self.model_dump_json()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe code snippet features a private method `_convert_footer_to_metadata` within an unspecified class, which serializes the footer information of the class to a JSON formatted string using the `model_dump_json` method and returns this string for potential use in data interchange or storage.",
+    "children_ids": []
+}

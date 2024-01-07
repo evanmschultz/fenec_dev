@@ -1,0 +1,20 @@
+{
+    "function_name": "visit_ImportFrom",
+    "docstring": "Visits an ImportFrom node in the CST.\n\nProcesses the 'from ... import ...' statement and updates the module builder with the import model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-visit_ImportFrom",
+    "file_path": "postcode/python_parser/visitors/module_visitor.py",
+    "parent_id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor",
+    "block_type": "FUNCTION",
+    "start_line_num": 113,
+    "end_line_num": 123,
+    "code_content": "\ndef visit_ImportFrom(self, node: libcst.ImportFrom) -> None:\n    \"\"\"\n        Visits an ImportFrom node in the CST.\n\n        Processes the 'from ... import ...' statement and updates the module builder with the import model.\n        \"\"\"\n\n    import_model: ImportModel = module_functions.process_import_from(node)\n    self.builder.add_import(import_model)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `visit_ImportFrom` method is part of a class that interacts with a CST, where it processes 'from ... import ...' statements by converting them into an `ImportModel` using the `module_functions.process_import_from` function and then adds this model to the module builder's imports using `self.builder.add_import`.",
+    "children_ids": []
+}

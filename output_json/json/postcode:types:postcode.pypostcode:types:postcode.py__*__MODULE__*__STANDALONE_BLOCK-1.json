@@ -1,0 +1,14 @@
+{
+    "variable_assignments": [],
+    "id": "postcode:types:postcode.py__*__MODULE__*__STANDALONE_BLOCK-1",
+    "file_path": "postcode/types/postcode.py",
+    "parent_id": "postcode:types:postcode.py__*__MODULE",
+    "block_type": "STANDALONE_BLOCK",
+    "start_line_num": 1,
+    "end_line_num": 9,
+    "code_content": "\"\"\"\nPostCode types\n--------------\n\nThis module contains types defined by the postcode library.\nThese types are used for easy implementation in the postcode project and\nprovide convenience for users of the postcode library.\n\"\"\"\n",
+    "important_comments": null,
+    "dependencies": [],
+    "summary": "\nThe code is a docstring for a Python module in the postcode library, summarizing the module's role in declaring specialized types like classes, enums, and constants. These types are intended to simplify the implementation process and enhance the user experience within the postcode system.",
+    "children_ids": null
+}

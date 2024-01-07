@@ -1,0 +1,48 @@
+{
+    "function_name": "setup_logging",
+    "docstring": "Configures the logging system to use RichSyntaxHandler for output.\n\nThis function sets up logging with a specific log level and format. It utilizes the RichSyntaxHandler to support rich text and syntax highlighting in log outputs.\n\nArgs:\n    level (int, optional): The logging level to set for the root logger. Defaults to logging.INFO.\n\nExample:\n    >>> setup_logging(logging.DEBUG)\n    # Configures logging at DEBUG level with RichSyntaxHandler.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:utilities:logger:logging_config.py__*__MODULE__*__FUNCTION-setup_logging",
+    "file_path": "postcode/utilities/logger/logging_config.py",
+    "parent_id": "postcode:utilities:logger:logging_config.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 5,
+    "end_line_num": 23,
+    "code_content": "\n\ndef setup_logging(level=logging.INFO) -> None:\n    \"\"\"\n    Configures the logging system to use RichSyntaxHandler for output.\n\n    This function sets up logging with a specific log level and format. It utilizes the RichSyntaxHandler to support rich text and syntax highlighting in log outputs.\n\n    Args:\n        level (int, optional): The logging level to set for the root logger. Defaults to logging.INFO.\n\n    Example:\n        >>> setup_logging(logging.DEBUG)\n        # Configures logging at DEBUG level with RichSyntaxHandler.\n    \"\"\"\n\n    format_str = \"%(message)s\"\n    logging.basicConfig(level=level, format=format_str, handlers=[RichSyntaxHandler()])\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:utilities:logger:logging_config.py__*__MODULE__*__CLASS-RichSyntaxHandler"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Syntax",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "rich.syntax",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe `setup_logging` function initializes the Python logging system with a default `logging.INFO` level and a simplified format, employing `logging.basicConfig` and the `RichSyntaxHandler` from an external library to enable syntax highlighting and rich text in log outputs.",
+    "children_ids": []
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "add_child_builder",
+    "docstring": "Adds a child code block to the model instance.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Union[, , , ]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-add_child_builder",
+    "file_path": "postcode/python_parser/model_builders/base_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 162,
+    "end_line_num": 177,
+    "code_content": "\ndef add_child_builder(\n    self,\n    child: Union[\n        \"ClassModelBuilder\", \"FunctionModelBuilder\", StandaloneBlockModelBuilder\n    ],\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Adds a child code block to the model instance.\"\"\"\n    self.child_builders.append(child)\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `add_child_builder` method, part of a code modeling framework, adds a `child` builder to the parent's `child_builders` list, facilitating hierarchical model construction. It enforces type constraints for the `child` and return value, indicating compatibility with multiple builder types, and concludes by returning the modified parent builder. The method's docstring clearly states its purpose, and type hints enhance code clarity and safety.",
+    "children_ids": []
+}

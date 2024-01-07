@@ -1,0 +1,20 @@
+{
+    "function_name": "convert_to_metadata",
+    "docstring": "Converts the standalone code block model to a metadata dictionary for ChromaDB.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "dict[str, str | int]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel__*__FUNCTION-convert_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 457,
+    "end_line_num": 465,
+    "code_content": "\ndef convert_to_metadata(self) -> dict[str, str | int]:\n    \"\"\"Converts the standalone code block model to a metadata dictionary for ChromaDB.\"\"\"\n\n    return {\n        **self._convert_base_attributes_to_metadata_dict(),\n        **self._convert_standalone_block_attributes_to_metadata_dict(),\n    }\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `convert_to_metadata` method in a class merges two dictionaries containing base and standalone block attributes into a single metadata dictionary with string keys and mixed value types (string or integer), formatted for ChromaDB, by utilizing unpacking operators to combine the dictionaries.",
+    "children_ids": []
+}

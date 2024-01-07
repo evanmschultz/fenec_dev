@@ -1,0 +1,20 @@
+{
+    "function_name": "_convert_keywords_to_metadata",
+    "docstring": "Converts the keywords to a metadata string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassSpecificAttributes__*__FUNCTION-_convert_keywords_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassSpecificAttributes",
+    "block_type": "FUNCTION",
+    "start_line_num": 279,
+    "end_line_num": 284,
+    "code_content": "\ndef _convert_keywords_to_metadata(self) -> str:\n    \"\"\"Converts the keywords to a metadata string.\"\"\"\n    keywords_str: str = self.model_dump_json() if self.keywords else \"\"\n    return f\"{keywords_str}\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_convert_keywords_to_metadata` method in a Python class checks if the `keywords` attribute is non-empty and then calls `model_dump_json` to convert these keywords into a JSON-formatted metadata string. If `keywords` is empty, it returns an empty string, with the result being formatted using an f-string.",
+    "children_ids": []
+}

@@ -1,0 +1,57 @@
+{
+    "class_name": "IDGenerationStrategy",
+    "decorators": null,
+    "bases": [
+        "ABC"
+    ],
+    "docstring": "Abstract base class defining the interface for ID generation strategies.\n\nThis class serves as a template for creating various ID generation strategies for different types\nof code blocks, such as modules, classes, functions, and standalone code blocks.",
+    "keywords": null,
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 2,
+    "end_line_num": 27,
+    "code_content": "\n\nclass IDGenerationStrategy(ABC):\n    \"\"\"\n    Abstract base class defining the interface for ID generation strategies.\n\n    This class serves as a template for creating various ID generation strategies for different types\n    of code blocks, such as modules, classes, functions, and standalone code blocks.\n    \"\"\"\n\n    @staticmethod\n    @abstractmethod\n    def generate_id(**kwargs) -> str:\n        \"\"\"\n        Abstract method to generate an ID based on the given context.\n\n        Subclasses should implement this method to generate an ID specific to the block type.\n\n        Args:\n            **kwargs: Variable keyword arguments depending on the specific strategy requirements.\n\n        Returns:\n            str: The generated ID.\n        \"\"\"\n        pass\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "ABC",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "abstractmethod",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "abc",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ABC",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "abstractmethod",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "abc",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\n\nThe provided code defines an abstract base class named `IDGenerationStrategy`, which outlines a contract for creating ID generation strategies for various types of code blocks. The class contains a single abstract static method, `generate_id`, which must be implemented by subclasses to generate a unique ID string. This method is designed to accept variable keyword arguments (`**kwargs`) to support different requirements for ID generation based on the context of the code block it is being used for. The use of the `@abstractmethod` decorator ensures that any subclass of `IDGenerationStrategy` must provide its own implementation of the `generate_id` method, thus enforcing a consistent interface for ID generation across different strategies.",
+    "children_ids": [
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy__*__FUNCTION-generate_id"
+    ]
+}

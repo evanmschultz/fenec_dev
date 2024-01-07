@@ -1,0 +1,27 @@
+{
+    "class_name": "DirectoryIDGenerationStrategy",
+    "decorators": null,
+    "bases": [
+        "IDGenerationStrategy"
+    ],
+    "docstring": "ID generation strategy for directories.",
+    "keywords": null,
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-DirectoryIDGenerationStrategy",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 112,
+    "end_line_num": 145,
+    "code_content": "\n\nclass DirectoryIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for directories.\"\"\"\n\n    @staticmethod\n    def generate_id(directory_path: str) -> str:\n        \"\"\"\n        Generates an ID for a directory based on the given directory path.\n\n        Args:\n            - directory_path (str): The path to the directory.\n\n        Returns:\n            - str: The generated ID, incorporating the file path.\n        \"\"\"\n        directory_path_str: str = DirectoryIDGenerationStrategy._converted_path_string(\n            directory_path\n        )\n        return f\"{directory_path_str}__*__DIRECTORY\"\n\n    @staticmethod\n    def _converted_path_string(file_path: str) -> str:\n        \"\"\"\n        Converts a file path to a valid ID string.\n\n        Args:\n            - file_path (str): The file path to convert.\n\n        Returns:\n            - str: The converted ID string.\n        \"\"\"\n        return file_path.replace(\"/\", \":\")\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy"
+        }
+    ],
+    "summary": "\nThe `DirectoryIDGenerationStrategy` class, derived from `IDGenerationStrategy`, features two static methods: `generate_id` and `_converted_path_string`. The `generate_id` method produces a directory ID by first transforming the directory path into a colon-separated string using `_converted_path_string`, which replaces all slashes with colons, and then appending the suffix `__*__DIRECTORY` to distinguish it as a directory ID.",
+    "children_ids": [
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-DirectoryIDGenerationStrategy__*__FUNCTION-generate_id",
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-DirectoryIDGenerationStrategy__*__FUNCTION-_converted_path_string"
+    ]
+}

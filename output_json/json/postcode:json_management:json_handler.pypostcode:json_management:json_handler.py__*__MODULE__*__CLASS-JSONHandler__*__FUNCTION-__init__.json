@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-__init__",
+    "file_path": "postcode/json_management/json_handler.py",
+    "parent_id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler",
+    "block_type": "FUNCTION",
+    "start_line_num": 44,
+    "end_line_num": 57,
+    "code_content": "\ndef __init__(\n    self,\n    directory: str,\n    directory_modules: dict[str, list[str]],\n    output_directory: str = \"output_json\",\n) -> None:\n    self.directory: str = directory\n    self.output_directory: str = output_directory\n    self.directory_modules: dict[str, list[str]] = directory_modules\n\n    self._clean_output_directory()\n    self._create_output_directory()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `__init__` method of a class initializes instance variables for managing directories and modules, setting the input directory, a dictionary mapping directories to module lists, and an output directory. It ensures the output directory is properly set up by calling private methods to clean any existing data and create the directory if necessary.",
+    "children_ids": []
+}

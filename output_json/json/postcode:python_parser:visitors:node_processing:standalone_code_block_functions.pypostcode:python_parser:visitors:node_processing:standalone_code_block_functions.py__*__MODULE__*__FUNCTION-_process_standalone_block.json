@@ -1,0 +1,96 @@
+{
+    "function_name": "_process_standalone_block",
+    "docstring": "Processes a standalone block of code and sets the attributes in the model builder, returns the builder instance.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "StandaloneBlockModelBuilder",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_process_standalone_block",
+    "file_path": "postcode/python_parser/visitors/node_processing/standalone_code_block_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 120,
+    "end_line_num": 146,
+    "code_content": "\n\n# TODO: Fix important comment logic\ndef _process_standalone_block(\n    standalone_block: NodeAndPositionData, parent_id: str, count: int, file_path: str\n) -> StandaloneBlockModelBuilder:\n    \"\"\"Processes a standalone block of code and sets the attributes in the model builder, returns the builder instance.\"\"\"\n\n    id: str = StandaloneCodeBlockIDGenerationStrategy.generate_id(parent_id, count)\n    builder: StandaloneBlockModelBuilder = BuilderFactory.create_builder_instance(\n        block_type=BlockType.STANDALONE_CODE_BLOCK,\n        id=id,\n        parent_id=parent_id,\n        file_path=file_path,\n    )\n    content, variable_assignments, important_comments = _process_nodes(standalone_block)\n    (\n        builder.set_start_line_num(standalone_block.start)\n        .set_end_line_num(standalone_block.end)\n        .set_code_content(content)\n    )\n    for important_comment in important_comments:\n        builder.add_important_comment(important_comment)\n    builder.set_variable_assignments(variable_assignments)\n\n    return builder\n",
+    "important_comments": [
+        {
+            "content": "# TODO: Fix important comment logic",
+            "comment_types": [
+                "TODO"
+            ]
+        }
+    ],
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_process_nodes"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneCodeBlockIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-StandaloneCodeBlockIDGenerationStrategy"
+                }
+            ],
+            "imported_from": "postcode.python_parser.id_generation.id_generation_strategies",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BuilderFactory",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.builder_factory",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:builder_factory.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData"
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe `_process_standalone_block` function in Python constructs a model builder for a standalone block of code within a file. It generates a unique identifier for the block using the `StandaloneCodeBlockIDGenerationStrategy.generate_id` method, which takes the parent block's ID and a count as arguments. The function then creates a builder instance using `BuilderFactory.create_builder_instance`, specifying the block type as `STANDALONE_CODE_BLOCK` along with the generated ID, parent ID, and file path. It processes the nodes of the standalone block to extract content, variable assignments, and important comments using the `_process_nodes` function. The builder's attributes are set with the start and end line numbers, code content, and variable assignments. Additionally, it iterates over the important comments, adding each to the builder. The function ultimately returns the populated builder instance, which encapsulates the standalone block's data.",
+    "children_ids": []
+}

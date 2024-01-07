@@ -1,0 +1,27 @@
+{
+    "class_name": "ModuleIDGenerationStrategy",
+    "decorators": null,
+    "bases": [
+        "IDGenerationStrategy"
+    ],
+    "docstring": "ID generation strategy for modules.",
+    "keywords": null,
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 27,
+    "end_line_num": 58,
+    "code_content": "\n\nclass ModuleIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for modules.\"\"\"\n\n    @staticmethod\n    def generate_id(file_path: str) -> str:\n        \"\"\"\n        Generates an ID for a module based on the given file path.\n\n        Args:\n            - file_path (str): The file path of the module.\n\n        Returns:\n            - str: The generated ID, incorporating the file path.\n        \"\"\"\n        module_path: str = ModuleIDGenerationStrategy._converted_path_string(file_path)\n        return f\"{module_path}__*__MODULE\"\n\n    @staticmethod\n    def _converted_path_string(file_path: str) -> str:\n        \"\"\"\n        Converts a file path to a valid ID string.\n\n        Args:\n            - file_path (str): The file path to convert.\n\n        Returns:\n            - str: The converted ID string.\n        \"\"\"\n        return file_path.replace(\"/\", \":\")\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy"
+        }
+    ],
+    "summary": "\n\nThe provided code defines a class `ModuleIDGenerationStrategy` that inherits from `IDGenerationStrategy` and is responsible for generating unique identifiers for modules based on their file paths. The class contains two static methods: `generate_id` and `_converted_path_string`. The `generate_id` method takes a file path as input and returns a string ID that includes the transformed file path followed by a unique suffix `__*__MODULE`. The transformation of the file path is handled by the `_converted_path_string` method, which replaces all occurrences of the forward slash `/` with a colon `:` to create a valid ID string. This class is designed to be used in scenarios where modules need to be uniquely identified, possibly in a larger system that manages or tracks modules by their file paths.",
+    "children_ids": [
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy__*__FUNCTION-generate_id",
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy__*__FUNCTION-_converted_path_string"
+    ]
+}

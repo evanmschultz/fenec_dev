@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-__init__",
+    "file_path": "postcode/python_parser/model_builders/base_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 74,
+    "end_line_num": 99,
+    "code_content": "\ndef __init__(\n    self, *, id: str, block_type: BlockType, parent_id: str | None, file_path: str\n) -> None:\n    self.id: str = id\n    self.child_builders: list[\n        ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder\n    ] = []\n    self.child_models: list[\n        ClassModel | FunctionModel | StandaloneCodeBlockModel\n    ] | None = None\n\n    self.common_attributes = BaseCodeBlockModel(\n        id=id,\n        file_path=file_path,\n        parent_id=parent_id,\n        block_type=block_type,\n        start_line_num=0,\n        end_line_num=0,\n        code_content=\"\",\n        important_comments=None,\n        children_ids=None,\n        dependencies=None,\n        summary=None,\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `__init__` method in the code snippet initializes a class instance designed to manage code blocks, assigning an ID, block type, optional parent ID, and file path. It prepares lists to hold child entities using specific builder (ClassModelBuilder, FunctionModelBuilder, StandaloneBlockModelBuilder) and model (ClassModel, FunctionModel, StandaloneCodeBlockModel) types. Additionally, it constructs a `BaseCodeBlockModel` with preset default values and employs type hinting to define the types of parameters and attributes for clarity and type safety.",
+    "children_ids": []
+}

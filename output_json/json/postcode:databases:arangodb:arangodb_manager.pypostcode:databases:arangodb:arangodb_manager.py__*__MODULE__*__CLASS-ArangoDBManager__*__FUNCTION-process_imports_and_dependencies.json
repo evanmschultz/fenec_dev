@@ -1,0 +1,20 @@
+{
+    "function_name": "process_imports_and_dependencies",
+    "docstring": "Processes the imports and dependencies in the ArangoDB database, creating edges accordingly.\n\nReturns:\n    - ArangoDBManager: The ArangoDBManager instance.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-process_imports_and_dependencies",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 195,
+    "end_line_num": 224,
+    "code_content": "\ndef process_imports_and_dependencies(self) -> \"ArangoDBManager\":\n    \"\"\"\n        Processes the imports and dependencies in the ArangoDB database, creating edges accordingly.\n\n        Returns:\n            - ArangoDBManager: The ArangoDBManager instance.\n        \"\"\"\n\n    for vertex_collection in helper_functions.pluralized_and_lowered_block_types():\n        cursor: Result[Cursor] = self.db_connector.db.collection(\n            vertex_collection\n        ).all()\n        if isinstance(cursor, Cursor):\n            for vertex in cursor:\n                vertex_key = vertex[\"_key\"]\n                if vertex_collection == \"modules\":\n                    self._create_edges_for_imports(\n                        vertex_key, vertex.get(\"imports\", [])\n                    )\n                else:\n                    self._create_edges_for_dependencies(\n                        vertex_key, vertex.get(\"dependencies\", [])\n                    )\n        else:\n            logging.error(\n                f\"Error getting cursor for vertex collection: {vertex_collection}\"\n            )\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `process_imports_and_dependencies` method of the `ArangoDBManager` class iterates over ArangoDB collections, specified by a helper function, to create edges based on 'imports' in 'modules' or 'dependencies' in other documents. It employs cursors for document retrieval, includes conditional logic for edge creation, and logs retrieval errors.",
+    "children_ids": []
+}

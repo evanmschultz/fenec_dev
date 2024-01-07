@@ -113,12 +113,13 @@ class BaseCodeBlockModel(BaseModel):
     summary: str | None = None
     children_ids: list[str] | None = []
 
-    @field_validator("parent_id")
-    def check_parent_id(cls, v, values, **kwargs) -> str | None:
+    def check_parent_id(self, v, values, **kwargs) -> str | None:
         """Validates that parent_id is a non-empty string unless block_type is MODULE."""
 
-        if "block_type" in values and values["block_type"] != BlockType.MODULE:
-            if len(v) < 1:
+        block_type = values.get("block_type")
+
+        if block_type and block_type != BlockType.MODULE:
+            if "parent_id" in values and len(v) < 1:
                 raise ValueError("parent_id is required!")
         return v
 
@@ -434,7 +435,7 @@ class StandaloneCodeBlockModel(
 ):
     """
     Model for a standalone code block.
-    
+
     Attributes:
         - id (str): The unique identifier for the standalone code block.
         - file_path (str): The path to the Python file that the standalone code block represents.
@@ -466,7 +467,7 @@ class StandaloneCodeBlockModel(
 class DirectoryModel(BaseModel):
     """
     Model for a directory.
-    
+
     Attributes:
         - id (str): The unique identifier for the directory.
         - block_type (BlockType): The type of code block that the directory represents.

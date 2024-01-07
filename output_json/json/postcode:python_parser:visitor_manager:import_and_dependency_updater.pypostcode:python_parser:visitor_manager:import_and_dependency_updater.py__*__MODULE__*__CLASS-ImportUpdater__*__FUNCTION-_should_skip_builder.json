@@ -1,0 +1,20 @@
+{
+    "function_name": "_should_skip_builder",
+    "docstring": "Returns boolean indicating if the given builder should be skipped.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "bool",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater__*__FUNCTION-_should_skip_builder",
+    "file_path": "postcode/python_parser/visitor_manager/import_and_dependency_updater.py",
+    "parent_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 168,
+    "end_line_num": 183,
+    "code_content": "\ndef _should_skip_builder(\n    self,\n    builder: ModuleModelBuilder,\n    external_builder: ModuleModelBuilder,\n    import_path: str,\n    import_model: ImportModel,\n) -> bool:\n    \"\"\"Returns boolean indicating if the given builder should be skipped.\"\"\"\n\n    return (\n        external_builder.id == builder.id\n        or not import_path in external_builder.id\n        or import_model.local_module_id is not None\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_should_skip_builder` method within a class assesses whether an `external_builder` should be omitted from a process. It returns `True` if the `external_builder`'s `id` is identical to the `builder`'s `id`, if the `import_path` is not a substring of the `external_builder`'s `id`, or if the `import_model` has a non-null `local_module_id`. These checks ensure that builders are only considered when they are distinct, relevant to the import path, and not locally defined.",
+    "children_ids": []
+}

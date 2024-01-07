@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_import_details",
+    "docstring": "Returns the import details to be used in the prompt.\n\nArgs:\n    - import_model (ImportModel): The import to retrieve the details for.\n\nReturns:\n    - str | None: The import details or None if the import is local.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_get_import_details",
+    "file_path": "postcode/ai_services/summarizer/graph_db_summarization_manager.py",
+    "parent_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 367,
+    "end_line_num": 395,
+    "code_content": "\ndef _get_import_details(self, import_model: ImportModel) -> str | None:\n    \"\"\"\n        Returns the import details to be used in the prompt.\n\n        Args:\n            - import_model (ImportModel): The import to retrieve the details for.\n\n        Returns:\n            - str | None: The import details or None if the import is local.\n        \"\"\"\n\n    if import_model.import_module_type == \"LOCAL\" or not import_model.import_names:\n        return None\n\n    import_names_list: list[str] = []\n    for import_name in import_model.import_names:\n        if import_name.as_name:\n            import_names_list.append(f\"{import_name.name} as {import_name.as_name}\")\n        else:\n            import_names_list.append(f\"{import_name.name}\")\n\n    if import_model.imported_from:\n        import_details: str = f\"from {import_model.imported_from} import {', '.join(import_names_list)}\"\n    else:\n        import_details = f\"import {', '.join(import_names_list)}\"\n\n    return import_details\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_get_import_details` method within a class constructs a string for a Python import statement from an `ImportModel` instance, incorporating aliasing with `as` and formatting based on direct or module-specific imports, returning `None` for local or unnamed imports.",
+    "children_ids": []
+}

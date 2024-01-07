@@ -1,0 +1,100 @@
+{
+    "function_name": "process_func_def",
+    "docstring": "Processes a libcst.FunctionDef node to build a function model.\n\nExtracts various components of a function definition such as its docstring, code content, decorators, and return annotations,\nand updates the provided FunctionModelBuilder with these details.\n\nArgs:\n    - func_id (str): The unique identifier for the function.\n    - node (libcst.FunctionDef): The function definition node from the CST.\n    - position_data (PositionData): Positional data for the function in the source code.\n    - func_builder (FunctionModelBuilder): The builder used to construct the function model.\n\nExample:\n    ```Python\n    func_builder = FunctionModelBuilder(id=\"func1\", ...)\n    process_func_def(\"func1\", function_node, position_data, func_builder)\n    # Processes the function definition and updates the function builder.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-process_func_def",
+    "file_path": "postcode/python_parser/visitors/node_processing/function_def_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 18,
+    "end_line_num": 69,
+    "code_content": "\n\ndef process_func_def(\n    func_id: str,\n    node: libcst.FunctionDef,\n    position_data: PositionData,\n    func_builder: FunctionModelBuilder,\n) -> None:\n    \"\"\"\n    Processes a libcst.FunctionDef node to build a function model.\n\n    Extracts various components of a function definition such as its docstring, code content, decorators, and return annotations,\n    and updates the provided FunctionModelBuilder with these details.\n\n    Args:\n        - func_id (str): The unique identifier for the function.\n        - node (libcst.FunctionDef): The function definition node from the CST.\n        - position_data (PositionData): Positional data for the function in the source code.\n        - func_builder (FunctionModelBuilder): The builder used to construct the function model.\n\n    Example:\n        ```Python\n        func_builder = FunctionModelBuilder(id=\"func1\", ...)\n        process_func_def(\"func1\", function_node, position_data, func_builder)\n        # Processes the function definition and updates the function builder.\n        ```\n    \"\"\"\n\n    docstring: str | None = node.get_docstring()\n    code_content: str = common_functions.extract_code_content(node)\n    decorators: list[DecoratorModel] | None = common_functions.extract_decorators(\n        node.decorators\n    )\n\n    returns: str = (\n        _extract_return_annotation(node.returns)\n        if node.returns\n        else \"Function has no return annotation\"\n    )\n    (\n        func_builder.set_docstring(docstring)\n        .set_code_content(code_content)\n        .set_start_line_num(position_data.start)\n        .set_end_line_num(position_data.end)\n    )\n    (\n        func_builder.set_decorators(decorators)\n        .set_is_method(_func_is_method(func_id))\n        .set_is_async(_func_is_async(node))\n        .set_return_annotation(returns)\n    )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_func_is_method"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_func_is_async"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_extract_return_annotation"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe `process_func_def` function in Python takes a `libcst.FunctionDef` node and extracts its components to build a function model using a `FunctionModelBuilder`. It processes elements such as the function's docstring, code content, decorators, and return annotations. The function accepts a unique function identifier (`func_id`), the CST node (`node`), positional data (`position_data`), and an instance of `FunctionModelBuilder` (`func_builder`). It utilizes helper functions `extract_code_content` and `extract_decorators` from `common_functions` to retrieve the code content and decorators list, respectively. Additionally, it determines if the function is a method or asynchronous and captures the return annotation, updating the `func_builder` with this information. The `FunctionModelBuilder` is then updated with the function's docstring, code content, start and end line numbers, decorators, method status, asynchronous status, and return annotation.",
+    "children_ids": []
+}

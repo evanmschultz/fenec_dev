@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_dependencies_summaries",
+    "docstring": "Gathers summaries of dependencies and returns them as a string to be used in the prompt.\n\nArgs:\n    - model (ModelType): The model to gather dependency summaries for.\n\nReturns:\n    - str | None: A string of dependency summaries or None if the model has no dependencies.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_get_dependencies_summaries",
+    "file_path": "postcode/ai_services/summarizer/graph_db_summarization_manager.py",
+    "parent_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 215,
+    "end_line_num": 268,
+    "code_content": "\ndef _get_dependencies_summaries(self, model: ModelType) -> str | None:\n    \"\"\"\n        Gathers summaries of dependencies and returns them as a string to be used in the prompt.\n\n        Args:\n            - model (ModelType): The model to gather dependency summaries for.\n\n        Returns:\n            - str | None: A string of dependency summaries or None if the model has no dependencies.\n        \"\"\"\n\n    dependency_list: list[ImportModel | DependencyModel] | list[ImportModel] = []\n    dependency_summary_list: list[str] = []\n\n    if isinstance(model, DirectoryModel):\n        return None\n\n    if isinstance(model, ModuleModel):\n        if not model.imports:\n            return None\n\n        dependency_list = model.imports\n    else:\n        if not model.dependencies:\n            return None\n\n        dependency_list = model.dependencies\n    for dependency in dependency_list:\n        if isinstance(dependency, DependencyModel) and dependency.code_block_id:\n            if module_local_dependency_summary := self._get_local_dependency_summary(\n                dependency, model\n            ):\n                dependency_summary_list.append(module_local_dependency_summary)\n\n        elif isinstance(dependency, ImportModel):\n            if dependency.import_module_type == \"LOCAL\":\n                if not dependency.import_names:\n                    if module_import_dependency := self._get_local_import_summary(\n                        dependency\n                    ):\n                        dependency_summary_list.append(module_import_dependency)\n                else:\n                    if import_from_dependency := self._get_local_import_from_summary(\n                        dependency\n                    ):\n                        dependency_summary_list.append(import_from_dependency)\n\n    dependency_summaries: str | None = self._stringify_dependencies_summaries(\n        dependency_summary_list\n    )\n\n    return dependency_summaries\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_get_dependencies_summaries` method generates a summary string of local dependencies for `ModuleModel` objects, excluding `DirectoryModel`, by processing `ImportModel` and `DependencyModel` types with dedicated helper methods and combining the results with `_stringify_dependencies_summaries`.",
+    "children_ids": []
+}

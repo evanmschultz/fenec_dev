@@ -5,6 +5,7 @@
     "sub_directories_ids": [
         "postcode:databases__*__DIRECTORY",
         "postcode:types__*__DIRECTORY",
+        "postcode:.pytest_cache__*__DIRECTORY",
         "postcode:ai_services__*__DIRECTORY",
         "postcode:tests__*__DIRECTORY",
         "postcode:python_parser__*__DIRECTORY",
@@ -17,6 +18,6 @@
         "postcode:__init__.py__*__MODULE",
         "postcode:app.py__*__MODULE"
     ],
-    "parent_id": ".__*__DIRECTORY",
+    "parent_id": null,
     "summary": null
 }

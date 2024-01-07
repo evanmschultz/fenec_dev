@@ -1,0 +1,66 @@
+{
+    "variable_assignments": [],
+    "id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__STANDALONE_BLOCK-1",
+    "file_path": "postcode/python_parser/model_builders/class_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE",
+    "block_type": "STANDALONE_BLOCK",
+    "start_line_num": 14,
+    "end_line_num": 21,
+    "code_content": "if TYPE_CHECKING:\n    from postcode.models.models import (\n        ClassKeywordModel,\n        DecoratorModel,\n    )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "ClassKeywordModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassKeywordModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "TYPE_CHECKING",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe code snippet utilizes the `TYPE_CHECKING` flag from the `typing` standard library to conditionally import the `ClassKeywordModel` and `DecoratorModel` classes from a `postcode.models.models` package, optimizing runtime performance by including these imports only when static type checking is executed, thus avoiding potential circular dependencies or unnecessary memory usage during execution.",
+    "children_ids": null
+}

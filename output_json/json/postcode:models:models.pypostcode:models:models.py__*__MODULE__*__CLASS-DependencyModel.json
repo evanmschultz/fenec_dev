@@ -1,0 +1,45 @@
+{
+    "class_name": "DependencyModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Class representing a module dependency.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 34,
+    "end_line_num": 44,
+    "code_content": "\n\nclass DependencyModel(BaseModel):\n    \"\"\"Class representing a module dependency.\"\"\"\n\n    code_block_id: str\n\n    def convert_dependency_to_metadata(self) -> str:\n        \"\"\"Converts the dependency to a metadata string.\"\"\"\n        return self.model_dump_json()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "field_validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\n\nThe `DependencyModel` class, inheriting from `BaseModel`, encapsulates a module dependency with an attribute `code_block_id`. It features a method `convert_dependency_to_metadata` that transforms the dependency information into a metadata string by calling the `model_dump_json` method. This class is designed to represent and handle the metadata conversion of module dependencies within a larger system, likely for the purpose of serialization or documentation.",
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel__*__FUNCTION-convert_dependency_to_metadata"
+    ]
+}

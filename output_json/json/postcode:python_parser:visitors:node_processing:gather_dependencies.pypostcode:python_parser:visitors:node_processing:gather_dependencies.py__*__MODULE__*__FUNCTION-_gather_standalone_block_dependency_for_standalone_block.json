@@ -1,0 +1,79 @@
+{
+    "function_name": "_gather_standalone_block_dependency_for_standalone_block",
+    "docstring": "Determines if a given standalone block is a dependency for another standalone block.\n\nThis function checks if any of the variable assignments in the provided standalone block\nare present in the given code content of another standalone block.\n\nArgs:\n    - builder (StandaloneBlockModelBuilder): The standalone block builder to check for dependencies.\n    - code_content (str): The code content of another standalone block to analyze.\n\nReturns:\n    - DependencyModel | None: The ID of the standalone block builder if a dependency is found, otherwise None.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "DependencyModel | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_gather_standalone_block_dependency_for_standalone_block",
+    "file_path": "postcode/python_parser/visitors/node_processing/gather_dependencies.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 118,
+    "end_line_num": 146,
+    "code_content": "\n\ndef _gather_standalone_block_dependency_for_standalone_block(\n    builder: StandaloneBlockModelBuilder,\n    code_content: str,\n    dependency_creator: Callable[[str], DependencyModel],\n) -> DependencyModel | None:\n    \"\"\"\n    Determines if a given standalone block is a dependency for another standalone block.\n\n    This function checks if any of the variable assignments in the provided standalone block\n    are present in the given code content of another standalone block.\n\n    Args:\n        - builder (StandaloneBlockModelBuilder): The standalone block builder to check for dependencies.\n        - code_content (str): The code content of another standalone block to analyze.\n\n    Returns:\n        - DependencyModel | None: The ID of the standalone block builder if a dependency is found, otherwise None.\n    \"\"\"\n\n    variables: list[\n        str\n    ] | None = builder.standalone_block_attributes.variable_assignments\n    if variables:\n        for variable in variables:\n            if variable in code_content:\n                return dependency_creator(builder.id)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "re",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Callable",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "DependencyModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe function `_gather_standalone_block_dependency_for_standalone_block` in the provided Python code is designed to identify dependencies between standalone blocks of code. It takes a `StandaloneBlockModelBuilder` object, a string of code content, and a `dependency_creator` function as arguments. The function checks if any variable assignments from the `StandaloneBlockModelBuilder` are used within the provided code content string. If a match is found, indicating a dependency, it uses the `dependency_creator` callable with the builder's ID to return a `DependencyModel` object. If no dependencies are found, the function returns `None`. The function relies on the `StandaloneBlockModelBuilder`'s `standalone_block_attributes.variable_assignments` attribute to retrieve the list of variable assignments. The `Callable` type from the Python standard library is used to ensure that the `dependency_creator` parameter is a callable object.",
+    "children_ids": []
+}

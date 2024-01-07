@@ -1,0 +1,113 @@
+{
+    "docstring": "PostCode types\n--------------\n\nThis module contains types defined by the postcode library.\nThese types are used for easy implementation in the postcode project and\nprovide convenience for users of the postcode library.",
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ModuleModel"
+                },
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassModel"
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionModel"
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DirectoryModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:types:postcode.py__*__MODULE",
+    "file_path": "postcode/types/postcode.py",
+    "parent_id": "postcode:types__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 44,
+    "code_content": "\"\"\"\nPostCode types\n--------------\n\nThis module contains types defined by the postcode library.\nThese types are used for easy implementation in the postcode project and\nprovide convenience for users of the postcode library.\n\"\"\"\n\nfrom typing import Union\nfrom postcode.models.models import (\n    ClassModel,\n    FunctionModel,\n    ModuleModel,\n    StandaloneCodeBlockModel,\n    DirectoryModel,\n)\n\nfrom postcode.python_parser.model_builders.class_model_builder import ClassModelBuilder\nfrom postcode.python_parser.model_builders.function_model_builder import (\n    FunctionModelBuilder,\n)\nfrom postcode.python_parser.model_builders.module_model_builder import (\n    ModuleModelBuilder,\n)\nfrom postcode.python_parser.model_builders.standalone_block_model_builder import (\n    StandaloneBlockModelBuilder,\n)\n\nModelType = Union[\n    ModuleModel,\n    ClassModel,\n    FunctionModel,\n    StandaloneCodeBlockModel,\n    DirectoryModel,\n]\n\nBuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe provided Python code is part of the postcode library and is dedicated to defining type aliases for the library's internal use. It imports various model classes (`ModuleModel`, `ClassModel`, `FunctionModel`, `StandaloneCodeBlockModel`, `DirectoryModel`) and their corresponding builders (`ModuleModelBuilder`, `ClassModelBuilder`, `FunctionModelBuilder`, `StandaloneBlockModelBuilder`) from different modules within the library. The code then creates two type aliases using the `Union` type from the `typing` module: `ModelType`, which can be any of the imported model classes, and `BuilderType`, which can be any of the imported builder classes. These type aliases are designed to facilitate type annotations and checks throughout the postcode library, ensuring consistency and simplifying the implementation of the library's functionality. The module's docstring explains that these types are part of the library's infrastructure to enhance user experience and ease of implementation.",
+    "children_ids": [
+        "postcode:types:postcode.py__*__MODULE__*__STANDALONE_BLOCK-1",
+        "postcode:types:postcode.py__*__MODULE__*__STANDALONE_BLOCK-2"
+    ]
+}

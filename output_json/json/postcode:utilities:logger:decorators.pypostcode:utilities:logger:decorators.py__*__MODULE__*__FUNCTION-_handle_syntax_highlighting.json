@@ -1,0 +1,67 @@
+{
+    "function_name": "_handle_syntax_highlighting",
+    "docstring": "Handles syntax highlighting for the log record if enabled.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_handle_syntax_highlighting",
+    "file_path": "postcode/utilities/logger/decorators.py",
+    "parent_id": "postcode:utilities:logger:decorators.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 121,
+    "end_line_num": 135,
+    "code_content": "\n\ndef _handle_syntax_highlighting(\n    syntax_highlighting: bool,\n    log_record: logging.LogRecord,\n    logger: Logger,\n    content: str,\n) -> None:\n    \"\"\"Handles syntax highlighting for the log record if enabled.\"\"\"\n\n    if syntax_highlighting:\n        log_record.syntax_highlight = syntax_highlighting\n        log_record.content = content\n        logger.handle(log_record)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "LogRecord",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "LogRecord",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe `_handle_syntax_highlighting` function in Python takes four parameters: a boolean flag for enabling syntax highlighting, a `LogRecord` object, a `Logger` instance, and a string representing the content to be logged. When syntax highlighting is enabled, the function sets the `syntax_highlight` attribute of the `LogRecord` to `True` and assigns the provided content to the `content` attribute. It then calls the `handle` method of the `Logger` instance to process the log record with the updated syntax highlighting settings.",
+    "children_ids": []
+}

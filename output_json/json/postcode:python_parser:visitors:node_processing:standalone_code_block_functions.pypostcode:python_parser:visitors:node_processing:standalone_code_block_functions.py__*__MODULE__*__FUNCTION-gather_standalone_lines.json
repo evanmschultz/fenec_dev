@@ -1,0 +1,63 @@
+{
+    "function_name": "gather_standalone_lines",
+    "docstring": "Gathers standalone lines of code that are not part of class or function definitions or import statements.\n\nThis function iterates over a sequence of libcst.CSTNode, identifying blocks of code that stand alone.\nStandalone blocks are those not encapsulated in class or function definitions and not part of import statements.\n\nArgs:\n    - node_body (Sequence[libcst.CSTNode]): A sequence of CSTNodes representing the body of a module or a block.\n    - visitor_instance: An instance of a visitor class that provides additional context and utilities.\n\nReturns:\n    - list[NodeAndPositionData]: A list of NodeAndPositionData, each representing a standalone block of code with its start and end line numbers.\n\nExample:\n    ```Python\n    visitor_instance = ModuleVisitor(id=\"module1\", ...)\n    standalone_blocks = gather_standalone_lines(module_ast.body, visitor_instance)\n    # This will process the module AST and return standalone blocks of code.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[NodeAndPositionData]",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-gather_standalone_lines",
+    "file_path": "postcode/python_parser/visitors/node_processing/standalone_code_block_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 18,
+    "end_line_num": 71,
+    "code_content": "\n\ndef gather_standalone_lines(\n    node_body: Sequence[libcst.CSTNode], visitor_instance\n) -> list[NodeAndPositionData]:\n    \"\"\"\n    Gathers standalone lines of code that are not part of class or function definitions or import statements.\n\n    This function iterates over a sequence of libcst.CSTNode, identifying blocks of code that stand alone.\n    Standalone blocks are those not encapsulated in class or function definitions and not part of import statements.\n\n    Args:\n        - node_body (Sequence[libcst.CSTNode]): A sequence of CSTNodes representing the body of a module or a block.\n        - visitor_instance: An instance of a visitor class that provides additional context and utilities.\n\n    Returns:\n        - list[NodeAndPositionData]: A list of NodeAndPositionData, each representing a standalone block of code with its start and end line numbers.\n\n    Example:\n        ```Python\n        visitor_instance = ModuleVisitor(id=\"module1\", ...)\n        standalone_blocks = gather_standalone_lines(module_ast.body, visitor_instance)\n        # This will process the module AST and return standalone blocks of code.\n        ```\n    \"\"\"\n\n    standalone_blocks: list[NodeAndPositionData] = []\n    standalone_block: list[libcst.CSTNode] = []\n    start_line = end_line = 0\n\n    for statement in node_body:\n        if _is_class_or_function_def(statement) or _is_import_statement(statement):\n            if standalone_block:\n                end_line = visitor_instance.get_node_position_data(\n                    standalone_block[-1]\n                ).end\n                standalone_blocks.append(\n                    NodeAndPositionData(standalone_block, start_line, end_line)\n                )\n                standalone_block = []\n                start_line = end_line = 0\n        else:\n            if not standalone_block:\n                start_line = visitor_instance.get_node_position_data(statement).start\n            standalone_block.append(statement)\n\n    if standalone_block:\n        end_line = visitor_instance.get_node_position_data(standalone_block[-1]).end\n        standalone_blocks.append(\n            NodeAndPositionData(standalone_block, start_line, end_line)\n        )\n\n    return standalone_blocks\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_is_class_or_function_def"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_is_import_statement"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData"
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe Python function `gather_standalone_lines` processes a sequence of `libcst.CSTNode` objects, which represent the body of a module or code block, to extract standalone lines of code. Standalone lines are defined as those not part of class or function definitions, nor import statements. It utilizes a visitor pattern, where `visitor_instance` is used to obtain position data of nodes. The function iterates through the provided nodes, using helper functions `_is_class_or_function_def` and `_is_import_statement` to filter out non-standalone code. It constructs a list of `NodeAndPositionData` objects, each containing a standalone code block and its corresponding start and end line numbers, which is then returned. This function relies on the `libcst` library for node representation and manipulation, and the `Sequence` type from the `typing` module for type annotations.",
+    "children_ids": []
+}

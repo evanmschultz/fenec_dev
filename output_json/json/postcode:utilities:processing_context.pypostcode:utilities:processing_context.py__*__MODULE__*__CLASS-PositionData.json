@@ -1,0 +1,37 @@
+{
+    "class_name": "PositionData",
+    "decorators": [
+        {
+            "content": "@dataclass",
+            "decorator_name": "dataclass",
+            "decorator_args": null
+        }
+    ],
+    "bases": null,
+    "docstring": "Positional data for a node in the syntax tree.",
+    "keywords": null,
+    "id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData",
+    "file_path": "postcode/utilities/processing_context.py",
+    "parent_id": "postcode:utilities:processing_context.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 4,
+    "end_line_num": 12,
+    "code_content": "\n\n@dataclass\nclass PositionData:\n    \"\"\"Positional data for a node in the syntax tree.\"\"\"\n\n    start: int\n    end: int\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe code snippet uses the `@dataclass` decorator from Python's `dataclasses` module to define a `PositionData` class, which encapsulates the start and end integer positions of a node within a syntax tree, providing automatic initialization and representation methods.",
+    "children_ids": []
+}

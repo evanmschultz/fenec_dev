@@ -1,0 +1,107 @@
+{
+    "class_name": "PythonParser",
+    "decorators": null,
+    "bases": null,
+    "docstring": "A parser for Python source code, using libcst to parse and construct a module model.\n\nThis class takes the path to a Python file, reads its contents, and parses it into a structured\nmodule model using the libcst library. It is designed to work with a specific file at a time.\n\nAttributes:\n    - file_path (str): The path to the Python file to be parsed.\n\nExample:\n    ```Python\n    python_parser = PythonParser(\"/path/to/python/file.py\")\n    code = python_parser.open_file()\n    module_model = python_parser.parse(code, parent_id=\"parent_module_id\")\n    # Parses the provided code and returns a structured module model.\n    ```",
+    "keywords": null,
+    "id": "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser",
+    "file_path": "postcode/python_parser/parsers/python_parser.py",
+    "parent_id": "postcode:python_parser:parsers:python_parser.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 32,
+    "end_line_num": 115,
+    "code_content": "\n\nclass PythonParser:\n    \"\"\"\n    A parser for Python source code, using libcst to parse and construct a module model.\n\n    This class takes the path to a Python file, reads its contents, and parses it into a structured\n    module model using the libcst library. It is designed to work with a specific file at a time.\n\n    Attributes:\n        - file_path (str): The path to the Python file to be parsed.\n\n    Example:\n        ```Python\n        python_parser = PythonParser(\"/path/to/python/file.py\")\n        code = python_parser.open_file()\n        module_model = python_parser.parse(code, parent_id=\"parent_module_id\")\n        # Parses the provided code and returns a structured module model.\n        ```\n    \"\"\"\n\n    def __init__(self, file_path: str) -> None:\n        self.file_path: str = file_path\n\n    def open_file(self) -> str:\n        \"\"\"\n        Opens and reads the contents of the Python file specified in the file_path attribute.\n\n        Returns:\n            - str: The contents of the file as a string.\n\n        Example:\n            ```Python\n            python_parser = PythonParser(\"/path/to/python/file.py\")\n            code = python_parser.open_file()\n            # Reads and returns the contents of the Python file.\n            ```\n        \"\"\"\n\n        with open(self.file_path, \"r\") as file:\n            return file.read()\n\n    def parse(self, code: str, parent_id: str) -> ModuleModelBuilder | None:\n        \"\"\"\n        Parses the provided Python code into a structured module model.\n\n        Uses libcst to parse the provided code using the ModuleVisitor class. A ModuleModelBuilder instance is returned\n        along with its hierarchy of child builders.\n\n        Args:\n            - code (str): The Python code to be parsed.\n            - parent_id (str): The ID of the parent module or block.\n\n        Returns:\n            - ModuleModelBuilder | None: The module model builder for the provided code.\n\n        Example:\n            ```Python\n            python_parser = PythonParser(\"/path/to/python/file.py\")\n            code = python_parser.open_file()\n            module_model = python_parser.parse(code, parent_id=\"parent_module_id\")\n            # Parses the provided code and returns a module model builder.\n            ```\n        \"\"\"\n\n        wrapper = MetadataWrapper(libcst.parse_module(code))\n        module_id: str = ModuleIDGenerationStrategy.generate_id(\n            file_path=self.file_path\n        )\n        module_builder: ModuleModelBuilder = BuilderFactory.create_builder_instance(\n            block_type=BlockType.MODULE,\n            id=module_id,\n            file_path=self.file_path,\n            parent_id=parent_id,\n        )\n        visitor = ModuleVisitor(id=module_id, module_builder=module_builder)\n        wrapper.visit(visitor)\n\n        return (\n            visitor.builder_stack[0]\n            if isinstance(visitor.builder_stack[0], ModuleModelBuilder)\n            else None\n        )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "MetadataWrapper",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "libcst.metadata",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy"
+                }
+            ],
+            "imported_from": "postcode.python_parser.id_generation.id_generation_strategies",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BuilderFactory",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.builder_factory",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:builder_factory.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleVisitor",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor"
+                }
+            ],
+            "imported_from": "postcode.python_parser.visitors.module_visitor",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:enums.py__*__MODULE"
+        }
+    ],
+    "summary": "\n\nThe `PythonParser` class in the provided code is designed to parse Python source code into a structured module model. It utilizes the `libcst` library to achieve this. The class is initialized with a `file_path` attribute, which is used by the `open_file` method to read the contents of the target Python file. The `parse` method takes the read code and a `parent_id` as arguments, and leverages `libcst` to construct a `ModuleModelBuilder` object representing the parsed code structure. This object, along with its child builders, encapsulates the parsed module's hierarchy. The `parse` method employs a `ModuleVisitor` to traverse the parsed code and assembles the module model, which is then returned if it is an instance of `ModuleModelBuilder`. The class is tailored to work with individual Python files, providing a means to convert raw code into a more analyzable and manipulable format.",
+    "children_ids": [
+        "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-__init__",
+        "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-open_file",
+        "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-parse"
+    ]
+}

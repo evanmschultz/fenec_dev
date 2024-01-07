@@ -1,0 +1,99 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "ClassKeywordModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE",
+    "file_path": "postcode/python_parser/visitors/node_processing/class_def_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 119,
+    "code_content": "from typing import Sequence\n\nimport libcst\n\nfrom postcode.python_parser.model_builders.class_model_builder import ClassModelBuilder\nfrom postcode.models.models import ClassKeywordModel, DecoratorModel\nimport postcode.python_parser.visitors.node_processing.common_functions as common_functions\n\nfrom postcode.utilities.processing_context import PositionData\n\n\ndef process_class_def(\n    node: libcst.ClassDef,\n    position_data: PositionData,\n    builder: ClassModelBuilder,\n) -> None:\n    \"\"\"\n    Processes a libcst.ClassDef node to build a class model.\n\n    Extracts various components of a class definition such as its docstring, code content, base classes, decorators, and keywords,\n    and updates the provided ClassModelBuilder with these details.\n\n    Args:\n        - node (libcst.ClassDef): The class definition node from the CST.\n        - position_data (PositionData): Positional data for the class in the source code.\n        - builder (ClassModelBuilder): The builder used to construct the class model.\n\n    Example:\n        ```Python\n        class_builder = ClassModelBuilder(id=\"class1\", ...)\n        process_class_def(class_node, position_data, class_builder)\n        # Processes the class definition and updates the class builder.\n        ```\n    \"\"\"\n\n    docstring: str | None = node.get_docstring()\n    code_content: str = common_functions.extract_code_content(node)\n    bases: list[str] | None = _extract_bases(node.bases)\n    keywords: list[ClassKeywordModel] | None = _extract_keywords(node.keywords)\n    decorators: list[DecoratorModel] | None = common_functions.extract_decorators(\n        node.decorators\n    )\n\n    (\n        builder.set_docstring(docstring)\n        .set_code_content(code_content)\n        .set_start_line_num(position_data.start)\n        .set_end_line_num(position_data.end)\n    )\n    builder.set_bases(bases).set_decorators(decorators).set_keywords(keywords)\n\n\ndef _extract_bases(bases: Sequence[libcst.Arg]) -> list[str] | None:\n    \"\"\"\n    Extracts the base classes from a sequence of libcst.Arg representing class bases.\n\n    Args:\n        - bases (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class base classes.\n\n    Returns:\n        - list[str] | None: A list of base class names, or None if there are no bases.\n\n    Example:\n        ```Python\n        class_bases = _extract_bases(class_node.bases)\n        # Returns a list of base class names from the class definition.\n        ```\n    \"\"\"\n\n    bases_list: list[str] = []\n    for base in bases:\n        if (\n            isinstance(base, libcst.Arg)\n            and isinstance(base.value, libcst.Name)\n            and base.value.value\n        ):\n            bases_list.append(base.value.value)\n    return bases_list if bases_list else None\n\n\ndef _extract_keywords(\n    keywords: Sequence[libcst.Arg],\n) -> list[ClassKeywordModel] | None:\n    \"\"\"\n    Extracts class keywords (like metaclass) from a sequence of libcst.Arg representing class keywords.\n\n    Args:\n        - keywords (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class keywords.\n\n    Returns:\n        - list[ClassKeywordModel] | None: A list of ClassKeywordModel objects representing each keyword,\n        or None if there are no keywords.\n\n    Example:\n        ```Python\n        class_keywords = _extract_keywords(class_node.keywords)\n        # Returns a list of ClassKeywordModel objects for each keyword in the class definition.\n        ```\n    \"\"\"\n\n    keywords_list: list[ClassKeywordModel] = []\n\n    for keyword in keywords:\n        if keyword.keyword is not None:\n            keyword_name: str = keyword.keyword.value\n            args: str | None = (\n                common_functions.extract_stripped_code_content(keyword.value)\n                if keyword.value\n                else None\n            )\n            content: str = common_functions.extract_stripped_code_content(keyword)\n\n            keyword_model = ClassKeywordModel(\n                content=content, keyword_name=keyword_name, args=args\n            )\n            keywords_list.append(keyword_model)\n\n    return keywords_list if keywords_list else None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe provided Python code defines a function `process_class_def` that processes a `libcst.ClassDef` node to construct a class model using the `ClassModelBuilder`. It extracts and sets the class's docstring, code content, base classes, decorators, and keywords. The function relies on helper functions `_extract_bases` and `_extract_keywords`, and utility functions from `common_functions` to parse the class definition node. `_extract_bases` retrieves the names of base classes from `libcst.Arg` nodes if they exist, while `_extract_keywords` creates a list of `ClassKeywordModel` objects from class keywords, using the content extracted by `common_functions.extract_stripped_code_content`. The `process_class_def` function updates the `ClassModelBuilder` instance with the extracted information, including the start and end line numbers from `position_data`. The code also includes type annotations for better clarity and type checking.",
+    "children_ids": [
+        "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-process_class_def",
+        "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_bases",
+        "postcode:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_keywords"
+    ]
+}

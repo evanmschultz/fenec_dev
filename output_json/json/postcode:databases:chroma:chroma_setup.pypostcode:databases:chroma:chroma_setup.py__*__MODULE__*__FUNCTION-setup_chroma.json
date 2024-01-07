@@ -1,0 +1,69 @@
+{
+    "function_name": "setup_chroma",
+    "docstring": "Sets up and returns a Chroma Collection Manager.\n\nArgs:\n    - collection_name (str, optional): Name of the Chroma collection. Defaults to \"postcode\".\n\nReturns:\n    - ChromaCollectionManager: An instance of ChromaCollectionManager for the specified collection.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ChromaCollectionManager",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:databases:chroma:chroma_setup.py__*__MODULE__*__FUNCTION-setup_chroma",
+    "file_path": "postcode/databases/chroma/chroma_setup.py",
+    "parent_id": "postcode:databases:chroma:chroma_setup.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 13,
+    "end_line_num": 36,
+    "code_content": "\n\ndef setup_chroma(collection_name: str = \"postcode\") -> ChromaCollectionManager:\n    \"\"\"\n    Sets up and returns a Chroma Collection Manager.\n\n    Args:\n        - collection_name (str, optional): Name of the Chroma collection. Defaults to \"postcode\".\n\n    Returns:\n        - ChromaCollectionManager: An instance of ChromaCollectionManager for the specified collection.\n    \"\"\"\n\n    chroma_settings = chroma_types.Settings(allow_reset=True)\n    chroma_client: chroma_types.ClientAPI = chromadb.PersistentClient(\n        settings=chroma_settings\n    )\n    chroma_client_manager = ChromaClientHandler(chroma_client)\n\n    chroma_collection: chroma_types.Collection = (\n        chroma_client_manager.get_or_create_collection(collection_name)\n    )\n    return ChromaCollectionManager(chroma_collection)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "chromadb",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaClientHandler",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_client_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:chroma.py__*__MODULE"
+        }
+    ],
+    "summary": "\n\nThe provided Python function `setup_chroma` initializes and returns an instance of `ChromaCollectionManager` for managing a Chroma collection with a specified name, defaulting to \"postcode\". It first creates a `chroma_types.Settings` object with `allow_reset` set to True, then establishes a persistent connection to the Chroma database using `chromadb.PersistentClient` with the created settings. A `ChromaClientHandler` is instantiated with the Chroma client API, which is then used to retrieve or create the named collection. The function encapsulates the setup process for a Chroma collection, abstracting the initialization of client settings, client creation, and collection management into a single callable function.",
+    "children_ids": []
+}

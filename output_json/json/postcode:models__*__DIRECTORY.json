@@ -7,6 +7,6 @@
         "postcode:models:enums.py__*__MODULE",
         "postcode:models:models.py__*__MODULE"
     ],
-    "parent_id": null,
+    "parent_id": "postcode__*__DIRECTORY",
     "summary": null
 }

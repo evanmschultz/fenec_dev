@@ -1,0 +1,42 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "ABC",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "abstractmethod",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "abc",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 145,
+    "code_content": "from abc import ABC, abstractmethod\n\n\nclass IDGenerationStrategy(ABC):\n    \"\"\"\n    Abstract base class defining the interface for ID generation strategies.\n\n    This class serves as a template for creating various ID generation strategies for different types\n    of code blocks, such as modules, classes, functions, and standalone code blocks.\n    \"\"\"\n\n    @staticmethod\n    @abstractmethod\n    def generate_id(**kwargs) -> str:\n        \"\"\"\n        Abstract method to generate an ID based on the given context.\n\n        Subclasses should implement this method to generate an ID specific to the block type.\n\n        Args:\n            **kwargs: Variable keyword arguments depending on the specific strategy requirements.\n\n        Returns:\n            str: The generated ID.\n        \"\"\"\n        pass\n\n\nclass ModuleIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for modules.\"\"\"\n\n    @staticmethod\n    def generate_id(file_path: str) -> str:\n        \"\"\"\n        Generates an ID for a module based on the given file path.\n\n        Args:\n            - file_path (str): The file path of the module.\n\n        Returns:\n            - str: The generated ID, incorporating the file path.\n        \"\"\"\n        module_path: str = ModuleIDGenerationStrategy._converted_path_string(file_path)\n        return f\"{module_path}__*__MODULE\"\n\n    @staticmethod\n    def _converted_path_string(file_path: str) -> str:\n        \"\"\"\n        Converts a file path to a valid ID string.\n\n        Args:\n            - file_path (str): The file path to convert.\n\n        Returns:\n            - str: The converted ID string.\n        \"\"\"\n        return file_path.replace(\"/\", \":\")\n\n\nclass ClassIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for classes.\"\"\"\n\n    @staticmethod\n    def generate_id(parent_id: str, class_name: str) -> str:\n        \"\"\"\n        Generates an ID for a class based on the given parent ID and class name.\n\n        Args:\n            - parent_id (str): The ID of the parent (module or another class).\n            - class_name (str): The name of the class.\n\n        Returns:\n            - str: The generated ID, incorporating the parent ID and class name.\n        \"\"\"\n        return f\"{parent_id}__*__CLASS-{class_name}\"\n\n\nclass FunctionIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for functions.\"\"\"\n\n    @staticmethod\n    def generate_id(parent_id: str, function_name: str) -> str:\n        \"\"\"\n        Generates an ID for a function based on the given parent ID and function name.\n\n        Args:\n            - parent_id (str): The ID of the parent (module or class).\n            - function_name (str): The name of the function.\n\n        Returns:\n            - str: The generated ID, incorporating the parent ID and function name.\n        \"\"\"\n        return f\"{parent_id}__*__FUNCTION-{function_name}\"\n\n\nclass StandaloneCodeBlockIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for standalone code blocks.\"\"\"\n\n    @staticmethod\n    def generate_id(parent_id: str, count: int) -> str:\n        \"\"\"\n        Generates an ID for a standalone code block based on the given parent ID and a count.\n\n        Args:\n            - parent_id (str): The ID of the parent (typically a module).\n            - count (int): A unique count or index for the standalone block within its parent.\n\n        Returns:\n            - str: The generated ID, incorporating the parent ID and the count.\n        \"\"\"\n        return f\"{parent_id}__*__STANDALONE_BLOCK-{count}\"\n\n\nclass DirectoryIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for directories.\"\"\"\n\n    @staticmethod\n    def generate_id(directory_path: str) -> str:\n        \"\"\"\n        Generates an ID for a directory based on the given directory path.\n\n        Args:\n            - directory_path (str): The path to the directory.\n\n        Returns:\n            - str: The generated ID, incorporating the file path.\n        \"\"\"\n        directory_path_str: str = DirectoryIDGenerationStrategy._converted_path_string(\n            directory_path\n        )\n        return f\"{directory_path_str}__*__DIRECTORY\"\n\n    @staticmethod\n    def _converted_path_string(file_path: str) -> str:\n        \"\"\"\n        Converts a file path to a valid ID string.\n\n        Args:\n            - file_path (str): The file path to convert.\n\n        Returns:\n            - str: The converted ID string.\n        \"\"\"\n        return file_path.replace(\"/\", \":\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe code defines an abstract base class `IDGenerationStrategy` with an abstract static method `generate_id`, which serves as a template for creating ID generation strategies for different types of code blocks. It includes several concrete subclasses: `ModuleIDGenerationStrategy`, `ClassIDGenerationStrategy`, `FunctionIDGenerationStrategy`, `StandaloneCodeBlockIDGenerationStrategy`, and `DirectoryIDGenerationStrategy`. Each subclass implements the `generate_id` method to generate unique identifiers for modules, classes, functions, standalone code blocks, and directories, respectively. The identifiers are constructed using file paths, parent IDs, class names, function names, or counts, with specific delimiters to distinguish the type of code block. Additionally, helper methods `_converted_path_string` in `ModuleIDGenerationStrategy` and `DirectoryIDGenerationStrategy` convert file paths to a colon-separated string format suitable for ID creation. This system of classes provides a structured approach to generating consistent and unique identifiers for various components within a codebase, facilitating tracking and management in larger systems.",
+    "children_ids": [
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy",
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy",
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy",
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-FunctionIDGenerationStrategy",
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-StandaloneCodeBlockIDGenerationStrategy",
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-DirectoryIDGenerationStrategy"
+    ]
+}

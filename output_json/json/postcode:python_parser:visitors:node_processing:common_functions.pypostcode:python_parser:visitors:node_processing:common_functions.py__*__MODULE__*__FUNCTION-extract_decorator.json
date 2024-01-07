@@ -1,0 +1,70 @@
+{
+    "function_name": "extract_decorator",
+    "docstring": "Extracts the decorator from a libcst.Decorator node.\n\nProcesses a single decorator node to create a model representing the decorator's name and arguments.\n\nArgs:\n    - decorator (libcst.Decorator): A libcst.Decorator node.\n\nReturns:\n    - DecoratorModel | None: A DecoratorModel object if the decorator is valid, otherwise None.\n\nExample:\n    ```Python\n    extract_decorator(some_decorator_node)\n    # Returns a DecoratorModel object for the decorator.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "DecoratorModel | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorator",
+    "file_path": "postcode/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 129,
+    "end_line_num": 180,
+    "code_content": "\n\ndef extract_decorator(\n    decorator: libcst.Decorator,\n) -> DecoratorModel | None:\n    \"\"\"\n    Extracts the decorator from a libcst.Decorator node.\n\n    Processes a single decorator node to create a model representing the decorator's name and arguments.\n\n    Args:\n        - decorator (libcst.Decorator): A libcst.Decorator node.\n\n    Returns:\n        - DecoratorModel | None: A DecoratorModel object if the decorator is valid, otherwise None.\n\n    Example:\n        ```Python\n        extract_decorator(some_decorator_node)\n        # Returns a DecoratorModel object for the decorator.\n        ```\n    \"\"\"\n\n    decorator_name: str = \"\"\n    arg_list: list[str] | None = None\n    if isinstance(decorator.decorator, libcst.Name):\n        decorator_name: str = decorator.decorator.value\n    if isinstance(decorator.decorator, libcst.Call):\n        func = decorator.decorator.func\n        if isinstance(func, libcst.Name) or isinstance(func, libcst.Attribute):\n            if decorator.decorator.args:\n                arg_list = [\n                    extract_stripped_code_content(arg)\n                    for arg in decorator.decorator.args\n                ]\n        if isinstance(func, libcst.Name):\n            decorator_name = func.value\n        elif isinstance(func, libcst.Attribute):\n            decorator_name = func.attr.value\n        else:\n            logging.warning(\"Decorator func is not a Name or Attribute node\")\n\n    return (\n        DecoratorModel(\n            content=extract_stripped_code_content(decorator),\n            decorator_name=decorator_name,\n            decorator_args=arg_list,\n        )\n        if decorator_name\n        else None\n    )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_stripped_code_content"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe `extract_decorator` function parses a `libcst.Decorator` node, identifying `libcst.Name` and `libcst.Call` to extract the decorator's name and arguments. It employs `extract_stripped_code_content` for argument extraction and constructs a `DecoratorModel` if a valid name is found, otherwise, it returns `None`.",
+    "children_ids": []
+}

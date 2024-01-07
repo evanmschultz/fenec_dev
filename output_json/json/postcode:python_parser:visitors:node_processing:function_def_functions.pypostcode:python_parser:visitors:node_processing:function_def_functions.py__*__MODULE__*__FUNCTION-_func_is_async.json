@@ -1,0 +1,33 @@
+{
+    "function_name": "_func_is_async",
+    "docstring": "Returns true if the function is async.\n\nArgs:\n    - node (libcst.FunctionDef): The function definition node.\n\nReturns:\n    - bool: True if the function is async, False otherwise.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "bool",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_func_is_async",
+    "file_path": "postcode/python_parser/visitors/node_processing/function_def_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 140,
+    "end_line_num": 154,
+    "code_content": "\n\ndef _func_is_async(node: libcst.FunctionDef) -> bool:\n    \"\"\"\n    Returns true if the function is async.\n\n    Args:\n        - node (libcst.FunctionDef): The function definition node.\n\n    Returns:\n        - bool: True if the function is async, False otherwise.\n    \"\"\"\n\n    return True if node.asynchronous else False\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe code contains a utility function `_func_is_async` that takes a `libcst.FunctionDef` object as an argument and returns `True` if the function is asynchronous (defined with the `async` keyword), or `False` otherwise, by checking the object's `asynchronous` attribute through a conditional expression.",
+    "children_ids": []
+}

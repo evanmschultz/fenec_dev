@@ -1,0 +1,20 @@
+{
+    "function_name": "_upsert_edge",
+    "docstring": "Upserts an edge between two vertices in the ArangoDB database.\n\nArgs:\n    - from_key (str): The key of the source vertex.\n    - to_key (str): The key of the target vertex.\n    - source_type (str): The type of the source vertex.\n    - target_type (str): The type of the target vertex.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_upsert_edge",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 127,
+    "end_line_num": 167,
+    "code_content": "\ndef _upsert_edge(\n    self, from_key: str, to_key: str, source_type: str, target_type: str\n) -> None:\n    \"\"\"\n        Upserts an edge between two vertices in the ArangoDB database.\n\n        Args:\n            - from_key (str): The key of the source vertex.\n            - to_key (str): The key of the target vertex.\n            - source_type (str): The type of the source vertex.\n            - target_type (str): The type of the target vertex.\n        \"\"\"\n\n    source_string: str = f\"{source_type}/{from_key}\"\n    target_string: str = f\"{target_type}/{to_key}\"\n\n    edge_data: dict[str, str] = {\n        \"_from\": source_string,\n        \"_to\": target_string,\n        \"source_type\": source_type,\n        \"target_type\": target_type,\n    }\n\n    try:\n        self.db_connector.ensure_edge_collection(\"code_edges\")\n        query = f\"\"\"\n            UPSERT {{_from: @from, _to: @to}}\n            INSERT @doc\n            UPDATE @doc\n            IN code_edges\n            \"\"\"\n        bind_vars = {\n            \"from\": edge_data[\"_from\"],\n            \"to\": edge_data[\"_to\"],\n            \"doc\": edge_data,\n        }\n        self.db_connector.db.aql.execute(query, bind_vars=bind_vars)\n    except Exception as e:\n        logging.error(f\"Error upserting edge (ArangoDB): {e}\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_upsert_edge` method within a class uses an ArangoDB connector (`db_connector`) to perform an AQL UPSERT operation, which inserts or updates an edge in the `code_edges` collection based on the provided vertex keys and types. It includes error handling that logs exceptions, ensuring robust database interactions.",
+    "children_ids": []
+}

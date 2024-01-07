@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser__*__FUNCTION-__init__",
+    "file_path": "postcode/python_parser/parsers/python_parser.py",
+    "parent_id": "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser",
+    "block_type": "FUNCTION",
+    "start_line_num": 52,
+    "end_line_num": 55,
+    "code_content": "\ndef __init__(self, file_path: str) -> None:\n    self.file_path: str = file_path\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe code snippet defines an initializer method `__init__` for an unspecified class, which initializes an instance variable `file_path` of type `str` to store the path to a file. The method uses a parameter with a type hint to ensure the file path is a string and specifies a return type hint of `None`, indicating the method does not return any value.",
+    "children_ids": []
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "process_builder",
+    "docstring": "Processes a single module model builder to update its import statements.\n\nArgs:\n    - builder (ModuleModelBuilder): The module model builder to process.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater__*__FUNCTION-process_builder",
+    "file_path": "postcode/python_parser/visitor_manager/import_and_dependency_updater.py",
+    "parent_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 83,
+    "end_line_num": 96,
+    "code_content": "\ndef process_builder(self, builder: ModuleModelBuilder) -> None:\n    \"\"\"\n        Processes a single module model builder to update its import statements.\n\n        Args:\n            - builder (ModuleModelBuilder): The module model builder to process.\n        \"\"\"\n\n    if module_imports := builder.module_attributes.imports:\n        module_imports_tuple = tuple(module_imports)\n        self._handle_import_models(builder, module_imports_tuple)\n        # print(module_imports_tuple)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `process_builder` method in the code employs the walrus operator to conditionally retrieve and process import statements from the `module_attributes` of a `ModuleModelBuilder` instance. It converts the imports to a tuple and delegates their handling to the `_handle_import_models` private method, indicating potential debugging capabilities through a commented print statement.",
+    "children_ids": []
+}

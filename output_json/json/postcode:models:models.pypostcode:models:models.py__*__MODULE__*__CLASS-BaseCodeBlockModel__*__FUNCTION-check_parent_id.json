@@ -1,0 +1,20 @@
+{
+    "function_name": "check_parent_id",
+    "docstring": "Validates that parent_id is a non-empty string unless block_type is MODULE.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-check_parent_id",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 115,
+    "end_line_num": 125,
+    "code_content": "\ndef check_parent_id(cls, v, values, **kwargs) -> str | None:\n    \"\"\"Validates that parent_id is a non-empty string unless block_type is MODULE.\"\"\"\n\n    block_type = values.get(\"block_type\")\n\n    if block_type and block_type != BlockType.MODULE:\n        if \"parent_id\" in values and len(v) < 1:\n            raise ValueError(\"parent_id is required!\")\n    return v\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `check_parent_id` class method validates the `parent_id` parameter, ensuring it is a non-empty string if `block_type` from the `values` dictionary is not 'MODULE'. It raises a `ValueError` for invalid input and returns either the `parent_id` or None, signifying its optional nature.",
+    "children_ids": []
+}

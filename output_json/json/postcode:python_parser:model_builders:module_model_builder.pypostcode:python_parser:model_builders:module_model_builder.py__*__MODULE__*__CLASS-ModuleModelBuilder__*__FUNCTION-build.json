@@ -1,0 +1,28 @@
+{
+    "function_name": "build",
+    "docstring": "Builds and returns the module model instance after building and setting the children models.",
+    "decorators": [
+        {
+            "content": "@logging_decorator(message=\"Building module model\")",
+            "decorator_name": "logging_decorator",
+            "decorator_args": [
+                "message=\"Building module model\""
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "tuple[ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder__*__FUNCTION-build",
+    "file_path": "postcode/python_parser/model_builders/module_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 136,
+    "end_line_num": 153,
+    "code_content": "\n@logging_decorator(message=\"Building module model\")\ndef build(\n    self,\n) -> tuple[\n    ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None\n]:\n    \"\"\"Builds and returns the module model instance after building and setting the children models.\"\"\"\n    self.build_children()\n    self.set_children_ids()\n    return (\n        ModuleModel(\n            **self._get_common_attributes(),\n            **self._get_module_specific_attributes(),\n        ),\n        self.child_models,\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `build` method, annotated with `logging_decorator`, constructs a `ModuleModel` instance, prepares its child models (`ClassModel`, `FunctionModel`, or `StandaloneCodeBlockModel`) by building and assigning unique identifiers, and returns a tuple of the `ModuleModel` and the child models list. The method employs type hints to define the return type, ensuring the method's output is clear and structured.",
+    "children_ids": []
+}

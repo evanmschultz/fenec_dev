@@ -1,0 +1,88 @@
+{
+    "function_name": "gather_and_set_children_dependencies",
+    "docstring": "Gathers and sets dependencies for each child code block in the module.\n\nThis function iterates over each child builder of the module builder, gathers import and non-import dependencies,\nand sets these dependencies for each block.\n\nArgs:\n    - module_builder (ModuleModelBuilder): A builder object representing the entire module.\n\nExample:\n    ```Python\n    module_builder = ModuleModelBuilder(...)  # initialize with necessary parameters\n    gather_and_set_children_dependencies(module_builder)\n    # After execution, each child block builder of the module_builder will have its dependencies set.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-gather_and_set_children_dependencies",
+    "file_path": "postcode/python_parser/visitors/node_processing/gather_dependencies.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 15,
+    "end_line_num": 55,
+    "code_content": "\n\ndef gather_and_set_children_dependencies(module_builder: ModuleModelBuilder) -> None:\n    \"\"\"\n    Gathers and sets dependencies for each child code block in the module.\n\n    This function iterates over each child builder of the module builder, gathers import and non-import dependencies,\n    and sets these dependencies for each block.\n\n    Args:\n        - module_builder (ModuleModelBuilder): A builder object representing the entire module.\n\n    Example:\n        ```Python\n        module_builder = ModuleModelBuilder(...)  # initialize with necessary parameters\n        gather_and_set_children_dependencies(module_builder)\n        # After execution, each child block builder of the module_builder will have its dependencies set.\n        ```\n    \"\"\"\n\n    for block_builder in module_builder.child_builders:\n        block_dependencies: list[ImportModel | DependencyModel] = []\n        code_content: str = block_builder.common_attributes.code_content\n\n        import_dependencies: list[ImportModel] = _gather_import_dependencies(\n            module_builder.module_attributes.imports, code_content\n        )\n        block_dependencies.extend(import_dependencies)\n\n        non_import_dependencies: list[\n            DependencyModel\n        ] = _gather_non_import_dependencies(\n            module_builder.child_builders,\n            block_builder,\n            code_content,\n            _create_module_dependency_model,\n        )\n        block_dependencies.extend(non_import_dependencies)\n\n        block_builder.set_dependencies(block_dependencies)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_gather_import_dependencies"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_gather_non_import_dependencies"
+        },
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_create_module_dependency_model"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "re",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "DependencyModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "DependencyModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": "\n\nThe `gather_and_set_children_dependencies` function in Python is designed to manage dependencies within a module by processing each child code block. It operates on a `ModuleModelBuilder` object, which represents the module structure. The function loops through each `child_builder` within the `module_builder`, creating a list to hold dependencies. It extracts `code_content` from the `common_attributes` of each `child_builder`. Two types of dependencies are collected: import dependencies using `_gather_import_dependencies`, which relies on the module's imports and the code content, and non-import dependencies using `_gather_non_import_dependencies`, which considers other child builders, the current block builder, the code content, and a function `_create_module_dependency_model` to model the dependencies. These dependencies are then combined into a single list and set for each block using the `set_dependencies` method. The function uses the standard library `re` for regular expressions, indicating that dependency gathering likely involves pattern matching within the code content.",
+    "children_ids": []
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector__*__FUNCTION-__init__",
+    "file_path": "postcode/databases/arangodb/arangodb_connector.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector",
+    "block_type": "FUNCTION",
+    "start_line_num": 36,
+    "end_line_num": 49,
+    "code_content": "\ndef __init__(\n    self,\n    url: str = \"http://localhost:8529\",\n    username: str = \"root\",\n    password: str = \"openSesame\",\n    db_name: str = \"postcode\",\n) -> None:\n    self.client = ArangoClient(hosts=url)\n    self.username: str = username\n    self.password: str = password\n    self.db_name: str = db_name\n    self.db: StandardDatabase = self._ensure_database()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `__init__` method of a class initializes an ArangoDB client with specified connection details, authenticates, confirms or creates the named database using `_ensure_database`, and employs type annotations for clarity and type checking.",
+    "children_ids": []
+}

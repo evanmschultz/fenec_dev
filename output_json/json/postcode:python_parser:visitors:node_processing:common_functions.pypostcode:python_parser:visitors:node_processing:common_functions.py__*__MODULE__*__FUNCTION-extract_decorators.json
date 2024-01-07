@@ -1,0 +1,70 @@
+{
+    "function_name": "extract_decorators",
+    "docstring": "Extracts a list of decorator models from a sequence of libcst.Decorator nodes.\n\nProcesses each decorator node to form a model representing the decorator's name and its arguments, if any.\n\nArgs:\n    - decorators (Sequence[libcst.Decorator]): A sequence of libcst.Decorator nodes.\n\nReturns:\n    - list[DecoratorModel] | None: A list of DecoratorModel objects, or None if no decorators are found.\n\nExample:\n    ```Python\n    extract_decorators(function_node.decorators)\n    # Returns a list of DecoratorModel objects representing each decorator in the function.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[DecoratorModel] | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorators",
+    "file_path": "postcode/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 100,
+    "end_line_num": 129,
+    "code_content": "\n\ndef extract_decorators(\n    decorators: Sequence[libcst.Decorator],\n) -> list[DecoratorModel] | None:\n    \"\"\"\n    Extracts a list of decorator models from a sequence of libcst.Decorator nodes.\n\n    Processes each decorator node to form a model representing the decorator's name and its arguments, if any.\n\n    Args:\n        - decorators (Sequence[libcst.Decorator]): A sequence of libcst.Decorator nodes.\n\n    Returns:\n        - list[DecoratorModel] | None: A list of DecoratorModel objects, or None if no decorators are found.\n\n    Example:\n        ```Python\n        extract_decorators(function_node.decorators)\n        # Returns a list of DecoratorModel objects representing each decorator in the function.\n        ```\n    \"\"\"\n\n    decorators_list: list[DecoratorModel] = []\n    for decorator in decorators:\n        decorator_model: DecoratorModel | None = extract_decorator(decorator)\n        if isinstance(decorator_model, DecoratorModel):\n            decorators_list.append(extract_decorator(decorator))  # type: ignore\n    return decorators_list if decorators_list else None\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorator"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe `extract_decorators` function in Python takes a sequence of `libcst.Decorator` nodes and converts them into a list of `DecoratorModel` objects, which represent the decorators applied to a code element, such as a function or class. It iterates over each `libcst.Decorator` node, using the `extract_decorator` function to create a `DecoratorModel` for each one. If the `extract_decorator` function returns a valid `DecoratorModel`, it is appended to the result list. If no decorators are found, the function returns `None`. This function is part of a system that likely processes and analyzes Python code, utilizing the `libcst` library to parse and work with the abstract syntax tree (AST) of the code.",
+    "children_ids": []
+}

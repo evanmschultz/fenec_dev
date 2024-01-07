@@ -1,0 +1,20 @@
+{
+    "function_name": "_upsert_model",
+    "docstring": "Upserts a single model into the ArangoDB database.\n\nArgs:\n    - model (ModelType): The model to be upserted.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_upsert_model",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 83,
+    "end_line_num": 94,
+    "code_content": "\ndef _upsert_model(self, model: ModelType) -> None:\n    \"\"\"\n        Upserts a single model into the ArangoDB database.\n\n        Args:\n            - model (ModelType): The model to be upserted.\n        \"\"\"\n\n    collection_name: str = self._get_collection_name_from_id(model.id)\n    self._upsert_vertex(model, collection_name)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_upsert_model` method within a Python class is designed to handle the insertion or updating of a `ModelType` object in an ArangoDB database. It determines the target collection by extracting it from the model's ID with the `_get_collection_name_from_id` method and then executes the upsert through the `_upsert_vertex` method.",
+    "children_ids": []
+}

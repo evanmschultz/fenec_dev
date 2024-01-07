@@ -1,0 +1,27 @@
+{
+    "function_name": "get_all_modules",
+    "docstring": "Retrieves all modules from the graph.\n\nReturns:\n    list[ModuleModel] | None: List of modules or None if an error occurs.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[ModuleModel] | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-get_all_modules",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 569,
+    "end_line_num": 600,
+    "code_content": "\ndef get_all_modules(self) -> list[ModuleModel] | None:\n    \"\"\"\n        Retrieves all modules from the graph.\n\n        Returns:\n            list[ModuleModel] | None: List of modules or None if an error occurs.\n        \"\"\"\n\n    try:\n        collection_name = \"modules\"\n        module_collection: StandardCollection = self.db_connector.db.collection(\n            collection_name\n        )\n\n        cursor: Result[Cursor] = module_collection.all()\n\n        modules: list[ModuleModel] = []\n        for doc in cursor:  # type: ignore # FIXME: Fix type error\n            try:\n                module = ModuleModel(**doc)\n                modules.append(module)\n            except Exception as e:\n                logging.error(f\"Retrieved document is not in a valid format: {e}\")\n                continue\n\n        return modules\n\n    except Exception as e:\n        logging.error(f\"Error in get_all_modules: {e}\")\n        return None\n",
+    "important_comments": [
+        {
+            "content": "# type: ignore # FIXME: Fix type error",
+            "comment_types": [
+                "FIXME"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": "\nThe `get_all_modules` method retrieves all entries from a \"modules\" database collection via a `db_connector`, iterates over them with a cursor, and constructs a list of `ModuleModel` instances, handling potential format errors or exceptions by logging the errors and either continuing the iteration or returning `None` if a critical error occurs.",
+    "children_ids": []
+}

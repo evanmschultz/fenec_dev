@@ -1,0 +1,77 @@
+{
+    "function_name": "extract_important_comment",
+    "docstring": "Extracts an important comment from a given CST node.\n\nProcesses a libcst.Comment or libcst.EmptyLine node to extract important comments, categorizing them based on predefined types.\n\nArgs:\n    - comment_or_empty_line_node (libcst.CSTNode): A CST node representing a comment or an empty line with a comment.\n\nReturns:\n    - CommentModel | None: A CommentModel object if an important comment is found, otherwise None.\n\nExample:\n    ```Python\n    extract_important_comment(some_comment_node)\n    # Returns a CommentModel for the comment, or None if not important.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "CommentModel | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_important_comment",
+    "file_path": "postcode/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 55,
+    "end_line_num": 100,
+    "code_content": "\n\ndef extract_important_comment(\n    comment_or_empty_line_node: libcst.CSTNode,\n) -> CommentModel | None:\n    \"\"\"\n    Extracts an important comment from a given CST node.\n\n    Processes a libcst.Comment or libcst.EmptyLine node to extract important comments, categorizing them based on predefined types.\n\n    Args:\n        - comment_or_empty_line_node (libcst.CSTNode): A CST node representing a comment or an empty line with a comment.\n\n    Returns:\n        - CommentModel | None: A CommentModel object if an important comment is found, otherwise None.\n\n    Example:\n        ```Python\n        extract_important_comment(some_comment_node)\n        # Returns a CommentModel for the comment, or None if not important.\n        ```\n    \"\"\"\n\n    comment_text: str | None = None\n\n    if isinstance(comment_or_empty_line_node, libcst.EmptyLine):\n        if comment_or_empty_line_node.comment:\n            comment_text = comment_or_empty_line_node.comment.value\n    elif isinstance(comment_or_empty_line_node, libcst.Comment):\n        comment_text = comment_or_empty_line_node.value\n\n    if not comment_text:\n        return None\n\n    comment_types: list[CommentType] = [\n        comment_type\n        for comment_type in CommentType\n        if comment_type.value in comment_text.upper()\n    ]\n\n    if comment_types:\n        return CommentModel(\n            content=comment_text,\n            comment_types=comment_types,\n        )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe Python function `extract_important_comment` takes a node from the `libcst` library, which can represent either a comment or an empty line with a comment, and attempts to extract significant comments from it. It first checks the type of the node to determine if it's an `EmptyLine` with a comment or a direct `Comment`. If a comment is present, the function retrieves the comment's text. It then iterates over the `CommentType` enumeration to identify if the comment text contains any predefined important comment types. If such types are found, the function constructs and returns a `CommentModel` object with the comment's content and the identified types. If no important comment is detected, the function returns `None`. This process is used to categorize comments based on their significance, as defined by the presence of certain keywords from the `CommentType` enumeration within the comment's text.",
+    "children_ids": []
+}

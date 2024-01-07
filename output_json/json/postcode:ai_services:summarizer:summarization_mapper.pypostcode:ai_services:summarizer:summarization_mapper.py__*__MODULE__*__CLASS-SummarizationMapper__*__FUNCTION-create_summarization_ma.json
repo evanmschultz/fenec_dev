@@ -1,0 +1,20 @@
+{
+    "function_name": "create_summarization_map",
+    "docstring": "Creates a summarization map for the specified module IDs.\n\nReturns:\n    - list[ModelType]: The summarization map.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[ModelType]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-create_summarization_map",
+    "file_path": "postcode/ai_services/summarizer/summarization_mapper.py",
+    "parent_id": "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper",
+    "block_type": "FUNCTION",
+    "start_line_num": 104,
+    "end_line_num": 140,
+    "code_content": "\ndef create_summarization_map(self) -> list[ModelType]:\n    \"\"\"\n        Creates a summarization map for the specified module IDs.\n\n        Returns:\n            - list[ModelType]: The summarization map.\n        \"\"\"\n\n    self._get_models_to_update()\n    logging.info(\"Set models to update\")\n\n    for model in self.models_to_update:\n        logging.debug(f\"Setting inbound models in summarization map: {model.id}\")\n        self._set_inbound_models_in_summarization_map(model.id)\n        self.temp_map.append(model)\n\n        self.model_visited_in_db.remove(model.id)\n        self.summarization_map.extend(self.temp_map)\n        self.temp_map = []\n\n    for model in self.models_to_update:\n        logging.debug(f\"Setting outbound models in summarization map: {model.id}\")\n        self._set_outbound_models_in_summarization_map(model.id)\n        self.summarization_map.extend(self.temp_map)\n        self.temp_map = []\n\n    logging.info(\"Created summarization map\")\n    summary_ids: set[str] = set()\n    summary_map: list[ModelType] = []\n    for model in self.summarization_map[::-1]:\n        if model.id not in summary_ids:\n            summary_map.append(model)\n            summary_ids.add(model.id)\n\n    return summary_map[::-1]\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n`create_summarization_map` initializes models to be updated, logs the process, and constructs a summarization map with unique models by invoking specialized methods for inbound and outbound relationships. It ensures uniqueness by tracking visited models and returns the map in reverse order.",
+    "children_ids": []
+}

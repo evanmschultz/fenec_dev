@@ -1,0 +1,20 @@
+{
+    "function_name": "get_or_create_graph",
+    "docstring": "Retrieves an existing graph or creates a new one if not present.\n\nArgs:\n    - graph_name (str, optional): The name of the graph. Defaults to None.\n\nReturns:\n    - Result[Graph]: The result of the operation.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Result[Graph]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-get_or_create_graph",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 355,
+    "end_line_num": 390,
+    "code_content": "\ndef get_or_create_graph(self, graph_name: str | None = None) -> Result[Graph]:\n    \"\"\"\n        Retrieves an existing graph or creates a new one if not present.\n\n        Args:\n            - graph_name (str, optional): The name of the graph. Defaults to None.\n\n        Returns:\n            - Result[Graph]: The result of the operation.\n        \"\"\"\n\n    if not graph_name:\n        graph_name = self.default_graph_name\n\n    try:\n        if not self.db_connector.db.has_graph(graph_name):\n            edge_definitions: list[dict[str, str | list[str]]] = [\n                {\n                    \"edge_collection\": \"code_edges\",\n                    \"from_vertex_collections\": helper_functions.pluralized_and_lowered_block_types(),\n                    \"to_vertex_collections\": helper_functions.pluralized_and_lowered_block_types(),\n                }\n            ]\n\n            # logging.info(f\"Graph '{graph_name}' created successfully.\")\n            return self.db_connector.db.create_graph(\n                graph_name, edge_definitions=edge_definitions\n            )\n\n        else:\n            return self.get_graph()\n\n    except Exception as e:\n        logging.error(f\"Error creating graph '{graph_name}': {e}\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `get_or_create_graph` method within a class interacts with a graph database through `self.db_connector`. It checks for a graph by name, creates it with specific edge definitions if absent, using `helper_functions.pluralized_and_lowered_block_types()` for vertex collections, and handles exceptions by logging errors. The method returns the graph object, ensuring either retrieval or creation is successful.",
+    "children_ids": []
+}

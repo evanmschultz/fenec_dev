@@ -1,0 +1,20 @@
+{
+    "function_name": "_convert_important_comments_to_metadata",
+    "docstring": "Converts the important comments to a metadata string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_important_comments_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 133,
+    "end_line_num": 142,
+    "code_content": "\ndef _convert_important_comments_to_metadata(self) -> str:\n    \"\"\"Converts the important comments to a metadata string.\"\"\"\n\n    important_comments: str = (\n        self.model_dump_json() if self.important_comments else \"\"\n    )\n\n    return f\"{important_comments}\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_convert_important_comments_to_metadata` method in a class checks for the presence of important comments using a ternary conditional; if present, it retrieves them with `model_dump_json`, otherwise, it assigns an empty string. The result is then formatted into a metadata string using an f-string and returned.",
+    "children_ids": []
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "delete_vertex_by_id",
+    "docstring": "Deletes a vertex from the graph by its key.\n\nArgs:\n    - vertex_key (str): The key of the vertex to be deleted.\n    - graph_name (str, optional): The name of the graph. Defaults to None.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-delete_vertex_by_id",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 301,
+    "end_line_num": 336,
+    "code_content": "\ndef delete_vertex_by_id(\n    self, vertex_key: str, graph_name: str | None = None\n) -> None:\n    \"\"\"\n        Deletes a vertex from the graph by its key.\n\n        Args:\n            - vertex_key (str): The key of the vertex to be deleted.\n            - graph_name (str, optional): The name of the graph. Defaults to None.\n        \"\"\"\n\n    collection_name: str = self._get_collection_name_from_id(vertex_key)\n    if collection_name == \"unknown\":\n        logging.error(f\"Unknown vertex type for key: {vertex_key}\")\n        return None\n\n    if not graph_name:\n        graph_name = self.default_graph_name\n\n    try:\n        vertex_coll = self.db_connector.db.graph(graph_name).vertex_collection(\n            collection_name\n        )\n\n        vertex_coll.delete(vertex_key)\n\n        # logging.info(\n        #     f\"Vertex '{vertex_key}' from collection '{collection_name}' was successfully deleted.\"\n        # )\n\n    except Exception as e:\n        logging.error(\n            f\"Error deleting vertex '{vertex_key}' from collection '{collection_name}': {e}\"\n        )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `delete_vertex_by_id` method, within an unspecified class, interacts with a graph database through a `db_connector` to remove a vertex by key. It leverages `_get_collection_name_from_id` for collection name retrieval, defaults to a class attribute for the graph name if absent, and deletes the vertex using the graph API's `vertex_collection` method. The method handles unknown vertex types and exceptions by logging errors and is annotated to return nothing. It also contains a commented-out line for success logging.",
+    "children_ids": []
+}

@@ -1,0 +1,74 @@
+{
+    "function_name": "_gather_code_content",
+    "docstring": "Gathers and returns code content for logging, if `syntax_highlighting` else returns empty string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_gather_code_content",
+    "file_path": "postcode/utilities/logger/decorators.py",
+    "parent_id": "postcode:utilities:logger:decorators.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 96,
+    "end_line_num": 121,
+    "code_content": "\n\ndef _gather_code_content(syntax_highlighting: bool, args: tuple) -> str:\n    \"\"\"Gathers and returns code content for logging, if `syntax_highlighting` else returns empty string.\"\"\"\n\n    if not syntax_highlighting or not args:\n        return \"\"\n\n    arg_0 = args[0]\n    content: str = \"\"\n\n    if isinstance(arg_0, libcst.CSTNode):\n        content = common_functions.extract_code_content(arg_0)\n    elif isinstance(arg_0, list) and all(\n        isinstance(node, libcst.CSTNode) for node in arg_0\n    ):\n        content = \"\\n\".join(\n            common_functions.extract_stripped_code_content(node) for node in arg_0\n        )\n    elif isinstance(arg_0, NodeAndPositionData):\n        content = \"\\n\".join(\n            common_functions.extract_stripped_code_content(node) for node in arg_0.nodes\n        )\n\n    return content\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "LoggingCallerInfo",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe `_gather_code_content` function in the code extracts and returns a string of code content for logging, formatted by `common_functions`, if `syntax_highlighting` is true and `args` contains items. It processes the first item in `args`, which can be a `libcst.CSTNode`, a list of `libcst.CSTNode`, or a `NodeAndPositionData` object, and concatenates extracted content with newlines as needed. If syntax highlighting is disabled or `args` is empty, it returns an empty string.",
+    "children_ids": []
+}

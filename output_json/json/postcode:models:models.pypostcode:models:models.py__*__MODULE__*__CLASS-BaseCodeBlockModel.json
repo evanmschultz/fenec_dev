@@ -1,0 +1,105 @@
+{
+    "class_name": "BaseCodeBlockModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Attributes common to all code block models.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 99,
+    "end_line_num": 184,
+    "code_content": "\n\nclass BaseCodeBlockModel(BaseModel):\n    \"\"\"Attributes common to all code block models.\"\"\"\n\n    id: str\n    file_path: str = Field(min_length=1)\n    parent_id: str | None = None\n    block_type: BlockType\n    start_line_num: int\n    end_line_num: int\n    code_content: str = \"\"\n    important_comments: list[CommentModel] | None = None\n    dependencies: list[ImportModel | DependencyModel] | None = None\n    summary: str | None = None\n    children_ids: list[str] | None = []\n\n    def check_parent_id(cls, v, values, **kwargs) -> str | None:\n        \"\"\"Validates that parent_id is a non-empty string unless block_type is MODULE.\"\"\"\n\n        block_type = values.get(\"block_type\")\n\n        if block_type and block_type != BlockType.MODULE:\n            if \"parent_id\" in values and len(v) < 1:\n                raise ValueError(\"parent_id is required!\")\n        return v\n\n    def _convert_parent_id_to_metadata(self) -> str:\n        \"\"\"Converts the parent_id to a metadata string.\"\"\"\n        return f\"{self.parent_id}\" if self.parent_id else \"\"\n\n    def _convert_block_type_to_metadata(self) -> str:\n        \"\"\"Converts the block_type to a metadata string.\"\"\"\n        return f\"{self.block_type.name}\"\n\n    def _convert_important_comments_to_metadata(self) -> str:\n        \"\"\"Converts the important comments to a metadata string.\"\"\"\n\n        important_comments: str = (\n            self.model_dump_json() if self.important_comments else \"\"\n        )\n\n        return f\"{important_comments}\"\n\n    def _convert_dependencies_to_metadata(self) -> str:\n        \"\"\"Converts the dependencies to a metadata string.\"\"\"\n\n        dependencies_str: str = \"\"\n\n        if self.dependencies:\n            for dependency in self.dependencies:\n                if isinstance(dependency, ImportModel):\n                    dependencies_str += f\"{dependency.convert_import_to_metadata()}\\n\"\n                elif isinstance(dependency, DependencyModel):\n                    dependencies_str += (\n                        f\"{dependency.convert_dependency_to_metadata()}\\n\"\n                    )\n\n        return dependencies_str\n\n    def _convert_summary_to_metadata(self) -> str:\n        \"\"\"Converts the summary to a metadata string.\"\"\"\n        return f\"{self.summary}\" if self.summary else \"\"\n\n    def _convert_children_to_metadata(self) -> str:\n        \"\"\"Converts the children to a metadata string.\"\"\"\n\n        return str(self.children_ids) if self.children_ids else \"\"\n\n    def _convert_base_attributes_to_metadata_dict(self) -> dict[str, str | int]:\n        \"\"\"Converts the base attributes to a metadata dictionary for ChromaDB.\"\"\"\n\n        return {\n            \"id\": self.id,\n            \"file_path\": self.file_path,\n            \"parent_id\": self._convert_parent_id_to_metadata(),\n            \"block_type\": self._convert_block_type_to_metadata(),\n            \"start_line_num\": self.start_line_num,\n            \"end_line_num\": self.end_line_num,\n            \"code_content\": self.code_content,\n            \"important_comments\": self._convert_important_comments_to_metadata(),\n            \"dependencies\": self._convert_dependencies_to_metadata(),\n            \"summary\": self._convert_summary_to_metadata(),\n            \"children\": self._convert_children_to_metadata(),\n        }\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportModel"
+        },
+        {
+            "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+        },
+        {
+            "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-CommentModel"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "field_validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "field_validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\n\nThe `BaseCodeBlockModel` class in the provided Python code serves as a common structure for representing code blocks with attributes such as `id`, `file_path`, `parent_id`, `block_type`, `start_line_num`, `end_line_num`, `code_content`, `important_comments`, `dependencies`, `summary`, and `children_ids`. It includes methods to validate the `parent_id` attribute (`check_parent_id`), ensuring it is non-empty except when the `block_type` is `MODULE`. The class also contains several private methods to convert its attributes into metadata strings: `_convert_parent_id_to_metadata`, `_convert_block_type_to_metadata`, `_convert_important_comments_to_metadata`, `_convert_dependencies_to_metadata`, `_convert_summary_to_metadata`, and `_convert_children_to_metadata`. These methods are used by `_convert_base_attributes_to_metadata_dict` to create a dictionary representation of the base attributes, formatted for use with ChromaDB. The class leverages type hinting for attribute and method definitions, and it uses the `BaseModel` from Pydantic for data validation and settings management. The `dependencies` attribute can contain instances of `ImportModel` or `DependencyModel`, which are processed to generate metadata strings specific to their types.",
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-check_parent_id",
+        "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_parent_id_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_block_type_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_important_comments_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_dependencies_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_summary_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_children_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_base_attributes_to_metadata_dict"
+    ]
+}

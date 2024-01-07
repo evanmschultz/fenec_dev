@@ -1,0 +1,45 @@
+{
+    "class_name": "ClassKeywordModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Class representing a class keyword.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 67,
+    "end_line_num": 79,
+    "code_content": "\n\nclass ClassKeywordModel(BaseModel):\n    \"\"\"Class representing a class keyword.\"\"\"\n\n    content: str\n    keyword_name: str\n    args: str | None = None\n\n    def convert_class_keyword_to_metadata(self) -> str:\n        \"\"\"Converts the class keyword to a metadata string.\"\"\"\n        return self.model_dump_json()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "field_validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\n\nThe `ClassKeywordModel` class, inheriting from `BaseModel`, encapsulates a representation of a class keyword, including its content, name, and optional arguments. It features a single method, `convert_class_keyword_to_metadata`, which transforms the class keyword information into a metadata string by calling the `model_dump_json` method. This method likely serializes the class keyword's attributes into a JSON-formatted string, although the implementation of `model_dump_json` is not provided in the code snippet. The class is designed to handle data related to class keywords, potentially for use in code analysis, documentation, or metadata generation tasks.",
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel__*__FUNCTION-convert_class_keyword_to_metadata"
+    ]
+}

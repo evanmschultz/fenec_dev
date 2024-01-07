@@ -1,0 +1,27 @@
+{
+    "function_name": "_get_child_summaries",
+    "docstring": "Gathers summaries of child models.\n\nArgs:\n    - model (ModelType): The model to gather child summaries for.\n\nReturns:\n    - list[str] | None: A list of child summaries or None if the model has no children.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[str] | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_get_child_summaries",
+    "file_path": "postcode/ai_services/summarizer/graph_db_summarization_manager.py",
+    "parent_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 163,
+    "end_line_num": 199,
+    "code_content": "\ndef _get_child_summaries(self, model: ModelType) -> list[str] | None:\n    \"\"\"\n        Gathers summaries of child models.\n\n        Args:\n            - model (ModelType): The model to gather child summaries for.\n\n        Returns:\n            - list[str] | None: A list of child summaries or None if the model has no children.\n        \"\"\"\n\n    child_summary_list: list[str] = []\n    if model.children_ids:\n        for child_id in model.children_ids:\n            if child := self.graph_manager.get_vertex_model_by_id(child_id):\n                if child.summary:\n                    child_summary: str = child.summary\n\n                else:\n                    # TODO: Add logic to gather all child summaries of a directory (modules and directories within the directory)\n                    if isinstance(child, DirectoryModel):\n                        # for child_child_id in child.children_ids:\n                        #     if child_child := self.graph_manager.get_vertex_model_by_id(\n                        #         child_child_id\n                        #     ):\n                        #         if child_child.summary:\n                        #             child_summary = child_child.summary\n                        #             break\n                        continue\n\n                    child_summary = (\n                        f\"Child ({child_id}) code content:\\n{child.code_content}\\n\"\n                    )\n                child_summary_list.append(child_summary)\n    return child_summary_list\n",
+    "important_comments": [
+        {
+            "content": "# TODO: Add logic to gather all child summaries of a directory (modules and directories within the directory)",
+            "comment_types": [
+                "TODO"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": "\nThe `_get_child_summaries` method within a class compiles a list of summaries or code content for child models of a given `model`, excluding `DirectoryModel` instances pending future logic. It utilizes `self.graph_manager.get_vertex_model_by_id` for child model retrieval and returns either a list of summaries or `None` if no children are present.",
+    "children_ids": []
+}

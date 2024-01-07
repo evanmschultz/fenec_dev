@@ -1,0 +1,216 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Path",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pathlib",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging_decorator",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                }
+            ],
+            "imported_from": "postcode.utilities.logger.decorators",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:logger:decorators.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PythonParser",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:parsers:python_parser.py__*__MODULE__*__CLASS-PythonParser"
+                }
+            ],
+            "imported_from": "postcode.python_parser.parsers.python_parser",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:parsers:python_parser.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportAndDependencyUpdater",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportAndDependencyUpdater"
+                }
+            ],
+            "imported_from": "postcode.python_parser.visitor_manager.import_and_dependency_updater",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ModuleModel"
+                },
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassModel"
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionModel"
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DirectoryModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "postcode.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ModuleIDGenerationStrategy"
+                },
+                {
+                    "name": "DirectoryIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-DirectoryIDGenerationStrategy"
+                }
+            ],
+            "imported_from": "postcode.python_parser.id_generation.id_generation_strategies",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.types.postcode",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:postcode.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE",
+    "file_path": "postcode/python_parser/visitor_manager/visitor_manager.py",
+    "parent_id": "postcode:python_parser:visitor_manager__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 307,
+    "code_content": "from dataclasses import dataclass\nimport logging\nfrom pathlib import Path\nfrom typing import Union\n\nfrom postcode.python_parser.model_builders.module_model_builder import (\n    ModuleModelBuilder,\n)\nfrom postcode.utilities.logger.decorators import logging_decorator\n\nfrom postcode.python_parser.parsers.python_parser import PythonParser\nfrom postcode.python_parser.visitor_manager.import_and_dependency_updater import (\n    ImportAndDependencyUpdater,\n)\nfrom postcode.models.models import (\n    ClassModel,\n    DirectoryModel,\n    FunctionModel,\n    ModuleModel,\n    StandaloneCodeBlockModel,\n)\n\n\nfrom postcode.python_parser.model_builders.class_model_builder import (\n    ClassModelBuilder,\n)\nfrom postcode.python_parser.model_builders.function_model_builder import (\n    FunctionModelBuilder,\n)\nfrom postcode.python_parser.model_builders.standalone_block_model_builder import (\n    StandaloneBlockModelBuilder,\n)\n\nfrom postcode.python_parser.id_generation.id_generation_strategies import (\n    ModuleIDGenerationStrategy,\n    DirectoryIDGenerationStrategy,\n)\nfrom postcode.types.postcode import ModelType\n\n\nBuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]\n\n# ModelType = Union[\n#     ModuleModel,\n#     ClassModel,\n#     FunctionModel,\n#     StandaloneCodeBlockModel,\n#     DirectoryModel,\n# ]\n\nEXCLUDED_DIRECTORIES: set[str] = {\".venv\", \"node_modules\", \"__pycache__\", \".git\"}\n\n\n@dataclass\nclass VisitorManagerProcessFilesReturn:\n    \"\"\"\n    Represents the return value of the VisitorManager.process_files() method.\n\n    Attributes:\n        - models_tuple (tuple[ModuleModel, ...]): A tuple of ModuleModel objects representing the parsed modules.\n        - directory_modules (dict[str, list[str]]): A dictionary mapping directory paths to lists of module names.\n            This is used to keep track of the modules present in each directory.\n    \"\"\"\n\n    models_tuple: tuple[ModelType, ...]\n    directory_modules: dict[str, list[str]]\n\n\n@dataclass\nclass DirectoryDetails:\n    \"\"\"\n    Represents the details of a directory.\n\n    Attributes:\n        - directory_name (str): The name of the directory.\n        - sub_directories (list[str]): A list of the names of the sub-directories of the directory.\n        - module_ids (list[str]): A list of the module ids of the modules in the directory.\n    \"\"\"\n\n    directory_name: str\n    sub_directories: list[str]\n    module_ids: list[str]\n\n\nclass VisitorManager:\n    \"\"\"\n    Manages the visiting and processing of Python files in a given directory.\n\n    This class scans a specified directory, filters for Python files, parses them, and saves the parsed data in a structured JSON format.\n    It also maintains a mapping of directories to the Python files they contain.\n\n    Attributes:\n        - directory (str): The root directory to scan for Python files.\n        - directory_modules (dict[str, list[str]]): A mapping of directories to their contained Python files.\n\n    Example:\n        ```Python\n        visitor_manager = VisitorManager(\"/path/to/python/code\")\n        visitor_manager.process_files()\n        # This will process all Python files in /path/to/python/code and save their parsed data in the output directory.\n        ```\n    \"\"\"\n\n    @logging_decorator(message=\"Initializing VisitorManager\")\n    def __init__(self, directory: str) -> None:\n        self.directory: str = directory\n        self.directory_modules: dict[str, list[str]] = {}\n\n    def process_files(self) -> VisitorManagerProcessFilesReturn:\n        \"\"\"\n        Process the files in the directory and return the module models.\n\n        This function iterates through all the Python files in the directory, processes each file,\n        updates the imports, and builds module models for each file. It returns a tuple of module models\n        and a dictionary of directory modules.\n\n        Returns:\n            - VisitorManagerProcessFilesReturn, a named tuple containing:\n                - models_tuple (tuple[ModuleModel, ...]): A tuple of module models.\n                - directory_modules (dict[str, ModuleModel]): A dictionary of directory modules.\n\n        Examples:\n            ```Python\n            visitor_manager = VisitorManager()\n            result = visitor_manager.process_files()\n            print(result.models_tuple)\n            # (ModuleModel(file_path='/path/to/file1.py'), ModuleModel(file_path='/path/to/file2.py'))\n            print(result.directory_modules)\n            {'/path/to/directory1': ModuleModel(file_path='/path/to/directory1/__init__.py')}\n            ```\n        \"\"\"\n\n        logging.info(\"Processing files\")\n        python_files: list[str] = self._get_python_files()\n        model_builder_list: list[ModuleModelBuilder] = []\n        for file_path in python_files:\n            if model_builder := self._process_file(file_path):\n                model_builder_list.append((model_builder))\n\n        logging.info(\"File processing completed\")\n        logging.info(\"Updating imports\")\n\n        # TODO: Test making this a tuple of tuples, see if that solves the double update import issue\n        model_builder_tuple: tuple[ModuleModelBuilder, ...] = tuple(model_builder_list)\n\n        import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_tuple)\n        import_and_dependency_updater.update_imports()\n        logging.info(\"Updated imports\")\n\n        models_list: list[\n            ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel\n        ] = []\n        for module_model_builder in model_builder_tuple:\n            module_model_return: tuple[\n                ModuleModel,\n                list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None,\n            ] = self._build_module_model(module_model_builder)\n            models_list.append(module_model_return[0])\n            if module_model_return[1]:\n                models_list.extend(module_model_return[1])\n\n        directory_models_list: list[DirectoryModel] = []\n        for directory_path in self.directory_modules.keys():\n            directory_model: DirectoryModel = self._build_directory_model(\n                directory_path\n            )\n            directory_models_list.append(directory_model)\n\n        all_models: list[ModelType] = [\n            *models_list,\n            *directory_models_list,\n        ]\n\n        models_tuple: tuple[ModelType, ...] = tuple(all_models)\n\n        return VisitorManagerProcessFilesReturn(\n            models_tuple=models_tuple, directory_modules=self.directory_modules\n        )\n\n    def _walk_directories(self) -> list[str]:\n        \"\"\"Walks the specified directory and returns a list of all files.\"\"\"\n\n        all_files: list[str] = []\n        for file_path in Path(self.directory).rglob(\"*\"):\n            if not any(\n                excluded in file_path.parts for excluded in EXCLUDED_DIRECTORIES\n            ):\n                all_files.append(str(file_path))\n        return all_files\n\n    def _filter_python_files(self, files: list[str]) -> list[str]:\n        \"\"\"Filters a list of files to only include Python files.\"\"\"\n\n        return [file for file in files if file.endswith(\".py\")]\n\n    @logging_decorator(message=\"Getting Python files\")\n    def _get_python_files(self) -> list[str]:\n        \"\"\"Gets all Python files in the specified directory.\"\"\"\n\n        all_files: list[str] = self._walk_directories()\n        return self._filter_python_files(all_files)\n\n    def _process_file(self, file_path: str) -> ModuleModelBuilder | None:\n        \"\"\"Processes a single Python file.\"\"\"\n\n        file_path_obj = Path(file_path)\n        root = str(file_path_obj.parent)\n        self.directory_modules.setdefault(root, []).append(file_path_obj.name)\n        return self._parse_file(file_path)\n\n    @logging_decorator(message=\"Processing file\")\n    def _parse_file(self, file_path: str) -> ModuleModelBuilder | None:\n        \"\"\"Parses a Python file and saves the parsed data as JSON.\"\"\"\n\n        parser = PythonParser(file_path)\n        code: str = parser.open_file()\n\n        parent_id: str | None = self._get_parent_directory_id(file_path)\n        if not parent_id:\n            parent_id = \"\"\n\n        module_model_builder: ModuleModelBuilder | None = parser.parse(code, parent_id)\n\n        return module_model_builder if module_model_builder else None\n\n    def _build_module_model(\n        self, visitor_stack: ModuleModelBuilder | None\n    ) -> tuple[\n        ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None\n    ]:\n        \"\"\"\n        Builds a module model from the provided module builder.\n\n        Args:\n            - visitor_stack (ModuleModelBuilder): The module builder to build the model from.\n\n        Returns:\n            - ModuleModel: A structured module model.\n        \"\"\"\n\n        if not isinstance(visitor_stack, ModuleModelBuilder):\n            raise TypeError(\"Expected the first builder to be a ModuleModelBuilder\")\n\n        return visitor_stack.build()\n\n    def _build_directory_model(self, directory_path: str) -> DirectoryModel:\n        \"\"\"Builds a directory model for the given directory path.\"\"\"\n\n        id: str = DirectoryIDGenerationStrategy().generate_id(directory_path)\n        parent_id: str | None = self._get_parent_directory_id(directory_path)\n\n        return DirectoryModel(\n            id=id,\n            parent_id=parent_id,\n            directory_name=self._get_directory_name(directory_path),\n            sub_directories_ids=self._get_subdirectory_ids(directory_path),\n            children_ids=self._generate_module_ids(directory_path),\n        )\n\n    def _get_subdirectory_ids(self, directory_path: str) -> list[str]:\n        \"\"\"Gets the sub-directories of the given directory.\"\"\"\n\n        subdirectories: list[str] = [\n            directory.name\n            for directory in Path(directory_path).iterdir()\n            if directory.is_dir() and directory.name not in EXCLUDED_DIRECTORIES\n        ]\n\n        subdirectory_ids: list[str] = [\n            DirectoryIDGenerationStrategy().generate_id(\n                str(Path(directory_path) / subdirectory)\n            )\n            for subdirectory in subdirectories\n        ]\n\n        return subdirectory_ids\n\n    def _get_directory_name(self, directory_path: str) -> str:\n        \"\"\"Gets the name of the given directory.\"\"\"\n\n        return Path(directory_path).name\n\n    def _generate_module_ids(self, directory_path: str) -> list[str]:\n        \"\"\"Generates module ids for the given directory.\"\"\"\n\n        file_names: list[str] = self.directory_modules.get(directory_path, [])\n        python_files: list[str] = self._filter_python_files(file_names)\n\n        return [\n            ModuleIDGenerationStrategy.generate_id(str(Path(directory_path) / module))\n            for module in python_files\n        ]\n\n    def _get_parent_directory_id(self, directory_path: str) -> str | None:\n        \"\"\"Gets the parent id of the given directory.\"\"\"\n\n        parent_path: str = str(Path(directory_path).parent)\n        if parent_path == self.directory:\n            return None\n        else:\n            return DirectoryIDGenerationStrategy().generate_id(parent_path)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe `VisitorManager` class in the Python code is responsible for parsing and processing Python files within a specified directory, excluding common non-relevant directories as defined by `EXCLUDED_DIRECTORIES`. It uses the `dataclass` decorator to define structured return types, `VisitorManagerProcessFilesReturn` and `DirectoryDetails`, for encapsulating the results of file processing and directory information, respectively. The class's `process_files` method is central to its functionality, iterating over Python files, parsing them with `PythonParser`, updating imports with `ImportAndDependencyUpdater`, and building models for modules and directories using `ModuleModelBuilder` and `DirectoryIDGenerationStrategy`. The class also includes helper methods for directory traversal, file filtering, and ID generation. The `BuilderType` type alias is defined to reference builders for modules, classes, functions, and standalone blocks, indicating the class's capability to handle various Python code structures. The `VisitorManager` class is decorated with a logging decorator to provide runtime information about its operations.",
+    "children_ids": [
+        "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__STANDALONE_BLOCK-1",
+        "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManagerProcessFilesReturn",
+        "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-DirectoryDetails",
+        "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager"
+    ]
+}

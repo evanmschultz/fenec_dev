@@ -1,0 +1,16 @@
+{
+    "id": ".__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "",
+    "sub_directories_ids": [
+        "postcode__*__DIRECTORY",
+        "chroma__*__DIRECTORY",
+        "output_json__*__DIRECTORY",
+        ".pytest_cache__*__DIRECTORY"
+    ],
+    "children_ids": [
+        "main.py__*__MODULE"
+    ],
+    "parent_id": null,
+    "summary": null
+}

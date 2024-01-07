@@ -1,6 +1,7 @@
 # TODO: Add logic to gather all child summaries of a directory (modules and directories within the directory)
 
 import logging
+from rich import print
 
 from postcode.ai_services.summarizer.summarization_context import (
     Summarizer,
@@ -134,7 +135,7 @@ class GraphDBSummarizationManager:
                 code_content = model.code_content
 
             summary_return_context: OpenAIReturnContext | None = (
-                self.summarizer.test_summarize_code(
+                self.summarizer.summarize_code(
                     code_content,
                     model_id=model.id,
                     children_summaries=children_summaries,
@@ -147,8 +148,10 @@ class GraphDBSummarizationManager:
                     self.graph_manager.update_vertex_summary_by_id(
                         model.id, summary_return_context.summary
                     )
+                print(summary_return_context.summary)
                 self.prompt_tokens += summary_return_context.prompt_tokens
                 self.completion_tokens += summary_return_context.completion_tokens
+                logging.info(f"Total cost: ${self.total_cost:.2f}")
 
         logging.debug(f"Summarization map length: {len(summarization_map)}")
         # pprint([model.id for model in summarization_map][::-1])

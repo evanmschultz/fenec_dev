@@ -13,6 +13,7 @@ When creating queries for a vector database, especially concerning specific func
     1. Specify the Component: Clearly mention the class, module, or function you're interested in.
     2. Focus on the Action or Feature: Highlight what you want to know about - whether it's retrieving results, serialization, validation methods, etc.
     3. Vary the Structure: Include variations of your query to cover different ways the information might be phrased or indexed.
+    4. Do not mention the language, eg. Python, in your query, as it is unnecessary and will confuse the results.
 
 Examples:
     - User question:

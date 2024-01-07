@@ -1,0 +1,109 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ArangoClient",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "arango.client",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandardDatabase",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "arango.database",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Result",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "arango.result",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Jsons",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Json",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "arango.typings",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.databases.arangodb.helper_functions",
+                    "as_name": "helper_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:arangodb:helper_functions.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE",
+    "file_path": "postcode/databases/arangodb/arangodb_connector.py",
+    "parent_id": "postcode:databases:arangodb__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 162,
+    "code_content": "import logging\nfrom typing import Any\nfrom arango.client import ArangoClient\nfrom arango.database import StandardDatabase\nfrom arango.result import Result\nfrom arango.typings import Jsons, Json\n\nimport postcode.databases.arangodb.helper_functions as helper_functions\n\n\nclass ArangoDBConnector:\n    \"\"\"\n    A connector class for interacting with ArangoDB to manage collections and ensure proper database setup.\n\n    This class provides methods to connect to an ArangoDB instance, create or ensure the existence of a specified database, collections, and edge collections. It also supports deletion of all user-defined collections within the database.\n\n    Attributes:\n        - client (ArangoClient): The ArangoDB client instance.\n        - username (str): The username used for authentication.\n        - password (str): The password used for authentication.\n        - db_name (str): The name of the ArangoDB database.\n\n    Example:\n        ```python\n        # This example demonstrates how to use ArangoDBConnector to connect to an ArangoDB instance and ensure collections.\n        connector = ArangoDBConnector(url=\"http://localhost:8529\", username=\"root\", password=\"openSesame\", db_name=\"postcode\")\n        connector.ensure_collections()\n        ```\n\n    Methods:\n        - ensure_collections(): Ensures the existence of required collections and edge collections.\n        - ensure_collection(collection_name, schema=None): Ensures the existence of a collection with an optional specified schema.\n        - ensure_edge_collection(collection_name): Ensures the existence of an edge collection.\n        - delete_all_collections(): Deletes all user-defined collections within the ArangoDB database.\n    \"\"\"\n\n    def __init__(\n        self,\n        url: str = \"http://localhost:8529\",\n        username: str = \"root\",\n        password: str = \"openSesame\",\n        db_name: str = \"postcode\",\n    ) -> None:\n        self.client = ArangoClient(hosts=url)\n        self.username: str = username\n        self.password: str = password\n        self.db_name: str = db_name\n        self.db: StandardDatabase = self._ensure_database()\n\n    def _ensure_database(self) -> StandardDatabase:\n        \"\"\"\n        Ensures the existence of the specified database, creating it if necessary.\n\n        Returns:\n            StandardDatabase: The ArangoDB database instance.\n        \"\"\"\n\n        sys_db: StandardDatabase = self.client.db(\n            \"_system\", username=self.username, password=self.password\n        )\n        if not sys_db.has_database(self.db_name):\n            sys_db.create_database(self.db_name)\n        return self.client.db(\n            self.db_name, username=self.username, password=self.password\n        )\n\n    # def _ensure_vertex_collections(self, vertex_collections: list[str]) -> None:\n    #     for collection in vertex_collections:\n    #         if not self.db.has_collection(collection):\n    #             self.db.create_collection(collection)\n\n    def _get_current_schema(self, collection_name: str) -> dict:\n        \"\"\"\n        Retrieves the current schema of a collection.\n\n        Args:\n            - collection_name (str): The name of the collection.\n\n        Returns:\n            dict: The current schema of the collection.\n        \"\"\"\n\n        collection = self.db.collection(collection_name)\n        try:\n            properties: Result[Json] = collection.properties()\n            return properties.get(\"schema\", {})  # type: ignore # FIXME: Fix type error\n        except Exception as e:\n            logging.error(f\"Error retrieving current schema for {collection_name}: {e}\")\n            return {}\n\n    def ensure_collection(\n        self, collection_name: str, schema: dict[str, Any] | None = None\n    ) -> None:\n        \"\"\"\n        Ensures the existence of a collection with an optional specified schema.\n\n        Args:\n            - collection_name (str): The name of the collection.\n            - schema (dict[str, Any], optional): The schema to be applied to the collection. Defaults to None.\n        \"\"\"\n\n        if not self.db.has_collection(collection_name) and not schema:\n            self.db.create_collection(collection_name)\n            logging.info(f\"Created collection: {collection_name}\")\n        # else:\n        #     current_schema = self._get_current_schema(collection_name)\n        #     self.db.collection(collection_name)\n        # if current_schema != schema:\n        #     collection = self.db.collection(collection_name)\n        #     try:\n        #         collection.configure(schema=schema)\n        #         logging.info(f\"Updated schema for collection: {collection_name}\")\n        #     except Exception as e:\n        #         logging.error(f\"Error updating schema for {collection_name}: {e}\")\n\n    def ensure_edge_collection(self, collection_name: str) -> None:\n        \"\"\"\n        Ensures the existence of an edge collection.\n\n        Args:\n            - collection_name (str): The name of the edge collection.\n        \"\"\"\n\n        if not self.db.has_collection(collection_name):\n            self.db.create_collection(collection_name, edge=True)\n            logging.info(f\"Created edge collection: {collection_name}\")\n\n    def delete_all_collections(self) -> None:\n        \"\"\"Deletes all user-defined collections within the ArangoDB database.\"\"\"\n        collections: Result[Jsons] = self.db.collections()\n\n        for collection in collections:  # type: ignore # FIXME: Fix type error\n            if not collection[\"name\"].startswith(\"_\"):  # Skip system collections\n                self.db.delete_collection(collection[\"name\"])\n                logging.info(f\"Deleted collection: {collection['name']}\")\n\n    def ensure_collections(self) -> None:\n        \"\"\"\n        Ensures the existence of required collections and edge collections.\n\n        This includes creating collections for modules, classes, functions, standalone code blocks, and the \"code_edges\" edge collection.\n        \"\"\"\n        # model_schemas: dict[str, dict[str, Any]] = self._get_model_schemas()\n        required_collections: list[\n            str\n        ] = helper_functions.pluralized_and_lowered_block_types()\n\n        for collection_name in required_collections:\n            # schema: dict[str, Any] = model_schemas[collection_name]\n            # self.ensure_collection(collection_name, schema)\n            self.ensure_collection(collection_name)\n\n        self.ensure_edge_collection(\"code_edges\")\n\n    # def _get_model_schemas(self) -> dict[str, dict[str, Any]]:\n    #     return {\n    #         \"modules\": ModuleModel.model_json_schema(),\n    #         \"classes\": ClassModel.model_json_schema(),\n    #         \"functions\": FunctionModel.model_json_schema(),\n    #         \"standalone_blocks\": StandaloneCodeBlockModel.model_json_schema(),\n    #     }\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe provided code defines the `ArangoDBConnector` class in Python, which facilitates interaction with an ArangoDB instance for managing database collections. It includes methods to connect to the database, ensure the existence of both standard and edge collections, and delete all user-defined collections. The class initializes with default parameters for the database connection and uses the `ArangoClient` to interact with the database. Key methods include `ensure_collections`, which creates necessary collections using helper functions to determine collection names; `ensure_collection`, which creates a collection with an optional schema; `ensure_edge_collection`, for creating edge collections; and `delete_all_collections`, which removes all non-system collections. The class also contains private methods like `_ensure_database`, which checks for the existence of the specified database and creates it if absent, and `_get_current_schema`, which retrieves the current schema of a collection. The code relies on the `arango` package for database operations and uses a helper module for additional functionality. Logging is used to track operations and errors.",
+    "children_ids": [
+        "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector"
+    ]
+}

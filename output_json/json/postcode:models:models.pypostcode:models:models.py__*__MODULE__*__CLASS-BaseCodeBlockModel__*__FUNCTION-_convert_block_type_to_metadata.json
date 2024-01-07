@@ -1,0 +1,20 @@
+{
+    "function_name": "_convert_block_type_to_metadata",
+    "docstring": "Converts the block_type to a metadata string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_block_type_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 129,
+    "end_line_num": 133,
+    "code_content": "\ndef _convert_block_type_to_metadata(self) -> str:\n    \"\"\"Converts the block_type to a metadata string.\"\"\"\n    return f\"{self.block_type.name}\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe class method `_convert_block_type_to_metadata` returns the `block_type` enum's name as a string using f-string formatting.",
+    "children_ids": []
+}

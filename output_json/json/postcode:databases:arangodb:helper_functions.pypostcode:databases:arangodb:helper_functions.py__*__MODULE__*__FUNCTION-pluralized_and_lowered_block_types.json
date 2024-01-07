@@ -1,0 +1,36 @@
+{
+    "function_name": "pluralized_and_lowered_block_types",
+    "docstring": "Returns a list of the pluralized and lowered block types.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[str]",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:helper_functions.py__*__MODULE__*__FUNCTION-pluralized_and_lowered_block_types",
+    "file_path": "postcode/databases/arangodb/helper_functions.py",
+    "parent_id": "postcode:databases:arangodb:helper_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 11,
+    "end_line_num": 17,
+    "code_content": "\n\ndef pluralized_and_lowered_block_types() -> list[str]:\n    \"\"\"Returns a list of the pluralized and lowered block types.\"\"\"\n\n    return [pluralize_block_type(block_type).lower() for block_type in BlockType]\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:databases:arangodb:helper_functions.py__*__MODULE__*__FUNCTION-pluralize_block_type"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:enums.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe Python function `pluralized_and_lowered_block_types` generates a list of strings, where each string is a modified version of an item from the `BlockType` enumeration. The modification involves two steps: first, the `pluralize_block_type` function is called on each `block_type` to pluralize it, and then the `lower` method is applied to convert the pluralized name to lowercase. The resulting list contains the pluralized and lowercase names of all block types defined in `BlockType`.",
+    "children_ids": []
+}

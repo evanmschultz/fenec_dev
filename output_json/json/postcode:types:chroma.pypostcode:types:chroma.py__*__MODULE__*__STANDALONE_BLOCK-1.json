@@ -1,0 +1,39 @@
+{
+    "variable_assignments": [],
+    "id": "postcode:types:chroma.py__*__MODULE__*__STANDALONE_BLOCK-1",
+    "file_path": "postcode/types/chroma.py",
+    "parent_id": "postcode:types:chroma.py__*__MODULE",
+    "block_type": "STANDALONE_BLOCK",
+    "start_line_num": 1,
+    "end_line_num": 9,
+    "code_content": "\"\"\"\nChromaDB Types\n--------------\n\nThis module contains types defined by the chromadb third-party library.\nThese types are used for easy implementation in the postcode project and\nprovide convenience for users of the postcode library.\n\"\"\"\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "chromadb.utils.embedding_functions",
+                    "as_name": "ef",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "chromadb.utils.embedding_functions",
+                    "as_name": "ef",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe code is a module header for a Python module that is intended to incorporate types from the 'chromadb' third-party library into the 'postcode' project. It suggests a focus on user convenience and efficient implementation, but does not include specific type definitions or their application within the project. Additionally, there are redundant import statements for embedding functions from 'chromadb', which are not directly relevant to the module's described purpose.",
+    "children_ids": null
+}

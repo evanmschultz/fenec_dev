@@ -6,6 +6,6 @@
     "children_ids": [
         "postcode:json_management:json_handler.py__*__MODULE"
     ],
-    "parent_id": null,
+    "parent_id": "postcode__*__DIRECTORY",
     "summary": null
 }

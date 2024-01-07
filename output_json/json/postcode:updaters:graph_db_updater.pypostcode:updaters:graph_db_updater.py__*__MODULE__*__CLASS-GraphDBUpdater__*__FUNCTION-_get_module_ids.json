@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_module_ids",
+    "docstring": "Returns a list of module IDs from the models tuple.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[str]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_get_module_ids",
+    "file_path": "postcode/updaters/graph_db_updater.py",
+    "parent_id": "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 132,
+    "end_line_num": 137,
+    "code_content": "\ndef _get_module_ids(self, models_tuple: tuple[ModelType, ...]) -> list[str]:\n    \"\"\"Returns a list of module IDs from the models tuple.\"\"\"\n\n    return [model.id for model in models_tuple if isinstance(model, ModuleModel)]\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_get_module_ids` method in Python uses list comprehension and the `isinstance` function to create a list containing the IDs of only `ModuleModel` class instances from a given tuple of mixed model objects.",
+    "children_ids": []
+}

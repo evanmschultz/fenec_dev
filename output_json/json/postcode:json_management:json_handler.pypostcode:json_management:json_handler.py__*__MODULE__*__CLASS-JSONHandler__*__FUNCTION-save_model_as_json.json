@@ -1,0 +1,28 @@
+{
+    "function_name": "save_model_as_json",
+    "docstring": "Saves a parsed ModelType as JSON.\n\nArgs:\n    - model (ModelType): The parsed code model to be saved.\n    - file_path (str): The file path of the original Python file.\n\nExample:\n    ```Python\n    # This example demonstrates how to use JSONHandler to save a parsed model as JSON.\n    handler = JSONHandler(directory=\"/path/to/code\", directory_modules={})\n    module_model = ModuleModel(id='module1', file_path='/path/to/code/module1.py')\n    handler.save_model_as_json(module_model, file_path='/path/to/code/module1.py')\n    ```",
+    "decorators": [
+        {
+            "content": "@logging_decorator(message=\"Saving model as JSON\")",
+            "decorator_name": "logging_decorator",
+            "decorator_args": [
+                "message=\"Saving model as JSON\""
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-save_model_as_json",
+    "file_path": "postcode/json_management/json_handler.py",
+    "parent_id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler",
+    "block_type": "FUNCTION",
+    "start_line_num": 57,
+    "end_line_num": 83,
+    "code_content": "\n@logging_decorator(message=\"Saving model as JSON\")\ndef save_model_as_json(\n    self,\n    model: ModelType,\n    file_path: str,\n) -> None:\n    \"\"\"\n        Saves a parsed ModelType as JSON.\n\n        Args:\n            - model (ModelType): The parsed code model to be saved.\n            - file_path (str): The file path of the original Python file.\n\n        Example:\n            ```Python\n            # This example demonstrates how to use JSONHandler to save a parsed model as JSON.\n            handler = JSONHandler(directory=\"/path/to/code\", directory_modules={})\n            module_model = ModuleModel(id='module1', file_path='/path/to/code/module1.py')\n            handler.save_model_as_json(module_model, file_path='/path/to/code/module1.py')\n            ```\n        \"\"\"\n\n    json_output_directory: str = self._create_json_output_directory()\n    output_path: str = self._get_json_output_path(file_path, json_output_directory)\n    self._write_json_file(model, output_path)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `save_model_as_json` method, which does not return a value, is designed to serialize objects of `ModelType` (code models) into a JSON file, placing the output in a directory specified by the `file_path`. It uses helper methods for directory setup and JSON serialization, and is decorated with `logging_decorator` to provide logging functionality, illustrating its use in the provided example for code model handling.",
+    "children_ids": []
+}

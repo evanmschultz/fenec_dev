@@ -1,0 +1,20 @@
+{
+    "function_name": "_convert_base_attributes_to_metadata_dict",
+    "docstring": "Converts the base attributes to a metadata dictionary for ChromaDB.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "dict[str, str | int]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel__*__FUNCTION-_convert_base_attributes_to_metadata_dict",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 167,
+    "end_line_num": 184,
+    "code_content": "\ndef _convert_base_attributes_to_metadata_dict(self) -> dict[str, str | int]:\n    \"\"\"Converts the base attributes to a metadata dictionary for ChromaDB.\"\"\"\n\n    return {\n        \"id\": self.id,\n        \"file_path\": self.file_path,\n        \"parent_id\": self._convert_parent_id_to_metadata(),\n        \"block_type\": self._convert_block_type_to_metadata(),\n        \"start_line_num\": self.start_line_num,\n        \"end_line_num\": self.end_line_num,\n        \"code_content\": self.code_content,\n        \"important_comments\": self._convert_important_comments_to_metadata(),\n        \"dependencies\": self._convert_dependencies_to_metadata(),\n        \"summary\": self._convert_summary_to_metadata(),\n        \"children\": self._convert_children_to_metadata(),\n    }\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_convert_base_attributes_to_metadata_dict` method within a class generates a dictionary mapping string keys to metadata about a code block, intended for ChromaDB. It directly assigns simple attributes such as 'id' and 'file_path', while complex attributes like 'parent_id' and 'dependencies' are formatted using specialized helper methods, resulting in a mix of string and integer values.",
+    "children_ids": []
+}

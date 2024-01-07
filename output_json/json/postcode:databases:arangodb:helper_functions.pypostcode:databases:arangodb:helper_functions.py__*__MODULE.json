@@ -1,0 +1,78 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:enums.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ModuleModel"
+                },
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassModel"
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-FunctionModel"
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-DirectoryModel"
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.types.postcode",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:postcode.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:databases:arangodb:helper_functions.py__*__MODULE",
+    "file_path": "postcode/databases/arangodb/helper_functions.py",
+    "parent_id": "postcode:databases:arangodb__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 52,
+    "code_content": "from postcode.models.enums import BlockType\nfrom postcode.models.models import (\n    ModuleModel,\n    ClassModel,\n    FunctionModel,\n    StandaloneCodeBlockModel,\n    DirectoryModel,\n)\n\nfrom postcode.types.postcode import ModelType\n\n\ndef pluralized_and_lowered_block_types() -> list[str]:\n    \"\"\"Returns a list of the pluralized and lowered block types.\"\"\"\n\n    return [pluralize_block_type(block_type).lower() for block_type in BlockType]\n\n\ndef pluralize_block_type(block_type: str) -> str:\n    \"\"\"Pluralizes the block type.\"\"\"\n\n    if block_type == BlockType.CLASS:\n        return \"classes\"\n    elif block_type == BlockType.DIRECTORY:\n        return \"directories\"\n    else:\n        return f\"{block_type.lower()}s\"\n\n\ndef create_model_from_vertex(vertex_data: dict) -> ModelType:\n    \"\"\"\n    Creates a model from the vertex data.\n\n    Args:\n        - vertex_data (dict): The vertex data.\n    \"\"\"\n\n    block_type: str | None = vertex_data.get(\"block_type\")\n\n    if block_type == BlockType.MODULE:\n        return ModuleModel(**vertex_data)\n    elif block_type == BlockType.CLASS:\n        return ClassModel(**vertex_data)\n    elif block_type == BlockType.FUNCTION:\n        return FunctionModel(**vertex_data)\n    elif block_type == BlockType.STANDALONE_CODE_BLOCK:\n        return StandaloneCodeBlockModel(**vertex_data)\n    elif block_type == BlockType.DIRECTORY:\n        return DirectoryModel(**vertex_data)\n    else:\n        raise ValueError(f\"Unknown block type: {block_type}\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe provided Python code defines three functions that interact with code structure elements represented by the `BlockType` enumeration. The `pluralized_and_lowered_block_types` function generates a list of pluralized and lowercase strings corresponding to the block types. It utilizes the `pluralize_block_type` function to correctly pluralize each block type, handling special cases for classes and directories, and then converts them to lowercase. The `create_model_from_vertex` function constructs model instances from a given dictionary `vertex_data`, creating specific models such as `ModuleModel`, `ClassModel`, `FunctionModel`, `StandaloneCodeBlockModel`, and `DirectoryModel` based on the `block_type` key. If an unknown block type is encountered, it raises a `ValueError`. These functions are designed to work with code structure elements, facilitating the manipulation and representation of different types of code blocks within a system.",
+    "children_ids": [
+        "postcode:databases:arangodb:helper_functions.py__*__MODULE__*__FUNCTION-pluralized_and_lowered_block_types",
+        "postcode:databases:arangodb:helper_functions.py__*__MODULE__*__FUNCTION-pluralize_block_type",
+        "postcode:databases:arangodb:helper_functions.py__*__MODULE__*__FUNCTION-create_model_from_vertex"
+    ]
+}

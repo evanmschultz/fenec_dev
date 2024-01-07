@@ -8,6 +8,6 @@
     "children_ids": [
         "postcode:utilities:processing_context.py__*__MODULE"
     ],
-    "parent_id": null,
+    "parent_id": "postcode__*__DIRECTORY",
     "summary": null
 }

@@ -1,0 +1,26 @@
+{
+    "class_name": "FunctionIDGenerationStrategy",
+    "decorators": null,
+    "bases": [
+        "IDGenerationStrategy"
+    ],
+    "docstring": "ID generation strategy for functions.",
+    "keywords": null,
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-FunctionIDGenerationStrategy",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 76,
+    "end_line_num": 94,
+    "code_content": "\n\nclass FunctionIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for functions.\"\"\"\n\n    @staticmethod\n    def generate_id(parent_id: str, function_name: str) -> str:\n        \"\"\"\n        Generates an ID for a function based on the given parent ID and function name.\n\n        Args:\n            - parent_id (str): The ID of the parent (module or class).\n            - function_name (str): The name of the function.\n\n        Returns:\n            - str: The generated ID, incorporating the parent ID and function name.\n        \"\"\"\n        return f\"{parent_id}__*__FUNCTION-{function_name}\"\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy"
+        }
+    ],
+    "summary": "\n\nThe `FunctionIDGenerationStrategy` class, inheriting from `IDGenerationStrategy`, encapsulates a strategy for creating unique identifiers for functions. It defines a single static method, `generate_id`, which constructs an identifier by concatenating a provided `parent_id` with a `function_name`, separated by a specific delimiter `__*__FUNCTION-`. This method leverages Python's f-string formatting to produce the structured ID, ensuring that the function's identity is tied to its parent entity, which could be a module or class.",
+    "children_ids": [
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-FunctionIDGenerationStrategy__*__FUNCTION-generate_id"
+    ]
+}

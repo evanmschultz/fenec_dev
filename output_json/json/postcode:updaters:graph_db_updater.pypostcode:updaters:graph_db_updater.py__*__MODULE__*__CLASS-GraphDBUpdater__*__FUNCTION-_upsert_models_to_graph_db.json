@@ -1,0 +1,20 @@
+{
+    "function_name": "_upsert_models_to_graph_db",
+    "docstring": "Upserts the models to the graph database.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater__*__FUNCTION-_upsert_models_to_graph_db",
+    "file_path": "postcode/updaters/graph_db_updater.py",
+    "parent_id": "postcode:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 137,
+    "end_line_num": 144,
+    "code_content": "\ndef _upsert_models_to_graph_db(self, models_tuple: tuple[ModelType, ...]) -> None:\n    \"\"\"Upserts the models to the graph database.\"\"\"\n\n    self.graph_manager.upsert_models(\n        list(models_tuple)\n    ).process_imports_and_dependencies().get_or_create_graph()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_upsert_models_to_graph_db` method in a Python class receives a tuple of `ModelType` objects, converts them to a list, and delegates to a `graph_manager` to upsert these models into a graph database. Subsequently, it invokes a chain of operations on the `graph_manager` to process imports and dependencies and to ensure a graph is either fetched or created. This method performs its tasks without returning any output.",
+    "children_ids": []
+}

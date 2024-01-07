@@ -1,0 +1,20 @@
+{
+    "function_name": "get_inbound_models",
+    "docstring": "Retrieves all inbound models to a given ending key.\n\nArgs:\n    - end_key (str): The key of the ending vertex.\n\nReturns:\n    - list[ModelType] | None: List of inbound models or None if an error occurs.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[ModelType] | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-get_inbound_models",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 437,
+    "end_line_num": 468,
+    "code_content": "\ndef get_inbound_models(self, end_key: str) -> list[ModelType] | None:\n    \"\"\"\n        Retrieves all inbound models to a given ending key.\n\n        Args:\n            - end_key (str): The key of the ending vertex.\n\n        Returns:\n            - list[ModelType] | None: List of inbound models or None if an error occurs.\n        \"\"\"\n\n    vertex_type: str = self._get_collection_name_from_id(end_key)\n\n    query: str = f\"\"\"\n        FOR v, e, p IN 1..100 INBOUND '{vertex_type}/{end_key}' GRAPH '{self.default_graph_name}'\n        RETURN DISTINCT v\n        \"\"\"\n\n    try:\n        cursor: Result[Cursor] = self.db_connector.db.aql.execute(query)\n        if isinstance(cursor, Cursor):\n            return [\n                helper_functions.create_model_from_vertex(doc) for doc in cursor\n            ]\n        else:\n            logging.error(f\"Error getting cursor for query: {query}\")\n            return None\n    except Exception as e:\n        logging.error(f\"Error in get_all_upstream_vertices: {e}\")\n        return None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `get_inbound_models` method in a Python class queries an ArangoDB graph database to find vertices inbound to a specified `end_key`, maps the query results to a list of model instances using a helper function, and includes error handling that logs exceptions and returns `None` in case of failure.",
+    "children_ids": []
+}

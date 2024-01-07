@@ -1,0 +1,33 @@
+{
+    "function_name": "_is_import_statement",
+    "docstring": "Returns True if the statement is an import statement.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "bool",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_is_import_statement",
+    "file_path": "postcode/python_parser/visitors/node_processing/standalone_code_block_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 112,
+    "end_line_num": 120,
+    "code_content": "\n\ndef _is_import_statement(statement: libcst.CSTNode) -> bool:\n    \"\"\"Returns True if the statement is an import statement.\"\"\"\n\n    return isinstance(statement, libcst.SimpleStatementLine) and any(\n        isinstance(elem, (libcst.Import, libcst.ImportFrom)) for elem in statement.body\n    )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe `_is_import_statement` function utilizes the `libcst` library to determine if a `libcst.CSTNode` is a Python import statement by confirming it's a `libcst.SimpleStatementLine` and contains `libcst.Import` or `libcst.ImportFrom` elements, using `isinstance` and a generator within `any`.",
+    "children_ids": []
+}

@@ -1,0 +1,37 @@
+{
+    "class_name": "LoggingCallerInfo",
+    "decorators": [
+        {
+            "content": "@dataclass",
+            "decorator_name": "dataclass",
+            "decorator_args": null
+        }
+    ],
+    "bases": null,
+    "docstring": "Information about the caller of a function that is being logged. Used for `logging_decorator`.",
+    "keywords": null,
+    "id": "postcode:utilities:processing_context.py__*__MODULE__*__CLASS-LoggingCallerInfo",
+    "file_path": "postcode/utilities/processing_context.py",
+    "parent_id": "postcode:utilities:processing_context.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 21,
+    "end_line_num": 30,
+    "code_content": "\n\n@dataclass\nclass LoggingCallerInfo:\n    \"\"\"Information about the caller of a function that is being logged. Used for `logging_decorator`.\"\"\"\n\n    caller_module_name: str\n    caller_file_path: str\n    caller_line_no: int\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe code snippet presents a `LoggingCallerInfo` class, constructed with Python's `@dataclass` decorator to automatically provide initialization and other special methods. This class captures essential caller context, such as module name, file path, and line number, for logging purposes within a decorator.",
+    "children_ids": []
+}

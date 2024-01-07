@@ -1,0 +1,26 @@
+{
+    "function_name": "total_cost",
+    "docstring": "Provides the total cost of the summarization process.",
+    "decorators": [
+        {
+            "content": "@property",
+            "decorator_name": "property",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "float",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-total_cost",
+    "file_path": "postcode/ai_services/summarizer/graph_db_summarization_manager.py",
+    "parent_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 69,
+    "end_line_num": 78,
+    "code_content": "\n@property\ndef total_cost(self) -> float:\n    \"\"\"Provides the total cost of the summarization process.\"\"\"\n    prompt_cost: int = self.prompt_tokens * 1  # Costs 1 cent per 1,000 tokens\n    completion_cost: int = (\n        self.completion_tokens * 3\n    )  # Costs 3 cents per 1,000 tokens\n    return (prompt_cost + completion_cost) / 100_000  # Convert to dollars\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `total_cost` property in the given code calculates the financial cost of a summarization process within a class. It determines the cost by multiplying the number of prompt tokens by 0.01 (1 cent per 1,000 tokens) and the number of completion tokens by 0.03 (3 cents per 1,000 tokens), then adds these values and converts the total from cents to dollars by dividing by 100,000.",
+    "children_ids": []
+}

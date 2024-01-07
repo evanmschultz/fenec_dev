@@ -1,0 +1,33 @@
+{
+    "function_name": "_is_class_or_function_def",
+    "docstring": "Returns True if the statement is a class or function definition.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "bool",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_is_class_or_function_def",
+    "file_path": "postcode/python_parser/visitors/node_processing/standalone_code_block_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 106,
+    "end_line_num": 112,
+    "code_content": "\n\ndef _is_class_or_function_def(statement: libcst.CSTNode) -> bool:\n    \"\"\"Returns True if the statement is a class or function definition.\"\"\"\n\n    return isinstance(statement, (libcst.ClassDef, libcst.FunctionDef))\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe Python function `_is_class_or_function_def` takes an object of type `libcst.CSTNode` from the `libcst` library and returns True if the object is an instance of either `libcst.ClassDef` or `libcst.FunctionDef`, indicating it is a class or function definition, respectively.",
+    "children_ids": []
+}

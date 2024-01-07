@@ -1,0 +1,134 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "json",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OpenAI",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.openai",
+                    "as_name": "openai_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:openai.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaLibrarianPromptCreator",
+                    "as_name": null,
+                    "local_block_id": "postcode:ai_services:librarians:prompts:prompt_creator.py__*__MODULE__*__CLASS-ChromaLibrarianPromptCreator"
+                }
+            ],
+            "imported_from": "postcode.ai_services.librarians.prompts.prompt_creator",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:librarians:prompts:prompt_creator.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DEFAULT_CHROMA_LIBRARIAN_PROMPT",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DEFAULT_CHROMA_LIBRARIAN_SYSTEM_PROMPT",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.ai_services.librarians.prompts.chroma_librarian_prompts",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:librarians:prompts:chroma_librarian_prompts.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:chroma.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE",
+    "file_path": "postcode/ai_services/librarians/chroma_librarians.py",
+    "parent_id": "postcode:ai_services:librarians__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 193,
+    "code_content": "import logging\nimport json\n\nfrom openai import OpenAI\nfrom pydantic import BaseModel\nimport postcode.types.openai as openai_types\nfrom postcode.databases.chroma.chromadb_collection_manager import (\n    ChromaCollectionManager,\n)\nfrom postcode.ai_services.librarians.prompts.prompt_creator import (\n    ChromaLibrarianPromptCreator,\n)\nfrom postcode.ai_services.librarians.prompts.chroma_librarian_prompts import (\n    DEFAULT_CHROMA_LIBRARIAN_PROMPT,\n    DEFAULT_CHROMA_LIBRARIAN_SYSTEM_PROMPT,\n)\nimport postcode.types.chroma as chroma_types\n\n# TOOLS: list[dict[str, Any]] = [\n#     {\n#         \"type\": \"function\",\n#         \"function\": {\n#             \"name\": \"query_chroma\",\n#             \"description\": \"Get the results from the chromadb vector database using a list of queries.\",\n#             \"parameters\": {\n#                 \"type\": \"object\",\n#                 \"properties\": {\n#                     \"queries\": {\n#                         \"type\": \"list[str]\",\n#                         \"description\": \"List of queries to use to get the results from the chromadb vector database.\",\n#                     },\n#                     \"n_results\": {\n#                         \"type\": \"int\",\n#                         \"description\": \"Number of results to return, default is 10.\",\n#                     },\n#                 },\n#                 \"required\": [\"queries\"],\n#             },\n#         },\n#     }\n# ]\n\n\nclass OpenAIResponseContent(BaseModel):\n    \"\"\"\n    Pydantic model representing the content structure of an OpenAI response.\n\n    OpenAI is set to respond with a JSON object, so this model is used to parse the response.\n\n    Attributes:\n        - query_list (list[str]): List of queries in the OpenAI response.\n    \"\"\"\n\n    query_list: list[str]\n\n\nclass ChromaLibrarian:\n    def __init__(\n        self,\n        collection_manager: ChromaCollectionManager,\n        model: str = \"gpt-3.5-turbo-1106\",\n    ) -> None:\n        \"\"\"\n        Represents a librarian for interacting with the Chroma database using OpenAI.\n\n        Args:\n            - collection_manager (ChromaCollectionManager): The manager for Chroma collections.\n            - model (str, optional): The OpenAI model to use. Defaults to \"gpt-3.5-turbo-1106\".\n\n        Methods:\n            - query_chroma(user_question):\n                Queries the Chroma database using the provided user question.\n\n            - _query_collection(queries, n_results=3):\n                Queries the Chroma collection manager with a list of queries.\n\n            - _get_chroma_queries(user_question, queries_count=3, retries=3):\n                Generates Chroma queries based on the user question.\n\n        Attributes:\n            - collection_manager (ChromaCollectionManager): The Chroma collection manager.\n            - model (str): The OpenAI model being used.\n            - client: The OpenAI API client.\n\n        Examples:\n            ```python\n            chroma_librarian = ChromaLibrarian(chroma_collection_manager)\n            chroma_librarian.query_chroma(\"Which models are inherited by others?\")\n            ```\n        \"\"\"\n\n        self.collection_manager: ChromaCollectionManager = collection_manager\n        self.model: str = model\n        self.client = OpenAI()\n\n    def query_chroma(self, user_question: str) -> chroma_types.QueryResult | None:\n        \"\"\"\n        Queries the Chroma database using the provided user question.\n\n        Args:\n            - user_question (str): The user's question.\n\n        Returns:\n            - chroma_types.QueryResult | None: The result of the Chroma query, or None if unsuccessful.\n        \"\"\"\n\n        queries: list[str] | None = self._get_chroma_queries(user_question)\n        if not queries:\n            return None\n\n        print(queries)\n\n        return self._query_collection(queries)\n\n    def _query_collection(\n        self,\n        queries: list[str],\n        n_results: int = 3,\n    ) -> chroma_types.QueryResult | None:\n        \"\"\"\n        Queries the Chroma collection manager with a list of queries.\n\n        Args:\n            - queries (list[str]): List of queries to use in the Chroma collection manager.\n            - n_results (int, optional): Number of results to return. Defaults to 3.\n\n        Returns:\n            - chroma_types.QueryResult | None: The result of the Chroma query, or None if unsuccessful.\n        \"\"\"\n\n        return self.collection_manager.query_collection(\n            queries,\n            n_results=n_results,\n            include_in_result=[\"metadatas\", \"documents\"],\n        )\n\n    def _get_chroma_queries(\n        self, user_question: str, queries_count: int = 3, retries: int = 3\n    ) -> list[str] | None:\n        \"\"\"\n        Generates Chroma queries based on the user question.\n\n        Args:\n            - user_question (str): The user's question.\n            - queries_count (int, optional): Number of queries to generate. Defaults to 3.\n            - retries (int, optional): Number of retries in case of failure. Defaults to 3.\n\n        Returns:\n            - list[str] | None: The generated list of Chroma queries, or None if unsuccessful.\n        \"\"\"\n\n        while retries > 0:\n            retries -= 1\n\n            prompt: str = ChromaLibrarianPromptCreator.create_prompt(\n                user_question,\n                prompt_template=DEFAULT_CHROMA_LIBRARIAN_PROMPT,\n                queries_count=queries_count,\n            )\n\n            try:\n                completion: openai_types.ChatCompletion = (\n                    self.client.chat.completions.create(\n                        model=self.model,\n                        response_format={\"type\": \"json_object\"},\n                        messages=[\n                            {\n                                \"role\": \"system\",\n                                \"content\": DEFAULT_CHROMA_LIBRARIAN_SYSTEM_PROMPT,\n                            },\n                            {\"role\": \"user\", \"content\": prompt},\n                        ],\n                    )\n                )\n                content: str | None = completion.choices[0].message.content\n                if not content:\n                    continue\n\n                content_json = json.loads(content)\n                content_model = OpenAIResponseContent(\n                    query_list=content_json[\"query_list\"]\n                )\n\n                if content:\n                    queries: list[str] = content_model.query_list\n                    if queries and len(queries) == queries_count:\n                        return queries\n\n            except Exception as e:\n                logging.error(f\"An error occurred: {e}\")\n\n        return None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe provided Python code defines a `ChromaLibrarian` class that serves as an interface for querying a Chroma database using OpenAI's GPT-3.5 Turbo model. The class is initialized with a `ChromaCollectionManager` for database interactions and an OpenAI model, with a default set to \"gpt-3.5-turbo-1106\". It includes three methods: `query_chroma`, `_query_collection`, and `_get_chroma_queries`. The `query_chroma` method processes a user's question to generate a list of queries through `_get_chroma_queries`, which constructs prompts for the OpenAI model and parses the JSON responses using the `OpenAIResponseContent` Pydantic model. The generated queries are then used by `_query_collection` to retrieve results from the Chroma database, including metadata and documents. The class is designed to handle errors and retry the query generation process, ensuring resilience against failures. Additionally, the code contains a commented-out schema for a potential function tool to query a \"chromadb\" vector database, which is not active in the current implementation.",
+    "children_ids": [
+        "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-OpenAIResponseContent",
+        "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian"
+    ]
+}

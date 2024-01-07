@@ -1,0 +1,48 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "update_all_with_graph_db",
+                    "as_name": null,
+                    "local_block_id": "postcode:app.py__*__MODULE__*__FUNCTION-update_all_with_graph_db"
+                },
+                {
+                    "name": "simple_chat",
+                    "as_name": null,
+                    "local_block_id": "postcode:app.py__*__MODULE__*__FUNCTION-simple_chat"
+                },
+                {
+                    "name": "setup_chroma",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:app.py__*__MODULE"
+        }
+    ],
+    "id": "main.py__*__MODULE",
+    "file_path": "main.py",
+    "parent_id": "",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 17,
+    "code_content": "from postcode import (\n    simple_chat,\n    setup_chroma,\n    update_all_with_graph_db,\n    ChromaCollectionManager,\n)\n\n\ndef main() -> None:\n    chroma_collection_manager: ChromaCollectionManager = update_all_with_graph_db()\n    # chroma_collection_manager = setup_chroma()\n    simple_chat(chroma_collection_manager)\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe Python script features a `main` function that creates a `ChromaCollectionManager` instance through `update_all_with_graph_db` from the `postcode` module and initiates a chat interface with `simple_chat`. It also includes a non-active alternative setup `setup_chroma`. The script is designed to be run directly or used as a module, as indicated by the `if __name__ == \"__main__\"` condition.",
+    "children_ids": [
+        "main.py__*__MODULE__*__STANDALONE_BLOCK-1",
+        "main.py__*__MODULE__*__FUNCTION-main"
+    ]
+}

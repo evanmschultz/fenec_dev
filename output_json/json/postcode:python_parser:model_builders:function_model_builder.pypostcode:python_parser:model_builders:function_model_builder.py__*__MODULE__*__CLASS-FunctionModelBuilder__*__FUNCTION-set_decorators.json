@@ -1,0 +1,20 @@
+{
+    "function_name": "set_decorators",
+    "docstring": "Adds decorator to the decorators list in the class model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_decorators",
+    "file_path": "postcode/python_parser/model_builders/function_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 53,
+    "end_line_num": 63,
+    "code_content": "\ndef set_decorators(\n    self, decorators: list[DecoratorModel] | None\n) -> \"FunctionModelBuilder\":\n    \"\"\"Adds decorator to the decorators list in the class model.\"\"\"\n    if decorators:\n        self.function_attributes.decorators = decorators\n    else:\n        self.function_attributes.decorators = None\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `set_decorators` method, part of a builder class, uses type hinting to optionally receive a list of `DecoratorModel` objects, assigns them to an attribute or sets it to `None` based on their presence, and returns the class instance to enable method chaining.",
+    "children_ids": []
+}

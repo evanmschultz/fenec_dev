@@ -1,0 +1,20 @@
+{
+    "function_name": "_query_collection",
+    "docstring": "Queries the Chroma collection manager with a list of queries.\n\nArgs:\n    - queries (list[str]): List of queries to use in the Chroma collection manager.\n    - n_results (int, optional): Number of results to return. Defaults to 3.\n\nReturns:\n    - chroma_types.QueryResult | None: The result of the Chroma query, or None if unsuccessful.",
+    "decorators": null,
+    "parameters": null,
+    "returns": " | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian__*__FUNCTION-_query_collection",
+    "file_path": "postcode/ai_services/librarians/chroma_librarians.py",
+    "parent_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian",
+    "block_type": "FUNCTION",
+    "start_line_num": 114,
+    "end_line_num": 136,
+    "code_content": "\ndef _query_collection(\n    self,\n    queries: list[str],\n    n_results: int = 3,\n) -> chroma_types.QueryResult | None:\n    \"\"\"\n        Queries the Chroma collection manager with a list of queries.\n\n        Args:\n            - queries (list[str]): List of queries to use in the Chroma collection manager.\n            - n_results (int, optional): Number of results to return. Defaults to 3.\n\n        Returns:\n            - chroma_types.QueryResult | None: The result of the Chroma query, or None if unsuccessful.\n        \"\"\"\n\n    return self.collection_manager.query_collection(\n        queries,\n        n_results=n_results,\n        include_in_result=[\"metadatas\", \"documents\"],\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_query_collection` method queries a Chroma collection manager, returning a `chroma_types.QueryResult` with metadata and documents, up to 3 by default, or `None` for no matches.",
+    "children_ids": []
+}

@@ -10,7 +10,6 @@
         "postcode:ai_services:summarizer:summarization_mapper.py__*__MODULE",
         "postcode:ai_services:summarizer:standard_summarization_manager.py__*__MODULE",
         "postcode:ai_services:summarizer:summarization_context.py__*__MODULE",
-        "postcode:ai_services:summarizer:temp.py__*__MODULE",
         "postcode:ai_services:summarizer:summarizer_assistant.py__*__MODULE",
         "postcode:ai_services:summarizer:openai_summarizer.py__*__MODULE"
     ],

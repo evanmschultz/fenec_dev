@@ -1,0 +1,20 @@
+{
+    "function_name": "build_children",
+    "docstring": "Builds the child models of the code block.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-build_children",
+    "file_path": "postcode/python_parser/model_builders/base_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 237,
+    "end_line_num": 248,
+    "code_content": "\ndef build_children(\n    self,\n) -> None:\n    \"\"\"Builds the child models of the code block.\"\"\"\n    if self.child_builders:\n        self.child_models = []\n        for child_builder in self.child_builders:\n            self.child_models.append(child_builder.build())\n            if child_builder.child_models:\n                self.child_models.extend(child_builder.child_models)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `build_children` method in a class iteratively constructs child models from a list of child builders (`self.child_builders`), appending each directly built model to `self.child_models` and recursively including any models built by the child builders of each child builder, effectively flattening the hierarchy of child models into a single list.",
+    "children_ids": []
+}

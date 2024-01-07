@@ -1,0 +1,67 @@
+{
+    "class_name": "DirectoryModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Model for a directory.\n\nAttributes:\n    - id (str): The unique identifier for the directory.\n    - block_type (BlockType): The type of code block that the directory represents.\n    - directory_name (str): The name of the directory.\n    - sub_directories_ids (list[str]): A list of the identifiers of the sub-directories of the directory.\n    - children_ids (list[str]): A list of the identifiers of the children of the directory.\n    - parent_id (str | None): The identifier of the parent (usually a directory).\n    - summary (str | None): A summary of the directory.\n\nMethods:\n    - `convert_to_metadata() -> dict[str, str | int]`:\n        Converts the directory model to a metadata dictionary for ChromaDB.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-DirectoryModel",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 465,
+    "end_line_num": 505,
+    "code_content": "\n\nclass DirectoryModel(BaseModel):\n    \"\"\"\n    Model for a directory.\n\n    Attributes:\n        - id (str): The unique identifier for the directory.\n        - block_type (BlockType): The type of code block that the directory represents.\n        - directory_name (str): The name of the directory.\n        - sub_directories_ids (list[str]): A list of the identifiers of the sub-directories of the directory.\n        - children_ids (list[str]): A list of the identifiers of the children of the directory.\n        - parent_id (str | None): The identifier of the parent (usually a directory).\n        - summary (str | None): A summary of the directory.\n\n    Methods:\n        - `convert_to_metadata() -> dict[str, str | int]`:\n            Converts the directory model to a metadata dictionary for ChromaDB.\n    \"\"\"\n\n    id: str\n    block_type: BlockType = BlockType.DIRECTORY\n    directory_name: str\n    sub_directories_ids: list[str]\n    children_ids: list[str]\n    parent_id: str | None\n    summary: str | None = None\n\n    def convert_to_metadata(self) -> dict[str, str | int]:\n        \"\"\"Converts the directory model to a metadata dictionary for ChromaDB.\"\"\"\n\n        return {\n            \"directory_name\": self.directory_name,\n            \"sub_directories\": str(self.sub_directories_ids)\n            if self.sub_directories_ids\n            else \"\",\n            \"children_ids\": self.model_dump_json() if self.children_ids else \"\",\n            \"parent_id\": self.parent_id if self.parent_id else \"\",\n            \"summary\": self.summary if self.summary else \"\",\n        }\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "field_validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\n\nThe `DirectoryModel` class, inheriting from `BaseModel`, represents a directory structure with attributes such as a unique identifier (`id`), type of code block (`block_type`), directory name (`directory_name`), lists of sub-directory and children identifiers (`sub_directories_ids`, `children_ids`), and an optional parent identifier and summary (`parent_id`, `summary`). It includes a method `convert_to_metadata` that outputs a metadata dictionary compatible with ChromaDB, containing the directory's name, sub-directory IDs, children IDs, parent ID, and summary, with appropriate conversions and default empty strings for missing values.",
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-DirectoryModel__*__FUNCTION-convert_to_metadata"
+    ]
+}

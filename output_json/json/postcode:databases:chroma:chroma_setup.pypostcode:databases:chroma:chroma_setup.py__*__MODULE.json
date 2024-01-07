@@ -1,0 +1,93 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "chromadb",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaClientHandler",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_client_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_client_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:chroma.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.types.postcode",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:postcode.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:databases:chroma:chroma_setup.py__*__MODULE",
+    "file_path": "postcode/databases/chroma/chroma_setup.py",
+    "parent_id": "postcode:databases:chroma__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 74,
+    "code_content": "import logging\n\nimport chromadb\nfrom postcode.databases.chroma.chromadb_client_manager import ChromaClientHandler\n\nfrom postcode.databases.chroma.chromadb_collection_manager import (\n    ChromaCollectionManager,\n)\n\nimport postcode.types.chroma as chroma_types\n\nfrom postcode.types.postcode import ModelType\n\n\ndef setup_chroma(collection_name: str = \"postcode\") -> ChromaCollectionManager:\n    \"\"\"\n    Sets up and returns a Chroma Collection Manager.\n\n    Args:\n        - collection_name (str, optional): Name of the Chroma collection. Defaults to \"postcode\".\n\n    Returns:\n        - ChromaCollectionManager: An instance of ChromaCollectionManager for the specified collection.\n    \"\"\"\n\n    chroma_settings = chroma_types.Settings(allow_reset=True)\n    chroma_client: chroma_types.ClientAPI = chromadb.PersistentClient(\n        settings=chroma_settings\n    )\n    chroma_client_manager = ChromaClientHandler(chroma_client)\n\n    chroma_collection: chroma_types.Collection = (\n        chroma_client_manager.get_or_create_collection(collection_name)\n    )\n    return ChromaCollectionManager(chroma_collection)\n\n\ndef setup_chroma_with_update(\n    models: list[ModelType], collection_name: str = \"postcode\"\n) -> ChromaCollectionManager:\n    \"\"\"\n    Sets up Chroma with model updates and return a Chroma Collection Manager.\n\n    Notes:\n        - This will wipe the existing Chroma collection and replace it with the provided models.\n\n    Args:\n        - models (list[ModelType]): List of models to upsert into the Chroma collection.\n        - collection_name (str, optional): Name of the Chroma collection. Defaults to \"postcode\".\n\n    Returns:\n        - ChromaCollectionManager: An instance of ChromaCollectionManager for the specified collection\n          with the provided models upserted.\n    \"\"\"\n\n    chroma_settings = chroma_types.Settings(allow_reset=True)\n    chroma_client: chroma_types.ClientAPI = chromadb.PersistentClient(\n        settings=chroma_settings\n    )\n    chroma_client_manager = ChromaClientHandler(chroma_client)\n\n    logging.debug(f\"Resetting Chroma client\")\n    if chroma_client_manager.reset_client():\n        logging.debug(\"Client reset\")\n\n    chroma_collection: chroma_types.Collection = (\n        chroma_client_manager.get_or_create_collection(collection_name)\n    )\n    chroma_collection_manager = ChromaCollectionManager(chroma_collection)\n    chroma_collection_manager.upsert_models(tuple(models))\n    logging.debug(f\"Upserted models to Chroma collection {chroma_collection.name}\")\n\n    return chroma_collection_manager\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe code comprises two functions: `setup_chroma` initializes a `ChromaCollectionManager` for a specified collection using `chromadb.PersistentClient` and `ChromaClientHandler`, while `setup_chroma_with_update` performs the same initialization, but also resets the Chroma client, upserts a list of `ModelType` models into the collection, and logs the operations, returning the collection manager for further use.",
+    "children_ids": [
+        "postcode:databases:chroma:chroma_setup.py__*__MODULE__*__FUNCTION-setup_chroma",
+        "postcode:databases:chroma:chroma_setup.py__*__MODULE__*__FUNCTION-setup_chroma_with_update"
+    ]
+}

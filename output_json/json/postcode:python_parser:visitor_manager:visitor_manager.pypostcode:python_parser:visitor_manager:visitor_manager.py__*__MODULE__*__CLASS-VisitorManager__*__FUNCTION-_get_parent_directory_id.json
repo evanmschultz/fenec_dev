@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_parent_directory_id",
+    "docstring": "Gets the parent id of the given directory.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_get_parent_directory_id",
+    "file_path": "postcode/python_parser/visitor_manager/visitor_manager.py",
+    "parent_id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 298,
+    "end_line_num": 307,
+    "code_content": "\ndef _get_parent_directory_id(self, directory_path: str) -> str | None:\n    \"\"\"Gets the parent id of the given directory.\"\"\"\n\n    parent_path: str = str(Path(directory_path).parent)\n    if parent_path == self.directory:\n        return None\n    else:\n        return DirectoryIDGenerationStrategy().generate_id(parent_path)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_get_parent_directory_id` method within a class leverages the `pathlib` library to extract the parent path of a specified directory and checks if it matches the class's root directory attribute `self.directory`. If the parent is not the root, it generates a unique ID for the parent using `DirectoryIDGenerationStrategy`; if it is the root, it returns `None`.",
+    "children_ids": []
+}

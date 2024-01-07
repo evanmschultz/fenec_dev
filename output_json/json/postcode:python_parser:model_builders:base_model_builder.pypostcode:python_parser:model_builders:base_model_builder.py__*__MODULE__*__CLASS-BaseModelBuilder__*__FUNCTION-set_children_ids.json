@@ -1,0 +1,20 @@
+{
+    "function_name": "set_children_ids",
+    "docstring": "Sets the children ids of the model instance.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Union[, , , ]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-set_children_ids",
+    "file_path": "postcode/python_parser/model_builders/base_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 248,
+    "end_line_num": 262,
+    "code_content": "\ndef set_children_ids(\n    self,\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Sets the children ids of the model instance.\"\"\"\n    self.common_attributes.children_ids = [\n        child.id for child in self.child_builders\n    ]\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `set_children_ids` method in a builder class hierarchy assigns the `children_ids` attribute of the instance's `common_attributes` to a list of ids extracted from `child_builders` using list comprehension. It returns the instance, typed as one of `BaseModelBuilder`, `ModuleModelBuilder`, `ClassModelBuilder`, or `FunctionModelBuilder`, enabling method chaining in a fluent interface design.",
+    "children_ids": []
+}

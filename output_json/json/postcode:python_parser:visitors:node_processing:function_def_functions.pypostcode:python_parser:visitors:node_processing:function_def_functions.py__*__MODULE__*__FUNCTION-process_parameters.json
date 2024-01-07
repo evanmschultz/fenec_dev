@@ -1,0 +1,92 @@
+{
+    "function_name": "process_parameters",
+    "docstring": "Processes libcst.Parameters node to create a ParameterListModel.\n\nExtracts parameters, keyword-only parameters, positional-only parameters, and special arguments (like *args and **kwargs)\nfrom the function definition and forms a model representing these parameters.\n\nArgs:\n    - node (libcst.Parameters): The parameters node from a function definition.\n\nReturns:\n    - ParameterListModel | None: A model representing the function's parameters, or None if there are no parameters.\n\nExample:\n    ```Python\n    parameters_model = process_parameters(function_node.params)\n    # Processes the function parameters and returns a parameter model.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ParameterListModel | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-process_parameters",
+    "file_path": "postcode/python_parser/visitors/node_processing/function_def_functions.py",
+    "parent_id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 69,
+    "end_line_num": 126,
+    "code_content": "\n\ndef process_parameters(\n    node: libcst.Parameters,\n) -> ParameterListModel | None:\n    \"\"\"\n    Processes libcst.Parameters node to create a ParameterListModel.\n\n    Extracts parameters, keyword-only parameters, positional-only parameters, and special arguments (like *args and **kwargs)\n    from the function definition and forms a model representing these parameters.\n\n    Args:\n        - node (libcst.Parameters): The parameters node from a function definition.\n\n    Returns:\n        - ParameterListModel | None: A model representing the function's parameters, or None if there are no parameters.\n\n    Example:\n        ```Python\n        parameters_model = process_parameters(function_node.params)\n        # Processes the function parameters and returns a parameter model.\n        ```\n    \"\"\"\n\n    params: list[ParameterModel] | None = (\n        _get_parameters_list(node.params) if node.params else []\n    )\n    kwonly_params: list[ParameterModel] | None = (\n        _get_parameters_list(node.kwonly_params) if node.kwonly_params else []\n    )\n    posonly_params: list[ParameterModel] | None = (\n        _get_parameters_list(node.posonly_params) if node.posonly_params else []\n    )\n\n    star_arg: ParameterModel | None = (\n        ParameterModel(\n            content=common_functions.extract_stripped_code_content(node.star_arg)\n        )\n        if node.star_arg and isinstance(node.star_arg, libcst.Param)\n        else None\n    )\n    star_kwarg: ParameterModel | None = (\n        ParameterModel(\n            content=common_functions.extract_stripped_code_content(node.star_kwarg)\n        )\n        if node.star_kwarg\n        else None\n    )\n\n    if params and kwonly_params and posonly_params and star_arg and star_kwarg:\n        return ParameterListModel(\n            params=params,\n            kwonly_params=kwonly_params,\n            posonly_params=posonly_params,\n            star_arg=star_arg,\n            star_kwarg=star_kwarg,\n        )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_get_parameters_list"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ParameterModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        }
+    ],
+    "summary": "\nThe `process_parameters` function uses the `libcst` library to parse a function's parameters into a `ParameterListModel`, which includes regular, keyword-only, positional-only parameters, and special arguments (`*args` and `**kwargs`). It leverages helper functions for extraction and type hints to ensure proper structure, returning the model or `None` if no parameters are detected.",
+    "children_ids": []
+}

@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_import_names",
+    "docstring": "Returns a list of import names for the given import model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[str]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater__*__FUNCTION-_get_import_names",
+    "file_path": "postcode/python_parser/visitor_manager/import_and_dependency_updater.py",
+    "parent_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-ImportUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 156,
+    "end_line_num": 160,
+    "code_content": "\ndef _get_import_names(self, import_model: ImportModel) -> list[str]:\n    \"\"\"Returns a list of import names for the given import model.\"\"\"\n    return [name.name for name in import_model.import_names]\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_get_import_names` method in the code employs list comprehension to compile a list of strings from the `name` attributes of the `import_names` collection within an `ImportModel` instance, effectively extracting the names of imports.",
+    "children_ids": []
+}

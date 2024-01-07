@@ -1,0 +1,20 @@
+{
+    "function_name": "_convert_decorators_to_metadata",
+    "docstring": "Converts the decorators to a metadata string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassSpecificAttributes__*__FUNCTION-_convert_decorators_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-ClassSpecificAttributes",
+    "block_type": "FUNCTION",
+    "start_line_num": 265,
+    "end_line_num": 271,
+    "code_content": "# attributes: list[dict] | None = None\n\ndef _convert_decorators_to_metadata(self) -> str:\n    \"\"\"Converts the decorators to a metadata string.\"\"\"\n    decorators_str: str = self.model_dump_json() if self.decorators else \"\"\n    return f\"{decorators_str}\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_convert_decorators_to_metadata` method in a class checks for the existence of `self.decorators` and serializes them to a JSON string using `model_dump_json` if they are present, otherwise returns an empty string, with the result formatted using an f-string.",
+    "children_ids": []
+}

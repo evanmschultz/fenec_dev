@@ -1,0 +1,20 @@
+{
+    "function_name": "set_bases",
+    "docstring": "Sets the list of base classes to the class model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder__*__FUNCTION-set_bases",
+    "file_path": "postcode/python_parser/model_builders/class_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 62,
+    "end_line_num": 67,
+    "code_content": "\ndef set_bases(self, base_classes: list[str] | None) -> \"ClassModelBuilder\":\n    \"\"\"Sets the list of base classes to the class model.\"\"\"\n    self.class_attributes.bases = base_classes\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `set_bases` method of the `ClassModelBuilder` class accepts an optional list of strings representing base classes or `None`, sets this list to the `bases` attribute of the `class_attributes` instance variable, and facilitates method chaining by returning the `ClassModelBuilder` instance.",
+    "children_ids": []
+}

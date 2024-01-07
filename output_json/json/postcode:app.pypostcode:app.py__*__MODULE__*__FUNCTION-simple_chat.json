@@ -1,0 +1,84 @@
+{
+    "function_name": "simple_chat",
+    "docstring": "Creates a simple chat app in the terminal using the OpenAI chat agent.\n\nArgs:\n    - chroma_collection_manager (ChromaCollectionManager): The Chroma collection manager instance.\n\nExamples:\n    ```Python\n    from postcode import simple_chat\n    from postcode import setup_chroma\n\n    chroma_collection_manager = setup_chroma()\n    simple_chat(chroma_collection_manager)\n    # Now you can ask questions about Postcode in the terminal!\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:app.py__*__MODULE__*__FUNCTION-simple_chat",
+    "file_path": "postcode/app.py",
+    "parent_id": "postcode:app.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 54,
+    "end_line_num": 83,
+    "code_content": "\n\ndef simple_chat(chroma_collection_manager: ChromaCollectionManager) -> None:\n    \"\"\"\n    Creates a simple chat app in the terminal using the OpenAI chat agent.\n\n    Args:\n        - chroma_collection_manager (ChromaCollectionManager): The Chroma collection manager instance.\n\n    Examples:\n        ```Python\n        from postcode import simple_chat\n        from postcode import setup_chroma\n\n        chroma_collection_manager = setup_chroma()\n        simple_chat(chroma_collection_manager)\n        # Now you can ask questions about Postcode in the terminal!\n        ```\n    \"\"\"\n\n    setup_logging()\n    console = Console()\n    chroma_librarian = ChromaLibrarian(chroma_collection_manager)\n    openai_chat_agent = OpenAIChatAgent(chroma_librarian)\n\n    try:\n        _cli_loop(openai_chat_agent, console)\n    finally:\n        console.print(\"Exiting the simple chat app.\")\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:app.py__*__MODULE__*__FUNCTION-_cli_loop"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "setup_logging",
+                    "as_name": null,
+                    "local_block_id": "postcode:utilities:logger:logging_config.py__*__MODULE__*__FUNCTION-setup_logging"
+                }
+            ],
+            "imported_from": "postcode.utilities.logger.logging_config",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:utilities:logger:logging_config.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "postcode.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaLibrarian",
+                    "as_name": null,
+                    "local_block_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian"
+                }
+            ],
+            "imported_from": "postcode.ai_services.librarians.chroma_librarians",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OpenAIChatAgent",
+                    "as_name": null,
+                    "local_block_id": "postcode:ai_services:chat:openai_agents.py__*__MODULE__*__CLASS-OpenAIChatAgent"
+                }
+            ],
+            "imported_from": "postcode.ai_services.chat.openai_agents",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:chat:openai_agents.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Console",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "rich.console",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe `simple_chat` function initializes a terminal-based chat application, configuring logging and creating a `Console` for output. It uses `ChromaLibrarian` and `OpenAIChatAgent` to handle user interactions within a CLI loop, and ensures a clean exit with a farewell message.",
+    "children_ids": []
+}

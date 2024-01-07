@@ -1,0 +1,20 @@
+{
+    "function_name": "_upsert_vertex",
+    "docstring": "Upserts a vertex (document) into the specified collection in the ArangoDB database.\n\nArgs:\n    - model (ModelType): The model representing the vertex.\n    - collection_name (str): The name of the collection.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-_upsert_vertex",
+    "file_path": "postcode/databases/arangodb/arangodb_manager.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 94,
+    "end_line_num": 127,
+    "code_content": "\ndef _upsert_vertex(self, model: ModelType, collection_name: str) -> None:\n    \"\"\"\n        Upserts a vertex (document) into the specified collection in the ArangoDB database.\n\n        Args:\n            - model (ModelType): The model representing the vertex.\n            - collection_name (str): The name of the collection.\n        \"\"\"\n\n    model_data: dict[str, Any] = model.model_dump()\n    model_data[\"_key\"] = model.id\n\n    try:\n        self.db_connector.ensure_collection(\n            collection_name, model.model_json_schema()\n        )\n        query: str = f\"\"\"\n            UPSERT {{_key: @key}}\n            INSERT @doc\n            UPDATE @doc\n            IN {collection_name}\n            \"\"\"\n        bind_vars: dict[str, Any] = {\"key\": model.id, \"doc\": model_data}\n        self.db_connector.db.aql.execute(query, bind_vars=bind_vars)\n\n        if not isinstance(model, ModuleModel) and model.parent_id:\n            parent_type: str = self._get_collection_name_from_id(model.parent_id)\n            self._upsert_edge(\n                model.id, model.parent_id, collection_name, parent_type\n            )\n    except Exception as e:\n        logging.error(f\"Error upserting {collection_name} vertex (ArangoDB): {e}\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_upsert_vertex` method performs an AQL `UPSERT` operation to insert or update a vertex in an ArangoDB collection, ensuring the collection's existence and schema compliance. It converts the `model` to a dictionary using `model.model_dump()`, sets the model's `id` as the document key, and handles exceptions by logging. If the model is not a `ModuleModel` and has a parent ID, it calls `_upsert_edge` to create an edge to the parent vertex.",
+    "children_ids": []
+}

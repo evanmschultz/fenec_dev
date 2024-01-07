@@ -1,0 +1,20 @@
+{
+    "function_name": "convert_parameters_to_metadata",
+    "docstring": "Converts the parameter list to a metadata string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-ParameterListModel__*__FUNCTION-convert_parameters_to_metadata",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE__*__CLASS-ParameterListModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 95,
+    "end_line_num": 99,
+    "code_content": "\ndef convert_parameters_to_metadata(self) -> str:\n    \"\"\"Converts the parameter list to a metadata string.\"\"\"\n    return self.model_dump_json()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `convert_parameters_to_metadata` method in an unspecified class serializes model parameters to a JSON string as metadata using the `model_dump_json` method, with the JSON structure and metadata application not detailed.",
+    "children_ids": []
+}

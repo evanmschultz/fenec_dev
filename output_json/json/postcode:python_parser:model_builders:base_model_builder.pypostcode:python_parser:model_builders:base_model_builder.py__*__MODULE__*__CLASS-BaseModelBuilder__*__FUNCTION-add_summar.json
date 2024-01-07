@@ -1,0 +1,20 @@
+{
+    "function_name": "add_summary",
+    "docstring": "Adds a summary to the model instance.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Union[, , , ]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-add_summary",
+    "file_path": "postcode/python_parser/model_builders/base_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 149,
+    "end_line_num": 162,
+    "code_content": "\ndef add_summary(\n    self, summary: str\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Adds a summary to the model instance.\"\"\"\n    self.common_attributes.summary = summary\n    # print(f\"Added summary to {self.common_attributes.id}\")\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `add_summary` method is a chainable operation that sets the `summary` field of an instance's `common_attributes` to a given string and is intended for use with different model builder classes, as inferred from the Union return type hint.",
+    "children_ids": []
+}

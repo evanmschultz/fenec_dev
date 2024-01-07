@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_local_import_summary",
+    "docstring": "Retrieves the summary of a local import to be used in the prompt.\n\nArgs:\n    - dependency (ImportModel): The import to retrieve the summary for.\n\nReturns:\n    - str | None: The summary of the local import or None if the import is not local.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_get_local_import_summary",
+    "file_path": "postcode/ai_services/summarizer/graph_db_summarization_manager.py",
+    "parent_id": "postcode:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 319,
+    "end_line_num": 342,
+    "code_content": "\ndef _get_local_import_summary(self, dependency: ImportModel) -> str | None:\n    \"\"\"\n        Retrieves the summary of a local import to be used in the prompt.\n\n        Args:\n            - dependency (ImportModel): The import to retrieve the summary for.\n\n        Returns:\n            - str | None: The summary of the local import or None if the import is not local.\n        \"\"\"\n\n    for model in self.all_models_tuple:\n        if model.id == dependency.local_module_id:\n            import_summary: str | None = None\n            if model.summary:\n                import_summary = model.summary\n            else:\n                if not isinstance(model, DirectoryModel):\n                    import_summary = f\"Imported module ({dependency.local_module_id}) code content:\\n{model.code_content}\\n\"\n\n            return import_summary\n    return None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_get_local_import_summary` method in the code searches through `self.all_models_tuple` for a model with an ID matching the `local_module_id` of an `ImportModel` instance. It returns the model's existing summary or, if absent and the model isn't a `DirectoryModel`, the model's code content. If no matching model is found or the model is a directory, the method returns `None`.",
+    "children_ids": []
+}

@@ -1,0 +1,109 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OpenAI",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "openai",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:chroma.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "postcode.types.openai",
+                    "as_name": "openai_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:types:openai.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaLibrarian",
+                    "as_name": null,
+                    "local_block_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian"
+                }
+            ],
+            "imported_from": "postcode.ai_services.librarians.chroma_librarians",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DEFAULT_PROMPT_TEMPLATE",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DEFAULT_SYSTEM_PROMPT",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.ai_services.chat.prompts.prompts",
+            "import_module_type": "LOCAL",
+            "local_module_id": "postcode:ai_services:chat:prompts:prompts.py__*__MODULE"
+        }
+    ],
+    "id": "postcode:ai_services:chat:openai_agents.py__*__MODULE",
+    "file_path": "postcode/ai_services/chat/openai_agents.py",
+    "parent_id": "postcode:ai_services:chat__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 148,
+    "code_content": "import logging\nfrom typing import Sequence\nfrom openai import OpenAI\n\nimport postcode.types.chroma as chroma_types\nimport postcode.types.openai as openai_types\n\nfrom postcode.ai_services.librarians.chroma_librarians import ChromaLibrarian\nfrom postcode.ai_services.chat.prompts.prompts import (\n    DEFAULT_PROMPT_TEMPLATE,\n    DEFAULT_SYSTEM_PROMPT,\n)\n\n\nclass OpenAIChatAgent:\n    \"\"\"\n    Represents an agent that interacts with the OpenAI API for generating responses to user questions.\n\n    Args:\n        - chroma_librarian (ChromaLibrarian): The librarian handling Chroma queries.\n        - model (str, optional): The OpenAI model to use. Defaults to \"gpt-4-1106-preview\".\n\n    Methods:\n        - get_response(user_question, prompt_template=DEFAULT_PROMPT_TEMPLATE):\n            Generates a response to the user's question using the specified prompt template.\n\n        - _format_prompt(context, user_question, prompt_template):\n            Formats the prompt for the OpenAI API based on the context and user's question.\n\n    Attributes:\n        - chroma_librarian (ChromaLibrarian): The Chroma librarian instance.\n        - model (str): The OpenAI model being used.\n        - client: The OpenAI API client.\n    \"\"\"\n\n    def __init__(\n        self,\n        chroma_librarian: ChromaLibrarian,\n        model: str = \"gpt-4-1106-preview\",\n    ) -> None:\n        self.chroma_librarian: ChromaLibrarian = chroma_librarian\n        self.model: str = model\n        self.client = OpenAI()\n\n    def get_response(\n        self, user_question: str, prompt_template: str = DEFAULT_PROMPT_TEMPLATE\n    ) -> str | None:\n        \"\"\"\n        Generates a response to the user's question using the OpenAI API.\n\n        Args:\n            - user_question (str): The user's question.\n            - prompt_template (str, optional): The template for formatting the prompt.\n                Defaults to DEFAULT_PROMPT_TEMPLATE.\n\n        Returns:\n            - str | None: The generated response or None if the response could not be generated.\n\n        Raises:\n            - ValueError: If user_question is empty.\n            - RuntimeError: If there is an issue with the OpenAI API request.\n            - KeyError: If the prompt template is missing required keys.\n\n        Example:\n            ```python\n            agent = OpenAIChatAgent(chroma_librarian, model=\"gpt-4-1106-preview\")\n            try:\n                response = agent.get_response(\"What is the capital of France?\")\n                print(response)\n            except ValueError as ve:\n                print(f\"ValueError: {ve}\")\n            except RuntimeError as re:\n                print(f\"RuntimeError: {re}\")\n            except KeyError as ke:\n                print(f\"KeyError: {ke}\")\n            ```\n        \"\"\"\n        if not user_question:\n            raise ValueError(\"User question cannot be empty.\")\n\n        try:\n            chroma_results: chroma_types.QueryResult | None = (\n                self.chroma_librarian.query_chroma(user_question)\n            )\n\n            if not chroma_results:\n                return \"I don't know how to answer that question.\"\n\n            documents: list[list[str]] | None = chroma_results[\"documents\"]\n\n            if not documents:\n                return \"I don't know how to answer that question.\"\n\n            context: str = \"\"\n            for document in documents:\n                context += \"\\n\".join(document) + \"\\n\"\n\n            prompt: str = self._format_prompt(context, user_question, prompt_template)\n\n            messages: Sequence[dict[str, str]] = [\n                {\"role\": \"system\", \"content\": DEFAULT_SYSTEM_PROMPT},\n                {\"role\": \"user\", \"content\": prompt},\n            ]\n\n            response: openai_types.ChatCompletion = self.client.chat.completions.create(\n                model=self.model,\n                messages=messages,  # type: ignore # FIXME: fix type hinting error\n                temperature=0.1,\n                # response_format={\"type\": \"json_object\"},\n            )\n            return response.choices[0].message.content\n\n        except Exception as e:\n            raise RuntimeError(f\"Error interacting with OpenAI API: {e}\") from e\n\n    def _format_prompt(\n        self,\n        context: str,\n        user_question: str,\n        prompt_template: str,\n    ) -> str:\n        \"\"\"\n        Formats the prompt for the OpenAI API based on the provided context, user's question, and template.\n\n        Args:\n            - context (str): The context derived from Chroma query results.\n            - user_question (str): The user's question.\n            - prompt_template (str): The template for formatting the prompt.\n\n        Returns:\n            - str: The formatted prompt.\n\n        Raises:\n            - KeyError: If the prompt template is missing required keys.\n\n        Example:\n            ```python\n            prompt = agent._format_prompt(\"Context here\", \"What is the meaning of life?\", \"Template {context} {user_question}\")\n            print(prompt)\n            ```\n        \"\"\"\n\n        try:\n            return prompt_template.format(context=context, user_question=user_question)\n\n        except KeyError as e:\n            raise KeyError(f\"Prompt template is missing the following key: {e}\") from e\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe `OpenAIChatAgent` class, defined in the `postcode.ai_services.chat.openai_agents` module, serves as an interface to the OpenAI API, specifically designed to generate responses to user questions. It requires a `ChromaLibrarian` instance to handle Chroma queries and allows the specification of an OpenAI model, defaulting to \"gpt-4-1106-preview\". The class provides two main methods: `get_response`, which takes a user's question and an optional prompt template to produce a response using the OpenAI API, and `_format_prompt`, which constructs the prompt string from the context, user question, and a template. The `get_response` method performs a Chroma query, formats the prompt, and sends it to the OpenAI API, handling potential errors such as empty questions or API issues. The class also encapsulates attributes for the Chroma librarian, the chosen model, and the OpenAI API client.",
+    "children_ids": [
+        "postcode:ai_services:chat:openai_agents.py__*__MODULE__*__CLASS-OpenAIChatAgent"
+    ]
+}

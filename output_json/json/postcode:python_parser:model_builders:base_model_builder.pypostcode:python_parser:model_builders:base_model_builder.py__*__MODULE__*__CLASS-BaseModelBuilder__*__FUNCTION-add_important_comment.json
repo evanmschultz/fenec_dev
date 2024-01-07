@@ -1,0 +1,20 @@
+{
+    "function_name": "add_important_comment",
+    "docstring": "Adds an important comment to the model instance.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Union[, , , ]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-add_important_comment",
+    "file_path": "postcode/python_parser/model_builders/base_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 135,
+    "end_line_num": 149,
+    "code_content": "\ndef add_important_comment(\n    self, comment: CommentModel\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"Adds an important comment to the model instance.\"\"\"\n    if not self.common_attributes.important_comments:\n        self.common_attributes.important_comments = []\n    self.common_attributes.important_comments.append(comment)\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `add_important_comment` method, likely part of a model-building class hierarchy, accepts a `CommentModel` instance, appends it to the `important_comments` list within the `common_attributes` of the model instance, initializing the list if necessary. It returns the model instance, with return type hints indicating polymorphism across various builder subclasses such as `BaseModelBuilder`, `ModuleModelBuilder`, `ClassModelBuilder`, and `FunctionModelBuilder`.",
+    "children_ids": []
+}

@@ -1,0 +1,57 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "RichHandler",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "rich.logging",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Syntax",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "rich.syntax",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "id": "postcode:utilities:logger:logging_config.py__*__MODULE",
+    "file_path": "postcode/utilities/logger/logging_config.py",
+    "parent_id": "postcode:utilities:logger__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 69,
+    "code_content": "import logging\n\nfrom rich.logging import RichHandler\nfrom rich.syntax import Syntax\n\n\ndef setup_logging(level=logging.INFO) -> None:\n    \"\"\"\n    Configures the logging system to use RichSyntaxHandler for output.\n\n    This function sets up logging with a specific log level and format. It utilizes the RichSyntaxHandler to support rich text and syntax highlighting in log outputs.\n\n    Args:\n        level (int, optional): The logging level to set for the root logger. Defaults to logging.INFO.\n\n    Example:\n        >>> setup_logging(logging.DEBUG)\n        # Configures logging at DEBUG level with RichSyntaxHandler.\n    \"\"\"\n\n    format_str = \"%(message)s\"\n    logging.basicConfig(level=level, format=format_str, handlers=[RichSyntaxHandler()])\n\n\nclass RichSyntaxHandler(RichHandler):\n    \"\"\"\n    A custom logging handler that extends RichHandler to add syntax highlighting.\n\n    This handler checks if the log record contains a 'syntax_highlight' attribute and, if so, uses 'rich.syntax.Syntax' to render the message with Python syntax highlighting.\n\n    Inherits:\n        RichHandler: The base handler provided by the rich library for rich text formatting.\n    \"\"\"\n\n    def emit(self, record) -> None:\n        \"\"\"\n        Emits a logging record.\n\n        If the record has the 'syntax_highlight' attribute set to True, it renders the 'content' attribute of the record with syntax highlighting. Otherwise, it falls back to the standard behavior of RichHandler.\n\n        Args:\n            record: The logging record to emit.\n\n        Example:\n            # Assuming `logger` is a logger instance\n            >>> logger.info(\"Regular log message\")\n            # Outputs a regular log message.\n\n            >>> logger.info(\"Highlighted log message\", extra={\"syntax_highlight\": True, \"content\": \"print('Hello, world!')\"})\n            # Outputs the message with syntax highlighting.\n        \"\"\"\n\n        try:\n            if hasattr(record, \"syntax_highlight\") and getattr(\n                record, \"syntax_highlight\"\n            ):\n                content: str = getattr(record, \"content\", \"\")\n                if isinstance(content, str):\n                    syntax = Syntax(\n                        content, \"python\", theme=\"material\", line_numbers=True\n                    )\n                    self.console.print(syntax)\n                return\n\n        except Exception as e:\n            self.handleError(record)\n\n        super().emit(record)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\n\nThe provided Python code consists of a module that enhances the logging capabilities by integrating rich text and syntax highlighting features from the 'rich' library. The `setup_logging` function configures the root logger to use a custom handler, `RichSyntaxHandler`, with a specified log level, defaulting to `logging.INFO`. The `RichSyntaxHandler` class, inheriting from `RichHandler`, overrides the `emit` method to check for a 'syntax_highlight' attribute in the log record. If present and set to True, it renders the log message with Python syntax highlighting using the `rich.syntax.Syntax` class, otherwise, it defaults to the standard `RichHandler` behavior. This setup allows for more readable and visually appealing log outputs, especially useful for debugging and monitoring applications where code snippets are logged.",
+    "children_ids": [
+        "postcode:utilities:logger:logging_config.py__*__MODULE__*__FUNCTION-setup_logging",
+        "postcode:utilities:logger:logging_config.py__*__MODULE__*__CLASS-RichSyntaxHandler"
+    ]
+}

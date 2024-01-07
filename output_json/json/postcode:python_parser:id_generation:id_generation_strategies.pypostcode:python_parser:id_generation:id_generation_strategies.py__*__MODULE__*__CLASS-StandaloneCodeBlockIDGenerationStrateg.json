@@ -1,0 +1,26 @@
+{
+    "class_name": "StandaloneCodeBlockIDGenerationStrategy",
+    "decorators": null,
+    "bases": [
+        "IDGenerationStrategy"
+    ],
+    "docstring": "ID generation strategy for standalone code blocks.",
+    "keywords": null,
+    "id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-StandaloneCodeBlockIDGenerationStrategy",
+    "file_path": "postcode/python_parser/id_generation/id_generation_strategies.py",
+    "parent_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 94,
+    "end_line_num": 112,
+    "code_content": "\n\nclass StandaloneCodeBlockIDGenerationStrategy(IDGenerationStrategy):\n    \"\"\"ID generation strategy for standalone code blocks.\"\"\"\n\n    @staticmethod\n    def generate_id(parent_id: str, count: int) -> str:\n        \"\"\"\n        Generates an ID for a standalone code block based on the given parent ID and a count.\n\n        Args:\n            - parent_id (str): The ID of the parent (typically a module).\n            - count (int): A unique count or index for the standalone block within its parent.\n\n        Returns:\n            - str: The generated ID, incorporating the parent ID and the count.\n        \"\"\"\n        return f\"{parent_id}__*__STANDALONE_BLOCK-{count}\"\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-IDGenerationStrategy"
+        }
+    ],
+    "summary": "\nThe `StandaloneCodeBlockIDGenerationStrategy` class, a subclass of `IDGenerationStrategy`, encapsulates a static method `generate_id`. This method leverages f-string syntax to craft a structured identifier for standalone code blocks, merging the parent ID with a delimiter `__*__` and a \"STANDALONE_BLOCK-\" prefix, succeeded by a sequential count.",
+    "children_ids": [
+        "postcode:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-StandaloneCodeBlockIDGenerationStrategy__*__FUNCTION-generate_id"
+    ]
+}

@@ -1,0 +1,141 @@
+{
+    "function_name": "logging_decorator",
+    "docstring": "A decorator for adding enhanced logging to functions, with optional syntax highlighting.\n\nThis decorator logs the call to the decorated function at the specified logging level. If syntax_highlighting is enabled and the first argument of the function is a libcst.CSTNode, the decorator logs the node's content with syntax highlighting.\n\nArgs:\n    level (int): The logging level. Defaults to logging.DEBUG.\n    message (str | None): Custom log message. If None, a default message is generated.\n    syntax_highlighting (bool): If True, enables syntax highlighting for libcst.CSTNode arguments.\n\nReturns:\n    Callable: The decorated function with enhanced logging capability.\n\nExample:\n    >>> @logging_decorator(level=logging.INFO, message=\"Function start\", syntax_highlighting=True)\n    >>> def sample_function(arg1):\n    >>>     pass\n    # This decorates 'sample_function' with enhanced logging at INFO level.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Callable",
+    "is_method": false,
+    "is_async": false,
+    "id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator",
+    "file_path": "postcode/utilities/logger/decorators.py",
+    "parent_id": "postcode:utilities:logger:decorators.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 12,
+    "end_line_num": 65,
+    "code_content": "\n\ndef logging_decorator(\n    level=logging.DEBUG,\n    *,\n    message: str | None = None,\n    syntax_highlighting: bool = False,\n) -> Callable:\n    \"\"\"\n    A decorator for adding enhanced logging to functions, with optional syntax highlighting.\n\n    This decorator logs the call to the decorated function at the specified logging level. If syntax_highlighting is enabled and the first argument of the function is a libcst.CSTNode, the decorator logs the node's content with syntax highlighting.\n\n    Args:\n        level (int): The logging level. Defaults to logging.DEBUG.\n        message (str | None): Custom log message. If None, a default message is generated.\n        syntax_highlighting (bool): If True, enables syntax highlighting for libcst.CSTNode arguments.\n\n    Returns:\n        Callable: The decorated function with enhanced logging capability.\n\n    Example:\n        >>> @logging_decorator(level=logging.INFO, message=\"Function start\", syntax_highlighting=True)\n        >>> def sample_function(arg1):\n        >>>     pass\n        # This decorates 'sample_function' with enhanced logging at INFO level.\n    \"\"\"\n\n    def decorator(func):\n        @wraps(func)\n        def wrapper(*args, **kwargs):\n            log_message: str = (\n                message if message else (f\"Calling function: {func.__name__}\")\n            )\n            frame_info: inspect.FrameInfo = inspect.stack()[1]\n            caller_info: LoggingCallerInfo = _get_caller_info(frame_info)\n            code_content: str = _gather_code_content(syntax_highlighting, args)\n            logger: Logger = _get_logger(caller_info.caller_module_name)\n\n            _handle_logging(\n                logger,\n                caller_info,\n                level,\n                log_message,\n                syntax_highlighting,\n                code_content,\n            )\n\n            return func(*args, **kwargs)\n\n        return wrapper\n\n    return decorator\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_get_caller_info"
+        },
+        {
+            "code_block_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_get_logger"
+        },
+        {
+            "code_block_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_gather_code_content"
+        },
+        {
+            "code_block_id": "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_handle_logging"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "LoggingCallerInfo",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "postcode.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "wraps",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "functools",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "inspect",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FrameInfo",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "inspect",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "LogRecord",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Callable",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\n\nThe `logging_decorator` function in the provided code is a Python decorator designed to augment other functions with advanced logging capabilities. It accepts parameters for setting the logging level, a custom log message, and an option to enable syntax highlighting for arguments of type `libcst.CSTNode`. The decorator uses the `@wraps` decorator from `functools` to keep the wrapped function's metadata intact. It employs the `inspect` module to retrieve the caller's context and constructs a log message, either custom or default. The `_handle_logging` helper function is then called to perform the logging, which includes the caller's module name and the specified logging level. The decorator ensures that the enhanced function retains its original interface and behavior while providing detailed logging information, including optional syntax-highlighted code content if the first argument is a `libcst.CSTNode`. The logging is executed before the original function call, which is then invoked with its original arguments and keyword arguments.",
+    "children_ids": [
+        "postcode:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator__*__FUNCTION-decorator"
+    ]
+}

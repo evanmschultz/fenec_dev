@@ -1,0 +1,28 @@
+{
+    "function_name": "build",
+    "docstring": "Creates a StandaloneCodeBlockModel instance after building and setting the children models.",
+    "decorators": [
+        {
+            "content": "@logging_decorator(message=\"Building standalone code block model\")",
+            "decorator_name": "logging_decorator",
+            "decorator_args": [
+                "message=\"Building standalone code block model\""
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "StandaloneCodeBlockModel",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder__*__FUNCTION-build",
+    "file_path": "postcode/python_parser/model_builders/standalone_block_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 55,
+    "end_line_num": 63,
+    "code_content": "\n@logging_decorator(message=\"Building standalone code block model\")\ndef build(self) -> StandaloneCodeBlockModel:\n    \"\"\"Creates a StandaloneCodeBlockModel instance after building and setting the children models.\"\"\"\n    return StandaloneCodeBlockModel(\n        **self._get_common_attributes(),\n        **self._get_standalone_block_specific_attributes(),\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `build` function, adorned with a `logging_decorator`, synthesizes a `StandaloneCodeBlockModel` by amalgamating attributes from two auxiliary functions, encapsulating both shared and exclusive model characteristics.",
+    "children_ids": []
+}

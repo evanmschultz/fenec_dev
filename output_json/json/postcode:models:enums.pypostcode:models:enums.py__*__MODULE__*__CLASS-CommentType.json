@@ -1,0 +1,36 @@
+{
+    "class_name": "CommentType",
+    "decorators": null,
+    "bases": [
+        "str",
+        "Enum"
+    ],
+    "docstring": "Enum representing the different types of important comments.",
+    "keywords": null,
+    "id": "postcode:models:enums.py__*__MODULE__*__CLASS-CommentType",
+    "file_path": "postcode/models/enums.py",
+    "parent_id": "postcode:models:enums.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 13,
+    "end_line_num": 34,
+    "code_content": "\n\nclass CommentType(str, Enum):\n    \"\"\"Enum representing the different types of important comments.\"\"\"\n\n    TODO = \"TODO\"\n    FIXME = \"FIXME\"\n    NOTE = \"NOTE\"\n    HACK = \"HACK\"\n    XXX = \"XXX\"\n    REVIEW = \"REVIEW\"\n    OPTIMIZE = \"OPTIMIZE\"\n    CHANGED = \"CHANGED\"\n    QUESTION = \"QUESTION\"\n    Q = \"Q\"\n    DEPRECATED = \"@deprecated\"\n    NOSONAR = \"NOSONAR\"\n    TODO_FIXME = \"TODO-FIXME\"\n\n    def __str__(self) -> str:\n        return self.value\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "Enum",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "enum",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe `CommentType` class is a specialized enumeration, inheriting from `str` and `Enum`, which defines a set of constants representing standard comment tags such as TODO, FIXME, and NOTE used in code annotations. It also overrides the `__str__` method to return the enum's value as a string, facilitating its use in string contexts.",
+    "children_ids": [
+        "postcode:models:enums.py__*__MODULE__*__CLASS-CommentType__*__FUNCTION-__str__"
+    ]
+}

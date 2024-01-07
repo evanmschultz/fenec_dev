@@ -8,6 +8,6 @@
         "postcode:types:openai.py__*__MODULE",
         "postcode:types:chroma.py__*__MODULE"
     ],
-    "parent_id": null,
+    "parent_id": "postcode__*__DIRECTORY",
     "summary": null
 }

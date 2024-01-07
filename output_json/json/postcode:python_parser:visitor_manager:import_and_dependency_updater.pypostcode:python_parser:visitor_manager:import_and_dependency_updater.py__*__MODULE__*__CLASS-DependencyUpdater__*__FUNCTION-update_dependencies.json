@@ -1,0 +1,26 @@
+{
+    "function_name": "update_dependencies",
+    "docstring": "Updates the dependencies in the module.\n\nArgs:\n    - model_builder (ModuleModelBuilder): The module model builder to update the dependencies for.\n\nReturns:\n    - None\n\nExample:\n    ```Python\n    model_builder = ModuleModelBuilder()\n\n    DependencyUpdater.update_dependencies(model_builder)\n    ```",
+    "decorators": [
+        {
+            "content": "@staticmethod",
+            "decorator_name": "staticmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-DependencyUpdater__*__FUNCTION-update_dependencies",
+    "file_path": "postcode/python_parser/visitor_manager/import_and_dependency_updater.py",
+    "parent_id": "postcode:python_parser:visitor_manager:import_and_dependency_updater.py__*__MODULE__*__CLASS-DependencyUpdater",
+    "block_type": "FUNCTION",
+    "start_line_num": 319,
+    "end_line_num": 375,
+    "code_content": "\n@staticmethod\ndef update_dependencies(model_builder: ModuleModelBuilder) -> None:\n    \"\"\"\n        Updates the dependencies in the module.\n\n        Args:\n            - model_builder (ModuleModelBuilder): The module model builder to update the dependencies for.\n\n        Returns:\n            - None\n\n        Example:\n            ```Python\n            model_builder = ModuleModelBuilder()\n\n            DependencyUpdater.update_dependencies(model_builder)\n            ```\n        \"\"\"\n\n    import_model_list: list[\n        ImportModel\n    ] | None = model_builder.module_attributes.imports\n    if model_builder.child_builders:\n        for child_builder in model_builder.child_builders:\n            if (\n                not child_builder.common_attributes.dependencies\n                or not import_model_list\n            ):\n                continue\n\n            dependencies_to_process: tuple[\n                ImportModel | DependencyModel, ...\n            ] = tuple(child_builder.common_attributes.dependencies)\n            imports_to_process: tuple[ImportModel, ...] = tuple(import_model_list)\n            for dependency in dependencies_to_process:\n                if isinstance(dependency, DependencyModel):\n                    continue\n\n                dependency_import_names: list[str] = [\n                    name.name for name in dependency.import_names\n                ]\n\n                for import_model in imports_to_process:\n                    import_model_import_names: list[str] = [\n                        name.name for name in import_model.import_names\n                    ]\n\n                    if (\n                        dependency_import_names == import_model_import_names\n                        and dependency.imported_from == import_model.imported_from\n                    ):\n                        child_builder.update_import_dependency(\n                            import_model, dependency\n                        )\n                        break\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `update_dependencies` static method updates dependencies for child builders within a `ModuleModelBuilder` by matching `ImportModel` instances based on import names and sources, excluding `DependencyModel` instances, and employs type annotations for variable clarity.",
+    "children_ids": []
+}

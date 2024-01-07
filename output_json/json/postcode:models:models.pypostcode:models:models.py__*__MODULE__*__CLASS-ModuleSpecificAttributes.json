@@ -1,0 +1,52 @@
+{
+    "class_name": "ModuleSpecificAttributes",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Module specific attributes.",
+    "keywords": null,
+    "id": "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes",
+    "file_path": "postcode/models/models.py",
+    "parent_id": "postcode:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 184,
+    "end_line_num": 220,
+    "code_content": "\n\nclass ModuleSpecificAttributes(BaseModel):\n    \"\"\"Module specific attributes.\"\"\"\n\n    docstring: str | None = None\n    header: list[str] | None = None\n    footer: list[str] | None = None\n    imports: list[ImportModel] | None = None\n\n    def _convert_docstring_to_metadata(self) -> str:\n        \"\"\"Converts the docstring to a metadata string.\"\"\"\n        return f\"{self.docstring}\"\n\n    def _convert_header_to_metadata(self) -> str:\n        \"\"\"Converts the header and footer to a metadata string.\"\"\"\n        return self.model_dump_json()\n\n    def _convert_footer_to_metadata(self) -> str:\n        \"\"\"Converts the header and footer to a metadata string.\"\"\"\n        return self.model_dump_json()\n\n    def _convert_imports_to_metadata(self) -> str:\n        \"\"\"Converts the imports to a metadata string.\"\"\"\n        imports_str: str = self.model_dump_json() if self.imports else \"\"\n        return f\"{imports_str}\"\n\n    def _convert_module_attributes_to_metadata_dict(self) -> dict[str, str | int]:\n        \"\"\"Converts the module attributes to a metadata dictionary for ChromaDB.\"\"\"\n\n        return {\n            \"docstring\": self._convert_docstring_to_metadata(),\n            \"header\": self._convert_header_to_metadata(),\n            \"footer\": self._convert_footer_to_metadata(),\n            \"imports\": self._convert_imports_to_metadata(),\n        }\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "postcode:models:models.py__*__MODULE__*__CLASS-ImportModel"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "field_validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\n\nThe `ModuleSpecificAttributes` class, inheriting from `BaseModel`, is designed to encapsulate module-specific attributes such as docstrings, headers, footers, and imports, which are represented by the `ImportModel`. It provides functionality to convert these attributes into metadata strings or a metadata dictionary. The class includes private methods `_convert_docstring_to_metadata`, `_convert_header_to_metadata`, `_convert_footer_to_metadata`, and `_convert_imports_to_metadata`, each responsible for converting their respective attributes into string representations. The method `_convert_module_attributes_to_metadata_dict` compiles these strings into a dictionary, which is structured to be compatible with ChromaDB. The conversion of headers and footers relies on a method `model_dump_json`, which is implied to be part of the class but not explicitly defined within the provided code. The class is structured to handle optional attributes, as indicated by the type hints allowing for `None` values.",
+    "children_ids": [
+        "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_docstring_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_header_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_footer_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_imports_to_metadata",
+        "postcode:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes__*__FUNCTION-_convert_module_attributes_to_metadata_dict"
+    ]
+}

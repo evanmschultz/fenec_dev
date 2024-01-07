@@ -1,0 +1,27 @@
+{
+    "function_name": "_get_current_schema",
+    "docstring": "Retrieves the current schema of a collection.\n\nArgs:\n    - collection_name (str): The name of the collection.\n\nReturns:\n    dict: The current schema of the collection.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "dict",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector__*__FUNCTION-_get_current_schema",
+    "file_path": "postcode/databases/arangodb/arangodb_connector.py",
+    "parent_id": "postcode:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector",
+    "block_type": "FUNCTION",
+    "start_line_num": 66,
+    "end_line_num": 90,
+    "code_content": "\n# def _ensure_vertex_collections(self, vertex_collections: list[str]) -> None:\n#     for collection in vertex_collections:\n#         if not self.db.has_collection(collection):\n#             self.db.create_collection(collection)\n\ndef _get_current_schema(self, collection_name: str) -> dict:\n    \"\"\"\n        Retrieves the current schema of a collection.\n\n        Args:\n            - collection_name (str): The name of the collection.\n\n        Returns:\n            dict: The current schema of the collection.\n        \"\"\"\n\n    collection = self.db.collection(collection_name)\n    try:\n        properties: Result[Json] = collection.properties()\n        return properties.get(\"schema\", {})  # type: ignore # FIXME: Fix type error\n    except Exception as e:\n        logging.error(f\"Error retrieving current schema for {collection_name}: {e}\")\n        return {}\n",
+    "important_comments": [
+        {
+            "content": "# type: ignore # FIXME: Fix type error",
+            "comment_types": [
+                "FIXME"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": "\nThe `_get_current_schema` method retrieves a database collection's schema, encapsulating robust error handling within a `try-except` block, logging exceptions, and utilizing the `properties` method, with a fallback to an empty dictionary return value.",
+    "children_ids": []
+}

@@ -1,0 +1,14 @@
+{
+    "variable_assignments": [],
+    "id": "postcode:types:openai.py__*__MODULE__*__STANDALONE_BLOCK-1",
+    "file_path": "postcode/types/openai.py",
+    "parent_id": "postcode:types:openai.py__*__MODULE",
+    "block_type": "STANDALONE_BLOCK",
+    "start_line_num": 1,
+    "end_line_num": 9,
+    "code_content": "\"\"\"\nOpenAI Types\n------------\n\nThis module contains types defined by the openai third-party library.\nThese types are used for easy implementation in the postcode project and\nprovide convenience for users of the postcode library.\n\"\"\"\n",
+    "important_comments": null,
+    "dependencies": [],
+    "summary": "\nThe docstring at the beginning of this Python module describes its purpose within the postcode project: to define custom types that standardize and simplify interactions with the OpenAI library, likely as part of a broader utility framework, to abstract complexity and enhance the user interface.",
+    "children_ids": null
+}

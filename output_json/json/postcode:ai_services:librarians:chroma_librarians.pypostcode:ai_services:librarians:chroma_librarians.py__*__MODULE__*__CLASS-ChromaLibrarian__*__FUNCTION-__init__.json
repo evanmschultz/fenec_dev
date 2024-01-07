@@ -1,0 +1,20 @@
+{
+    "function_name": "__init__",
+    "docstring": "Represents a librarian for interacting with the Chroma database using OpenAI.\n\nArgs:\n    - collection_manager (ChromaCollectionManager): The manager for Chroma collections.\n    - model (str, optional): The OpenAI model to use. Defaults to \"gpt-3.5-turbo-1106\".\n\nMethods:\n    - query_chroma(user_question):\n        Queries the Chroma database using the provided user question.\n\n    - _query_collection(queries, n_results=3):\n        Queries the Chroma collection manager with a list of queries.\n\n    - _get_chroma_queries(user_question, queries_count=3, retries=3):\n        Generates Chroma queries based on the user question.\n\nAttributes:\n    - collection_manager (ChromaCollectionManager): The Chroma collection manager.\n    - model (str): The OpenAI model being used.\n    - client: The OpenAI API client.\n\nExamples:\n    ```python\n    chroma_librarian = ChromaLibrarian(chroma_collection_manager)\n    chroma_librarian.query_chroma(\"Which models are inherited by others?\")\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian__*__FUNCTION-__init__",
+    "file_path": "postcode/ai_services/librarians/chroma_librarians.py",
+    "parent_id": "postcode:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian",
+    "block_type": "FUNCTION",
+    "start_line_num": 58,
+    "end_line_num": 95,
+    "code_content": "def __init__(\n    self,\n    collection_manager: ChromaCollectionManager,\n    model: str = \"gpt-3.5-turbo-1106\",\n) -> None:\n    \"\"\"\n        Represents a librarian for interacting with the Chroma database using OpenAI.\n\n        Args:\n            - collection_manager (ChromaCollectionManager): The manager for Chroma collections.\n            - model (str, optional): The OpenAI model to use. Defaults to \"gpt-3.5-turbo-1106\".\n\n        Methods:\n            - query_chroma(user_question):\n                Queries the Chroma database using the provided user question.\n\n            - _query_collection(queries, n_results=3):\n                Queries the Chroma collection manager with a list of queries.\n\n            - _get_chroma_queries(user_question, queries_count=3, retries=3):\n                Generates Chroma queries based on the user question.\n\n        Attributes:\n            - collection_manager (ChromaCollectionManager): The Chroma collection manager.\n            - model (str): The OpenAI model being used.\n            - client: The OpenAI API client.\n\n        Examples:\n            ```python\n            chroma_librarian = ChromaLibrarian(chroma_collection_manager)\n            chroma_librarian.query_chroma(\"Which models are inherited by others?\")\n            ```\n        \"\"\"\n\n    self.collection_manager: ChromaCollectionManager = collection_manager\n    self.model: str = model\n    self.client = OpenAI()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThis code snippet is the constructor for a class (name not provided) that serves as an intermediary for querying the Chroma database using OpenAI's API, defaulting to the \"gpt-3.5-turbo-1106\" model. It initializes a collection manager to manage database queries and an OpenAI client, which is crucial for sending queries to the OpenAI model. The class is structured to include methods for querying the database and generating queries based on user input, although these methods are not implemented in the provided code.",
+    "children_ids": []
+}

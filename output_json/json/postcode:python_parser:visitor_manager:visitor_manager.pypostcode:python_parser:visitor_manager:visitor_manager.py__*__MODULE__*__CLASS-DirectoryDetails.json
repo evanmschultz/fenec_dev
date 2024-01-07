@@ -1,0 +1,37 @@
+{
+    "class_name": "DirectoryDetails",
+    "decorators": [
+        {
+            "content": "@dataclass",
+            "decorator_name": "dataclass",
+            "decorator_args": null
+        }
+    ],
+    "bases": null,
+    "docstring": "Represents the details of a directory.\n\nAttributes:\n    - directory_name (str): The name of the directory.\n    - sub_directories (list[str]): A list of the names of the sub-directories of the directory.\n    - module_ids (list[str]): A list of the module ids of the modules in the directory.",
+    "keywords": null,
+    "id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-DirectoryDetails",
+    "file_path": "postcode/python_parser/visitor_manager/visitor_manager.py",
+    "parent_id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 72,
+    "end_line_num": 88,
+    "code_content": "\n\n@dataclass\nclass DirectoryDetails:\n    \"\"\"\n    Represents the details of a directory.\n\n    Attributes:\n        - directory_name (str): The name of the directory.\n        - sub_directories (list[str]): A list of the names of the sub-directories of the directory.\n        - module_ids (list[str]): A list of the module ids of the modules in the directory.\n    \"\"\"\n\n    directory_name: str\n    sub_directories: list[str]\n    module_ids: list[str]\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "\nThe code snippet creates a `DirectoryDetails` class using the `dataclass` decorator from Python's `dataclasses` standard library. This class serves as a structured data container for a directory, encapsulating its name, subdirectories, and module identifiers, while the `dataclass` decorator automatically generates initialization and representation methods to streamline the class definition.",
+    "children_ids": []
+}

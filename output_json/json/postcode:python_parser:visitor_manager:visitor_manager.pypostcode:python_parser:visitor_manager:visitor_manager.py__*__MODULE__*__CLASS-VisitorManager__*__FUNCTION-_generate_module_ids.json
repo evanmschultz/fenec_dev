@@ -1,0 +1,20 @@
+{
+    "function_name": "_generate_module_ids",
+    "docstring": "Generates module ids for the given directory.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[str]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_generate_module_ids",
+    "file_path": "postcode/python_parser/visitor_manager/visitor_manager.py",
+    "parent_id": "postcode:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 287,
+    "end_line_num": 298,
+    "code_content": "\ndef _generate_module_ids(self, directory_path: str) -> list[str]:\n    \"\"\"Generates module ids for the given directory.\"\"\"\n\n    file_names: list[str] = self.directory_modules.get(directory_path, [])\n    python_files: list[str] = self._filter_python_files(file_names)\n\n    return [\n        ModuleIDGenerationStrategy.generate_id(str(Path(directory_path) / module))\n        for module in python_files\n    ]\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `_generate_module_ids` method in a class takes a directory path, fetches associated file names from a `directory_modules` dictionary, filters for Python files, and applies `ModuleIDGenerationStrategy.generate_id` to each, returning a list of module IDs for the Python files in the directory.",
+    "children_ids": []
+}

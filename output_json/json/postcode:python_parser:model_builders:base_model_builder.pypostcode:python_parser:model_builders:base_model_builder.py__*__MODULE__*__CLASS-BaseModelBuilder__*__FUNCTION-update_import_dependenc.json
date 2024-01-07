@@ -1,0 +1,20 @@
+{
+    "function_name": "update_import_dependency",
+    "docstring": "Updates an import in the model instance.\n\nArgs:\n    - new_import_model (ImportModel): The updated import model.\n    - old_import_model\n\nReturns:\n    - BaseModelBuilder: The base model builder instance.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Union[, , , ]",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder__*__FUNCTION-update_import_dependency",
+    "file_path": "postcode/python_parser/model_builders/base_model_builder.py",
+    "parent_id": "postcode:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 189,
+    "end_line_num": 237,
+    "code_content": "\ndef update_import_dependency(\n    self,\n    new_import_model: ImportModel,\n    old_import_model: ImportModel,\n) -> Union[\n    \"BaseModelBuilder\",\n    \"ModuleModelBuilder\",\n    \"ClassModelBuilder\",\n    \"FunctionModelBuilder\",\n]:\n    \"\"\"\n        Updates an import in the model instance.\n\n        Args:\n            - new_import_model (ImportModel): The updated import model.\n            - old_import_model\n\n        Returns:\n            - BaseModelBuilder: The base model builder instance.\n        \"\"\"\n\n    if self.common_attributes.dependencies:\n        import_model_to_remove: ImportModel | None = None\n        for existing_import_model in self.common_attributes.dependencies:\n            if isinstance(existing_import_model, DependencyModel):\n                continue\n\n            if (\n                existing_import_model.import_names == old_import_model.import_names\n                and existing_import_model.imported_from\n                == old_import_model.imported_from\n                and existing_import_model.import_module_type\n                == old_import_model.import_module_type\n            ):\n                import_model_to_remove = existing_import_model\n                break\n\n        if not import_model_to_remove:\n            raise Exception(f\"Could not find import to remove: {old_import_model}\")\n\n        self.common_attributes.dependencies.remove(import_model_to_remove)\n        self.common_attributes.dependencies.append(new_import_model)\n    else:\n        raise Exception(\n            f\"No imports in the builders imports list: {self.common_attributes.dependencies}\"\n        )\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `update_import_dependency` method within a class uses type annotations to accept two `ImportModel` objects and returns a model builder instance. It updates the `common_attributes.dependencies` list by finding and replacing an old import model with a new one, based on a match of `import_names`, `imported_from`, and `import_module_type`, while skipping any `DependencyModel` instances. If the old import model is not found or the dependencies list is empty, it raises an informative exception. The method returns the instance itself, which can be of several model builder types as indicated by the union return type hint.",
+    "children_ids": []
+}

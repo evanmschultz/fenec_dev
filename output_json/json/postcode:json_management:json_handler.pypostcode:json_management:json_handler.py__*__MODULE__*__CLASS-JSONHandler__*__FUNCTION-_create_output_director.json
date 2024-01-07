@@ -1,0 +1,20 @@
+{
+    "function_name": "_create_output_directory",
+    "docstring": "Creates the output directory if it does not already exist.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-_create_output_directory",
+    "file_path": "postcode/json_management/json_handler.py",
+    "parent_id": "postcode:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler",
+    "block_type": "FUNCTION",
+    "start_line_num": 106,
+    "end_line_num": 111,
+    "code_content": "\ndef _create_output_directory(self) -> None:\n    \"\"\"Creates the output directory if it does not already exist.\"\"\"\n\n    Path(self.output_directory).mkdir(exist_ok=True)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe method `_create_output_directory` in a Python class uses `pathlib.Path` to ensure the existence of a directory defined by `self.output_directory`, creating it if necessary without raising an error if it already exists, as controlled by `exist_ok=True`.",
+    "children_ids": []
+}

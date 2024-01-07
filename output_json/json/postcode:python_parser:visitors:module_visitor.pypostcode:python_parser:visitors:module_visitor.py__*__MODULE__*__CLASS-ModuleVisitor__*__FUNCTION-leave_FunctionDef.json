@@ -1,0 +1,20 @@
+{
+    "function_name": "leave_FunctionDef",
+    "docstring": "Leaves a FunctionDef node in the CST.\n\nFinalizes the function model building process by popping the current builder from the stack.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor__*__FUNCTION-leave_FunctionDef",
+    "file_path": "postcode/python_parser/visitors/module_visitor.py",
+    "parent_id": "postcode:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor",
+    "block_type": "FUNCTION",
+    "start_line_num": 202,
+    "end_line_num": 211,
+    "code_content": "\ndef leave_FunctionDef(self, original_node: libcst.FunctionDef) -> None:\n    \"\"\"\n        Leaves a FunctionDef node in the CST.\n\n        Finalizes the function model building process by popping the current builder from the stack.\n        \"\"\"\n\n    self.builder_stack.pop()\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "\nThe `leave_FunctionDef` method is a component of a CST parsing class, designed to be called when the parser exits a function definition node. It takes a parameter `original_node` of type `libcst.FunctionDef`, signifying the CST node type being left. The method updates the parser's state by removing the latest context-specific builder from the `self.builder_stack`, ensuring the integrity of the node hierarchy during the parsing process.",
+    "children_ids": []
+}
