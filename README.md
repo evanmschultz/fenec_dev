@@ -49,6 +49,7 @@ If you find issues or have suggestions for improvement, feel free to open an iss
         -   Also, how many iterations of that process would it take to get diminishing returns?
 
 -   Chain of density summarization doesn't work for code bases. Update summary prompt to create larger more diverse summaries as they will help with RAG.
+-   Maybe add the top level summary / project summary to (logic to be added) to the librarian and agent prompt would help.
 
 <!-- ## License
 
