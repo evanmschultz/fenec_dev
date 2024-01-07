@@ -180,6 +180,8 @@ class ChromaLibrarian:
                 content_model = OpenAIResponseContent(
                     query_list=content_json["query_list"]
                 )
+                content_model.query_list.append(user_question)
+                queries_count += 1
 
                 if content:
                     queries: list[str] = content_model.query_list
