@@ -65,7 +65,7 @@ class OpenAIChatAgent:
             ```python
             agent = OpenAIChatAgent(chroma_librarian, model="gpt-4-1106-preview")
             try:
-                response = agent.get_response("What is the capital of France?")
+                response = agent.get_response("What code blocks use recursion?")
                 print(response)
             except ValueError as ve:
                 print(f"ValueError: {ve}")
