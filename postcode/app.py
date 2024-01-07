@@ -50,7 +50,7 @@ def _cli_loop(openai_chat_agent: OpenAIChatAgent, console: Console) -> None:
         if user_input.lower() == "exit":
             break
         response: str | None = openai_chat_agent.get_response(user_input)
-        console.print(f"[bold green]Response:[/bold green]\n{response}")
+        console.print(f"[bold green]Response:[/]\n{response}")
 
 
 def simple_chat(chroma_collection_manager: ChromaCollectionManager) -> None:
