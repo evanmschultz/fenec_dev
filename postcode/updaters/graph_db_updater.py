@@ -1,6 +1,5 @@
 import logging
 
-from openai import OpenAI
 from postcode.ai_services.summarizer.graph_db_summarization_manager import (
     GraphDBSummarizationManager,
 )
@@ -32,9 +31,12 @@ class GraphDBUpdater:
     Updates parses the files in a directory, saves the models as JSON, in the graph database, and in a ChromaDB collection.
 
     Args:
-        - directory (str): The directory of the project to update.
-        - output_directory (str): The directory to save the JSON files.
-        - graph_connector (ArangoDBConnector): The ArangoDB connector to use for connecting to the graph database.
+        - `directory` (str): The directory of the project to update.
+            default: "."
+        - `summarizer` (OpenAISummarizer): The OpenAI summarizer to use for summarizing the code.
+        - `output_directory` (str): The directory to save the JSON files.
+            - default: "pc_output_json"
+        - `graph_connector` (ArangoDBConnector): The ArangoDB connector to use for connecting to the graph database.
             - default: ArangoDBConnector() - instantiates a new ArangoDBConnector with its default values
 
     Example:
@@ -55,11 +57,14 @@ class GraphDBUpdater:
 
     def __init__(
         self,
-        directory: str,
-        output_directory: str,
+        *,
+        directory: str = ".",
+        summarizer: OpenAISummarizer = OpenAISummarizer(),
+        output_directory: str = "pc_output_json",
         graph_connector: ArangoDBConnector = ArangoDBConnector(),
     ) -> None:
         self.directory: str = directory
+        self.summarizer: OpenAISummarizer = summarizer
         self.output_directory: str = output_directory
         self.graph_connector: ArangoDBConnector = graph_connector
 
@@ -74,15 +79,11 @@ class GraphDBUpdater:
             and save the new models in the graph database and as JSON. Use with caution as it is expensive with respect to time, resources,
             and money.
 
-        Args:
-            - directory (str): The directory of the project to update.
-            - output_directory (str): The directory to save the JSON files.
-
         Returns:
-            - chroma_collection_manager (ChromaDBCollectionManager): The ChromaDB collection manager.
+            - `chroma_collection_manager` (ChromaDBCollectionManager): The ChromaDB collection manager.
 
         Raises:
-            - Exception: If no finalized models are returned from summarization.
+            - `Exception`: If no finalized models are returned from summarization.
 
         Example:
             ```Python
@@ -167,15 +168,13 @@ class GraphDBUpdater:
         summarization_mapper = SummarizationMapper(
             module_ids, models_tuple, self.graph_manager
         )
-        client = OpenAI(max_retries=4)
-        summarizer = OpenAISummarizer(client=client)
         summarization_manager = GraphDBSummarizationManager(
-            models_tuple, summarization_mapper, summarizer, self.graph_manager
+            models_tuple, summarization_mapper, self.summarizer, self.graph_manager
         )
 
-        finalized_models: list[
-            ModelType
-        ] | None = summarization_manager.create_summaries_and_return_updated_models()
+        finalized_models: list[ModelType] | None = (
+            summarization_manager.create_summaries_and_return_updated_models()
+        )
         logging.info("Summarization complete")
 
         return finalized_models if finalized_models else None

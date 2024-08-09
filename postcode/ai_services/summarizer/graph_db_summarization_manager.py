@@ -3,10 +3,8 @@
 import logging
 from rich import print
 
-from postcode.ai_services.summarizer.summarization_context import (
-    Summarizer,
-    OpenAIReturnContext,
-)
+from postcode.ai_services.openai_configs import OpenAIReturnContext
+from postcode.ai_services.summarizer.summarizer_protocol import Summarizer
 from postcode.ai_services.summarizer.summarization_mapper import SummarizationMapper
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
 
@@ -83,9 +81,9 @@ class GraphDBSummarizationManager:
         Returns:
             - list[ModelType] | None: Updated models in the graph database or None if graph_manager is not provided.
         """
-        summarization_map: list[
-            ModelType
-        ] = self.summarization_mapper.create_summarization_map()
+        summarization_map: list[ModelType] = (
+            self.summarization_mapper.create_summarization_map()
+        )
         models_to_summarize_count: int = len(summarization_map)
         models_summarized_count: int = 0
 
@@ -387,7 +385,9 @@ class GraphDBSummarizationManager:
                 import_names_list.append(f"{import_name.name}")
 
         if import_model.imported_from:
-            import_details: str = f"from {import_model.imported_from} import {', '.join(import_names_list)}"
+            import_details: str = (
+                f"from {import_model.imported_from} import {', '.join(import_names_list)}"
+            )
         else:
             import_details = f"import {', '.join(import_names_list)}"
 

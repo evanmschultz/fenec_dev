@@ -2,11 +2,12 @@ import logging
 from typing import Sequence
 from openai import OpenAI
 
+from postcode.ai_services.openai_configs import OpenAIConfigs
 import postcode.types.chroma as chroma_types
 import postcode.types.openai as openai_types
 
 from postcode.ai_services.librarians.chroma_librarians import ChromaLibrarian
-from postcode.ai_services.chat.prompts.prompts import (
+from postcode.ai_services.chat.prompts.chat_prompts import (
     DEFAULT_PROMPT_TEMPLATE,
     DEFAULT_SYSTEM_PROMPT,
 )
@@ -17,29 +18,28 @@ class OpenAIChatAgent:
     Represents an agent that interacts with the OpenAI API for generating responses to user questions.
 
     Args:
-        - chroma_librarian (ChromaLibrarian): The librarian handling Chroma queries.
-        - model (str, optional): The OpenAI model to use. Defaults to "gpt-4-1106-preview".
+        - `chroma_librarian` (ChromaLibrarian): The librarian handling Chroma queries.
+        - `configs` (OpenAIConfigs, optional): Configuration settings for the OpenAI agent.
 
     Methods:
-        - get_response(user_question, prompt_template=DEFAULT_PROMPT_TEMPLATE):
+        - `get_response`(user_question, prompt_template=DEFAULT_PROMPT_TEMPLATE):
             Generates a response to the user's question using the specified prompt template.
 
-        - _format_prompt(context, user_question, prompt_template):
-            Formats the prompt for the OpenAI API based on the context and user's question.
+
 
     Attributes:
-        - chroma_librarian (ChromaLibrarian): The Chroma librarian instance.
-        - model (str): The OpenAI model being used.
-        - client: The OpenAI API client.
+        - `chroma_librarian` (ChromaLibrarian): The Chroma librarian instance.
+        - `model` (str): The OpenAI model being used.
+        - `client`: The OpenAI API client.
     """
 
     def __init__(
         self,
         chroma_librarian: ChromaLibrarian,
-        model: str = "gpt-4-1106-preview",
+        configs: OpenAIConfigs = OpenAIConfigs(),
     ) -> None:
         self.chroma_librarian: ChromaLibrarian = chroma_librarian
-        self.model: str = model
+        self.configs: OpenAIConfigs = configs
         self.client = OpenAI()
 
     def get_response(
@@ -49,21 +49,21 @@ class OpenAIChatAgent:
         Generates a response to the user's question using the OpenAI API.
 
         Args:
-            - user_question (str): The user's question.
-            - prompt_template (str, optional): The template for formatting the prompt.
-                Defaults to DEFAULT_PROMPT_TEMPLATE.
+            - `user_question` (str): The user's question.
+            - `prompt_template` (str, optional): The template for formatting the prompt.
+                default: DEFAULT_PROMPT_TEMPLATE.
 
         Returns:
-            - str | None: The generated response or None if the response could not be generated.
+            - `str | None`: The generated response or None if the response could not be generated.
 
         Raises:
-            - ValueError: If user_question is empty.
-            - RuntimeError: If there is an issue with the OpenAI API request.
-            - KeyError: If the prompt template is missing required keys.
+            - `ValueError`: If user_question is empty.
+            - `RuntimeError`: If there is an issue with the OpenAI API request.
+            - `KeyError`: If the prompt template is missing required keys.
 
         Example:
             ```python
-            agent = OpenAIChatAgent(chroma_librarian, model="gpt-4-1106-preview")
+            agent = OpenAIChatAgent(chroma_librarian, model="gpt-4o")
             try:
                 response = agent.get_response("What code blocks use recursion?")
                 print(response)
@@ -103,9 +103,9 @@ class OpenAIChatAgent:
             ]
 
             response: openai_types.ChatCompletion = self.client.chat.completions.create(
-                model=self.model,
+                model=self.configs.model,
                 messages=messages,  # type: ignore # FIXME: fix type hinting error
-                temperature=0.1,
+                temperature=self.configs.temperature,
                 # response_format={"type": "json_object"},
             )
             return response.choices[0].message.content
@@ -123,15 +123,15 @@ class OpenAIChatAgent:
         Formats the prompt for the OpenAI API based on the provided context, user's question, and template.
 
         Args:
-            - context (str): The context derived from Chroma query results.
-            - user_question (str): The user's question.
-            - prompt_template (str): The template for formatting the prompt.
+            - `context` (str): The context derived from Chroma query results.
+            - `user_question` (str): The user's question.
+            - `prompt_template` (str): The template for formatting the prompt.
 
         Returns:
-            - str: The formatted prompt.
+            - `str`: The formatted prompt.
 
         Raises:
-            - KeyError: If the prompt template is missing required keys.
+            - `KeyError`: If the prompt template is missing required keys.
 
         Example:
             ```python

@@ -13,7 +13,8 @@ from openai.types.chat.chat_completion import ChatCompletion
 from postcode.ai_services.summarizer.prompts.prompt_creator import (
     SummarizationPromptCreator,
 )
-from postcode.ai_services.summarizer.summarization_context import (
+from postcode.ai_services.openai_configs import (
+    OpenAIConfigs,
     OpenAIReturnContext,
     SummaryCompletionConfigs,
 )
@@ -24,12 +25,7 @@ class OpenAISummarizer:
     A class for summarizing code snippets using the OpenAI API.
 
     Args:
-        - client (OpenAI): The OpenAI client used for making API requests.
-
-    Attributes:
-        - client (OpenAI): The OpenAI client used for making API requests.
-        - prompt_list (list[str]): A list of summary prompts.
-        - default_prompt (str): The default summary prompt.
+        - `configs` (OpenAIConfigs, optional): Configuration settings for the OpenAI summarizer.
 
     Examples:
         ```Python
@@ -50,10 +46,11 @@ class OpenAISummarizer:
 
     def __init__(
         self,
-        client: OpenAI,
+        configs: OpenAIConfigs = OpenAIConfigs(),
         # *, summary_prompt_list: list[str] = summary_prompt_list
     ) -> None:
-        self.client: OpenAI = client
+        self.client: OpenAI = OpenAI()
+        self.configs: OpenAIConfigs = configs
         # self.prompt_list: list[str] = summary_prompt_list
         # self.default_prompt: str = self.prompt_list[0]
 
@@ -110,8 +107,6 @@ class OpenAISummarizer:
     def _get_summary(
         self,
         messages: list[ChatCompletionMessageParam],
-        *,
-        configs: SummaryCompletionConfigs,
     ) -> OpenAIReturnContext | None:
         """
         Retrieves the summary from the OpenAI API based on the provided messages and configuration settings.
@@ -127,9 +122,9 @@ class OpenAISummarizer:
         try:
             response: ChatCompletion = self.client.chat.completions.create(
                 messages=messages,
-                model=configs.model,
-                max_tokens=configs.max_tokens,
-                temperature=configs.temperature,
+                model=self.configs.model,
+                max_tokens=self.configs.max_tokens,
+                temperature=self.configs.temperature,
             )
             prompt_tokens: int = 0
             completion_tokens: int = 0
@@ -156,7 +151,6 @@ class OpenAISummarizer:
         children_summaries: str | None,
         dependency_summaries: str | None,
         import_details: str | None,
-        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),
     ) -> OpenAIReturnContext | None:
         """
         Summarizes the provided code snippet using the OpenAI API.
@@ -188,10 +182,10 @@ class OpenAISummarizer:
             code, children_summaries, dependency_summaries, import_details
         )
         messages: list[ChatCompletionMessageParam] = self._create_messages_list(
-            system_message=configs.system_message, user_message=prompt
+            system_message=self.configs.system_message, user_message=prompt
         )
 
-        if summary_return_context := self._get_summary(messages, configs=configs):
+        if summary_return_context := self._get_summary(messages):
             if summary_return_context:
                 if summary_return_context.summary:
                     summary_return_context.summary = (
@@ -208,7 +202,6 @@ class OpenAISummarizer:
         children_summaries: str | None,
         dependency_summaries: str | None,
         import_details: str | None,
-        configs: SummaryCompletionConfigs = SummaryCompletionConfigs(),
     ) -> OpenAIReturnContext | None:
         """
         Summarizes the provided code snippet using the OpenAI API.

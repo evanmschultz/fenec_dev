@@ -372,15 +372,19 @@ class BaseCodeBlockModel(BaseModel):
     children_ids: list[str] | None = []
 
     @field_validator("parent_id")
-    @classmethod
-    def check_parent_id(cls, v, values, **kwargs) -> str | None:
+    def check_parent_id(cls, v, values) -> str | None:
         """Validates that parent_id is a non-empty string unless block_type is MODULE."""
-
-        block_type = values.get("block_type")
+        block_type = (
+            values.get("block_type")
+            if isinstance(values, dict)
+            else values.data.get("block_type")
+        )
 
         if block_type and block_type != BlockType.MODULE:
-            if "parent_id" in values and len(v) < 1:
-                raise ValueError("parent_id is required!")
+            if v is None or len(v) < 1:
+                raise ValueError(
+                    "parent_id must be a non-empty string unless block_type is MODULE"
+                )
         return v
 
     def _convert_parent_id_to_metadata(self) -> str:
@@ -1064,7 +1068,7 @@ class FunctionModel(BaseCodeBlockModel, FunctionSpecificAttributes):
                 raise ValueError("Metadata must be a dictionary.")
 
             function_specific_attributes: FunctionSpecificAttributes = (
-                FunctionSpecificAttributes._build_from_meta(metadata_dict) # type: ignore # FIXME: fix type hinting error
+                FunctionSpecificAttributes._build_from_meta(metadata_dict)  # type: ignore # FIXME: fix type hinting error
             )  # type: ignore # FIXME: fix type hinting error
             base_code_block_model: BaseCodeBlockModel = (
                 BaseCodeBlockModel._build_from_metadata(metadata_dict)
@@ -1164,9 +1168,11 @@ class StandaloneCodeBlockModel(
             **self._convert_base_attributes_to_metadata_dict(),
             **self._convert_standalone_block_attributes_to_metadata_dict(),
         }
-    
+
     @classmethod
-    def _build_from_meta(cls, metadata: dict[str, str | int | list[str]]) -> "StandaloneCodeBlockModel":
+    def _build_from_meta(
+        cls, metadata: dict[str, str | int | list[str]]
+    ) -> "StandaloneCodeBlockModel":
         """
         Builds a StandaloneCodeBlockModel from a metadata dictionary.
 
@@ -1187,9 +1193,9 @@ class StandaloneCodeBlockModel(
             if not isinstance(metadata, dict):
                 raise ValueError("Metadata must be a dictionary.")
 
-            standalone_code_block_specific_attributes: StandaloneCodeBlockSpecificAttributes = (
-                StandaloneCodeBlockSpecificAttributes._build_from_meta(metadata)
-            )
+            standalone_code_block_specific_attributes: (
+                StandaloneCodeBlockSpecificAttributes
+            ) = StandaloneCodeBlockSpecificAttributes._build_from_meta(metadata)
             base_code_block_model: BaseCodeBlockModel = (
                 BaseCodeBlockModel._build_from_metadata(metadata)
             )
@@ -1237,16 +1243,18 @@ class DirectoryModel(BaseModel):
 
         return {
             "directory_name": self.directory_name,
-            "sub_directories": str(self.sub_directories_ids)
-            if self.sub_directories_ids
-            else "",
+            "sub_directories": (
+                str(self.sub_directories_ids) if self.sub_directories_ids else ""
+            ),
             "children_ids": self.model_dump_json() if self.children_ids else "",
             "parent_id": self.parent_id if self.parent_id else "",
             "summary": self.summary if self.summary else "",
         }
-    
+
     @classmethod
-    def build_from_metadata(cls, metadata_dict: dict[str, str | list[str]]) -> "DirectoryModel":
+    def build_from_metadata(
+        cls, metadata_dict: dict[str, str | list[str]]
+    ) -> "DirectoryModel":
         """
         Builds a DirectoryModel from a metadata dictionary.
 
@@ -1255,7 +1263,7 @@ class DirectoryModel(BaseModel):
 
         Returns:
             - DirectoryModel: An instance of DirectoryModel.
-        
+
         Raises:
             - ValueError: If the metadata is not a dictionary.
             - ValueError: If the metadata is missing required keys.
@@ -1304,7 +1312,7 @@ class DirectoryModel(BaseModel):
                 parent_id=parent_id if parent_id else None,
                 summary=summary if summary else None,
             )
-        
+
         except ValueError as ve:
             logging.error(f"Error building from metadata: {ve}")
             raise ve
