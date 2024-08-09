@@ -184,3 +184,7 @@ output/
 # output_json/
 
 # End of https://www.toptal.com/developers/gitignore/api/python
+
+# ignore aggregate_files.sh and aggregated_contents.txt
+aggregate_files.sh
+aggregated_contents.txt
