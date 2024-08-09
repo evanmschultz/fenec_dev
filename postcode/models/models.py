@@ -371,7 +371,9 @@ class BaseCodeBlockModel(BaseModel):
     summary: str | None = None
     children_ids: list[str] | None = []
 
-    def check_parent_id(self, v, values, **kwargs) -> str | None:
+    @field_validator("parent_id")
+    @classmethod
+    def check_parent_id(cls, v, values, **kwargs) -> str | None:
         """Validates that parent_id is a non-empty string unless block_type is MODULE."""
 
         block_type = values.get("block_type")
