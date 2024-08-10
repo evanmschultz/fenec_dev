@@ -15,6 +15,7 @@ class Summarizer(Protocol):
         import_details: str | None,
         parent_summary: str | None = None,
         pass_number: int = 1,
+        previous_summary: str | None = None,
     ) -> OpenAIReturnContext | None:
         """
         Summarizes the provided code snippet.

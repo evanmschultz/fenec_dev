@@ -5,6 +5,7 @@ from postcode.databases.chroma.chromadb_collection_manager import (
 from postcode.ai_services.openai_configs import ChatCompletionConfigs
 from postcode.ai_services.chat.openai_agents import OpenAIChatAgent
 from postcode.ai_services.librarians.chroma_librarians import ChromaLibrarian
+from postcode.databases.chroma.chroma_setup import setup_chroma
 from postcode.utilities.logger.logging_config import setup_logging
 
 
@@ -16,7 +17,7 @@ class Postcode:
 
     Attributes:
         - `updater` (GraphDBUpdater): The updater for the graph database.
-            default: GraphDBUpdater()
+            - default: GraphDBUpdater()
 
     Methods:
         - `process_entire_codebase`(updater: GraphDBUpdater = GraphDBUpdater()): Process the entire codebase using the GraphDBUpdater.
@@ -63,6 +64,28 @@ class Postcode:
         except Exception as e:
             raise Exception(f"Error processing codebase: {str(e)}")
 
+    def connect_to_vectorstore(self, chromadb_name: str = "postcode") -> None:
+        """
+        Connect to an existing ChromaDB collection.
+
+        This method initializes the ChromaCollectionManager for the specified collection name
+        and stores it for later use in chat interactions.
+
+        Args:
+            - `chromadb_name` (str): Name of the ChromaDB collection.
+
+        Raises:
+            - `Exception`: If there's an error during the connection.
+        """
+
+        try:
+            self.chroma_collection_manager: ChromaCollectionManager = setup_chroma(
+                chromadb_name
+            )
+            self.chroma_librarian = ChromaLibrarian(self.chroma_collection_manager)
+        except Exception as e:
+            raise Exception(f"Error connecting to ChromaDB: {str(e)}")
+
     def chat(
         self, message: str, chat_config: ChatCompletionConfigs = ChatCompletionConfigs()
     ) -> str:
@@ -75,7 +98,7 @@ class Postcode:
         Args:
             - `message` (str): The user's input message or question.
             - `chat_config` (ChatCompletionConfigs): Configuration for the chat completion.
-                Defaults to ChatCompletionConfigs().
+                - default: ChatCompletionConfigs().
 
         Returns:
             - `str`: The AI's response to the user's message.

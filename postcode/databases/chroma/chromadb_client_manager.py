@@ -44,8 +44,9 @@ class ChromaClientHandler:
         self,
         name: str,
         metadata: dict[str, Any] | None = None,
-        embedding_function: chroma_types.EmbeddingFunction[list[str]]
-        | None = chroma_types.ef.DefaultEmbeddingFunction(),
+        embedding_function: (
+            chroma_types.EmbeddingFunction[list[str]] | None
+        ) = chroma_types.ef.DefaultEmbeddingFunction(),
     ) -> chroma_types.Collection:
         """
         Gets or creates a ChromaDB collection with the given name.
@@ -53,18 +54,18 @@ class ChromaClientHandler:
         Checks if the collection exists and returns it if it does. Otherwise, creates the collection and returns it.
 
         Args:
-            - name (str): The name of the collection to get or create.
-            - metadata (dict[str, Any]): The metadata for the collection.
-            - embedding_function (chroma_types.EmbeddingFunction): The embedding function for the collection.
+            - `name` (str): The name of the collection to get or create.
+            - `metadata` (dict[str, Any]): The metadata for the collection.
+            - `embedding_function` (chroma_types.EmbeddingFunction): The embedding function for the collection.
 
         Returns:
-            - collection (chroma.Collection): The collection object with the given name. The collection object is a Pydantic Model
+            - `collection` (chroma.Collection): The collection object with the given name. The collection object is a Pydantic Model
                 with the following attributes:
-                    - name: str
-                    - id: UUID
-                    - metadata: CollectionMetadata | None
-                    - tenant: str | None
-                    - database: str | None
+                    - `name`: str
+                    - `id`: UUID
+                    - `metadata`: CollectionMetadata | None
+                    - `tenant`: str | None
+                    - `database`: str | None
 
         Notes:
             - This is done this way for logging purposes as opposed simply using chromadb's `get_or_create_collection` method
@@ -97,10 +98,10 @@ class ChromaClientHandler:
         Deletes a ChromaDB collection with the given name.
 
         Args:
-            - name (str): The name of the collection to delete.
+            - `name` (str): The name of the collection to delete.
 
         Raises:
-            - ValueError: If the collection does not exist.
+            - `ValueError`: If the collection does not exist.
 
         Examples:
             ```Python
@@ -119,13 +120,13 @@ class ChromaClientHandler:
         Lists all ChromaDB collections.
 
         Returns:
-            - client_list (Sequence[chroma.Collection]): A list of all ChromaDB collections A collection object is a Pydantic
+            - `client_list` (Sequence[chroma.Collection]): A list of all ChromaDB collections A collection object is a Pydantic
                 Model with the following attributes:
-                    - name: str
-                    - id: UUID
-                    - metadata: CollectionMetadata | None
-                    - tenant: str | None
-                    - database: str | None
+                    - `name`: str
+                    - `id`: UUID
+                    - `metadata`: CollectionMetadata | None
+                    - `tenant`: str | None
+                    - `database`: str | None
 
         Examples:
             ```Python
@@ -140,7 +141,7 @@ class ChromaClientHandler:
         Gets the setting used to instantiate the ChromaDB client.
 
         Returns:
-            - settings (chroma_types.Settings): The client settings as a settings object defined by ChromaDB.
+            - `settings` (chroma_types.Settings): The client settings as a settings object defined by ChromaDB.
 
         Examples:
             ```Python
@@ -158,7 +159,7 @@ class ChromaClientHandler:
         logging their names, and then resets the client. If the reset operation is unsuccessful, it raises a ValueError.
 
         Raises:
-            ValueError: If the client reset operation is unsuccessful.
+            `ValueError`: If the client reset operation is unsuccessful.
 
         Notes:
             This method loops through the collections_list as opposed to immediately calling ChromaDB's

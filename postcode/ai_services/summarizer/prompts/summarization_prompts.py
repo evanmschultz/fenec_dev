@@ -1,3 +1,168 @@
+EXAMPLE_1 = """
+1. Purpose: Implements a robust, thread-safe caching mechanism with LRU (Least Recently Used) eviction policy for optimizing data retrieval in multi-threaded applications.
+
+2. Key Components: LRUCache class; CacheNode class; get method; put method; _remove_node method; _add_to_head method
+
+3. Implementation: Utilizes a doubly-linked list and dictionary for O(1) access and update operations. Implements thread-safety using a reentrant lock to ensure data consistency in concurrent scenarios.
+
+4. Technical Stack: threading.Lock, collections.OrderedDict, typing module
+
+5. Context: This cache implementation serves as a core component in a larger distributed system, providing efficient data access patterns and reducing load on backend services.
+"""
+
+EXAMPLE_2 = """
+1. Purpose: Defines a GraphDBSummarizationManager class for managing the summarization of code models in a graph database, supporting multi-pass summarization.
+
+2. Key Components: GraphDBSummarizationManager class; create_summaries_and_return_updated_models method; _process_summarization_map method; _get_child_summaries method
+
+3. Implementation: Iterates through models in the graph, generates summaries using an external summarizer, and updates the graph database. Supports bottom-up and top-down summarization passes for comprehensive analysis.
+
+4. Technical Stack: ArangoDB, OpenAI API, logging module, rich library for console output
+
+5. Context: This class is part of a larger code analysis system, working in conjunction with database managers and AI services to provide in-depth code understanding and documentation.
+"""
+
+CODE_SUMMARY_PROMPT_PASS_1 = """
+You are an expert code analyst tasked with summarizing Python code. Your goal is to create a comprehensive and informative summary that captures the essence of the code's functionality, structure, and purpose. This summary will be used in a vector search system, so it needs to be semantically rich and consistently structured.
+
+Output Format:
+Provide your summary in the following structure, with each section limited to 2-3 sentences:
+
+1. Purpose: [Concise description of the code's main goal and functionality]
+2. Key Components: [Main functions, classes, or modules, separated by semicolons]
+3. Implementation: [Brief explanation of how the code works, including any notable algorithms or data structures]
+4. Technical Stack: [Key libraries, frameworks, or technologies used, separated by commas]
+5. Context: [How this code fits into the larger project or system, if applicable]
+
+Evaluation Criteria:
+- Accuracy: The summary correctly represents the code's functionality.
+- Conciseness: Information is presented clearly and efficiently within the given length constraints.
+- Semantic Richness: Use of relevant technical terms and concepts that would be valuable in a vector search.
+- Consistency: Adherence to the specified structure for easy parsing and embedding.
+
+Examples:
+Here are two high-quality examples of code summaries following the specified format:
+
+Example 1:
+{EXAMPLE_1}
+
+Example 2:
+{EXAMPLE_2}
+
+Process:
+1. Analyze the overall structure and purpose of the code.
+2. Identify key functions, classes, and their relationships.
+3. Understand the main algorithms or processes implemented.
+4. Recognize the technical stack and any unique features of the implementation.
+5. Consider how this code relates to its dependencies or the larger system.
+6. Synthesize this information into a cohesive summary following the output format and drawing inspiration from the provided examples.
+
+Now, please summarize the following code:
+
+```python
+{code}
+```
+
+Additional Context:
+Children Summaries: {children_summaries}
+Dependency's Summaries: {dependency_summaries}
+Imports: {import_details}
+
+Remember to follow the specified output format and evaluation criteria in your summary, optimizing for vector search retrieval. Use the provided examples as a guide for the level of detail and style expected in your summary.
+"""
+
+CODE_SUMMARY_PROMPT_PASS_2 = """
+You are an expert code analyst performing the second pass of a multi-pass code summarization task. Your goal is to build upon the first-pass summary and provide more detailed information about the implementation and technical stack and how this code fits into the larger project or system. This summary will be used in a vector search system and as input for the final pass.
+
+Output Format:
+Provide your summary in the following structure, with each section limited to 2-3 sentences:
+
+1. Purpose: [Refined description of the code's main goal and functionality]
+2. Key Components: [Main functions, classes, or modules with brief descriptions, separated by semicolons]
+3. Implementation: [Explanation of how the code works, including notable algorithms or data structures]
+4. Technical Stack: [Detailed list of libraries, frameworks, or technologies used, separated by commas]
+
+Evaluation Criteria:
+- Accuracy: The summary correctly represents the code's functionality and implementation details.
+- Conciseness: Information is presented clearly and efficiently within the given length constraints.
+- Semantic Richness: Use of relevant technical terms and concepts that would be valuable in a vector search.
+- Consistency: Adherence to the specified structure for easy parsing and embedding.
+
+EXAMPLE 1:
+{EXAMPLE_1}
+
+EXAMPLE 2:
+{EXAMPLE_2}
+
+Previous Summary:
+{previous_summary}
+
+Now, please provide a second-pass summary of the following code, building upon the first-pass summary:
+
+```python
+{code}
+```
+
+Additional Context:
+Summary of parents or codeblocks that depend on this one: {parent_summary}
+Imports: {import_details}
+Dependencies: {dependency_summaries}
+
+Focus on providing more detailed information about the implementation and technical stack and how the code fits in with the larger codebase; refining, expanding, and updating the first-pass summary given the additional context and higher level view of how this code fits into the grander scheme.
+"""
+
+CODE_SUMMARY_PROMPT_PASS_3 = """
+You are an expert code analyst performing the final pass of a multi-pass code summarization task. Your goal is to refine and contextualize the previous summary, providing a comprehensive overview of the code that includes its role in the larger system. This final summary will be used in a vector search system.
+
+Output Format:
+Provide your summary in the following structure, with each section limited to 2-3 sentences:
+
+1. Purpose: [Comprehensive description of the code's main goal, functionality, and significance]
+2. Key Components: [Main functions, classes, or modules with refined descriptions, separated by semicolons]
+3. Implementation: [Detailed explanation of how the code works, including notable algorithms, data structures, and design patterns]
+4. Technical Stack: [Comprehensive list of libraries, frameworks, or technologies used, with brief explanations of their roles, separated by commas]
+5. Context: [How this code fits into the larger project or system, including its interactions with other components]
+
+Evaluation Criteria:
+- Accuracy: The summary correctly represents the code's functionality, implementation details, and context.
+- Conciseness: Information is presented clearly and efficiently within the given length constraints.
+- Semantic Richness: Use of relevant technical terms and concepts that would be valuable in a vector search.
+- Consistency: Adherence to the specified structure for easy parsing and embedding.
+- Contextual Relevance: Clear explanation of the code's role in the larger system.
+
+EXAMPLE 1:
+{EXAMPLE_1}
+
+EXAMPLE 2:
+{EXAMPLE_2}
+
+Previous Summary:
+{previous_summary}
+
+
+Now, please provide a final, comprehensive summary of the following code, building upon the previous summary and the context provided:
+
+```python
+{code}
+```
+
+Additional Context:
+Children Summaries: {children_summaries}
+Dependencies: {dependency_summaries}
+Imports: {import_details}
+
+Focus on refining, expanding, and updating the previous summary, adding context about the code's role in the larger system, and ensuring a comprehensive final summary.
+"""
+
+summary_prompt_list: list[str] = [
+    EXAMPLE_1,
+    EXAMPLE_2,
+    CODE_SUMMARY_PROMPT_PASS_1,
+    CODE_SUMMARY_PROMPT_PASS_2,
+    CODE_SUMMARY_PROMPT_PASS_3,
+]
+
+
 SUMMARIZER_DEFAULT_INSTRUCTIONS = """You are a code summarizer. Your task is to analyze the code provided and create a concise summary of the
 given code based on the prompt provided. Your summary should be technical yet understandable, providing a clear picture of the code's purpose, main
 features, and key components.
@@ -473,6 +638,7 @@ Guidelines:
 CODE:
 ```Python
 {code}
+```
 CHILDREN_SUMMARIES:
 {children_summaries}
 LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:
@@ -484,7 +650,8 @@ Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a 
 
 MULTI_PASS_SUMMARIZATION_PROMPT_PASS2 = """Prompt: "Perform the second pass of summarization for the given code."
 
-NOTE: This is the second pass of a multi-pass summarization process. Use the parent summary provided to guide your focus on how this code block fits into the larger context.
+NOTE: This is the second pass of a multi-pass summarization process. Use the parent summary provided to guide your focus on how this code block fits into the larger context,
+as well as the previous pass summary to build on the high-level overview with more detailed functionality.
 
 If the code is for a function or class, specifically reference the function or class name, and any names defined inside of it, in your summary.
 
@@ -509,6 +676,7 @@ Guidelines:
 CODE:
 ```Python
 {code}
+```
 PARENT SUMMARY:
 {parent_summary}
 CHILDREN_SUMMARIES:
@@ -517,12 +685,15 @@ LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:
 {dependency_summaries}
 STANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:
 {import_details}
+PREVIOUS_SUMMARY:
+{previous_summary}
 Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
 """
 
 MULTI_PASS_SUMMARIZATION_PROMPT_PASS3 = """Prompt: "Perform the final pass of summarization for the given code."
 
-NOTE: This is the final pass of a multi-pass summarization process. Integrate all the information from previous passes to create a comprehensive summary that captures both the specific details and the broader context of the code.
+NOTE: This is the final pass of a multi-pass summarization process. Integrate all the information from previous passes to create a comprehensive summary that captures both the specific details and the broader context of the code,
+including its purpose, functionality, and role in the larger project. Use the previous summary to refine and enhance the detailed functionality description.
 
 If the code is for a function or class, specifically reference the function or class name, and any names defined inside of it, in your summary.
 
@@ -547,6 +718,7 @@ Guidelines:
 CODE:
 ```Python
 {code}
+```
 PARENT SUMMARY:
 {parent_summary}
 CHILDREN_SUMMARIES:
@@ -555,23 +727,7 @@ LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:
 {dependency_summaries}
 STANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:
 {import_details}
+PREVIOUS_SUMMARY:
+{previous_summary}
 Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
 """
-
-
-summary_prompt_list: list[str] = [
-    COD_SUMMARIZATION_PROMPT_WITH_EVERYTHING,
-    COD_SUMMARIZATION_PROMPT_WITHOUT_ANYTHING,
-    COD_SUMMARIZATION_PROMPT_NO_CHILDREN,
-    COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES,
-    COD_SUMMARIZATION_PROMPT_NO_IMPORTS,
-    COD_SUMMARIZATION_PROMPT_NO_CHILDREN_NO_IMPORTS,
-    COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_IMPORTS,
-    COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_CHILDREN,
-    MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
-    MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
-    MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
-    ROLE_ASSIGNMENT_PROMPT,
-    ITERATIVE_REFINEMENT_AND_COMBINING_OUTPUTS_PROMPT,
-    GENERAL_PURPOSE_SUMMARIZATION_PROMPT,
-]

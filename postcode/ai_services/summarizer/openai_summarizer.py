@@ -16,7 +16,6 @@ from postcode.ai_services.summarizer.prompts.prompt_creator import (
 from postcode.ai_services.openai_configs import (
     OpenAIConfigs,
     OpenAIReturnContext,
-    SummaryCompletionConfigs,
 )
 
 
@@ -99,6 +98,7 @@ class OpenAISummarizer:
         import_details: str | None,
         parent_summary: str | None,
         pass_number: int,
+        previous_summary: str | None,
     ) -> str:
         """
         Creates a prompt for code summarization.
@@ -110,6 +110,7 @@ class OpenAISummarizer:
             - import_details (str | None): Details of imports.
             - parent_summary (str | None): Summary of the parent element.
             - pass_number (int): The current pass number in multi-pass summarization.
+            - previous_summary (str | None): The summary from the previous pass.
 
         Returns:
             - str: The created prompt.
@@ -125,6 +126,7 @@ class OpenAISummarizer:
             import_details,
             parent_summary,
             pass_number,
+            previous_summary,
         )
 
         if prompt:
@@ -180,6 +182,7 @@ class OpenAISummarizer:
         import_details: str | None,
         parent_summary: str | None = None,
         pass_number: int = 1,
+        previous_summary: str | None = None,
     ) -> OpenAIReturnContext | None:
         """
         Summarizes the provided code snippet using the OpenAI API.
@@ -229,6 +232,7 @@ class OpenAISummarizer:
             import_details,
             parent_summary,
             pass_number,
+            previous_summary,
         )
         messages: list[ChatCompletionMessageParam] = self._create_messages_list(
             system_message=self.configs.system_message, user_message=prompt

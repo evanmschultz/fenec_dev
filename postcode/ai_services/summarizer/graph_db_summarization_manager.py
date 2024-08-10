@@ -29,16 +29,16 @@ class GraphDBSummarizationManager:
     It interacts with a graph database to store and retrieve model information and summaries.
 
     Args:
-        - all_models_tuple (tuple[ModelType, ...]): Tuple of all models available for summarization.
-        - summarization_mapper (SummarizationMapper): The SummarizationMapper instance for creating summarization maps.
-        - summarizer (Summarizer): The Summarizer instance for generating code summaries.
-        - graph_manager (ArangoDBManager): The ArangoDBManager instance for handling database interactions.
+        - `all_models_tuple` (tuple[ModelType, ...]): Tuple of all models available for summarization.
+        - `summarization_mapper` (SummarizationMapper): The SummarizationMapper instance for creating summarization maps.
+        - `summarizer` (Summarizer): The Summarizer instance for generating code summaries.
+        - `graph_manager` (ArangoDBManager): The ArangoDBManager instance for handling database interactions.
 
     Properties:
-        - total_cost (float): Provides the total cost of the summarization process.
+        - `total_cost` (float): Provides the total cost of the summarization process.
 
     Methods:
-        - create_summaries_and_return_updated_models(num_passes: int = 1): Creates summaries and updates models in the graph database.
+        - `create_summaries_and_return_updated_models`(num_passes: int = 1): Creates summaries and updates models in the graph database.
 
     Example:
         ```python
@@ -90,25 +90,25 @@ class GraphDBSummarizationManager:
         it performs bottom-up, top-down, and final bottom-up passes to create comprehensive summaries.
 
         Args:
-            - num_passes (int): Number of summarization passes to perform. Must be either 1 or 3. Default is 1.
+            - `num_passes` (int): Number of summarization passes to perform. Must be either 1 or 3. Default is 1.
 
         Returns:
-            - list[ModelType] | None: Updated models in the graph database or None if graph_manager is not provided.
+            - `list[ModelType] | None`: Updated models in the graph database or None if graph_manager is not provided.
 
         Raises:
-            - ValueError: If num_passes is not 1 or 3.
+            - `ValueError`: If num_passes is not 1 or 3.
         """
         if num_passes not in [1, 3]:
             raise ValueError("Number of passes must be either 1 or 3")
 
         return self._handle_summarization_passes(num_passes)
 
-    def _single_pass_summarization(self) -> list[ModelType] | None:
-        """Performs a single-pass (bottom-up) summarization."""
+    # def _single_pass_summarization(self) -> list[ModelType] | None:
+    #     """Performs a single-pass (bottom-up) summarization."""
 
-        return self._process_summarization_map(
-            self.summarization_mapper.create_bottom_up_summarization_map(1)
-        )
+    #     return self._process_summarization_map(
+    #         self.summarization_mapper.create_bottom_up_summarization_map(1)
+    #     )
 
     def _handle_summarization_passes(
         self, num_of_passes: int
@@ -125,7 +125,7 @@ class GraphDBSummarizationManager:
                 ]
                 | None
             ) = self._process_summarization_map(
-                self.summarization_mapper.create_bottom_up_summarization_map(1)
+                self.summarization_mapper.create_bottom_up_summarization_map(1), 1
             )
 
         else:
@@ -137,7 +137,8 @@ class GraphDBSummarizationManager:
                     models = self._process_summarization_map(
                         self.summarization_mapper.create_bottom_up_summarization_map(
                             pass_num
-                        )
+                        ),
+                        pass_num,
                     )
                 else:
                     logging.info(f"[blue]Pass number:[/blue] {pass_num} (top-down)")
@@ -145,6 +146,7 @@ class GraphDBSummarizationManager:
                         self.summarization_mapper.create_top_down_summarization_map(
                             pass_num
                         ),
+                        pass_num,
                         models,
                         top_down=True,
                     )
@@ -155,6 +157,7 @@ class GraphDBSummarizationManager:
     def _process_summarization_map(
         self,
         summarization_map: list[ModelType],
+        pass_number: int,
         models: list[ModelType] | None = None,
         top_down: bool = False,
     ) -> list[ModelType] | None:
@@ -162,17 +165,19 @@ class GraphDBSummarizationManager:
         Processes a summarization map to create or update summaries for models.
 
         Args:
-            - summarization_map (list[ModelType]): The map of models to summarize.
-            - models (list[ModelType] | None): Previously summarized models (if any).
-            - top_down (bool): Whether this is a top-down summarization pass.
+            - `summarization_map` (list[ModelType]): The map of models to summarize.
+            - `pass_number` (int): The current summarization pass number.
+            - `models` (list[ModelType] | None): Previously summarized models (if any).
+            - `top_down` (bool): Whether this is a top-down summarization pass.
 
         Returns:
-            - list[ModelType] | None: Updated list of models with new summaries.
+            - `list[ModelType] | None`: Updated list of models with new summaries.
         """
         models_to_summarize_count: int = len(summarization_map)
         models_summarized_count: int = 0
 
         for model in summarization_map:
+            models_summarized_count += 1
             if isinstance(model, ImportModel):
                 import_details = self._get_import_details(model)
             else:
@@ -200,6 +205,10 @@ class GraphDBSummarizationManager:
                 model.code_content if not isinstance(model, DirectoryModel) else ""
             )
 
+            previous_summary: str | None = None
+            if not pass_number == 1:
+                previous_summary = model.summary
+
             summary_return_context: OpenAIReturnContext | None = (
                 self.summarizer.summarize_code(
                     code_content,
@@ -208,7 +217,8 @@ class GraphDBSummarizationManager:
                     dependency_summaries=dependency_summaries,
                     import_details=import_details,
                     parent_summary=parent_summary,
-                    pass_number=2 if top_down else (3 if models else 1),
+                    pass_number=pass_number,
+                    previous_summary=previous_summary,
                 )
             )
             if summary_return_context:
@@ -229,10 +239,10 @@ class GraphDBSummarizationManager:
         Gathers summaries of child models.
 
         Args:
-            - model (ModelType): The model to gather child summaries for.
+            - `model` (ModelType): The model to gather child summaries for.
 
         Returns:
-            - str | None: A string of concatenated child summaries or None if the model has no children.
+            - `str | None`: A string of concatenated child summaries or None if the model has no children.
         """
         child_summary_list: list[str] = []
         if model.children_ids:
@@ -257,10 +267,10 @@ class GraphDBSummarizationManager:
         Converts all of the child summaries to a single string to be used in the prompt.
 
         Args:
-            - children_summary_list (list[str]): A list of child summaries.
+            - `children_summary_list` (list[str]): A list of child summaries.
 
         Returns:
-            - str: A string of all of the child summaries.
+            - `str`: A string of all of the child summaries.
         """
         return "\n".join(children_summary_list)
 
@@ -269,10 +279,10 @@ class GraphDBSummarizationManager:
         Gathers summaries of dependencies and returns them as a string to be used in the prompt.
 
         Args:
-            - model (ModelType): The model to gather dependency summaries for.
+            - `model` (ModelType): The model to gather dependency summaries for.
 
         Returns:
-            - str | None: A string of dependency summaries or None if the model has no dependencies.
+            - `str | None`: A string of dependency summaries or None if the model has no dependencies.
         """
         if isinstance(model, DirectoryModel):
             return None
@@ -310,11 +320,11 @@ class GraphDBSummarizationManager:
         Retrieves the summary of a local dependency to be used in the prompt.
 
         Args:
-            - dependency (DependencyModel): The dependency to retrieve the summary for.
-            - model (ModelType): The model to retrieve the summary for.
+            - `dependency` (DependencyModel): The dependency to retrieve the summary for.
+            - `model` (ModelType): The model to retrieve the summary for.
 
         Returns:
-            - str | None: The summary of the local dependency or None if the dependency is not local.
+            - `str | None`: The summary of the local dependency or None if the dependency is not local.
         """
         if not model.children_ids:
             return None
@@ -338,10 +348,10 @@ class GraphDBSummarizationManager:
         Converts all of the dependency summaries to a single string to be used in the prompt.
 
         Args:
-            - dependencies_summary_list (list[str]): A list of dependency summaries.
+            - `dependencies_summary_list` (list[str]): A list of dependency summaries.
 
         Returns:
-            - str: A string of all of the dependency summaries.
+            - `str`: A string of all of the dependency summaries.
         """
         return "\n".join(dependencies_summary_list)
 
@@ -350,10 +360,10 @@ class GraphDBSummarizationManager:
         Retrieves the summary of an import to be used in the prompt.
 
         Args:
-            - import_model (ImportModel): The import to retrieve the summary for.
+            - `import_model` (ImportModel): The import to retrieve the summary for.
 
         Returns:
-            - str | None: The summary of the import or None if the import is not relevant.
+            - `str | None`: The summary of the import or None if the import is not relevant.
         """
         if import_model.import_module_type == "LOCAL":
             if not import_model.import_names:
@@ -368,10 +378,10 @@ class GraphDBSummarizationManager:
         Retrieves the summary of a local import to be used in the prompt.
 
         Args:
-            - dependency (ImportModel): The import to retrieve the summary for.
+            - `dependency` (ImportModel): The import to retrieve the summary for.
 
         Returns:
-            - str | None: The summary of the local import or None if the import is not local.
+            - `str | None`: The summary of the local import or None if the import is not local.
         """
         if model := next(
             (m for m in self.all_models_tuple if m.id == dependency.local_module_id),
@@ -391,10 +401,10 @@ class GraphDBSummarizationManager:
         Retrieves the summary of a local import from to be used in the prompt.
 
         Args:
-            - dependency (ImportModel): The import to retrieve the summary for.
+            - `dependency` (ImportModel): The import to retrieve the summary for.
 
         Returns:
-            - str | None: The summary of the local import from or None if the import is not local.
+            - `str | None`: The summary of the local import from or None if the import is not local.
         """
         for import_name in dependency.import_names:
             if model := next(
@@ -419,10 +429,10 @@ class GraphDBSummarizationManager:
         Retrieves the details of an import to be used in the prompt.
 
         Args:
-            - import_model (ImportModel): The import to retrieve the details for.
+            - `import_model` (ImportModel): The import to retrieve the details for.
 
         Returns:
-            - str | None: The details of the import or None if the import is not relevant.
+            - `str | None`: The details of the import or None if the import is not relevant.
         """
         if import_model.import_module_type == "LOCAL" or not import_model.import_names:
             return None

@@ -1,9 +1,0 @@
-{
-    "../fastapi-htmx-demo/fastapi_htmx_demo": [
-        "__init__.py",
-        "main.py"
-    ],
-    "../fastapi-htmx-demo/tests": [
-        "__init__.py"
-    ]
-}

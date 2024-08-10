@@ -2,6 +2,7 @@ import typer
 from typing import Optional
 from postcode import Postcode
 from postcode.updaters.graph_db_updater import GraphDBUpdater
+from rich import print
 
 app = typer.Typer()
 
@@ -9,6 +10,9 @@ postcode_instance: Optional[Postcode] = None
 
 
 def process_codebase(path: str) -> None:
+    """
+    Process the codebase at the given path.
+    """
     global postcode_instance
     postcode_instance = Postcode()
     updater = GraphDBUpdater(path)
@@ -17,6 +21,9 @@ def process_codebase(path: str) -> None:
 
 
 def chat_loop() -> None:
+    """
+    Start a chat session with Postcode.
+    """
     global postcode_instance
     if not postcode_instance:
         typer.echo(
@@ -42,7 +49,9 @@ def main(
     Process the codebase and start a chat session with Postcode.
     """
     if process:
-        typer.echo(f"Processing codebase at {path}...")
+        print(
+            f"[blue]POSTCODE[/blue]\n\nProcessing codebase at path: '{path}'",
+        )
         process_codebase(path)
 
     chat_loop()
