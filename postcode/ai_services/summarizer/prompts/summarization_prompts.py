@@ -445,6 +445,120 @@ CODE:
 ```
 """
 
+MULTI_PASS_SUMMARIZATION_PROMPT_PASS1 = """Prompt: "Perform the first pass of summarization for the given code."
+
+NOTE: This is the first pass of a multi-pass summarization process. Focus on creating a high-level summary of the code's main functionality and structure.
+
+If the code is for a function or class, specifically reference the function or class name, and any names defined inside of it, in your summary.
+
+Chain of Density Steps:
+
+1. INITIAL SUMMARY: Start by generating a high-level summary of the code. This summary should briefly describe the main functionality 
+and purpose of the code. For example, "This code implements a basic sorting algorithm to return a list of integers sorted in ascending order."
+
+2. IDENTIFY MAIN COMPONENTS: Identify the main components of the code, such as key functions, classes, or algorithms.
+
+3. STRUCTURE OVERVIEW: Provide a brief overview of the code's structure and how the main components interact.
+
+4. HIGH-LEVEL FUNCTIONALITY: Describe the high-level functionality of the code without going into implementation details.
+
+5. FINAL SUMMARY: Combine the above information into a concise, high-level summary of the code's purpose and structure.
+
+Guidelines:
+- Focus on the overall purpose and structure of the code.
+- Avoid detailed implementation specifics at this stage.
+- The summary should be technical yet understandable, providing a clear picture of the code's main purpose and components.
+- The final summary should be comprehensive yet concise, capturing the essence of the code, and written below the phrase "FINAL SUMMARY:".
+
+CODE:
+```Python
+{code}
+CHILDREN_SUMMARIES:
+{children_summaries}
+LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:
+{dependency_summaries}
+STANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:
+{import_details}
+Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
+"""
+
+MULTI_PASS_SUMMARIZATION_PROMPT_PASS2 = """Prompt: "Perform the second pass of summarization for the given code."
+
+NOTE: This is the second pass of a multi-pass summarization process. Use the parent summary provided to guide your focus on how this code block fits into the larger context.
+
+If the code is for a function or class, specifically reference the function or class name, and any names defined inside of it, in your summary.
+
+Chain of Density Steps:
+
+1. CONTEXT INTEGRATION: Start by briefly restating the main purpose of this code block in the context of its parent, using the provided parent summary.
+
+2. DETAILED FUNCTIONALITY: Describe the specific functionality of this code block, including key algorithms, data structures, and important variables.
+
+3. INTERACTION WITH PARENT: Explain how this code block interacts with or contributes to its parent's functionality.
+
+4. IMPLEMENTATION HIGHLIGHTS: Highlight any unique or important implementation details that are crucial to understanding this code block.
+
+5. FINAL SUMMARY: Combine the above information into a detailed summary that explains both the specific functionality of this code block and its role in the larger context.
+
+Guidelines:
+- Use the parent summary to provide context for your detailed explanation of this code block.
+- Focus on how this code block's specific functionality contributes to the overall purpose described in the parent summary.
+- The summary should be technical and detailed, but still understandable.
+- The final summary should be comprehensive yet concise, capturing both the specifics of this code block and its role in the larger context, written below the phrase "FINAL SUMMARY:".
+
+CODE:
+```Python
+{code}
+PARENT SUMMARY:
+{parent_summary}
+CHILDREN_SUMMARIES:
+{children_summaries}
+LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:
+{dependency_summaries}
+STANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:
+{import_details}
+Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
+"""
+
+MULTI_PASS_SUMMARIZATION_PROMPT_PASS3 = """Prompt: "Perform the final pass of summarization for the given code."
+
+NOTE: This is the final pass of a multi-pass summarization process. Integrate all the information from previous passes to create a comprehensive summary that captures both the specific details and the broader context of the code.
+
+If the code is for a function or class, specifically reference the function or class name, and any names defined inside of it, in your summary.
+
+Chain of Density Steps:
+
+1. COMPREHENSIVE OVERVIEW: Start with a comprehensive overview that combines the high-level purpose (from pass 1) with the specific functionality and context (from pass 2).
+
+2. DETAILED FUNCTIONALITY: Provide a detailed explanation of the code's functionality, including key algorithms, data structures, and important variables.
+
+3. CONTEXTUAL ROLE: Clearly explain the role of this code block in the larger context of its parent and the overall project.
+
+4. IMPLEMENTATION INSIGHTS: Highlight any unique, complex, or particularly important aspects of the implementation.
+
+5. FINAL SUMMARY: Synthesize all the information into a final, dense summary that captures the essence of the code, its specific functionality, and its role in the larger context.
+
+Guidelines:
+- Integrate information from all previous passes to create a comprehensive yet concise summary.
+- Balance specific technical details with broader contextual information.
+- Ensure that the summary captures both the "what" and the "why" of the code.
+- The final summary should be highly informative, technically precise, yet still understandable, written below the phrase "FINAL SUMMARY:".
+
+CODE:
+```Python
+{code}
+PARENT SUMMARY:
+{parent_summary}
+CHILDREN_SUMMARIES:
+{children_summaries}
+LOCAL_IMPORT_AND_DEPENDENCY_SUMMARIES:
+{dependency_summaries}
+STANDARD_LIBRARY_AND_THIRD_PARTY_LIBRARY_IMPORTS:
+{import_details}
+Make sure to write your final summary below the phrase "FINAL SUMMARY:". Take a deep breath and do some great work!
+"""
+
+
 summary_prompt_list: list[str] = [
     COD_SUMMARIZATION_PROMPT_WITH_EVERYTHING,
     COD_SUMMARIZATION_PROMPT_WITHOUT_ANYTHING,
@@ -454,6 +568,9 @@ summary_prompt_list: list[str] = [
     COD_SUMMARIZATION_PROMPT_NO_CHILDREN_NO_IMPORTS,
     COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_IMPORTS,
     COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_CHILDREN,
+    MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
+    MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+    MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
     ROLE_ASSIGNMENT_PROMPT,
     ITERATIVE_REFINEMENT_AND_COMBINING_OUTPUTS_PROMPT,
     GENERAL_PURPOSE_SUMMARIZATION_PROMPT,

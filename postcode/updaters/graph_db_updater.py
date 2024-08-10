@@ -26,9 +26,9 @@ from postcode.types.postcode import ModelType
 
 class GraphDBUpdater:
     """
-    Graph DB based updater.
+    Graph DB based updater supporting multi-pass summarization.
 
-    Updates parses the files in a directory, saves the models as JSON, in the graph database, and in a ChromaDB collection.
+    Updates, parses the files in a directory, saves the models as JSON, in the graph database, and in a ChromaDB collection.
 
     Args:
         - `directory` (str): The directory of the project to update.
@@ -51,14 +51,14 @@ class GraphDBUpdater:
         graph_updater = GraphDBUpdater(directory, output_directory, arango_connector)
 
         # Update all the models for the project and setup Chroma.
-        chroma__collection_manager = graph_updater.update_all()
+        chroma_collection_manager = graph_updater.update_all()
         ```
     """
 
     def __init__(
         self,
-        *,
         directory: str = ".",
+        *,
         summarizer: OpenAISummarizer = OpenAISummarizer(),
         output_directory: str = "pc_output_json",
         graph_connector: ArangoDBConnector = ArangoDBConnector(),
@@ -70,9 +70,12 @@ class GraphDBUpdater:
 
         self.graph_manager = ArangoDBManager(graph_connector)
 
-    def update_all(self) -> ChromaCollectionManager:
+    def update_all(self, num_passes: int = 1) -> ChromaCollectionManager:
         """
-        Updates all the models for a project using the graph database.
+        Updates all the models for a project using the graph database with multi-pass summarization support.
+
+        Args:
+            - num_passes (int): Number of summarization passes to perform. Must be either 1 or 3. Default is 1.
 
         Note:
             This method will delete all the existing collections in the graph database, summarize every code block in the project,
@@ -84,15 +87,18 @@ class GraphDBUpdater:
 
         Raises:
             - `Exception`: If no finalized models are returned from summarization.
+            - `ValueError`: If num_passes is not 1 or 3.
 
         Example:
             ```Python
             graph_updater = GraphDBUpdater(directory, output_directory)
 
-            # Update all the models for the project and setup Chroma.
-            chroma_manager = graph_updater.update_all()
+            # Update all the models for the project with multi-pass summarization and setup Chroma.
+            chroma_manager = graph_updater.update_all(num_passes=3)
             ```
         """
+        if num_passes not in [1, 3]:
+            raise ValueError("Number of passes must be either 1 or 3")
 
         self.graph_connector.delete_all_collections()
         self.graph_connector.ensure_collections()
@@ -105,7 +111,7 @@ class GraphDBUpdater:
         self._upsert_models_to_graph_db(models_tuple)
 
         finalized_models: list[ModelType] | None = self._map_and_summarize_models(
-            models_tuple
+            models_tuple, num_passes
         )
 
         if not finalized_models:
@@ -161,8 +167,9 @@ class GraphDBUpdater:
     def _map_and_summarize_models(
         self,
         models_tuple: tuple[ModelType, ...],
+        num_passes: int,
     ) -> list[ModelType] | None:
-        """Maps and summarizes the models."""
+        """Maps and summarizes the models using multi-pass summarization."""
 
         module_ids: list[str] = self._get_module_ids(models_tuple)
         summarization_mapper = SummarizationMapper(
@@ -173,8 +180,8 @@ class GraphDBUpdater:
         )
 
         finalized_models: list[ModelType] | None = (
-            summarization_manager.create_summaries_and_return_updated_models()
+            summarization_manager.create_summaries_and_return_updated_models(num_passes)
         )
-        logging.info("Summarization complete")
+        logging.info(f"Multi-pass summarization complete (passes: {num_passes})")
 
         return finalized_models if finalized_models else None

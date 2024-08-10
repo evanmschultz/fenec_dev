@@ -1,0 +1,17 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": null,
+    "id": "..:fastapi-htmx-demo:tests:__init__.py__*__MODULE",
+    "file_path": "../fastapi-htmx-demo/tests/__init__.py",
+    "parent_id": "..:fastapi-htmx-demo:tests__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 1,
+    "code_content": "",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code defines a Python class named `ChainOfDensitySteps` that appears to manage a sequence of density-related steps, likely for a scientific or data processing application. The class includes methods for adding steps, executing the chain of steps, and possibly handling dependencies and imports. The structure suggests a modular approach where each step in the chain can be independently defined and executed in sequence. The code also includes mechanisms for summarizing child components and managing local and external dependencies, indicating a well-organized and extensible design.",
+    "children_ids": []
+}

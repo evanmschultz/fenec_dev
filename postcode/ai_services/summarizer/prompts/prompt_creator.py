@@ -5,73 +5,209 @@ import postcode.ai_services.summarizer.prompts.summarization_prompts as prompts
 
 class SummarizationPromptCreator:
     """
-    Class for creating prompts for the summarizer.
+    Class for creating prompts for the summarizer, supporting multi-pass summarization.
 
     Methods:
         - `create_prompt`: Static method that creates a prompt for the summarizer.
 
     Examples:
         ```Python
-        # Create a prompt
-        prompt: str | None = PromptCreator.create_prompt(
+        # Create a prompt for single-pass summarization
+        prompt: str | None = SummarizationPromptCreator.create_prompt(
             code,
             children_summaries,
             dependency_summaries,
             import_details,
         )
+
+        # Create a prompt for multi-pass summarization
+        prompt: str | None = SummarizationPromptCreator.create_prompt(
+            code,
+            children_summaries,
+            dependency_summaries,
+            import_details,
+            parent_summary,
+            pass_number=2
+        )
         ```
     """
 
     _interpolation_strategies: dict[str, Callable[..., str]] = {
-        "children_dependencies_import_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
-            prompts.COD_SUMMARIZATION_PROMPT_WITH_EVERYTHING,
+        # Pass 1 strategies
+        "children_dependencies_import_details_parent_pass1": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
             code=code,
             children_summaries=children_summaries,
             dependencies=dependencies,
             import_details=import_details,
         ),
-        "children_dependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
-            prompts.COD_SUMMARIZATION_PROMPT_NO_IMPORTS,
+        "children_dependencies_noimport_details_noparent_pass1": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
             code=code,
             children_summaries=children_summaries,
             dependencies=dependencies,
         ),
-        "children_nodependencies_import_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
-            prompts.COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES,
+        "children_nodependencies_import_details_noparent_pass1": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
             code=code,
             children_summaries=children_summaries,
             import_details=import_details,
         ),
-        "children_nodependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
-            prompts.COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_IMPORTS,
+        "children_nodependencies_noimport_details_noparent_pass1": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
             code=code,
             children_summaries=children_summaries,
         ),
-        "nochildren_dependencies_import_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
-            prompts.COD_SUMMARIZATION_PROMPT_NO_CHILDREN,
+        "nochildren_dependencies_import_details_noparent_pass1": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
             code=code,
             dependencies=dependencies,
             import_details=import_details,
         ),
-        "nochildren_dependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
-            prompts.COD_SUMMARIZATION_PROMPT_NO_CHILDREN_NO_IMPORTS,
+        "nochildren_dependencies_noimport_details_noparent_pass1": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
             code=code,
             dependencies=dependencies,
         ),
-        "nochildren_nodependencies_import_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
-            prompts.COD_SUMMARIZATION_PROMPT_NO_DEPENDENCIES_NO_CHILDREN,
+        "nochildren_nodependencies_import_details_noparent_pass1": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
             code=code,
             import_details=import_details,
         ),
-        "nochildren_nodependencies_noimport_details": lambda code, children_summaries, dependencies, import_details: SummarizationPromptCreator._interpolate_prompt_string(
-            prompts.COD_SUMMARIZATION_PROMPT_WITHOUT_ANYTHING,
+        "nochildren_nodependencies_noimport_details_noparent_pass1": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS1,
             code=code,
+        ),
+        # Pass 2 strategies
+        "children_dependencies_import_details_parent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+            children_summaries=children_summaries,
+            dependencies=dependencies,
+            import_details=import_details,
+            parent_summary=parent_summary,
+        ),
+        "children_dependencies_noimport_details_parent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+            children_summaries=children_summaries,
+            dependencies=dependencies,
+            parent_summary=parent_summary,
+        ),
+        "children_nodependencies_import_details_parent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+            children_summaries=children_summaries,
+            import_details=import_details,
+            parent_summary=parent_summary,
+        ),
+        "children_nodependencies_noimport_details_parent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+            children_summaries=children_summaries,
+            parent_summary=parent_summary,
+        ),
+        "nochildren_dependencies_import_details_parent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+            dependencies=dependencies,
+            import_details=import_details,
+            parent_summary=parent_summary,
+        ),
+        "nochildren_dependencies_noimport_details_parent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+            dependencies=dependencies,
+            parent_summary=parent_summary,
+        ),
+        "nochildren_nodependencies_import_details_parent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+            import_details=import_details,
+            parent_summary=parent_summary,
+        ),
+        "nochildren_nodependencies_noimport_details_parent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+            parent_summary=parent_summary,
+        ),
+        # Pass 3 strategies
+        "children_dependencies_import_details_parent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
+            code=code,
+            children_summaries=children_summaries,
+            dependencies=dependencies,
+            import_details=import_details,
+            parent_summary=parent_summary,
+        ),
+        "children_dependencies_noimport_details_parent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
+            code=code,
+            children_summaries=children_summaries,
+            dependencies=dependencies,
+            parent_summary=parent_summary,
+        ),
+        "children_nodependencies_import_details_parent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
+            code=code,
+            children_summaries=children_summaries,
+            import_details=import_details,
+            parent_summary=parent_summary,
+        ),
+        "children_nodependencies_noimport_details_parent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
+            code=code,
+            children_summaries=children_summaries,
+            parent_summary=parent_summary,
+        ),
+        "nochildren_dependencies_import_details_parent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
+            code=code,
+            dependencies=dependencies,
+            import_details=import_details,
+            parent_summary=parent_summary,
+        ),
+        "nochildren_dependencies_noimport_details_parent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
+            code=code,
+            dependencies=dependencies,
+            parent_summary=parent_summary,
+        ),
+        "nochildren_nodependencies_import_details_parent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
+            code=code,
+            import_details=import_details,
+            parent_summary=parent_summary,
+        ),
+        "nochildren_nodependencies_noimport_details_parent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS3,
+            code=code,
+            parent_summary=parent_summary,
+        ),
+        "nochildren_nodependencies_noimport_details_noparent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+        ),
+        "children_dependencies_noimport_details_noparent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.MULTI_PASS_SUMMARIZATION_PROMPT_PASS2,
+            code=code,
+            children_summaries=children_summaries,
+            dependencies=dependencies,
         ),
     }
 
     @staticmethod
     def _interpolate_prompt_string(prompt_template: str, **kwargs) -> str:
-        """Returns a prompt string with the provided values interpolated into the template."""
+        """
+        Returns a prompt string with the provided values interpolated into the template.
+
+        Args:
+            - prompt_template (str): The template string to interpolate.
+            - **kwargs: Keyword arguments containing the values to interpolate.
+
+        Returns:
+            - str: The interpolated prompt string.
+        """
 
         prompt_string: str = prompt_template
         for key, value in kwargs.items():
@@ -86,46 +222,68 @@ class SummarizationPromptCreator:
         children_summaries: str | None = None,
         dependency_summaries: str | None = None,
         import_details: str | None = None,
+        parent_summary: str | None = None,
+        pass_number: int = 1,
     ) -> str | None:
         """
-        Dynamically creates a prompt for the summarizer based on the provided arguments.
+        Dynamically creates a prompt for the summarizer based on the provided arguments, supporting multi-pass summarization.
 
         Args:
             - code (str): The code snippet to summarize.
             - children_summaries (str, optional): The summaries of the children of the code snippet.
             - dependency_summaries (str, optional): The summaries of the dependencies of the code snippet.
             - import_details (str, optional): The import details of the code snippet.
+            - parent_summary (str, optional): The summary of the parent code block (for multi-pass summarization).
+            - pass_number (int, optional): The current pass number in multi-pass summarization. Default is 1.
 
         Returns:
             - str: The prompt for the summarizer.
 
+        Raises:
+            - ValueError: If no strategy is found for the given combination of arguments.
+
         Examples:
             ```Python
-            # Create a prompt
-            prompt: str | None = PromptCreator.create_prompt(
+            # Create a prompt for single-pass summarization
+            prompt: str | None = SummarizationPromptCreator.create_prompt(
                 code,
                 children_summaries,
                 dependency_summaries,
                 import_details,
             )
+
+            # Create a prompt for multi-pass summarization (e.g., second pass)
+            prompt: str | None = SummarizationPromptCreator.create_prompt(
+                code,
+                children_summaries,
+                dependency_summaries,
+                import_details,
+                parent_summary,
+                pass_number=2
+            )
             ```
         """
 
-        strategy_key: LiteralString = "_".join(
+        strategy_key: str = "_".join(
             [
                 "children" if children_summaries else "nochildren",
                 "dependencies" if dependency_summaries else "nodependencies",
                 "import_details" if import_details else "noimport_details",
+                "parent" if parent_summary else "noparent",
+                f"pass{pass_number}",
             ]
         )
-        strategy: Callable[
-            ..., str
-        ] | None = SummarizationPromptCreator._interpolation_strategies.get(
-            strategy_key
+        strategy: Callable[..., str] | None = (
+            SummarizationPromptCreator._interpolation_strategies.get(strategy_key)
         )
         if strategy:
             return strategy(
-                code, children_summaries, dependency_summaries, import_details
+                code,
+                children_summaries,
+                dependency_summaries,
+                import_details,
+                parent_summary,
+                pass_number,
             )
         else:
             raise ValueError(f"Could not find strategy for {strategy_key}")

@@ -1,0 +1,68 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "FastAPI",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Request",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Form",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fastapi",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "HTMLResponse",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fastapi.responses",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Jinja2Templates",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fastapi.templating",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        }
+    ],
+    "id": "..:fastapi-htmx-demo:fastapi_htmx_demo:main.py__*__MODULE",
+    "file_path": "../fastapi-htmx-demo/fastapi_htmx_demo/main.py",
+    "parent_id": "..:fastapi-htmx-demo:fastapi_htmx_demo__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 25,
+    "code_content": "from fastapi import FastAPI, Request, Form\nfrom fastapi.responses import HTMLResponse\nfrom fastapi.templating import Jinja2Templates\n\napp = FastAPI()\ntemplates = Jinja2Templates(directory=\"templates\")\n\n# Dummy datastore\nitems = [\"Item 1\", \"Item 2\"]\n\n\n@app.get(\"/\", response_class=HTMLResponse)\ndef get_items(request: Request):\n    return templates.TemplateResponse(\n        \"items.html\", {\"request\": request, \"items\": items}\n    )\n\n\n@app.post(\"/add-item\")\ndef add_item(request: Request, item: str = Form(...)):\n    items.append(item)\n    return templates.TemplateResponse(\n        \"partials/item.html\", {\"request\": request, \"item\": item}\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code implements a basic FastAPI web application that allows users to view and add items to a list. The application initializes a FastAPI instance (`app`), sets up Jinja2 templates for HTML rendering, and defines a dummy datastore (`items`). It includes two main routes: a GET route (`get_items`) that renders an HTML page displaying the list of items, and a POST route (`add_item`) that processes form submissions to add new items to the list and renders the new item dynamically. The use of FastAPI and Jinja2 ensures efficient handling of HTTP requests and dynamic HTML content generation.",
+    "children_ids": [
+        "..:fastapi-htmx-demo:fastapi_htmx_demo:main.py__*__MODULE__*__STANDALONE_BLOCK-1",
+        "..:fastapi-htmx-demo:fastapi_htmx_demo:main.py__*__MODULE__*__FUNCTION-get_items",
+        "..:fastapi-htmx-demo:fastapi_htmx_demo:main.py__*__MODULE__*__FUNCTION-add_item"
+    ]
+}

@@ -13,32 +13,25 @@ class Summarizer(Protocol):
         children_summaries: str | None,
         dependency_summaries: str | None,
         import_details: str | None,
+        parent_summary: str | None = None,
+        pass_number: int = 1,
     ) -> OpenAIReturnContext | None:
         """
-        Summarizes the provided code snippet using the OpenAI API.
+        Summarizes the provided code snippet.
 
         Args:
             - code (str): The code snippet to summarize.
-            - configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.
-                Defaults to SummaryCompletionConfigs().
+            - model_id (str): The identifier of the model being summarized.
+            - children_summaries (str | None): Summaries of child elements, if any.
+            - dependency_summaries (str | None): Summaries of dependencies, if any.
+            - import_details (str | None): Details of imports used in the code.
+            - parent_summary (str | None): Summary of the parent element, if applicable.
+            - pass_number (int): The current pass number in multi-pass summarization. Default is 1.
 
         Returns:
-            str: The summary of the provided code snippet.
-
-        Examples:
-            ```Python
-            client = OpenAI()
-
-            # Create a summarizer instance with the OpenAI client
-            summarizer = Summarizer(client=client)
-            code_example = "print('Hello, world')"
-
-            # Summarize the code snippet
-            summary = summarizer.summarize_code(code_example)
-            print(summary)
-            ```
+            OpenAIReturnContext | None: The summary context, or None if summarization fails.
         """
-        pass
+        ...
 
     def test_summarize_code(
         self,
@@ -48,27 +41,22 @@ class Summarizer(Protocol):
         children_summaries: str | None,
         dependency_summaries: str | None,
         import_details: str | None,
+        parent_summary: str | None = None,
+        pass_number: int = 1,
     ) -> OpenAIReturnContext | None:
         """
-        A method for testing whether or not a summary path is working as expected.
+        A method for testing the summarize_code functionality without making API calls.
 
         Args:
-            - code (str): The code snippet to summarize (pass in dummy string).
-            - configs (SummaryCompletionConfigs, optional): Configuration settings for the summarization.
-                Defaults to SummaryCompletionConfigs().
+            - code (str): The code snippet to summarize (not used in the test method).
+            - model_id (str): The identifier of the model being summarized.
+            - children_summaries (str | None): Summaries of child elements, if any.
+            - dependency_summaries (str | None): Summaries of dependencies, if any.
+            - import_details (str | None): Details of imports used in the code.
+            - parent_summary (str | None): Summary of the parent element, if applicable.
+            - pass_number (int): The current pass number in multi-pass summarization. Default is 1.
 
         Returns:
-            str: The summary of the provided code snippet.
-
-        Examples:
-            ```Python
-            client = OpenAI()
-            summarizer = Summarizer(client=client)
-            code_example = "print('Hello, world')"
-
-            # Run summary tester the code snippet
-            summary = summarizer.summarize_code(code_example)
-            print(summary)
-            ```
+            OpenAIReturnContext | None: A context object containing a test summary and token usage information.
         """
-        pass
+        ...

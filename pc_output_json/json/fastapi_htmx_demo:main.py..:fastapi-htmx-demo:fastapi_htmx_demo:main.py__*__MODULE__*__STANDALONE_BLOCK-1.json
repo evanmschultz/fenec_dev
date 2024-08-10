@@ -1,0 +1,53 @@
+{
+    "variable_assignments": [
+        "app = FastAPI()",
+        "templates = Jinja2Templates(directory=\"templates\")",
+        "items = [\"Item 1\", \"Item 2\"]"
+    ],
+    "id": "..:fastapi-htmx-demo:fastapi_htmx_demo:main.py__*__MODULE__*__STANDALONE_BLOCK-1",
+    "file_path": "../fastapi-htmx-demo/fastapi_htmx_demo/main.py",
+    "parent_id": "..:fastapi-htmx-demo:fastapi_htmx_demo:main.py__*__MODULE",
+    "block_type": "STANDALONE_BLOCK",
+    "start_line_num": 4,
+    "end_line_num": 10,
+    "code_content": "app = FastAPI()\ntemplates = Jinja2Templates(directory=\"templates\")\n# Dummy datastore\nitems = [\"Item 1\", \"Item 2\"]\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "FastAPI",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Request",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Form",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fastapi",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Jinja2Templates",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fastapi.templating",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code sets up a basic FastAPI application with Jinja2 templates for rendering HTML. It initializes a FastAPI instance and configures Jinja2 to use a directory named \"templates\" for template files. Additionally, it defines a dummy datastore containing a list of items. The code is structured to support web application development using FastAPI and Jinja2 for templating.",
+    "children_ids": null
+}

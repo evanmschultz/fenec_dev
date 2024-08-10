@@ -19,7 +19,11 @@ def setup_logging(level=logging.INFO) -> None:
     """
 
     format_str = "%(message)s"
-    logging.basicConfig(level=level, format=format_str, handlers=[RichSyntaxHandler()])
+    logging.basicConfig(
+        level=level,
+        format=format_str,
+        handlers=[RichHandler(markup=True)],
+    )
 
 
 class RichSyntaxHandler(RichHandler):
