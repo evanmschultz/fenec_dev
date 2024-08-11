@@ -1,4 +1,6 @@
+import json
 import logging
+import os
 
 from postcode.ai_services.summarizer.graph_db_summarization_manager import (
     GraphDBSummarizationManager,
@@ -22,6 +24,8 @@ from postcode.python_parser.visitor_manager.visitor_manager import (
     VisitorManagerProcessFilesReturn,
 )
 from postcode.types.postcode import ModelType
+from postcode.updaters.change_detector import ChangeDetector
+import postcode.updaters.git_updater as git_updater
 
 
 class GraphDBUpdater:
@@ -69,6 +73,87 @@ class GraphDBUpdater:
         self.graph_connector: ArangoDBConnector = graph_connector
 
         self.graph_manager = ArangoDBManager(graph_connector)
+        self.last_commit_file = os.path.join(self.output_directory, "last_commit.json")
+
+    def update_changed(self, num_passes: int = 1) -> ChromaCollectionManager:
+        """
+        Updates only the changed files and their connected code blocks since the last update.
+
+        Args:
+            last_commit_hash (str): The commit hash of the last update.
+            num_passes (int): Number of summarization passes to perform. Must be either 1 or 3. Default is 1.
+
+        Returns:
+            ChromaCollectionManager: The updated ChromaDB collection manager.
+        """
+        if num_passes not in [1, 3]:
+            raise ValueError("Number of passes must be either 1 or 3")
+
+        last_commit_hash: str = self._get_last_commit_hash()
+        changed_files: list[str] = git_updater.get_changed_files_since_last_update(
+            last_commit_hash
+        )
+
+        # Parse all files (we need the full structure to detect connections)
+        process_files_return = self._visit_and_parse_files(self.directory)
+        all_models = process_files_return.models_tuple
+
+        # Detect affected models
+        change_detector = ChangeDetector(
+            all_models,
+            self.graph_manager,
+        )
+        affected_model_ids: set[str] = change_detector.get_affected_models(
+            changed_files, both_directions=True if num_passes == 3 else False
+        )
+
+        # Filter models to only affected ones
+        affected_models = [
+            model for model in all_models if model.id in affected_model_ids
+        ]
+        affected_models = tuple(affected_models)
+
+        # Update graph DB with all models (to ensure structure is up-to-date)
+        self._upsert_models_to_graph_db(all_models)
+
+        # Summarize and update only affected models
+        finalized_models = self._map_and_summarize_models(affected_models, num_passes)
+
+        if not finalized_models:
+            raise Exception("No finalized models returned from summarization.")
+
+        # Update databases with finalized models
+        self._upsert_models_to_graph_db(tuple(finalized_models))
+        chroma_manager = chroma_setup.setup_chroma_with_update(finalized_models)
+
+        current_commit_hash = git_updater.get_current_commit_hash()
+        self._save_last_commit_hash(current_commit_hash)
+
+        return chroma_manager
+
+    def _save_last_commit_hash(self, commit_hash: str) -> None:
+        """
+        Saves the last commit hash to a file.
+
+        Args:
+            commit_hash (str): The commit hash to save.
+        """
+        os.makedirs(os.path.dirname(self.last_commit_file), exist_ok=True)
+        with open(self.last_commit_file, "w") as f:
+            json.dump({"last_commit": commit_hash}, f)
+
+    def _get_last_commit_hash(self) -> str:
+        """
+        Retrieves the last commit hash from the file.
+
+        Returns:
+            str: The last commit hash, or an empty string if the file doesn't exist.
+        """
+        if not os.path.exists(self.last_commit_file):
+            return ""
+        with open(self.last_commit_file, "r") as f:
+            data = json.load(f)
+            return data.get("last_commit", "")
 
     def update_all(self, num_passes: int = 1) -> ChromaCollectionManager:
         """
@@ -124,6 +209,9 @@ class GraphDBUpdater:
         )
         self._save_json(finalized_models, json_manager)
         self._upsert_models_to_graph_db(tuple(finalized_models))
+
+        current_commit_hash: str = git_updater.get_current_commit_hash()
+        self._save_last_commit_hash(current_commit_hash)
 
         return chroma_setup.setup_chroma_with_update(finalized_models)
 

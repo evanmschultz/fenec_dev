@@ -83,7 +83,7 @@ class ChromaClientHandler:
             ```
         """
 
-        logging.info(f"Getting or creating collection: {name}")
+        # logging.info(f"Getting or creating collection: {name}")
         try:
             return self.client.get_or_create_collection(
                 name,

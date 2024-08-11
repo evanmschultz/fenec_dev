@@ -38,10 +38,11 @@ class Postcode:
     def __init__(self) -> None:
         setup_logging()
 
-    def process_entire_codebase(
+    def process_codebase(
         self,
         updater: GraphDBUpdater = GraphDBUpdater(),
         num_of_passes: int = 3,
+        process_all: bool = False,
     ) -> None:
         """
         Process the entire codebase using the GraphDBUpdater.
@@ -57,9 +58,14 @@ class Postcode:
         """
 
         try:
-            self.chroma_collection_manager: ChromaCollectionManager = (
-                updater.update_all(num_of_passes)
-            )
+            if process_all:
+                self.chroma_collection_manager: ChromaCollectionManager = (
+                    updater.update_all(num_of_passes)
+                )
+            else:
+                self.chroma_collection_manager: ChromaCollectionManager = (
+                    updater.update_changed(num_of_passes)
+                )
             self.chroma_librarian = ChromaLibrarian(self.chroma_collection_manager)
         except Exception as e:
             raise Exception(f"Error processing codebase: {str(e)}")

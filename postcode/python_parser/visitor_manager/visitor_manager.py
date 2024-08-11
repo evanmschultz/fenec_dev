@@ -145,7 +145,6 @@ class VisitorManager:
         logging.info("File processing completed")
         logging.info("Updating imports")
 
-        # TODO: Test making this a tuple of tuples, see if that solves the double update import issue
         model_builder_tuple: tuple[ModuleModelBuilder, ...] = tuple(model_builder_list)
 
         import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_tuple)

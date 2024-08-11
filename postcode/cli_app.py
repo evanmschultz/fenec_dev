@@ -12,19 +12,35 @@ app = typer.Typer()
 postcode_instance: Optional[Postcode] = None
 
 
-def process_codebase(path: Path) -> None:
+def process_codebase(
+    path: Path,
+    postcode_instance: Postcode,
+    num_of_passes: int = 3,
+    process_all: bool = False,
+) -> None:
     """
     Process the codebase at the given path.
     """
-    global postcode_instance
     try:
-        postcode_instance = Postcode()
         updater = GraphDBUpdater(str(path))
-        postcode_instance.process_entire_codebase(updater)
+        postcode_instance.process_codebase(updater, num_of_passes, process_all)
         typer.echo("Codebase processing complete.")
     except Exception as e:
         logging.exception("Error processing codebase")
         typer.echo(f"Error processing codebase: {e}")
+        raise typer.Exit(1)
+
+
+def connect_to_vectorstore(postcode_instance: Postcode) -> None:
+    """
+    Connect to an existing vectorstore.
+    """
+    try:
+        postcode_instance.connect_to_vectorstore()
+        typer.echo("Connected to existing vectorstore.")
+    except Exception as e:
+        logging.exception("Error connecting to vectorstore")
+        typer.echo(f"Error connecting to vectorstore: {e}")
         raise typer.Exit(1)
 
 
@@ -38,7 +54,9 @@ def chat_loop() -> None:
         )
         raise typer.Exit(1)
 
-    typer.echo("Chat mode started. Type 'exit' to quit.")
+    print(
+        "[blue]Chat[/blue] session started. Type [magenta]'exit'[/magenta] to end the chat."
+    )
     while True:
         user_input = typer.prompt("You")
         if user_input.lower() == "exit":
@@ -60,7 +78,7 @@ def get_path_from_option(option_value: Any) -> Path:
         # Otherwise, assume it's already a string
         path_str = str(option_value)
 
-    path = Path(path_str).resolve()
+    path: Path = Path(path_str).resolve()
     if not path.exists():
         raise typer.BadParameter(f"The path '{path}' does not exist.")
     return path
@@ -68,29 +86,37 @@ def get_path_from_option(option_value: Any) -> Path:
 
 @app.command()
 def main(
-    path: Any = typer.Option(
-        ".",
-        help="Path to the project directory",
-    ),
-    process: bool = typer.Option(True, help="Process the codebase before chatting"),
+    path: str = ".",
+    process: bool = False,
+    all: bool = False,
+    passes: int = 3,
 ) -> None:
     """
     Process the codebase and start a chat session with Postcode.
     """
     setup_logging()
+
     try:
-        resolved_path = get_path_from_option(path)
-        logging.info(f"Starting Postcode with path: {resolved_path}")
+        resolved_path: Path = Path(path).resolve()
+
+        if passes not in {1, 3}:
+            raise typer.BadParameter("Number of passes must be 1 or 3")
+
+        global postcode_instance
+        postcode_instance = Postcode()
 
         if process:
             print(
-                f"[blue]POSTCODE[/blue]\n\nProcessing codebase at path: '{resolved_path}'"
+                f"[bold blue]POSTCODE[/bold blue]\n\nProcessing codebase at path: '{resolved_path}'"
             )
-            process_codebase(resolved_path)
+            process_codebase(resolved_path, postcode_instance, passes, all)
+        else:
+            print("[blue]POSTCODE[/blue]\n\nConnecting to existing vectorstore")
+            connect_to_vectorstore(postcode_instance)
 
         chat_loop()
     except typer.BadParameter as e:
-        logging.error(f"Invalid path: {e}")
+        logging.error(f"Invalid parameter: {e}")
         typer.echo(str(e))
         raise typer.Exit(1)
     except typer.Exit:

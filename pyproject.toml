@@ -23,4 +23,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-postcode = "postcode.cli_app:main"
+postcode = "postcode.cli_app:app"
