@@ -2,7 +2,7 @@ import logging
 from typing import Sequence
 from openai import OpenAI
 
-from postcode.ai_services.openai_configs import OpenAIConfigs
+from postcode.utilities.configs.configs import OpenAIConfigs
 import postcode.types.chroma as chroma_types
 import postcode.types.openai as openai_types
 

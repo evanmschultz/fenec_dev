@@ -1,5 +1,5 @@
 from typing import Protocol
-from postcode.ai_services.openai_configs import OpenAIReturnContext
+from postcode.utilities.configs.configs import OpenAIReturnContext
 
 
 class Summarizer(Protocol):
@@ -16,21 +16,21 @@ class Summarizer(Protocol):
         parent_summary: str | None = None,
         pass_number: int = 1,
         previous_summary: str | None = None,
-    ) -> OpenAIReturnContext | None:
+    ) -> OpenAIReturnContext | str | None:
         """
         Summarizes the provided code snippet.
 
         Args:
-            - code (str): The code snippet to summarize.
-            - model_id (str): The identifier of the model being summarized.
-            - children_summaries (str | None): Summaries of child elements, if any.
-            - dependency_summaries (str | None): Summaries of dependencies, if any.
-            - import_details (str | None): Details of imports used in the code.
-            - parent_summary (str | None): Summary of the parent element, if applicable.
-            - pass_number (int): The current pass number in multi-pass summarization. Default is 1.
+            - `code` (str): The code snippet to summarize.
+            - `model_id` (str): The identifier of the model_id being summarized.
+            - `children_summaries` (str | None): Summaries of child elements, if any.
+            - `dependency_summaries` (str | None): Summaries of dependencies, if any.
+            - `import_details` (str | None): Details of imports used in the code.
+            - `parent_summary` (str | None): Summary of the parent element, if applicable.
+            - `pass_number` (int): The current pass number in multi-pass summarization. Default is 1.
 
         Returns:
-            OpenAIReturnContext | None: The summary context, or None if summarization fails.
+            OpenAIReturnContext | str | None: The summary context, or None if summarization fails.
         """
         ...
 
@@ -50,7 +50,7 @@ class Summarizer(Protocol):
 
         Args:
             - code (str): The code snippet to summarize (not used in the test method).
-            - model_id (str): The identifier of the model being summarized.
+            - model_id (str): The identifier of the model_id being summarized.
             - children_summaries (str | None): Summaries of child elements, if any.
             - dependency_summaries (str | None): Summaries of dependencies, if any.
             - import_details (str | None): Details of imports used in the code.
@@ -58,6 +58,6 @@ class Summarizer(Protocol):
             - pass_number (int): The current pass number in multi-pass summarization. Default is 1.
 
         Returns:
-            OpenAIReturnContext | None: A context object containing a test summary and token usage information.
+            `OpenAIReturnContext | None`: A context object containing a test summary and token usage information.
         """
         ...

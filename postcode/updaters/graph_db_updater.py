@@ -6,7 +6,10 @@ from postcode.ai_services.summarizer.graph_db_summarization_manager import (
     GraphDBSummarizationManager,
 )
 from postcode.ai_services.summarizer.openai_summarizer import OpenAISummarizer
+from postcode.ai_services.summarizer.ollama_summarizer import OllamaSummarizer
 from postcode.ai_services.summarizer.summarization_mapper import SummarizationMapper
+import postcode.ai_services.summarizer.summarizer_factory as summarizer_factory
+from postcode.ai_services.summarizer.summarizer_protocol import Summarizer
 from postcode.databases.arangodb.arangodb_connector import ArangoDBConnector
 
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
@@ -26,6 +29,10 @@ from postcode.python_parser.visitor_manager.visitor_manager import (
 from postcode.types.postcode import ModelType
 from postcode.updaters.change_detector import ChangeDetector
 import postcode.updaters.git_updater as git_updater
+from postcode.utilities.configs.configs import (
+    OllamaSummarizationConfigs,
+    OpenAISummarizationConfigs,
+)
 
 
 class GraphDBUpdater:
@@ -35,13 +42,14 @@ class GraphDBUpdater:
     Updates, parses the files in a directory, saves the models as JSON, in the graph database, and in a ChromaDB collection.
 
     Args:
-        - `directory` (str): The directory of the project to update.
-            default: "."
-        - `summarizer` (OpenAISummarizer): The OpenAI summarizer to use for summarizing the code.
-        - `output_directory` (str): The directory to save the JSON files.
-            - default: "pc_output_json"
-        - `graph_connector` (ArangoDBConnector): The ArangoDB connector to use for connecting to the graph database.
-            - default: ArangoDBConnector() - instantiates a new ArangoDBConnector with its default values
+        - `directory` (str) - The directory of the project to update.
+            default - "."
+        - `summarization_configs` (OpenAISummarizationConfigs | OllamaSummarizationConfigs) - The configs for the summarizer that will
+            be used to create the summarizer and set its configurations.
+        - `output_directory` (str) - The directory to save the JSON files.
+            - default - "pc_output_json"
+        - `graph_connector` (ArangoDBConnector) - The ArangoDB connector to use for connecting to the graph database.
+            - default - ArangoDBConnector() - instantiates a new ArangoDBConnector with its default values
 
     Example:
         ```Python
@@ -63,12 +71,19 @@ class GraphDBUpdater:
         self,
         directory: str = ".",
         *,
-        summarizer: OpenAISummarizer = OpenAISummarizer(),
+        summarization_configs: (
+            OpenAISummarizationConfigs | OllamaSummarizationConfigs
+        ) = OllamaSummarizationConfigs(),
         output_directory: str = "pc_output_json",
         graph_connector: ArangoDBConnector = ArangoDBConnector(),
     ) -> None:
         self.directory: str = directory
-        self.summarizer: OpenAISummarizer = summarizer
+        self.summarization_configs: (
+            OpenAISummarizationConfigs | OllamaSummarizationConfigs
+        ) = summarization_configs
+        self.summarizer: Summarizer = summarizer_factory.create_summarizer(
+            summarization_configs
+        )
         self.output_directory: str = output_directory
         self.graph_connector: ArangoDBConnector = graph_connector
 

@@ -19,7 +19,7 @@ poetry install
 To simple chat with the Postcode Project as is, run the following command:
 
 ```bash
-python main.py
+ollama pull codellama:13b-python # Or any other Ollama model you wish to use
 ```
 
 -   This will create a simple CLI app to chat with an AI using the ChromaDB database saved in version control.

@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import Literal, Protocol
 from dataclasses import dataclass
 
@@ -5,6 +6,22 @@ from pydantic import BaseModel
 
 from postcode.ai_services.summarizer.prompts import summarization_prompts
 from postcode.ai_services.chat.prompts import chat_prompts
+
+
+class SummarizationConfigs(ABC):
+    """
+    SummarizerConfigs is an abstract base class for summarizer configurations.
+    """
+
+    ...
+
+
+class ChatConfigs(ABC):
+    """
+    ChatConfigs is an abstract base class for chat configurations.
+    """
+
+    ...
 
 
 class OpenAIConfigs(BaseModel):
@@ -60,7 +77,7 @@ class OpenAIConfigs(BaseModel):
     temperature: float = 0.0
 
 
-class SummaryCompletionConfigs(OpenAIConfigs):
+class OpenAISummarizationConfigs(SummarizationConfigs, OpenAIConfigs):
     """
     Configs for the summarization completion.
 
@@ -91,7 +108,7 @@ class SummaryCompletionConfigs(OpenAIConfigs):
     """
 
 
-class ChatCompletionConfigs(SummaryCompletionConfigs):
+class OpenAIChatConfigs(OpenAISummarizationConfigs, ChatConfigs):
     """
     Configs for the chat completion.
 
@@ -124,15 +141,67 @@ class ChatCompletionConfigs(SummaryCompletionConfigs):
     system_message: str = chat_prompts.DEFAULT_SYSTEM_PROMPT
 
 
+class OllamaSummarizationConfigs(SummarizationConfigs, BaseModel):
+    """
+    Configs for the Ollama completion.
+
+    Used to set the chat completion parameters for the Ollama chat completions method call.
+
+    Args:
+        - `model` (str): The model to use for the completion. Default is "gpt-4o".
+        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.
+        - `stream` (bool): Whether to stream back partial progress. Default is False.
+        - `temperature` (float): Sampling temperature to use. Default is 0.0.
+
+    Notes:
+        - `model` must be a valid Ollama model name with a valid parameter syntax.
+
+    Examples:
+        ```Python
+        ollama_completion_configs = OllamaConfigs(
+            model="codellama:13b-python",
+        ```
+    """
+
+    model: str = "codellama:7b"
+    system_message: str = summarization_prompts.SUMMARIZER_DEFAULT_INSTRUCTIONS
+
+
+class OllamaChatConfigs(ChatConfigs, BaseModel):
+    """
+    Configs for the Ollama completion.
+
+    Used to set the chat completion parameters for the Ollama chat completions method call.
+
+    Args:
+        - `model` (str): The model to use for the completion. Default is "gpt-4o".
+        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.
+        - `stream` (bool): Whether to stream back partial progress. Default is False.
+        - `temperature` (float): Sampling temperature to use. Default is 0.0.
+
+    Notes:
+        - `model` must be a valid Ollama model name with a valid parameter syntax.
+
+    Examples:
+        ```Python
+        ollama_completion_configs = OllamaConfigs(
+            model="codellama:13b",
+        ```
+    """
+
+    model: str = "codellama:7b"
+    system_message: str = chat_prompts.DEFAULT_SYSTEM_PROMPT
+
+
 @dataclass
 class OpenAIReturnContext:
     """
     A dataclass for storing the return context of an OpenAI completion.
 
     Attributes:
-        - prompt_tokens (int): The number of tokens in the prompt.
-        - completion_tokens (int): The number of tokens in the completion.
-        - summary (str | None): The summary of the code snippet.
+        - `prompt_tokens` (int): The number of tokens in the prompt.
+        - `completion_tokens` (int): The number of tokens in the completion.
+        - `summary` (str | None): The summary of the code snippet.
     """
 
     prompt_tokens: int

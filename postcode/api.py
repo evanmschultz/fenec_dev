@@ -1,8 +1,17 @@
+from pathlib import Path
+from postcode.ai_services.summarizer.summarizer_protocol import Summarizer
 from postcode.updaters.graph_db_updater import GraphDBUpdater
 from postcode.databases.chroma.chromadb_collection_manager import (
     ChromaCollectionManager,
 )
-from postcode.ai_services.openai_configs import ChatCompletionConfigs
+from postcode.utilities.configs.configs import (
+    OpenAIChatConfigs,
+    ChatConfigs,
+    OllamaChatConfigs,
+    OpenAISummarizationConfigs,
+    OllamaSummarizationConfigs,
+)
+from postcode.ai_services.summarizer.summarizer_factory import create_summarizer
 from postcode.ai_services.chat.openai_agents import OpenAIChatAgent
 from postcode.ai_services.librarians.chroma_librarians import ChromaLibrarian
 from postcode.databases.chroma.chroma_setup import setup_chroma
@@ -35,12 +44,26 @@ class Postcode:
         ```
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        path: Path = Path("."),
+        summarization_configs: (
+            OpenAISummarizationConfigs | OllamaSummarizationConfigs
+        ) = OllamaSummarizationConfigs(),
+        chat_configs: OpenAIChatConfigs = OpenAIChatConfigs(),
+    ) -> None:
+        self.path: Path = path
+        self.summarization_configs: (
+            OpenAISummarizationConfigs | OllamaSummarizationConfigs
+        ) = summarization_configs
+        self.chat_configs: OpenAIChatConfigs = chat_configs
+        self.updater: GraphDBUpdater = GraphDBUpdater(
+            summarization_configs=self.summarization_configs
+        )
         setup_logging()
 
     def process_codebase(
         self,
-        updater: GraphDBUpdater = GraphDBUpdater(),
         num_of_passes: int = 3,
         process_all: bool = False,
     ) -> None:
@@ -60,11 +83,11 @@ class Postcode:
         try:
             if process_all:
                 self.chroma_collection_manager: ChromaCollectionManager = (
-                    updater.update_all(num_of_passes)
+                    self.updater.update_all(num_of_passes)
                 )
             else:
                 self.chroma_collection_manager: ChromaCollectionManager = (
-                    updater.update_changed(num_of_passes)
+                    self.updater.update_changed(num_of_passes)
                 )
             self.chroma_librarian = ChromaLibrarian(self.chroma_collection_manager)
         except Exception as e:
@@ -93,7 +116,8 @@ class Postcode:
             raise Exception(f"Error connecting to ChromaDB: {str(e)}")
 
     def chat(
-        self, message: str, chat_config: ChatCompletionConfigs = ChatCompletionConfigs()
+        self,
+        message: str,
     ) -> str:
         """
         Interact with the processed codebase through a chat interface.
@@ -116,6 +140,8 @@ class Postcode:
             raise ValueError(
                 "Codebase has not been processed. Call process_codebase() first."
             )
-        openai_chat_agent = OpenAIChatAgent(self.chroma_librarian, configs=chat_config)
+        openai_chat_agent = OpenAIChatAgent(
+            self.chroma_librarian, configs=self.chat_configs
+        )
         response: str | None = openai_chat_agent.get_response(message)
         return response if response else "I'm sorry, I couldn't generate a response."

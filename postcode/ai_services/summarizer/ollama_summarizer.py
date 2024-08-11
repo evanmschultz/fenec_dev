@@ -1,45 +1,40 @@
 import logging
+from typing import Any, Mapping
 
-from openai import OpenAI
-from openai.types.chat.chat_completion_system_message_param import (
-    ChatCompletionSystemMessageParam,
-)
-from openai.types.chat.chat_completion_user_message_param import (
-    ChatCompletionUserMessageParam,
-)
-from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
-from openai.types.chat.chat_completion import ChatCompletion
+from rich import print
+from ollama import Client
 
 from postcode.ai_services.summarizer.prompts.prompt_creator import (
     SummarizationPromptCreator,
 )
 from postcode.utilities.configs.configs import (
-    OpenAIConfigs,
+    OllamaSummarizationConfigs,
     OpenAIReturnContext,
 )
+from postcode.types.ollama import OllamaMessage
 
 
-class OpenAISummarizer:
+class OllamaSummarizer:
     """
-    A class for summarizing code snippets using the OpenAI API.
+    A class for summarizing code snippets using the Ollama API.
 
-    This class provides functionality to generate summaries of code snippets using OpenAI's language models.
+    This class provides functionality to generate summaries of code snippets using Ollama's language models.
     It supports multi-pass summarization, allowing for more comprehensive and context-aware summaries.
 
     Args:
-        - `configs` (OpenAIConfigs, optional): Configuration settings for the OpenAI summarizer.
+        - `configs` (OllamaConfigs, optional): Configuration settings for the Ollama summarizer.
 
     Attributes:
-        - client (OpenAI): The OpenAI client instance.
-        - configs (OpenAIConfigs): Configuration settings for the summarizer.
+        - `client` (Ollama): The Ollama client instance.
+        - `configs` (OllamaConfigs): Configuration settings for the summarizer.
 
     Methods:
-        - summarize_code: Summarizes the provided code snippet using the OpenAI API.
-        - test_summarize_code: A method for testing the summarization functionality.
+        - `summarize_code`: Summarizes the provided code snippet using the Ollama API.
+        - `test_summarize_code`: A method for testing the summarization functionality.
 
     Example:
         ```Python
-        summarizer = OpenAISummarizer()
+        summarizer = OllamaSummarizer()
         summary = summarizer.summarize_code(
             code="def hello_world():\n    print('Hello, world!')",
             model_id="function_1",
@@ -55,24 +50,24 @@ class OpenAISummarizer:
 
     def __init__(
         self,
-        configs: OpenAIConfigs = OpenAIConfigs(),
+        configs: OllamaSummarizationConfigs = OllamaSummarizationConfigs(),
     ) -> None:
-        self.client: OpenAI = OpenAI()
-        self.configs: OpenAIConfigs = configs
+        self.configs: OllamaSummarizationConfigs = configs
+        self.client: Client = Client()
 
-    def _create_system_message(self, content: str) -> ChatCompletionSystemMessageParam:
-        """Creates a system message for chat completion using OpenAi's ChatCompletionSystemMessageParam class."""
-        return ChatCompletionSystemMessageParam(content=content, role="system")
+    def _create_system_message(self, content: str) -> OllamaMessage:
+        """Creates a system message for chat completion using Ollama's Message TypedDict class."""
+        return OllamaMessage(content=content, role="system")
 
-    def _create_user_message(self, content: str) -> ChatCompletionUserMessageParam:
-        """Creates a user message for chat completion using OpenAi's ChatCompletionUserMessageParam class."""
-        return ChatCompletionUserMessageParam(content=content, role="user")
+    def _create_user_message(self, content: str) -> OllamaMessage:
+        """Creates a user message for chat completion using Ollama's Message TypedDict class."""
+        return OllamaMessage(content=content, role="user")
 
     def _create_messages_list(
         self,
         system_message: str,
         user_message: str,
-    ) -> list[ChatCompletionMessageParam]:
+    ) -> list[OllamaMessage]:
         """
         Creates a list of messages for chat completion, including both system and user messages.
 
@@ -104,19 +99,19 @@ class OpenAISummarizer:
         Creates a prompt for code summarization.
 
         Args:
-            - code (str): The code to summarize.
-            - children_summaries (str | None): Summaries of child elements.
-            - dependency_summaries (str | None): Summaries of dependencies.
-            - import_details (str | None): Details of imports.
-            - parent_summary (str | None): Summary of the parent element.
-            - pass_number (int): The current pass number in multi-pass summarization.
-            - previous_summary (str | None): The summary from the previous pass.
+            - `code` (str): The code to summarize.
+            - `children_summaries` (str | None): Summaries of child elements.
+            - `dependency_summaries` (str | None): Summaries of dependencies.
+            - `import_details` (str | None): Details of imports.
+            - `parent_summary` (str | None): Summary of the parent element.
+            - `pass_number` (int): The current pass number in multi-pass summarization.
+            - `previous_summary` (str | None): The summary from the previous pass.
 
         Returns:
-            - str: The created prompt.
+            - `str`: The created prompt.
 
         Raises:
-            - Exception: If prompt creation fails.
+            - `Exception`: If prompt creation fails.
         """
         prompt_creator: SummarizationPromptCreator = SummarizationPromptCreator()
         prompt: str | None = prompt_creator.create_prompt(
@@ -130,14 +125,15 @@ class OpenAISummarizer:
         )
 
         if prompt:
+            # print(f"[blue]Prompt:[/blue] {prompt}")
             return prompt
         else:
             raise Exception("Prompt creation failed.")
 
     def _get_summary(
         self,
-        messages: list[ChatCompletionMessageParam],
-    ) -> OpenAIReturnContext | None:
+        messages: list[OllamaMessage],
+    ) -> str | None:
         """
         Retrieves the summary from the OpenAI API based on the provided messages and configuration settings.
 
@@ -145,28 +141,20 @@ class OpenAISummarizer:
             - messages (list[ChatCompletionMessageParam]): A list of messages for chat completion.
 
         Returns:
-            OpenAIReturnContext | None: The summary generated by the OpenAI API, or None if no summary is found.
+            str | None: The summary generated by the OpenAI API, or None if no summary is found.
         """
 
         try:
-            response: ChatCompletion = self.client.chat.completions.create(
-                messages=messages,
+            response: Mapping[str, Any] = self.client.chat(
                 model=self.configs.model,
-                max_tokens=self.configs.max_tokens,
-                temperature=self.configs.temperature,
+                messages=messages,
+                format="json",
             )
-            prompt_tokens: int = 0
-            completion_tokens: int = 0
-            summary: str | None = response.choices[0].message.content
-            if response.usage:
-                prompt_tokens = response.usage.prompt_tokens
-                completion_tokens = response.usage.completion_tokens
-
-            return OpenAIReturnContext(
-                prompt_tokens=prompt_tokens,
-                completion_tokens=completion_tokens,
-                summary=summary,
-            )
+            print(f"[green]Response:[/green] {response}")
+            message_dict: dict | None = response.get("message")
+            if message_dict:
+                return message_dict.get("content")
+            return None
 
         except Exception as e:
             logging.error(e)
@@ -183,7 +171,7 @@ class OpenAISummarizer:
         parent_summary: str | None = None,
         pass_number: int = 1,
         previous_summary: str | None = None,
-    ) -> OpenAIReturnContext | None:
+    ) -> str | None:
         """
         Summarizes the provided code snippet using the OpenAI API.
 
@@ -192,16 +180,16 @@ class OpenAISummarizer:
         It supports multi-pass summarization, allowing for refinement of summaries over multiple passes.
 
         Args:
-            - code (str): The code snippet to summarize.
-            - model_id (str): The identifier of the model being summarized.
-            - children_summaries (str | None): Summaries of child elements, if any.
-            - dependency_summaries (str | None): Summaries of dependencies, if any.
-            - import_details (str | None): Details of imports used in the code.
-            - parent_summary (str | None): Summary of the parent element, if applicable.
-            - pass_number (int): The current pass number in multi-pass summarization. Default is 1.
+            - `code` (str): The code snippet to summarize.
+            - `model_id` (str): The identifier of the model being summarized.
+            - `children_summaries` (str | None): Summaries of child elements, if any.
+            - `dependency_summaries` (str | None): Summaries of dependencies, if any.
+            - `import_details` (str | None): Details of imports used in the code.
+            - `parent_summary` (str | None): Summary of the parent element, if applicable.
+            - `pass_number` (int): The current pass number in multi-pass summarization. Default is 1.
 
         Returns:
-            - OpenAIReturnContext | None: A context object containing the summary and token usage information,
+            - `str | None`: A context object containing the summary and token usage information,
                                           or None if summarization fails.
 
         Example:
@@ -234,17 +222,12 @@ class OpenAISummarizer:
             pass_number,
             previous_summary,
         )
-        messages: list[ChatCompletionMessageParam] = self._create_messages_list(
+        messages: list[OllamaMessage] = self._create_messages_list(
             system_message=self.configs.system_message, user_message=prompt
         )
 
-        if summary_return_context := self._get_summary(messages):
-            if summary_return_context.summary:
-                summary_return_context.summary = summary_return_context.summary.split(
-                    "FINAL SUMMARY:"
-                )[-1].strip()
-                return summary_return_context
-        return None
+        summary: str | None = self._get_summary(messages)
+        return summary
 
     def test_summarize_code(
         self,
@@ -265,13 +248,13 @@ class OpenAISummarizer:
         API costs or when you want to test the surrounding logic.
 
         Args:
-            - code (str): The code snippet to summarize (not used in the test method).
-            - model_id (str): The identifier of the model being summarized.
-            - children_summaries (str | None): Summaries of child elements, if any.
-            - dependency_summaries (str | None): Summaries of dependencies, if any.
-            - import_details (str | None): Details of imports used in the code.
-            - parent_summary (str | None): Summary of the parent element, if applicable.
-            - pass_number (int): The current pass number in multi-pass summarization. Default is 1.
+            - `code` (str): The code snippet to summarize (not used in the test method).
+            - `model_id` (str): The identifier of the model being summarized.
+            - `children_summaries` (str | None): Summaries of child elements, if any.
+            - `dependency_summaries` (str | None): Summaries of dependencies, if any.
+            - `import_details` (str | None): Details of imports used in the code.
+            - `parent_summary` (str | None): Summary of the parent element, if applicable.
+            - `pass_number` (int): The current pass number in multi-pass summarization. Default is 1.
 
         Returns:
             - OpenAIReturnContext | None: A context object containing a test summary and token usage information.

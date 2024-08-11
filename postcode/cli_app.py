@@ -1,6 +1,6 @@
 import logging
 import typer
-from typing import Optional, Any
+from typing import Annotated, Literal, Optional, Any
 from pathlib import Path
 from postcode import Postcode
 from postcode.updaters.graph_db_updater import GraphDBUpdater
@@ -13,7 +13,6 @@ postcode_instance: Optional[Postcode] = None
 
 
 def process_codebase(
-    path: Path,
     postcode_instance: Postcode,
     num_of_passes: int = 3,
     process_all: bool = False,
@@ -22,8 +21,7 @@ def process_codebase(
     Process the codebase at the given path.
     """
     try:
-        updater = GraphDBUpdater(str(path))
-        postcode_instance.process_codebase(updater, num_of_passes, process_all)
+        postcode_instance.process_codebase(num_of_passes, process_all)
         typer.echo("Codebase processing complete.")
     except Exception as e:
         logging.exception("Error processing codebase")
@@ -86,10 +84,33 @@ def get_path_from_option(option_value: Any) -> Path:
 
 @app.command()
 def main(
-    path: str = ".",
-    process: bool = False,
-    all: bool = False,
-    passes: int = 3,
+    path: Annotated[
+        str, typer.Argument(help="The path to the directory containing the codebase")
+    ] = ".",
+    update: Annotated[
+        bool,
+        typer.Option(
+            help="Whether to update the summaries and databases with the code that has changed since the last git commit"
+        ),
+    ] = False,
+    update_all: Annotated[
+        bool,
+        typer.Option(
+            help="Whether to update the summaries and databases for the whole project, `update` must be False"
+        ),
+    ] = False,
+    chat: Annotated[
+        bool,
+        typer.Option(
+            help="Whether to start a chat session with Postcode, if updating it will run after processing the codebase"
+        ),
+    ] = True,
+    passes: Annotated[
+        int,
+        typer.Argument(
+            help="The number of passes the summarizer will take, 1 is bottom-up, 3 is bottom-up, top-down, then bottom-up again"
+        ),
+    ] = 3,
 ) -> None:
     """
     Process the codebase and start a chat session with Postcode.
@@ -103,18 +124,23 @@ def main(
             raise typer.BadParameter("Number of passes must be 1 or 3")
 
         global postcode_instance
-        postcode_instance = Postcode()
+        postcode_instance = Postcode(path=resolved_path)
 
-        if process:
+        if update:
             print(
-                f"[bold blue]POSTCODE[/bold blue]\n\nProcessing codebase at path: '{resolved_path}'"
+                f"[bold blue]POSTCODE[/bold blue]\n\nProcessing updated codebase at path: '{resolved_path}'"
             )
-            process_codebase(resolved_path, postcode_instance, passes, all)
+            process_codebase(postcode_instance, passes, False)
+        elif update_all:
+            print(
+                f"[bold blue]POSTCODE[/bold blue]\n\nProcessing the entire codebase at path: '{resolved_path}'"
+            )
+            process_codebase(postcode_instance, passes, True)
         else:
             print("[blue]POSTCODE[/blue]\n\nConnecting to existing vectorstore")
             connect_to_vectorstore(postcode_instance)
-
-        chat_loop()
+        if chat:
+            chat_loop()
     except typer.BadParameter as e:
         logging.error(f"Invalid parameter: {e}")
         typer.echo(str(e))

@@ -3,8 +3,10 @@
 import logging
 from rich import print
 
-from postcode.ai_services.openai_configs import OpenAIReturnContext
+from postcode.utilities.configs.configs import OpenAIReturnContext
 from postcode.ai_services.summarizer.summarizer_protocol import Summarizer
+from postcode.ai_services.summarizer.openai_summarizer import OpenAISummarizer
+from postcode.ai_services.summarizer.ollama_summarizer import OllamaSummarizer
 from postcode.ai_services.summarizer.summarization_mapper import SummarizationMapper
 from postcode.databases.arangodb.arangodb_manager import ArangoDBManager
 
@@ -102,13 +104,6 @@ class GraphDBSummarizationManager:
             raise ValueError("Number of passes must be either 1 or 3")
 
         return self._handle_summarization_passes(num_passes)
-
-    # def _single_pass_summarization(self) -> list[ModelType] | None:
-    #     """Performs a single-pass (bottom-up) summarization."""
-
-    #     return self._process_summarization_map(
-    #         self.summarization_mapper.create_bottom_up_summarization_map(1)
-    #     )
 
     def _handle_summarization_passes(
         self, num_of_passes: int
@@ -209,8 +204,8 @@ class GraphDBSummarizationManager:
             if not pass_number == 1:
                 previous_summary = model.summary
 
-            summary_return_context: OpenAIReturnContext | None = (
-                self.summarizer.summarize_code(
+            if isinstance(self.summarizer, OllamaSummarizer):
+                model_summary: str | None = self.summarizer.summarize_code(
                     code_content,
                     model_id=model.id,
                     children_summaries=children_summaries,
@@ -220,17 +215,38 @@ class GraphDBSummarizationManager:
                     pass_number=pass_number,
                     previous_summary=previous_summary,
                 )
-            )
-            if summary_return_context:
-                if summary_return_context.summary:
+                if model_summary:
+                    stripped_summary: str = model_summary.strip()
+                    print(f"[blue]Summary: [/blue]{stripped_summary}")
                     self.graph_manager.update_vertex_summary_by_id(
-                        model.id, summary_return_context.summary
+                        model.id, stripped_summary
                     )
-                    model.summary = summary_return_context.summary
-                print(summary_return_context.summary)
-                self.prompt_tokens += summary_return_context.prompt_tokens
-                self.completion_tokens += summary_return_context.completion_tokens
-                logging.info(f"Total cost: ${self.total_cost:.2f}")
+                    model.summary = stripped_summary
+            else:
+                summary_return_context: OpenAIReturnContext | str | None = (
+                    self.summarizer.summarize_code(
+                        code_content,
+                        model_id=model.id,
+                        children_summaries=children_summaries,
+                        dependency_summaries=dependency_summaries,
+                        import_details=import_details,
+                        parent_summary=parent_summary,
+                        pass_number=pass_number,
+                        previous_summary=previous_summary,
+                    )
+                )
+                if summary_return_context and isinstance(
+                    summary_return_context, OpenAIReturnContext
+                ):
+                    if summary_return_context.summary:
+                        self.graph_manager.update_vertex_summary_by_id(
+                            model.id, summary_return_context.summary
+                        )
+                        model.summary = summary_return_context.summary
+                    print(summary_return_context.summary)
+                    self.prompt_tokens += summary_return_context.prompt_tokens
+                    self.completion_tokens += summary_return_context.completion_tokens
+                    logging.info(f"Total cost: ${self.total_cost:.2f}")
 
         return self.graph_manager.get_all_vertices() if self.graph_manager else None
 

@@ -200,6 +200,14 @@ class SummarizationPromptCreator:
             EXAMPLE_1=prompts.EXAMPLE_1,
             EXAMPLE_2=prompts.EXAMPLE_2,
         ),
+        "children_nodependencies_noimport_details_noparent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number, previous_summary: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.CODE_SUMMARY_PROMPT_PASS_2,
+            code=code,
+            children_summaries=children_summaries,
+            previous_summary=previous_summary,
+            EXAMPLE_1=prompts.EXAMPLE_1,
+            EXAMPLE_2=prompts.EXAMPLE_2,
+        ),
         # Pass 3 strategies (updated to include previous_summary)
         "children_dependencies_import_details_parent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number, previous_summary: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.CODE_SUMMARY_PROMPT_PASS_3,
@@ -297,6 +305,14 @@ class SummarizationPromptCreator:
         "nochildren_nodependencies_noimport_details_noparent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number, previous_summary: SummarizationPromptCreator._interpolate_prompt_string(
             prompts.CODE_SUMMARY_PROMPT_PASS_3,
             code=code,
+            previous_summary=previous_summary,
+            EXAMPLE_1=prompts.EXAMPLE_1,
+            EXAMPLE_2=prompts.EXAMPLE_2,
+        ),
+        "children_nodependencies_noimport_details_noparent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number, previous_summary: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.CODE_SUMMARY_PROMPT_PASS_2,
+            code=code,
+            children_summaries=children_summaries,
             previous_summary=previous_summary,
             EXAMPLE_1=prompts.EXAMPLE_1,
             EXAMPLE_2=prompts.EXAMPLE_2,
@@ -423,7 +439,7 @@ class SummarizationPromptCreator:
         if not strategy:
             raise ValueError(f"Could not find strategy for {strategy_key}")
         else:
-            logging.info(f"Using strategy: {strategy_key}")
+            # logging.info(f"Using strategy: {strategy_key}")
             # print(
             #     f"With children_summaries: {children_summaries}\n dependency_summaries: {dependency_summaries}\n "
             #     f"import_details: {import_details}\n parent_summary: {parent_summary}\n pass_number: {pass_number}\n "
