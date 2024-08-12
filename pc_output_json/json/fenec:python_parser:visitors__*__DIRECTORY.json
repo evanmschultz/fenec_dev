@@ -1,0 +1,14 @@
+{
+    "id": "fenec:python_parser:visitors__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "visitors",
+    "sub_directories_ids": [
+        "fenec:python_parser:visitors:node_processing__*__DIRECTORY"
+    ],
+    "children_ids": [
+        "fenec:python_parser:visitors:base_code_block_visitor.py__*__MODULE",
+        "fenec:python_parser:visitors:module_visitor.py__*__MODULE"
+    ],
+    "parent_id": "fenec:python_parser__*__DIRECTORY",
+    "summary": null
+}

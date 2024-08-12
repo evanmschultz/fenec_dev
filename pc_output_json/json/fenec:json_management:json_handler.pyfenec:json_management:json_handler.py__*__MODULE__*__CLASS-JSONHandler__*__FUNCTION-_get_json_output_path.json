@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_json_output_path",
+    "docstring": "Gets the output path for a JSON file.\n\nArgs:\n    - file_path (str): The file path of the original Python file.\n    - json_output_directory (str): The path to the JSON output directory.\n\nReturns:\n    str: The output path for the JSON file.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-_get_json_output_path",
+    "file_path": "fenec/json_management/json_handler.py",
+    "parent_id": "fenec:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler",
+    "block_type": "FUNCTION",
+    "start_line_num": 123,
+    "end_line_num": 143,
+    "code_content": "\ndef _get_json_output_path(self, file_path: str, json_output_directory: str) -> str:\n    \"\"\"\n        Gets the output path for a JSON file.\n\n        Args:\n            - file_path (str): The file path of the original Python file.\n            - json_output_directory (str): The path to the JSON output directory.\n\n        Returns:\n            str: The output path for the JSON file.\n        \"\"\"\n\n    if \"DIRECTORY\" in file_path:\n        safe_file_path: str = file_path.replace(\"/\", \":\")\n        return str(Path(json_output_directory) / f\"{safe_file_path}.json\")\n    else:\n        relative_path: Path = Path(file_path).relative_to(Path(self.directory))\n        safe_relative_path: str = str(relative_path).replace(\"/\", \":\").rstrip(\".py\")\n        return str(Path(json_output_directory) / f\"{safe_relative_path}.json\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The code snippet is part of a `JSONHandler` class, which is integral to a system designed for converting and storing parsed code models into JSON format. The primary purpose of the `_get_json_output_path` function within this class is to compute the correct output path for JSON files based on the original Python file's path, ensuring that the JSON files are stored in a structured and traceable manner. This function is crucial for maintaining an organized file system, allowing JSON outputs to be easily linked back to their source files. Key components of this function include the use of the `Path` class from Python's `pathlib` module to handle path manipulations. The function takes two arguments: `file_path`, which is the path of the original Python file, and `json_output_directory`, which specifies where the JSON output should be stored. The implementation involves checking if the string \"DIRECTORY\" is present in the `file_path`, although the logic for handling this condition is incomplete in the snippet. The function is expected to compute a relative path using the `relative_to` method of the `Path` class, which facilitates the conversion of absolute paths to relative paths based on a given directory.\n\nThe technical stack primarily involves Python's standard library, specifically the `pathlib` module for object-oriented path handling, and potentially the `shutil` module for directory operations, as inferred from the larger context of the `JSONHandler` class. The class also employs a custom `logging_decorator` to log operations, enhancing traceability and debugging capabilities. In the context of the larger project, the `JSONHandler` class, and specifically the `_get_json_output_path` function, plays a vital role in a file processing or conversion system. This system likely involves analyzing or transforming Python scripts and storing their results as JSON files in a specified directory structure. The function interacts with other components of the `JSONHandler` class, such as methods for creating output directories, writing JSON files, and managing directory maps, to ensure a seamless and organized workflow for JSON file management. This modular design supports the efficient handling of various code components, such as modules, classes, functions, and standalone code blocks, facilitating their conversion into structured JSON files.",
+    "children_ids": []
+}

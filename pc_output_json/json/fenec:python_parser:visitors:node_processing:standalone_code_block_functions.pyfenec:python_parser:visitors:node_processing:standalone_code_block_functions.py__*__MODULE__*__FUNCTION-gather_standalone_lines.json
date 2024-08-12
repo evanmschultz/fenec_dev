@@ -1,0 +1,63 @@
+{
+    "function_name": "gather_standalone_lines",
+    "docstring": "Gathers standalone lines of code that are not part of class or function definitions or import statements.\n\nThis function iterates over a sequence of libcst.CSTNode, identifying blocks of code that stand alone.\nStandalone blocks are those not encapsulated in class or function definitions and not part of import statements.\n\nArgs:\n    - node_body (Sequence[libcst.CSTNode]): A sequence of CSTNodes representing the body of a module or a block.\n    - visitor_instance: An instance of a visitor class that provides additional context and utilities.\n\nReturns:\n    - list[NodeAndPositionData]: A list of NodeAndPositionData, each representing a standalone block of code with its start and end line numbers.\n\nExample:\n    ```Python\n    visitor_instance = ModuleVisitor(id=\"module1\", ...)\n    standalone_blocks = gather_standalone_lines(module_ast.body, visitor_instance)\n    # This will process the module AST and return standalone blocks of code.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[NodeAndPositionData]",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-gather_standalone_lines",
+    "file_path": "fenec/python_parser/visitors/node_processing/standalone_code_block_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 18,
+    "end_line_num": 71,
+    "code_content": "\n\ndef gather_standalone_lines(\n    node_body: Sequence[libcst.CSTNode], visitor_instance\n) -> list[NodeAndPositionData]:\n    \"\"\"\n    Gathers standalone lines of code that are not part of class or function definitions or import statements.\n\n    This function iterates over a sequence of libcst.CSTNode, identifying blocks of code that stand alone.\n    Standalone blocks are those not encapsulated in class or function definitions and not part of import statements.\n\n    Args:\n        - node_body (Sequence[libcst.CSTNode]): A sequence of CSTNodes representing the body of a module or a block.\n        - visitor_instance: An instance of a visitor class that provides additional context and utilities.\n\n    Returns:\n        - list[NodeAndPositionData]: A list of NodeAndPositionData, each representing a standalone block of code with its start and end line numbers.\n\n    Example:\n        ```Python\n        visitor_instance = ModuleVisitor(id=\"module1\", ...)\n        standalone_blocks = gather_standalone_lines(module_ast.body, visitor_instance)\n        # This will process the module AST and return standalone blocks of code.\n        ```\n    \"\"\"\n\n    standalone_blocks: list[NodeAndPositionData] = []\n    standalone_block: list[libcst.CSTNode] = []\n    start_line = end_line = 0\n\n    for statement in node_body:\n        if _is_class_or_function_def(statement) or _is_import_statement(statement):\n            if standalone_block:\n                end_line = visitor_instance.get_node_position_data(\n                    standalone_block[-1]\n                ).end\n                standalone_blocks.append(\n                    NodeAndPositionData(standalone_block, start_line, end_line)\n                )\n                standalone_block = []\n                start_line = end_line = 0\n        else:\n            if not standalone_block:\n                start_line = visitor_instance.get_node_position_data(statement).start\n            standalone_block.append(statement)\n\n    if standalone_block:\n        end_line = visitor_instance.get_node_position_data(standalone_block[-1]).end\n        standalone_blocks.append(\n            NodeAndPositionData(standalone_block, start_line, end_line)\n        )\n\n    return standalone_blocks\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_is_class_or_function_def"
+        },
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_is_import_statement"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData"
+                }
+            ],
+            "imported_from": "fenec.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "summary": "The `gather_standalone_lines` function is designed to extract and collect standalone lines of code from a sequence of `libcst.CSTNode` objects, which represent the body of a module or block in a Python abstract syntax tree (AST). Its primary goal is to isolate executable code segments that are not part of class or function definitions or import statements, thereby identifying standalone blocks of code. This functionality is significant for tasks such as static analysis, code refactoring, or transformation, where understanding and manipulating isolated code segments is crucial.\n\nKey components of the code include the main function `gather_standalone_lines`, which processes the node body to identify standalone blocks; helper functions `_is_class_or_function_def` and `_is_import_statement`, which are used to determine the type of each node and filter out non-standalone nodes; and the `NodeAndPositionData` structure, which encapsulates a block of nodes along with their start and end line numbers, providing precise positional information.\n\nThe implementation involves iterating over the sequence of nodes and using conditional checks to separate standalone blocks from class/function definitions and import statements. The function employs a visitor instance to obtain positional data for each node, ensuring accurate tracking of line numbers. A list is used to accumulate nodes that form a standalone block, which is then appended to the result list once a non-standalone node is encountered. This approach ensures that all standalone blocks are correctly identified and recorded with their respective line numbers.\n\nThe technical stack includes the `libcst` library, which provides the CSTNode structure for representing Python code in a concrete syntax tree format. The library is utilized for its ability to traverse and analyze the AST using a visitor pattern, which is a design pattern that allows operations to be performed on elements of an object structure. This pattern is particularly useful in this context for extracting positional data and managing node traversal.\n\nIn the context of a larger system, this function could be part of a static analysis tool or a code refactoring utility. It interacts with other components to analyze or transform Python code by isolating executable segments for further processing or analysis. This function could be integrated into a pipeline that processes Python code, providing insights or modifications to improve code quality, maintainability, or performance. Its modular design allows it to be easily adapted or extended to fit various use cases within a larger codebase, making it a versatile tool in the realm of code analysis and transformation.",
+    "children_ids": []
+}

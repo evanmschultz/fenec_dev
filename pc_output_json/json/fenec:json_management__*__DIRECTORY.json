@@ -1,0 +1,11 @@
+{
+    "id": "fenec:json_management__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "json_management",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "fenec:json_management:json_handler.py__*__MODULE"
+    ],
+    "parent_id": "fenec__*__DIRECTORY",
+    "summary": null
+}

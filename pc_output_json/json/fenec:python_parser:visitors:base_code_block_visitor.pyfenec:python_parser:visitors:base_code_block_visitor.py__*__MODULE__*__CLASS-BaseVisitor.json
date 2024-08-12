@@ -1,0 +1,117 @@
+{
+    "class_name": "BaseVisitor",
+    "decorators": null,
+    "bases": null,
+    "docstring": "Base visitor class for traversing and processing nodes in a CST (Concrete Syntax Tree).\n\nThis abstract class provides the foundational functionality for processing various nodes in a CST, using the libcst library. It is designed to be extended by more specific visitor classes like ModuleVisitor.\n\nAttributes:\n    id (str): An identifier for the visitor instance.\n    builder_stack (list[BuilderType]): A stack of model builders for handling different CST nodes.\n\nMETADATA_DEPENDENCIES (tuple): Metadata dependencies required for processing the CST nodes.",
+    "keywords": null,
+    "id": "fenec:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor",
+    "file_path": "fenec/python_parser/visitors/base_code_block_visitor.py",
+    "parent_id": "fenec:python_parser:visitors:base_code_block_visitor.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 31,
+    "end_line_num": 91,
+    "code_content": "\n\nclass BaseVisitor(libcst.CSTVisitor):\n    \"\"\"\n    Base visitor class for traversing and processing nodes in a CST (Concrete Syntax Tree).\n\n    This abstract class provides the foundational functionality for processing various nodes in a CST, using the libcst library. It is designed to be extended by more specific visitor classes like ModuleVisitor.\n\n    Attributes:\n        id (str): An identifier for the visitor instance.\n        builder_stack (list[BuilderType]): A stack of model builders for handling different CST nodes.\n\n    METADATA_DEPENDENCIES (tuple): Metadata dependencies required for processing the CST nodes.\n    \"\"\"\n\n    METADATA_DEPENDENCIES: tuple[type[WhitespaceInclusivePositionProvider]] = (\n        WhitespaceInclusivePositionProvider,\n    )\n\n    def __init__(self, id: str) -> None:\n        self.id: str = id\n        self.builder_stack: list[BuilderType] = []\n\n    def visit_Comment(self, node: libcst.Comment) -> None:\n        \"\"\"\n        Visits a Comment node in the CST.\n\n        Extracts important comments from the node and adds them to the current builder in the stack.\n        \"\"\"\n\n        parent_builder = self.builder_stack[-1]\n        content: CommentModel | None = common_functions.extract_important_comment(node)\n        if content:\n            parent_builder.add_important_comment(content)\n\n    def get_node_position_data(\n        self,\n        node: libcst.CSTNode,\n    ) -> PositionData:\n        \"\"\"\n        Retrieves position data for a given CST node.\n\n        Extracts the start and end line numbers of the node in the source code.\n\n        Args:\n            node (libcst.CSTNode): The CST node to get position data for.\n\n        Returns:\n            PositionData: An object containing start and end line numbers of the node.\n        \"\"\"\n\n        position_data: CodeRange | type[_UNDEFINED_DEFAULT] = self.get_metadata(\n            WhitespaceInclusivePositionProvider, node\n        )\n\n        start, end = 0, 0\n        if isinstance(position_data, CodeRange):\n            start: int = position_data.start.line\n            end: int = position_data.end.line\n        return PositionData(start=start, end=end)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "WhitespaceInclusivePositionProvider",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "CodeRange",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "libcst.metadata",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "WhitespaceInclusivePositionProvider",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "CodeRange",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "libcst.metadata",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "_UNDEFINED_DEFAULT",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "libcst._metadata_dependent",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                }
+            ],
+            "imported_from": "fenec.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "summary": "The code defines a `BaseVisitor` class, an abstract base class designed for traversing and processing nodes within a Concrete Syntax Tree (CST) using the `libcst` library. Its primary purpose is to provide foundational functionality for handling various CST nodes, facilitating the creation of more specialized visitor classes, such as `ModuleVisitor`, that can perform specific analyses or transformations on Python source code. Key components include the `__init__` method, which initializes the visitor with a unique identifier and a stack to manage model builders for different CST nodes; the `visit_Comment` method, which processes comment nodes to extract significant comments using a builder pattern and adds them to the current builder in the stack; and the `get_node_position_data` method, which retrieves the start and end line numbers of a CST node by leveraging metadata from the `WhitespaceInclusivePositionProvider`.\n\nThe implementation employs a stack data structure to manage builders, ensuring that each node's processing context is maintained correctly. The `visit_Comment` method utilizes a helper function, `common_functions.extract_important_comment`, to identify and extract relevant comments, which are then added to the builder stack. The `get_node_position_data` method uses the `get_metadata` function to access position data, specifically the `CodeRange` object, which provides the line numbers for the node's position in the source code. This method ensures that accurate position data is available for further processing or analysis.\n\nThe technical stack includes the `libcst` library, which is used for CST manipulation, providing a robust framework for parsing and transforming Python code. The `WhitespaceInclusivePositionProvider` is a custom metadata provider that supplies detailed position information for CST nodes, crucial for precise code analysis. The code also relies on a custom `PositionData` class to encapsulate the start and end line numbers of nodes.\n\nIn the context of a larger system, this code is part of a Python parser module that facilitates the extraction and analysis of syntactic elements from Python source code. It interacts with other components by providing a base for visitor classes that can be extended to perform specific tasks, such as code linting, formatting, or static analysis. The modular design of the `BaseVisitor` class allows for easy integration and extension, making it a versatile component in a comprehensive code analysis or transformation toolchain. This setup indicates a design pattern where objects are constructed or modified in a stepwise manner, potentially supporting a builder or factory pattern within the system. The use of a stack data structure for managing builders suggests that the system may involve nested or hierarchical object construction, where builders are pushed onto the stack as they are created and popped off as they complete their tasks. This approach allows for flexible and modular object construction, fitting well into a larger architecture that requires dynamic object management and construction capabilities.",
+    "children_ids": [
+        "fenec:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-__init__",
+        "fenec:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-visit_Comment",
+        "fenec:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor__*__FUNCTION-get_node_position_data"
+    ]
+}

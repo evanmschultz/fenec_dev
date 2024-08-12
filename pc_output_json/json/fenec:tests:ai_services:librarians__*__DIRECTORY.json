@@ -1,0 +1,12 @@
+{
+    "id": "fenec:tests:ai_services:librarians__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "librarians",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "fenec:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE",
+        "fenec:tests:ai_services:librarians:__init__.py__*__MODULE"
+    ],
+    "parent_id": "fenec:tests:ai_services__*__DIRECTORY",
+    "summary": null
+}

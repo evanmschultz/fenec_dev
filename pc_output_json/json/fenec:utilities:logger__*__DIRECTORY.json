@@ -1,0 +1,12 @@
+{
+    "id": "fenec:utilities:logger__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "logger",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "fenec:utilities:logger:logging_config.py__*__MODULE",
+        "fenec:utilities:logger:decorators.py__*__MODULE"
+    ],
+    "parent_id": "fenec:utilities__*__DIRECTORY",
+    "summary": null
+}

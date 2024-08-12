@@ -1,0 +1,26 @@
+{
+    "function_name": "_interpolate_prompt_string",
+    "docstring": "Returns a prompt string with the provided values interpolated into the template\nand all traces of unused placeholders removed.\n\nArgs:\n    - `prompt_template` (str): The template string to interpolate.\n    - `**kwargs`: Keyword arguments containing the values to interpolate.\n\nReturns:\n    - `str`: The interpolated prompt string with all traces of unused placeholders removed.",
+    "decorators": [
+        {
+            "content": "@staticmethod",
+            "decorator_name": "staticmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-SummarizationPromptCreator__*__FUNCTION-_interpolate_prompt_string",
+    "file_path": "fenec/ai_services/summarizer/prompts/prompt_creator.py",
+    "parent_id": "fenec:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-SummarizationPromptCreator",
+    "block_type": "FUNCTION",
+    "start_line_num": 321,
+    "end_line_num": 375,
+    "code_content": "\n@staticmethod\ndef _interpolate_prompt_string(prompt_template: str, **kwargs) -> str:\n    \"\"\"\n        Returns a prompt string with the provided values interpolated into the template\n        and all traces of unused placeholders removed.\n\n        Args:\n            - `prompt_template` (str): The template string to interpolate.\n            - `**kwargs`: Keyword arguments containing the values to interpolate.\n\n        Returns:\n            - `str`: The interpolated prompt string with all traces of unused placeholders removed.\n        \"\"\"\n\n    prompt_string: str = prompt_template\n\n    # First, replace all provided values\n    for key, value in kwargs.items():\n        if value is not None:\n            placeholder: str = f\"{{{key}}}\"\n            prompt_string = prompt_string.replace(placeholder, str(value))\n\n    # Remove lines containing unused placeholders and their associated labels\n    lines: list[str] = prompt_string.split(\"\\n\")\n    cleaned_lines: list[str] = []\n    skip_next = False\n    for i, line in enumerate(lines):\n        if skip_next:\n            skip_next = False\n            continue\n\n        # Check if the line or the next line contains an unused placeholder\n        current_line_has_placeholder = re.search(r\"\\{[^}]+\\}\", line)\n        next_line_has_placeholder = i + 1 < len(lines) and re.search(\n            r\"\\{[^}]+\\}\", lines[i + 1]\n        )\n\n        if current_line_has_placeholder or next_line_has_placeholder:\n            # If this line is a label and the next line is an unused placeholder, skip both\n            if not current_line_has_placeholder and next_line_has_placeholder:\n                skip_next = True\n            continue\n\n        # Keep lines without unused placeholders\n        cleaned_lines.append(line)\n\n    cleaned_prompt: str = \"\\n\".join(cleaned_lines)\n    cleaned_prompt = re.sub(r\"\\n\\s*\\n\", \"\\n\\n\", cleaned_prompt).strip()\n    # print(\n    #     f\"\\n\\n[u][blue]Prompt:[/blue][/u]\\n\\n{cleaned_prompt}\\n\\n[u][magenta]End Prompt[/magenta][/u]\\n\\n\"\n    # )\n\n    return cleaned_prompt\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The code defines a static method `_interpolate_prompt_string` designed to process a template string by interpolating provided values and removing unused placeholders, resulting in a clean and finalized prompt string. The primary purpose of this function is to dynamically generate text by replacing placeholders in a template with corresponding values from keyword arguments (`kwargs`) and eliminating any lines with unused placeholders to maintain clarity and readability. Key components include an initial loop that iterates over the `kwargs` to substitute placeholders with their respective values; a subsequent cleaning process that involves splitting the string into lines, checking each line for unused placeholders, and removing lines accordingly. The implementation employs a straightforward approach using Python's built-in string manipulation methods to replace placeholders and a list to manage line-by-line processing. It also uses a regular expression from the `re` module to remove extraneous newlines, ensuring the output is neatly formatted. The technical stack is minimal, relying on Python's core string methods and the `re` module for regular expression operations, which are crucial for refining the final output by cleaning up unnecessary whitespace. In the context of a larger system, this function could be part of a text generation or templating module, possibly within a natural language processing (NLP) or automated content generation system. It ensures that dynamically generated content is free of artifacts from unused placeholders, thus maintaining the integrity and readability of the output. This function likely interacts with other components responsible for managing template strings and their associated data, contributing to a seamless and efficient text generation workflow.",
+    "children_ids": []
+}

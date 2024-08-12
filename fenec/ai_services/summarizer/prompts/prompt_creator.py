@@ -309,8 +309,8 @@ class SummarizationPromptCreator:
             EXAMPLE_1=prompts.EXAMPLE_1,
             EXAMPLE_2=prompts.EXAMPLE_2,
         ),
-        "children_nodependencies_noimport_details_noparent_pass2": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number, previous_summary: SummarizationPromptCreator._interpolate_prompt_string(
-            prompts.CODE_SUMMARY_PROMPT_PASS_2,
+        "children_nodependencies_noimport_details_noparent_pass3": lambda code, children_summaries, dependencies, import_details, parent_summary, pass_number, previous_summary: SummarizationPromptCreator._interpolate_prompt_string(
+            prompts.CODE_SUMMARY_PROMPT_PASS_3,
             code=code,
             children_summaries=children_summaries,
             previous_summary=previous_summary,

@@ -1,0 +1,32 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "fenec.ai_services.librarians.prompts.chroma_librarian_prompts",
+                    "as_name": "prompts",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:librarians:prompts:chroma_librarian_prompts.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:ai_services:librarians:prompts:prompt_creator.py__*__MODULE",
+    "file_path": "fenec/ai_services/librarians/prompts/prompt_creator.py",
+    "parent_id": "fenec:ai_services:librarians:prompts__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 44,
+    "code_content": "import fenec.ai_services.librarians.prompts.chroma_librarian_prompts as prompts\n\n\nclass ChromaLibrarianPromptCreator:\n    \"\"\"\n    Class for creating prompts for the Chroma Librarian.\n\n    Methods:\n        - `create_prompt`: Static method that creates a prompt for the Chroma Librarian.\n\n    Examples:\n        ```Python\n        # Create a prompt\n        prompt: str | None = ChromaLibrarianPromptCreator.create_prompt(\n            user_question,\n            prompt_template,\n            queries_count,\n        )\n        ```\n    \"\"\"\n\n    @staticmethod\n    def create_prompt(\n        user_question: str,\n        prompt_template: str = prompts.DEFAULT_CHROMA_LIBRARIAN_PROMPT,\n        queries_count: int = 3,\n    ) -> str:\n        \"\"\"\n        Creates a prompt for the Chroma Librarian by interpolating the given prompt template with the given user question and queries count.\n\n        Args:\n            - user_question (str): The user's question.\n            - prompt_template (str): The template to interpolate.\n                - default: DEFAULT_CHROMA_LIBRARIAN_PROMPT defined in `chroma_librarian_prompts.py`.\n            - queries_count (int): The number of queries to make.\n                - default: 3\n        \"\"\"\n\n        return prompt_template.format(\n            user_question=user_question,\n            prompt_template=prompt_template,\n            queries_count=queries_count,\n        )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The `ChromaLibrarianPromptCreator` class is a utility designed to generate dynamic prompts for the Chroma Librarian, a component likely involved in AI-driven information retrieval or user interaction within a larger system. Its primary purpose is to facilitate the creation of contextually relevant prompts by interpolating user input and other parameters into a predefined template, thereby enhancing the interaction with the Chroma Librarian. This functionality is crucial for systems that require dynamic query generation based on user input, potentially improving the efficiency and relevance of data retrieval processes.\n\nKey components of this code include the `ChromaLibrarianPromptCreator` class, which encapsulates the prompt creation functionality, and its static method `create_prompt`. This method constructs a prompt by formatting a template with user-specific data, such as the user's question and the number of queries to be executed. The method accepts three parameters: `user_question`, a string representing the user's query; `prompt_template`, a string template for the prompt, which defaults to a constant from the `chroma_librarian_prompts` module; and `queries_count`, an integer indicating the number of queries, defaulting to three. The use of a static method allows for straightforward integration and usage without the need to instantiate the class, promoting ease of use within the system.\n\nThe implementation leverages Python's string formatting capabilities, specifically the `str.format()` method, to replace placeholders in the template with actual values. This approach ensures that the generated prompts are both flexible and adaptable to various user inputs and scenarios. The code's design pattern emphasizes simplicity and reusability, making it a versatile component within the larger system. The default prompt template is sourced from an external module, `fenec.ai_services.librarians.prompts.chroma_librarian_prompts`, indicating a modular design where prompt templates are managed separately, allowing for easy updates and maintenance.\n\nThe technical stack is minimal, primarily relying on Python's standard library for string manipulation. The code also depends on the external module for template definitions, which suggests a separation of concerns that enhances maintainability and scalability, allowing the system to adapt to new requirements or templates without altering the core codebase.\n\nIn the broader context, this code serves as a utility within a larger AI or data management system, where it likely interacts with other components responsible for handling user queries, managing data retrieval, or interfacing with AI models. Its role is to streamline the process of generating contextually relevant prompts, which can then be used to query databases or knowledge systems effectively. The design as a static method suggests that it is intended for widespread use across the system, providing a consistent and efficient way to generate prompts without the overhead of object instantiation. This utility is integral to systems that require dynamic and context-aware interactions, contributing to the overall functionality and user experience of the platform.",
+    "children_ids": [
+        "fenec:ai_services:librarians:prompts:prompt_creator.py__*__MODULE__*__CLASS-ChromaLibrarianPromptCreator"
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "id": "fenec:types__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "types",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "fenec:types:openai.py__*__MODULE",
+        "fenec:types:fenec.py__*__MODULE",
+        "fenec:types:chroma.py__*__MODULE",
+        "fenec:types:ollama.py__*__MODULE"
+    ],
+    "parent_id": "fenec__*__DIRECTORY",
+    "summary": null
+}

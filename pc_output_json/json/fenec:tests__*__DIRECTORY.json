@@ -1,0 +1,13 @@
+{
+    "id": "fenec:tests__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "tests",
+    "sub_directories_ids": [
+        "fenec:tests:ai_services__*__DIRECTORY"
+    ],
+    "children_ids": [
+        "fenec:tests:__init__.py__*__MODULE"
+    ],
+    "parent_id": "fenec__*__DIRECTORY",
+    "summary": null
+}

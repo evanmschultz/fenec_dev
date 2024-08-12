@@ -1,0 +1,20 @@
+{
+    "function_name": "_create_system_message",
+    "docstring": "Creates a system message for chat completion using Ollama's Message TypedDict class.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "OllamaMessage",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:ai_services:summarizer:ollama_summarizer.py__*__MODULE__*__CLASS-OllamaSummarizer__*__FUNCTION-_create_system_message",
+    "file_path": "fenec/ai_services/summarizer/ollama_summarizer.py",
+    "parent_id": "fenec:ai_services:summarizer:ollama_summarizer.py__*__MODULE__*__CLASS-OllamaSummarizer",
+    "block_type": "FUNCTION",
+    "start_line_num": 57,
+    "end_line_num": 61,
+    "code_content": "\ndef _create_system_message(self, content: str) -> OllamaMessage:\n    \"\"\"Creates a system message for chat completion using Ollama's Message TypedDict class.\"\"\"\n    return OllamaMessage(content=content, role=\"system\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code is a component of a chat application, specifically designed to generate structured system messages using the `OllamaMessage` TypedDict class. The primary purpose of the `_create_system_message` function is to encapsulate the creation of message objects that are designated as \"system\" messages, which are crucial for distinguishing system-generated content from user or assistant messages within a chat completion framework. Key components include the `_create_system_message` function, which takes a single string parameter `content` and returns an instance of `OllamaMessage` with the `content` set to the provided string and the `role` explicitly set to \"system.\" This ensures a consistent and standardized format for system messages across the application, facilitating their identification and processing.\n\nThe implementation leverages Python's typing system, specifically the `TypedDict` feature, to define structured data types that enhance type safety and code readability. The use of `TypedDict` allows for the creation of a dictionary-like structure with predefined keys and value types, namely `content` and `role`. This approach simplifies the creation and management of message objects by enforcing a consistent schema, which is particularly beneficial in maintaining code integrity and reducing errors in large-scale applications where message handling is a core functionality.\n\nThe technical stack primarily involves Python's standard library, with a focus on the `typing` module to facilitate the use of `TypedDict`. This choice underscores a commitment to maintaining type integrity and clarity within the codebase, which is essential for applications that require robust message handling capabilities.\n\nIn the context of the larger chat application, this function likely interacts with other components responsible for message handling, such as message queues, processors, and display modules. It serves as a utility function that streamlines the generation of system-level communications, ensuring that such messages are correctly formatted and easily distinguishable from other message types. This function is integral to the chat application's infrastructure, supporting the seamless integration of system messages into the overall chat flow and enhancing the application's ability to manage and display diverse message types effectively. By providing a consistent mechanism for creating system messages, it aids in maintaining the application's reliability and user experience.",
+    "children_ids": []
+}

@@ -1,0 +1,45 @@
+{
+    "function_name": "_extract_return_annotation",
+    "docstring": "\"\nExtracts the return annotation from a function definition.\n\nArgs:\n    - node_returns (libcst.Annotation | None): The return annotation node.\n\nReturns:\n    - str: The extracted return annotation or \"No return annotation\" if none is found.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_extract_return_annotation",
+    "file_path": "fenec/python_parser/visitors/node_processing/function_def_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 180,
+    "end_line_num": 200,
+    "code_content": "\n\ndef _extract_return_annotation(\n    node_returns: libcst.Annotation | None,\n) -> str:\n    \"\"\" \"\n    Extracts the return annotation from a function definition.\n\n    Args:\n        - node_returns (libcst.Annotation | None): The return annotation node.\n\n    Returns:\n        - str: The extracted return annotation or \"No return annotation\" if none is found.\n    \"\"\"\n\n    if isinstance(node_returns, libcst.Annotation) and node_returns:\n        annotation: str | None = common_functions.extract_type_annotation(node_returns)\n        return annotation if annotation else \"No return annotation\"\n    else:\n        return \"No return annotation\"\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        }
+    ],
+    "summary": "This code defines a utility function, `_extract_return_annotation`, which is designed to extract the return type annotation from a function definition node within a Python abstract syntax tree (AST) using the LibCST library. The primary purpose of this function is to retrieve and return the type annotation specified for a function's return value, or to indicate the absence of such an annotation, thereby aiding in the analysis of Python code for type correctness and completeness. This is particularly significant in static analysis tools where ensuring type annotations are present and correct can improve code quality and maintainability.\n\nKey components of the code include the `_extract_return_annotation` function itself, which takes a `libcst.Annotation` object or `None` as input and returns a string representing the extracted annotation. The function first checks if the input is an instance of `libcst.Annotation` and is not `None`. If these conditions are met, it calls a helper function, `common_functions.extract_type_annotation`, to obtain the annotation string. If the annotation is not present or the input is not an `Annotation` instance, it defaults to returning \"No return annotation\".\n\nThe implementation employs a straightforward conditional check to determine the presence of a return annotation and utilizes a helper function to handle the extraction process, ensuring modularity and reusability. The use of type hints such as `libcst.Annotation | None` and `str | None` enhances code readability and type safety, aligning with modern Python practices. This approach not only simplifies the logic but also adheres to Python's type hinting conventions, which are crucial for static type checkers and IDEs.\n\nThe technical stack prominently features the LibCST library, which is utilized for parsing and manipulating Python code as concrete syntax trees, allowing for precise and reliable code analysis. Additionally, the code relies on a custom utility function from `common_functions` to perform the actual extraction of type annotations, indicating a modular design where common operations are abstracted into reusable components.\n\nIn the context of a larger system, this function could be part of a static analysis tool or code quality checker that processes Python code to ensure proper type annotations are used. It likely interacts with other components that analyze or transform code based on its syntax tree, contributing to a comprehensive code analysis pipeline. This function could be integrated into a continuous integration/continuous deployment (CI/CD) system to enforce coding standards and improve code maintainability by ensuring that return types are consistently annotated across a codebase. By doing so, it helps maintain a high standard of code quality and facilitates easier code reviews and refactoring efforts.",
+    "children_ids": []
+}

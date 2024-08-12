@@ -1,0 +1,33 @@
+{
+    "function_name": "_func_is_method",
+    "docstring": "Returns true if an ancestor of the function is a class.\n\nArgs:\n    - id (str): The identifier of the function.\n\nReturns:\n    - bool: True if the function is a method, False otherwise.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "bool",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_func_is_method",
+    "file_path": "fenec/python_parser/visitors/node_processing/function_def_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 126,
+    "end_line_num": 140,
+    "code_content": "\n\ndef _func_is_method(id: str) -> bool:\n    \"\"\"\n    Returns true if an ancestor of the function is a class.\n\n    Args:\n        - id (str): The identifier of the function.\n\n    Returns:\n        - bool: True if the function is a method, False otherwise.\n    \"\"\"\n\n    return str(BlockType.CLASS) in id\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "fenec.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:enums.py__*__MODULE"
+        }
+    ],
+    "summary": "This code defines a utility function `_func_is_method`, which is designed to determine whether a given function identifier corresponds to a method within a class. The primary purpose of this function is to facilitate the identification of class methods by checking if the identifier string includes a reference to a class, specifically denoted by `BlockType.CLASS`. This functionality is significant in scenarios such as code analysis, reflection tasks, or automated documentation generation, where distinguishing between standalone functions and class methods is crucial. The key component of this code is the `_func_is_method` function itself, which takes a single argument `id` of type string and returns a boolean value. The implementation employs a straightforward string containment check using Python's `in` operator to verify if `BlockType.CLASS` is part of the identifier string, thereby indicating that the function is a method. The technical stack is minimal, relying on Python's built-in string operations and assuming the existence of a `BlockType` enumeration or constant that defines `CLASS`. In the context of a larger system, this function likely integrates into a code analysis or reflection module within a software development tool or integrated development environment (IDE). It aids in parsing and analyzing code structures, potentially interacting with other components responsible for code parsing, syntax tree generation, or metadata extraction. This contributes to a comprehensive system for understanding and manipulating codebases, enhancing the tool's ability to provide insights into code organization and structure.",
+    "children_ids": []
+}

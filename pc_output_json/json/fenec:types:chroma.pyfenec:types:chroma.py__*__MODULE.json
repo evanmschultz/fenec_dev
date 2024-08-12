@@ -1,0 +1,285 @@
+{
+    "docstring": "ChromaDB Types\n--------------\n\nThis module contains types defined by the chromadb third-party library.\nThese types are used for easy implementation in the fenec project and\nprovide convenience for users of the fenec library.",
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "chromadb.utils.embedding_functions",
+                    "as_name": "ef",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DEFAULT_DATABASE",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DEFAULT_TENANT",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Settings",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb.config",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClientAPI",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb.api",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DataLoader",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "CollectionMetadata",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "GetResult",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "QueryResult",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Where",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "WhereDocument",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Include",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "URIs",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Loadable",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Metadata",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Embedding",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Document",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb.api.types",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Collection",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "EmbeddingFunction",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CollectionMetadata",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Documents",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Embeddable",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "EmbeddingFunction",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DataLoader",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Embeddings",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "IDs",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Include",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Loadable",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Metadatas",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "URIs",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Where",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "QueryResult",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "GetResult",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "WhereDocument",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb.api.types",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Component",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Settings",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb.config",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Database",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Tenant",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "chromadb.types",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "chromadb.utils.embedding_functions",
+                    "as_name": "ef",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "id": "fenec:types:chroma.py__*__MODULE",
+    "file_path": "fenec/types/chroma.py",
+    "parent_id": "fenec:types__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 51,
+    "code_content": "\"\"\"\nChromaDB Types\n--------------\n\nThis module contains types defined by the chromadb third-party library.\nThese types are used for easy implementation in the fenec project and\nprovide convenience for users of the fenec library.\n\"\"\"\n\nimport chromadb.utils.embedding_functions as ef\n\nfrom chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings\nfrom chromadb.api import ClientAPI\nfrom chromadb.api.types import (\n    DataLoader,\n    CollectionMetadata,\n    GetResult,\n    QueryResult,\n    Where,\n    WhereDocument,\n    Include,\n    URIs,\n    Loadable,\n    Metadata,\n    Embedding,\n    Document,\n)\nfrom chromadb import Collection\nfrom chromadb import EmbeddingFunction\n\nfrom chromadb.api.types import (\n    CollectionMetadata,\n    Documents,\n    Embeddable,\n    EmbeddingFunction,\n    DataLoader,\n    Embeddings,\n    IDs,\n    Include,\n    Loadable,\n    Metadatas,\n    URIs,\n    Where,\n    QueryResult,\n    GetResult,\n    WhereDocument,\n)\nfrom chromadb.config import Component, Settings\nfrom chromadb.types import Database, Tenant\nimport chromadb.utils.embedding_functions as ef\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code module is designed to integrate and utilize types from the ChromaDB library within the Fenec project, significantly enhancing Fenec's data management and embedding capabilities. The primary purpose of this module is to provide a seamless interface for Fenec users, allowing them to leverage ChromaDB's advanced functionalities for data handling, querying, and embedding operations efficiently. Key components of this module include a variety of type imports from ChromaDB, such as `DataLoader`, `CollectionMetadata`, `GetResult`, `QueryResult`, `EmbeddingFunction`, and others. These components are crucial for managing data collections, executing queries, and performing embedding operations within the Fenec project. The implementation involves importing these types and functions from ChromaDB's API and configuration modules, ensuring that Fenec can fully exploit ChromaDB's capabilities. This includes importing settings and default configurations like `DEFAULT_DATABASE` and `DEFAULT_TENANT`, as well as utility functions from `chromadb.utils.embedding_functions`.\n\nThe technical stack prominently features the ChromaDB library, which provides a comprehensive set of tools for database management, embedding functions, and API interactions. ChromaDB's `ClientAPI` and `Collection` classes are utilized to facilitate communication with the database and manage data collections, while the `EmbeddingFunction` and related utilities support embedding operations. The module also imports configuration components such as `Settings` and `Component`, which are essential for configuring and managing the database and tenant settings within Fenec.\n\nIn the context of the larger Fenec project, this module acts as a critical bridge, enabling Fenec to integrate ChromaDB's advanced data processing capabilities. This integration significantly enhances Fenec's data handling and embedding processes, supporting its goal of providing a user-friendly and efficient data management system. By incorporating ChromaDB's types and functionalities, Fenec can offer more sophisticated data operations, improving its overall performance and user experience. This module's design ensures that Fenec can seamlessly interact with ChromaDB, allowing for scalable and flexible data management solutions within the Fenec ecosystem. The module's role is pivotal in ensuring that Fenec can maintain a high level of data processing efficiency and adaptability, crucial for meeting diverse user needs and supporting complex data-driven applications.",
+    "children_ids": [
+        "fenec:types:chroma.py__*__MODULE__*__STANDALONE_BLOCK-1"
+    ]
+}

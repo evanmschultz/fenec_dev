@@ -1,0 +1,70 @@
+{
+    "function_name": "extract_decorator",
+    "docstring": "Extracts the decorator from a libcst.Decorator node.\n\nProcesses a single decorator node to create a model representing the decorator's name and arguments.\n\nArgs:\n    - decorator (libcst.Decorator): A libcst.Decorator node.\n\nReturns:\n    - DecoratorModel | None: A DecoratorModel object if the decorator is valid, otherwise None.\n\nExample:\n    ```Python\n    extract_decorator(some_decorator_node)\n    # Returns a DecoratorModel object for the decorator.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "DecoratorModel | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorator",
+    "file_path": "fenec/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 129,
+    "end_line_num": 180,
+    "code_content": "\n\ndef extract_decorator(\n    decorator: libcst.Decorator,\n) -> DecoratorModel | None:\n    \"\"\"\n    Extracts the decorator from a libcst.Decorator node.\n\n    Processes a single decorator node to create a model representing the decorator's name and arguments.\n\n    Args:\n        - decorator (libcst.Decorator): A libcst.Decorator node.\n\n    Returns:\n        - DecoratorModel | None: A DecoratorModel object if the decorator is valid, otherwise None.\n\n    Example:\n        ```Python\n        extract_decorator(some_decorator_node)\n        # Returns a DecoratorModel object for the decorator.\n        ```\n    \"\"\"\n\n    decorator_name: str = \"\"\n    arg_list: list[str] | None = None\n    if isinstance(decorator.decorator, libcst.Name):\n        decorator_name: str = decorator.decorator.value\n    if isinstance(decorator.decorator, libcst.Call):\n        func = decorator.decorator.func\n        if isinstance(func, libcst.Name) or isinstance(func, libcst.Attribute):\n            if decorator.decorator.args:\n                arg_list = [\n                    extract_stripped_code_content(arg)\n                    for arg in decorator.decorator.args\n                ]\n        if isinstance(func, libcst.Name):\n            decorator_name = func.value\n        elif isinstance(func, libcst.Attribute):\n            decorator_name = func.attr.value\n        else:\n            logging.warning(\"Decorator func is not a Name or Attribute node\")\n\n    return (\n        DecoratorModel(\n            content=extract_stripped_code_content(decorator),\n            decorator_name=decorator_name,\n            decorator_args=arg_list,\n        )\n        if decorator_name\n        else None\n    )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_stripped_code_content"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": "The code defines a function `extract_decorator` that processes a `libcst.Decorator` node to extract and model the decorator's name and arguments, returning a `DecoratorModel` object or `None` if the decorator is invalid. The primary purpose of this function is to facilitate the analysis and transformation of Python code by extracting metadata from decorators, which are a common feature in Python for modifying functions or methods. Key components include: the `extract_decorator` function, which handles the parsing and extraction logic; the `DecoratorModel`, which encapsulates the extracted data, including the decorator's name and its arguments; and utility functions like `extract_stripped_code_content`, which processes the content of the decorator's arguments to remove extraneous whitespace or formatting.\n\nThe implementation involves checking the type of the decorator node, distinguishing between `libcst.Name` and `libcst.Call` types, and extracting the function name and arguments accordingly. It uses conditional logic to handle different node types, such as `libcst.Name` for simple decorators and `libcst.Call` for decorators with arguments. The function employs list comprehensions for efficient extraction of argument content, leveraging the `extract_stripped_code_content` utility to ensure the arguments are processed correctly. The function also includes logging to warn when the decorator's function is not a recognized node type, enhancing the robustness of the code.\n\nThe technical stack includes the `libcst` library, which is used for parsing and manipulating Python code as abstract syntax trees (ASTs). This library allows for precise and reliable code analysis and transformation, making it suitable for tasks that require understanding and modifying Python code structure. Additionally, a logging mechanism is employed to provide warnings, which aids in debugging and maintaining the code.\n\nIn the context of a larger system, this function likely serves as part of a code analysis or transformation tool, interacting with other components that process or generate Python code. It could be used in applications such as code refactoring, linting, or documentation generation, where understanding and manipulating decorators is crucial. By extracting decorator information, this function enables other parts of the system to make informed decisions about code modifications or analyses, contributing to a more automated and efficient code management process. This function's ability to model decorators accurately is significant in systems that require detailed introspection of code for tasks like automated testing, code quality assurance, or dynamic code generation.",
+    "children_ids": []
+}

@@ -1,0 +1,125 @@
+{
+    "docstring": null,
+    "header": [
+        "# TODO: Complete tests for ChromaLibrarian"
+    ],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "json",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Generator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "pytest",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "patch",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "MagicMock",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "unittest.mock",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaLibrarian",
+                    "as_name": null,
+                    "local_block_id": "fenec:ai_services:librarians:chroma_librarians.py__*__MODULE__*__CLASS-ChromaLibrarian"
+                }
+            ],
+            "imported_from": "fenec.ai_services.librarians.chroma_librarians",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:librarians:chroma_librarians.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "fenec:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "fenec.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:types:chroma.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE",
+    "file_path": "fenec/tests/ai_services/librarians/test_chroma_librarians.py",
+    "parent_id": "fenec:tests:ai_services:librarians__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 51,
+    "code_content": "# TODO: Complete tests for ChromaLibrarian\n\nimport json\nfrom typing import Any, Generator\nimport pytest\nfrom unittest.mock import patch, MagicMock\n\nfrom fenec.ai_services.librarians.chroma_librarians import ChromaLibrarian\nfrom fenec.databases.chroma.chromadb_collection_manager import (\n    ChromaCollectionManager,\n)\n\nimport fenec.types.chroma as chroma_types\n\n\n@pytest.fixture\ndef mock_openai_client() -> Generator[MagicMock, Any, None]:\n    with patch(\"openai.OpenAI\") as mock_openai:\n        yield mock_openai()\n\n\n@pytest.fixture\ndef mock_chroma_collection_manager() -> Generator[MagicMock, Any, None]:\n    with patch(\n        \"fenec.databases.chroma.chromadb_collection_manager.ChromaCollectionManager\"\n    ) as mock_manager:\n        yield mock_manager()\n\n\ndef test_query_chroma(\n    mock_chroma_collection_manager: MagicMock, mock_openai_client: MagicMock\n) -> None:\n    librarian = ChromaLibrarian(mock_chroma_collection_manager)\n\n    mock_openai_client.chat.completions.create.return_value = MagicMock(\n        choices=[\n            MagicMock(\n                message=MagicMock(\n                    content=json.dumps({\"query_list\": [\"query1\", \"query2\", \"query3\"]})\n                )\n            )\n        ]\n    )\n\n    mock_chroma_collection_manager.query_collection.return_value = MagicMock()\n\n    result: chroma_types.QueryResult | None = librarian.query_chroma(\"user_question\")\n\n    assert result is not None\n    assert mock_chroma_collection_manager.query_collection.called\n",
+    "important_comments": [
+        {
+            "content": "# TODO: Complete tests for ChromaLibrarian",
+            "comment_types": [
+                "TODO"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": "This code is a unit test designed to validate the functionality of the `ChromaLibrarian` class, which is a critical component in a larger system for managing and querying collections within a Chroma database. The primary goal of this test is to ensure that the `query_chroma` method of `ChromaLibrarian` correctly interacts with the `ChromaCollectionManager` and the OpenAI client, both of which are essential for handling data queries and AI-driven responses. Key components include: `mock_openai_client`, a pytest fixture that simulates the OpenAI client to mimic API interactions without actual network calls, ensuring tests are reliable and independent of external factors; `mock_chroma_collection_manager`, another fixture that mocks the `ChromaCollectionManager` to emulate database operations, isolating the test environment from external dependencies; and `test_query_chroma`, a test function that verifies the behavior of the `query_chroma` method, ensuring it returns a valid result and correctly calls the `query_collection` method of the `ChromaCollectionManager`.\n\nThe implementation leverages the `pytest` framework for structuring and executing tests, utilizing fixtures to create mock objects with `unittest.mock.patch` and `MagicMock`. This approach allows the test to focus on the internal logic of `ChromaLibrarian` by simulating interactions with external services and components. The test specifically checks that the `query_chroma` method returns a non-null result and that the `query_collection` method is invoked, confirming the proper interaction between the `ChromaLibrarian` and the `ChromaCollectionManager`. The use of type hinting with `chroma_types.QueryResult | None` indicates a focus on type safety and clarity in expected outcomes.\n\nThe technical stack includes `pytest` for testing, which provides a robust framework for writing and running test cases; `unittest.mock` for creating mock objects, enabling the simulation of external dependencies; and `json` for potential data handling, although not directly utilized in this snippet. The code also imports types from `fenec.types.chroma`, indicating a structured approach to handling query results.\n\nIn the context of the larger project, this code ensures the reliability and correctness of the `ChromaLibrarian` component, which plays a crucial role in querying and managing data within the Chroma database. It interacts with AI services provided by OpenAI, facilitating the integration of AI-driven insights into the data management process. This test is part of a broader suite of tests that maintain the integrity and functionality of the system, ensuring seamless interaction between various components such as AI services, database managers, and potentially other data processing modules within the Fenec platform. By decoupling tests from actual database operations and external API calls, it supports a fast and stable continuous integration pipeline, enhancing the overall testability and reliability of the system.",
+    "children_ids": [
+        "fenec:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-mock_openai_client",
+        "fenec:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-mock_chroma_collection_manager",
+        "fenec:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-test_query_chroma"
+    ]
+}

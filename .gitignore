@@ -177,3 +177,4 @@ pyrightconfig.json
 
 aggregate_files.sh
 aggregated_contents.txt
+.DS_Store

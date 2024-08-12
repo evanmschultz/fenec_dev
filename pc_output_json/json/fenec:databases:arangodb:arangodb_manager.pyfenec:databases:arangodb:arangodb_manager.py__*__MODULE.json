@@ -1,0 +1,177 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Callable",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Result",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "arango.result",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Cursor",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "arango.cursor",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Graph",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "arango.graph",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandardCollection",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "arango.collection",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Json",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "arango.typings",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ArangoDBConnector",
+                    "as_name": null,
+                    "local_block_id": "fenec:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector"
+                }
+            ],
+            "imported_from": "fenec.databases.arangodb.arangodb_connector",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:arangodb:arangodb_connector.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.types.fenec",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:types:fenec.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ModuleModel"
+                },
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ClassModel"
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-FunctionModel"
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DirectoryModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.databases.arangodb.helper_functions",
+                    "as_name": "helper_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:arangodb:helper_functions.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:databases:arangodb:arangodb_manager.py__*__MODULE",
+    "file_path": "fenec/databases/arangodb/arangodb_manager.py",
+    "parent_id": "fenec:databases:arangodb__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 637,
+    "code_content": "import logging\nfrom typing import Any, Callable\n\nfrom arango.result import Result\nfrom arango.cursor import Cursor\nfrom arango.graph import Graph\nfrom arango.collection import StandardCollection\nfrom arango.typings import Json\n\nfrom fenec.databases.arangodb.arangodb_connector import ArangoDBConnector\n\nfrom fenec.types.fenec import ModelType\nfrom fenec.models.models import (\n    ClassModel,\n    FunctionModel,\n    ModuleModel,\n    StandaloneCodeBlockModel,\n    DirectoryModel,\n)\nimport fenec.databases.arangodb.helper_functions as helper_functions\n\n# NOTE: Remember, when adding logic to connect dependencies, the `from` the external dependency `to` the internal definition using it\n\n\nclass ArangoDBManager:\n    \"\"\"\n    A manager class for handling interactions between the application and ArangoDB.\n\n    This class provides methods for upserting models into ArangoDB, creating edges, processing imports and dependencies, deleting vertices, and querying the graph for related models.\n\n    Attributes:\n        - db_connector (ArangoDBConnector): The ArangoDB connector instance used for database interactions.\n        - default_graph_name (str): The default graph name used for graph-related operations.\n\n    Example:\n        ```python\n        # This example demonstrates how to use ArangoDBManager to upsert models and create edges in ArangoDB.\n        connector = ArangoDBConnector(url=\"http://localhost:8529\", username=\"root\", password=\"openSesame\", db_name=\"fenec\")\n        manager = ArangoDBManager(db_connector=connector)\n        models_to_upsert = [ModuleModel(id=\"module_1\", name=\"Module 1\"), FunctionModel(id=\"function_1\", name=\"Function 1\")]\n        manager.upsert_models(models_to_upsert)\n        ```\n\n    Methods:\n        - upsert_models(module_models): Upserts a list of models into the ArangoDB database.\n        - process_imports_and_dependencies(): Processes the imports and dependencies in the ArangoDB database, creating edges accordingly.\n        - delete_vertex_by_id(vertex_key, graph_name=None): Deletes a vertex from the graph by its key.\n        - get_graph(graph_name=None): Retrieves a graph instance by its name.\n        - get_or_create_graph(graph_name=None): Retrieves an existing graph or creates a new one if not present.\n        - delete_graph(graph_name=None): Deletes a graph by its name.\n        - get_outbound_models(start_key): Retrieves all outbound models from a given starting key.\n        - get_inbound_models(end_key): Retrieves all inbound models to a given ending key.\n        - get_vertex_model_by_id(id): Retrieves a vertex model by its ID.\n        - update_vertex_summary_by_id(id, new_summary): Updates the summary of a vertex by its ID.\n        - get_all_modules(): Retrieves all modules from the graph.\n        - get_all_vertices(): Retrieves all vertices from the graph.\n    \"\"\"\n\n    def __init__(\n        self,\n        db_connector: ArangoDBConnector,\n        default_graph_name: str = \"codebase_graph\",\n    ) -> None:\n        self.db_connector: ArangoDBConnector = db_connector\n\n        self.processed_id_set = set()\n        self.default_graph_name: str = default_graph_name\n\n    def upsert_models(self, module_models: list[ModelType]) -> \"ArangoDBManager\":\n        \"\"\"\n        Upserts a list of models into the ArangoDB database.\n\n        Args:\n            - module_models (list[ModelType]): The list of models to be upserted.\n\n        Returns:\n            - ArangoDBManager: The ArangoDBManager instance.\n        \"\"\"\n\n        for model in module_models:\n            self._upsert_model(model)\n        return self\n\n    def _upsert_model(self, model: ModelType) -> None:\n        \"\"\"\n        Upserts a single model into the ArangoDB database.\n\n        Args:\n            - model (ModelType): The model to be upserted.\n        \"\"\"\n\n        collection_name: str = self._get_collection_name_from_id(model.id)\n        self._upsert_vertex(model, collection_name)\n\n    def _upsert_vertex(self, model: ModelType, collection_name: str) -> None:\n        \"\"\"\n        Upserts a vertex (document) into the specified collection in the ArangoDB database.\n\n        Args:\n            - model (ModelType): The model representing the vertex.\n            - collection_name (str): The name of the collection.\n        \"\"\"\n\n        model_data: dict[str, Any] = model.model_dump()\n        model_data[\"_key\"] = model.id\n\n        try:\n            self.db_connector.ensure_collection(\n                collection_name, model.model_json_schema()\n            )\n            query: str = f\"\"\"\n            UPSERT {{_key: @key}}\n            INSERT @doc\n            UPDATE @doc\n            IN {collection_name}\n            \"\"\"\n            bind_vars: dict[str, Any] = {\"key\": model.id, \"doc\": model_data}\n            self.db_connector.db.aql.execute(query, bind_vars=bind_vars)\n\n            if not isinstance(model, ModuleModel) and model.parent_id:\n                parent_type: str = self._get_collection_name_from_id(model.parent_id)\n                self._upsert_edge(\n                    model.id, model.parent_id, collection_name, parent_type\n                )\n        except Exception as e:\n            logging.error(f\"Error upserting {collection_name} vertex (ArangoDB): {e}\")\n\n    def _upsert_edge(\n        self, from_key: str, to_key: str, source_type: str, target_type: str\n    ) -> None:\n        \"\"\"\n        Upserts an edge between two vertices in the ArangoDB database.\n\n        Args:\n            - from_key (str): The key of the source vertex.\n            - to_key (str): The key of the target vertex.\n            - source_type (str): The type of the source vertex.\n            - target_type (str): The type of the target vertex.\n        \"\"\"\n\n        source_string: str = f\"{source_type}/{from_key}\"\n        target_string: str = f\"{target_type}/{to_key}\"\n\n        edge_data: dict[str, str] = {\n            \"_from\": source_string,\n            \"_to\": target_string,\n            \"source_type\": source_type,\n            \"target_type\": target_type,\n        }\n\n        try:\n            self.db_connector.ensure_edge_collection(\"code_edges\")\n            query = f\"\"\"\n            UPSERT {{_from: @from, _to: @to}}\n            INSERT @doc\n            UPDATE @doc\n            IN code_edges\n            \"\"\"\n            bind_vars = {\n                \"from\": edge_data[\"_from\"],\n                \"to\": edge_data[\"_to\"],\n                \"doc\": edge_data,\n            }\n            self.db_connector.db.aql.execute(query, bind_vars=bind_vars)\n        except Exception as e:\n            logging.error(f\"Error upserting edge (ArangoDB): {e}\")\n\n    def _get_collection_name_from_id(self, block_id: str) -> str:\n        \"\"\"\n        Gets the collection name based on the block ID.\n\n        Args:\n            - block_id (str): The ID of the block.\n\n        Returns:\n            - str: The name of the collection.\n        \"\"\"\n\n        block_id_parts: list[str] = block_id.split(\"__*__\")\n        block_type_part: str = block_id_parts[-1]\n\n        block_type_functions: dict[str, Callable[..., str]] = {\n            \"MODULE\": lambda: \"modules\",\n            \"CLASS\": lambda: \"classes\",\n            \"FUNCTION\": lambda: \"functions\",\n            \"STANDALONE_BLOCK\": lambda: \"standalone_blocks\",\n            \"DIRECTORY\": lambda: \"directories\",\n        }\n\n        for key, func in block_type_functions.items():\n            if block_type_part.startswith(key):\n                return func()\n\n        return \"unknown\"\n\n    def process_imports_and_dependencies(self) -> \"ArangoDBManager\":\n        \"\"\"\n        Processes the imports and dependencies in the ArangoDB database, creating edges accordingly.\n\n        Returns:\n            - ArangoDBManager: The ArangoDBManager instance.\n        \"\"\"\n\n        for vertex_collection in helper_functions.pluralized_and_lowered_block_types():\n            cursor: Result[Cursor] = self.db_connector.db.collection(\n                vertex_collection\n            ).all()\n            if isinstance(cursor, Cursor):\n                for vertex in cursor:\n                    vertex_key = vertex[\"_key\"]\n                    if vertex_collection == \"modules\":\n                        self._create_edges_for_imports(\n                            vertex_key, vertex.get(\"imports\", [])\n                        )\n                    else:\n                        self._create_edges_for_dependencies(\n                            vertex_key, vertex.get(\"dependencies\", [])\n                        )\n            else:\n                logging.error(\n                    f\"Error getting cursor for vertex collection: {vertex_collection}\"\n                )\n        return self\n\n    def _create_edges_for_imports(\n        self, module_key: str, imports: list[dict[str, Any]]\n    ) -> None:\n        \"\"\"\n        Creates edges in the graph for the given module's imports.\n\n        Args:\n            - module_key (str): The key of the module for which imports are processed.\n            - imports (list[dict[str, Any]]): The list of import information.\n        \"\"\"\n\n        if not imports:\n            # logging.debug(f\"No imports found for module {module_key}\")\n            return\n\n        # logging.info(f\"Processing imports for module {module_key}\")\n\n        for _import in imports:\n            import_names: list[dict[str, str]] = _import.get(\"import_names\", [])\n            if not import_names:\n                # logging.debug(f\"No import names found in import {_import}\")\n                continue\n\n            for import_name in import_names:\n                local_block_id: str | None = import_name.get(\"local_block_id\")\n\n                if local_block_id:\n                    target_type = self._get_collection_name_from_id(local_block_id)\n                    try:\n                        self._upsert_edge(\n                            local_block_id, module_key, target_type, \"modules\"\n                        )\n\n                        # logging.info(\n                        #     f\"Upserted edge for import {module_key} to {local_block_id}\"\n                        # )\n                    except Exception as e:\n                        logging.error(\n                            f\"Error creating edge for import {module_key} to {local_block_id}: {e}\"\n                        )\n                else:\n                    # logging.warning(\n                    #     f\"Skipped import {import_name} in module {module_key}\"\n                    # )\n                    ...\n\n    def _create_edges_for_dependencies(\n        self, block_key: str, dependencies: list[dict[str, Any]]\n    ) -> None:\n        \"\"\"\n        Creates edges in the graph for the given block's dependencies.\n\n        Args:\n            - block_key (str): The key of the block for which dependencies are processed.\n            - dependencies (list[dict[str, Any]]): The list of dependency information.\n        \"\"\"\n\n        if not dependencies:\n            return\n\n        for dependency in dependencies:\n            code_block_id: str | None = dependency.get(\"code_block_id\")\n            if code_block_id:\n                source_type: str = self._get_collection_name_from_id(code_block_id)\n                target_type: str = self._get_collection_name_from_id(block_key)\n                try:\n                    self._upsert_edge(\n                        code_block_id, block_key, source_type, target_type\n                    )\n                    # logging.info(\n                    #     f\"Upserted edge for dependency {block_key} to {code_block_id}\"\n                    # )\n                except Exception as e:\n                    logging.error(\n                        f\"Error creating edge for dependency {block_key} to {code_block_id}: {e}\"\n                    )\n\n    def delete_vertex_by_id(\n        self, vertex_key: str, graph_name: str | None = None\n    ) -> None:\n        \"\"\"\n        Deletes a vertex from the graph by its key.\n\n        Args:\n            - vertex_key (str): The key of the vertex to be deleted.\n            - graph_name (str, optional): The name of the graph. Defaults to None.\n        \"\"\"\n\n        collection_name: str = self._get_collection_name_from_id(vertex_key)\n        if collection_name == \"unknown\":\n            logging.error(f\"Unknown vertex type for key: {vertex_key}\")\n            return None\n\n        if not graph_name:\n            graph_name = self.default_graph_name\n\n        try:\n            vertex_coll = self.db_connector.db.graph(graph_name).vertex_collection(\n                collection_name\n            )\n\n            vertex_coll.delete(vertex_key)\n\n            # logging.info(\n            #     f\"Vertex '{vertex_key}' from collection '{collection_name}' was successfully deleted.\"\n            # )\n\n        except Exception as e:\n            logging.error(\n                f\"Error deleting vertex '{vertex_key}' from collection '{collection_name}': {e}\"\n            )\n\n    def get_graph(self, graph_name: str | None = None) -> Graph | None:\n        \"\"\"\n        Retrieves a graph instance by its name.\n\n        Args:\n            - graph_name (str, optional): The name of the graph. Defaults to None.\n\n        Returns:\n            - Graph | None: The graph instance or None if not found.\n        \"\"\"\n\n        if not graph_name:\n            graph_name = self.default_graph_name\n        try:\n            return self.db_connector.db.graph(self.default_graph_name)\n        except Exception as e:\n            logging.error(f\"Error getting graph '{self.default_graph_name}': {e}\")\n            return None\n\n    def get_or_create_graph(self, graph_name: str | None = None) -> Result[Graph]:\n        \"\"\"\n        Retrieves an existing graph or creates a new one if not present.\n\n        Args:\n            - graph_name (str, optional): The name of the graph. Defaults to None.\n\n        Returns:\n            - Result[Graph]: The result of the operation.\n        \"\"\"\n\n        if not graph_name:\n            graph_name = self.default_graph_name\n\n        try:\n            if not self.db_connector.db.has_graph(graph_name):\n                edge_definitions: list[dict[str, str | list[str]]] = [\n                    {\n                        \"edge_collection\": \"code_edges\",\n                        \"from_vertex_collections\": helper_functions.pluralized_and_lowered_block_types(),\n                        \"to_vertex_collections\": helper_functions.pluralized_and_lowered_block_types(),\n                    }\n                ]\n\n                # logging.info(f\"Graph '{graph_name}' created successfully.\")\n                return self.db_connector.db.create_graph(\n                    graph_name, edge_definitions=edge_definitions\n                )\n\n            else:\n                return self.get_graph()\n\n        except Exception as e:\n            logging.error(f\"Error creating graph '{graph_name}': {e}\")\n\n    def delete_graph(self, graph_name: str | None = None) -> None:\n        \"\"\"\n        Deletes a graph by its name.\n\n        Args:\n            - graph_name (str, optional): The name of the graph. Defaults to None.\n        \"\"\"\n\n        if not graph_name:\n            graph_name = self.default_graph_name\n        try:\n            self.db_connector.db.delete_graph(graph_name)\n            logging.info(f\"Graph '{graph_name}' deleted successfully.\")\n        except Exception as e:\n            logging.error(f\"Error deleting graph '{graph_name}': {e}\")\n\n    def get_outbound_models(self, start_key: str) -> list[ModelType] | None:\n        \"\"\"\n        Retrieves all outbound models from a given starting key.\n\n        Args:\n            - start_key (str): The key of the starting vertex.\n\n        Returns:\n            - list[ModelType] | None: List of outbound models or None if an error occurs.\n        \"\"\"\n\n        vertex_type: str = self._get_collection_name_from_id(start_key)\n\n        query: str = f\"\"\"\n        FOR v, e, p IN 1..100 OUTBOUND '{vertex_type}/{start_key}' GRAPH '{self.default_graph_name}'\n        RETURN DISTINCT v\n        \"\"\"\n\n        try:\n            cursor = self.db_connector.db.aql.execute(query)\n            if isinstance(cursor, Cursor):\n                return [\n                    helper_functions.create_model_from_vertex(doc) for doc in cursor\n                ]\n            else:\n                logging.error(f\"Error getting cursor for query: {query}\")\n                return None\n        except Exception as e:\n            logging.error(f\"Error in get_all_downstream_vertices: {e}\")\n            return None\n\n    def get_inbound_models(self, end_key: str) -> list[ModelType] | None:\n        \"\"\"\n        Retrieves all inbound models to a given ending key.\n\n        Args:\n            - end_key (str): The key of the ending vertex.\n\n        Returns:\n            - list[ModelType] | None: List of inbound models or None if an error occurs.\n        \"\"\"\n\n        vertex_type: str = self._get_collection_name_from_id(end_key)\n\n        query: str = f\"\"\"\n        FOR v, e, p IN 1..100 INBOUND '{vertex_type}/{end_key}' GRAPH '{self.default_graph_name}'\n        RETURN DISTINCT v\n        \"\"\"\n\n        try:\n            cursor: Result[Cursor] = self.db_connector.db.aql.execute(query)\n            if isinstance(cursor, Cursor):\n                return [\n                    helper_functions.create_model_from_vertex(doc) for doc in cursor\n                ]\n            else:\n                logging.error(f\"Error getting cursor for query: {query}\")\n                return None\n        except Exception as e:\n            logging.error(f\"Error in get_all_upstream_vertices: {e}\")\n            return None\n\n    def get_vertex_model_by_id(self, id: str) -> ModelType | None:\n        \"\"\"\n        Retrieves a vertex model by its ID.\n\n        Args:\n            - id (str): The ID of the vertex.\n\n        Returns:\n            - ModelType | None: The vertex model or None if not found or an error occurs.\n        \"\"\"\n\n        try:\n            collection_name: str = self._get_collection_name_from_id(id)\n            if collection_name == \"unknown\":\n                logging.error(f\"Unknown vertex type for ID: {id}\")\n                return None\n\n            vertex_collection: StandardCollection = self.db_connector.db.collection(\n                collection_name\n            )\n            vertex_result: Result[Json | None] = vertex_collection.get(id)\n\n            if not vertex_result or not isinstance(vertex_result, dict):\n                logging.error(\n                    f\"Vertex with ID {id} not found or is in an invalid format.\"\n                )\n                return None\n\n            model_class: ModelType | None = self._get_model_class_from_collection_name(\n                collection_name\n            )\n            if not model_class:\n                logging.error(f\"No model class found for collection: {collection_name}\")\n                return None\n\n            return model_class(**vertex_result)  # type: ignore # FIXME: Fix type error\n\n        except Exception as e:\n            logging.error(f\"Error in get_vertex_by_id: {e}\")\n            return None\n\n    def _get_model_class_from_collection_name(\n        self, collection_name: str\n    ) -> ModelType | None:\n        \"\"\"\n        Retrieves a vertex model by its ID.\n\n        Args:\n            - id (str): The ID of the vertex.\n\n        Returns:\n            - ModelType | None: The vertex model or None if not found or an error occurs.\n        \"\"\"\n\n        model_class_map: dict = {\n            \"modules\": ModuleModel,\n            \"classes\": ClassModel,\n            \"functions\": FunctionModel,\n            \"standalone_blocks\": StandaloneCodeBlockModel,\n            \"directories\": DirectoryModel,\n        }\n        return model_class_map.get(collection_name)\n\n    def update_vertex_summary_by_id(self, id: str, new_summary: str) -> None:\n        \"\"\"\n        Updates the summary of a vertex by its ID.\n\n        Args:\n            - id (str): The ID of the vertex.\n            - new_summary (str): The new summary to be set.\n        \"\"\"\n\n        try:\n            collection_name: str = self._get_collection_name_from_id(id)\n            if collection_name == \"unknown\":\n                logging.error(f\"Unknown vertex type for id: {id}\")\n                return\n\n            vertex_collection: StandardCollection = self.db_connector.db.collection(\n                collection_name\n            )\n            vertex_result: Result[Json | None] = vertex_collection.get(id)\n\n            if not vertex_result:\n                logging.error(f\"Vertex with id {id} not found.\")\n                return\n\n            if isinstance(vertex_result, dict):\n                vertex = vertex_result\n            else:\n                logging.error(\"Retrieved vertex is not in a mutable format.\")\n                return None\n\n            vertex[\"summary\"] = new_summary\n\n            vertex_collection.update(vertex)\n            logging.info(f\"Vertex with id {id} updated successfully.\")\n\n        except Exception as e:\n            logging.error(f\"Error in `update_vertex_by_id`: {e}\")\n\n    def get_all_modules(self) -> list[ModuleModel] | None:\n        \"\"\"\n        Retrieves all modules from the graph.\n\n        Returns:\n            list[ModuleModel] | None: List of modules or None if an error occurs.\n        \"\"\"\n\n        try:\n            collection_name = \"modules\"\n            module_collection: StandardCollection = self.db_connector.db.collection(\n                collection_name\n            )\n\n            cursor: Result[Cursor] = module_collection.all()\n\n            modules: list[ModuleModel] = []\n            for doc in cursor:  # type: ignore # FIXME: Fix type error\n                try:\n                    module = ModuleModel(**doc)\n                    modules.append(module)\n                except Exception as e:\n                    logging.error(f\"Retrieved document is not in a valid format: {e}\")\n                    continue\n\n            return modules\n\n        except Exception as e:\n            logging.error(f\"Error in get_all_modules: {e}\")\n            return None\n\n    def get_all_vertices(self) -> list[ModelType] | None:\n        \"\"\"\n        Retrieves all vertices from the graph.\n\n        Returns:\n            list[ModelType] | None: List of vertices or None if an error occurs.\n        \"\"\"\n\n        all_vertices: list[ModelType] = []\n        vertex_collections: list[str] = (\n            helper_functions.pluralized_and_lowered_block_types()\n        )\n\n        for collection_name in vertex_collections:\n            try:\n                collection: StandardCollection = self.db_connector.db.collection(\n                    collection_name\n                )\n                cursor: Result[Cursor] = collection.all()\n\n                for doc in cursor:  # type: ignore # FIXME: Fix type error\n                    model_class: ModelType | None = (\n                        self._get_model_class_from_collection_name(collection_name)\n                    )\n                    if model_class:\n                        model: ModelType = model_class(**doc)  # type: ignore # FIXME: Fix type error\n                        all_vertices.append(model)\n                    else:\n                        logging.warning(\n                            f\"No model class found for collection: {collection_name}\"\n                        )\n\n            except Exception as e:\n                logging.error(f\"Error fetching vertices from {collection_name}: {e}\")\n\n        return all_vertices\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The `ArangoDBManager` class serves as a sophisticated interface for managing interactions with an ArangoDB database, specifically tailored for handling codebase models and their interrelationships within a graph structure. Its primary purpose is to facilitate the upsertion of various code models, manage graph edges that represent dependencies and imports, and perform comprehensive graph operations such as querying, updating, and deleting vertices. This functionality is crucial for maintaining the integrity and structure of a codebase's representation within a graph database, enabling efficient dependency tracking and model management.\n\nKey components of the `ArangoDBManager` include: `upsert_models` for batch inserting or updating models in the database; `_upsert_model` and `_upsert_vertex` for handling individual model upsertion; `process_imports_and_dependencies` for creating edges based on model relationships; `delete_vertex_by_id` for removing vertices; `get_graph`, `get_or_create_graph`, and `delete_graph` for managing graph instances; `get_outbound_models` and `get_inbound_models` for retrieving models based on graph traversal; `get_vertex_model_by_id` and `update_vertex_summary_by_id` for vertex-specific operations; and `get_all_modules` and `get_all_vertices` for retrieving collections of models.\n\nThe implementation leverages ArangoDB's graph capabilities extensively, using collections to store different types of code models such as modules, classes, functions, standalone code blocks, and directories. Edges are used to represent dependencies and imports, with helper functions determining collection names and model classes based on identifiers. The code employs a modular design pattern, ensuring separation of concerns and reusability. Notable algorithms include the use of ArangoDB's AQL for querying and managing data, and a dictionary-based mapping to dynamically determine collection names and model classes. The design also incorporates error handling and logging to manage database operations robustly.\n\nThe technical stack includes the ArangoDB Python driver, which facilitates database interactions, and custom model classes like `ModuleModel`, `FunctionModel`, `ClassModel`, `StandaloneCodeBlockModel`, and `DirectoryModel` from the `fenec.models.models` module. The `ArangoDBConnector` is a crucial component that abstracts the connection and interaction with the ArangoDB instance. Additionally, the code utilizes helper functions from `fenec.databases.arangodb.helper_functions` to streamline operations like determining collection names and handling block types. Python's type hinting is used extensively to ensure type safety and clarity.\n\nIn the context of a larger system, this code acts as a backend component for a code analysis or management platform. It interfaces with other components that provide model data and require graph-based queries to understand code dependencies and structure. This integration allows for a comprehensive analysis of codebases, supporting features like dependency visualization, impact analysis, and refactoring support. The `ArangoDBManager` thus plays a critical role in maintaining a scalable and efficient representation of codebases within a graph database, enabling advanced code analysis and management capabilities.",
+    "children_ids": [
+        "fenec:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager"
+    ]
+}

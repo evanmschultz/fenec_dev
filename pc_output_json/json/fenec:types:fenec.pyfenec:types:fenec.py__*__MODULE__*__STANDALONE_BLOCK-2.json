@@ -1,0 +1,238 @@
+{
+    "variable_assignments": [
+        "ModelType = Union[\n    ModuleModel,\n    ClassModel,\n    FunctionModel,\n    StandaloneCodeBlockModel,\n    DirectoryModel,\n]",
+        "BuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]"
+    ],
+    "id": "fenec:types:fenec.py__*__MODULE__*__STANDALONE_BLOCK-2",
+    "file_path": "fenec/types/fenec.py",
+    "parent_id": "fenec:types:fenec.py__*__MODULE",
+    "block_type": "STANDALONE_BLOCK",
+    "start_line_num": 29,
+    "end_line_num": 44,
+    "code_content": "ModelType = Union[\n    ModuleModel,\n    ClassModel,\n    FunctionModel,\n    StandaloneCodeBlockModel,\n    DirectoryModel,\n]\nBuilderType = Union[\n    ModuleModelBuilder,\n    ClassModelBuilder,\n    FunctionModelBuilder,\n    StandaloneBlockModelBuilder,\n]\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        }
+    ],
+    "summary": "This code defines type aliases using Python's typing module to create union types, which are essential for a software project modeling system. The primary purpose of this code is to provide a flexible and extensible framework for representing and constructing various elements within a software project, such as modules, classes, functions, standalone code blocks, and directories. The key components include `ModelType`, a union type that aggregates `ModuleModel`, `ClassModel`, `FunctionModel`, `StandaloneCodeBlockModel`, and `DirectoryModel`, and `BuilderType`, another union type that encompasses `ModuleModelBuilder`, `ClassModelBuilder`, `FunctionModelBuilder`, and `StandaloneBlockModelBuilder`. These components are crucial for ensuring type-safe operations and supporting polymorphism, allowing the system to handle a variety of model and builder types seamlessly.\n\nThe implementation leverages Python's typing module to define these union types, enhancing the system's adaptability to different project structures by providing a type-safe mechanism for representing diverse elements. This design pattern supports polymorphism, enabling the system to treat different model and builder types uniformly, which facilitates the extension and maintenance of the codebase. The technical stack primarily involves Python's standard library, specifically the typing module, which is used to define the union types, ensuring that the system can handle various model and builder types seamlessly.\n\nIn the context of a larger software development tool or framework, this code serves as a foundational component that facilitates the modeling and construction of different project elements. It likely interacts with other components responsible for parsing, analyzing, or generating code, providing a structured way to represent and manipulate the project's architecture. This integration allows for a cohesive development environment where different parts of the project can be modeled, built, and managed efficiently, supporting the overall goal of creating a robust and adaptable software development framework. By enabling a type-safe and polymorphic approach to project modeling, this code contributes to the system's ability to evolve and accommodate new project requirements and structures, ensuring long-term maintainability and scalability.",
+    "children_ids": null
+}

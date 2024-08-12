@@ -1,0 +1,43 @@
+{
+    "class_name": "OpenAIChatConfigs",
+    "decorators": null,
+    "bases": [
+        "OpenAISummarizationConfigs",
+        "ChatConfigs"
+    ],
+    "docstring": "Configs for the chat completion.\n\nUsed to set the chat completion parameters for the OpenAI chat completions method call.\n\nArgs:\n    - `system_message` (str): The system message used for chat completion.\n    - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n    - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n    - `stream` (bool): Whether to stream back partial progress. Default is False.\n    - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\nNotes:\n    - model must be a valid OpenAI model name.\n\nExamples:\n    ```Python\n    system_message = \"Summarize the following code.\"\n    chat_completion_configs = ChatCompletionConfigs(\n        system_message=system_message,\n        model=\"gpt-4o\",\n        max_tokens=100,\n        presence_penalty=0.0,\n        stream=False,\n        temperature=0.0,\n    )\n    ```",
+    "keywords": null,
+    "id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OpenAIChatConfigs",
+    "file_path": "fenec/utilities/configs/configs.py",
+    "parent_id": "fenec:utilities:configs:configs.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 110,
+    "end_line_num": 143,
+    "code_content": "\n\nclass OpenAIChatConfigs(OpenAISummarizationConfigs, ChatConfigs):\n    \"\"\"\n    Configs for the chat completion.\n\n    Used to set the chat completion parameters for the OpenAI chat completions method call.\n\n    Args:\n        - `system_message` (str): The system message used for chat completion.\n        - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - `stream` (bool): Whether to stream back partial progress. Default is False.\n        - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - model must be a valid OpenAI model name.\n\n    Examples:\n        ```Python\n        system_message = \"Summarize the following code.\"\n        chat_completion_configs = ChatCompletionConfigs(\n            system_message=system_message,\n            model=\"gpt-4o\",\n            max_tokens=100,\n            presence_penalty=0.0,\n            stream=False,\n            temperature=0.0,\n        )\n        ```\n    \"\"\"\n\n    system_message: str = chat_prompts.DEFAULT_SYSTEM_PROMPT\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-SummarizationConfigs"
+        },
+        {
+            "code_block_id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-ChatConfigs"
+        },
+        {
+            "code_block_id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OpenAISummarizationConfigs"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "chat_prompts",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.ai_services.chat.prompts",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:chat:prompts:chat_prompts.py__*__MODULE"
+        }
+    ],
+    "summary": "The `OpenAIChatConfigs` class is a specialized configuration utility designed to manage and encapsulate parameters for generating chat completions using OpenAI's API, specifically tailored for the chat completions method. Its primary purpose is to provide a structured and flexible interface for setting up the environment in which the chat model operates, allowing developers to customize key aspects such as the initial system message, model selection, token limits, streaming options, and temperature settings. This class inherits from `OpenAISummarizationConfigs` and `ChatConfigs`, indicating a hierarchical design that leverages inheritance to extend or refine functionalities provided by these base classes, thus promoting code reuse and modularity.\n\nKey components of this class include parameters like `system_message`, which sets the initial prompt for the chat and is initialized with a default value from `chat_prompts.DEFAULT_SYSTEM_PROMPT`; `model`, which specifies the OpenAI model to be used, defaulting to \"gpt-4o\", ensuring compatibility with the latest model capabilities; `max_tokens`, which limits the number of tokens generated, allowing for unrestricted generation when set to `None`, providing flexibility in output length; `stream`, a boolean that controls whether partial results are streamed back, useful for applications requiring real-time feedback; and `temperature`, which adjusts the randomness of the output, influencing the creativity and variability of the responses.\n\nThe implementation employs Python's type hinting to specify expected data types for each parameter, enhancing code readability and reliability by providing clear expectations for developers. This approach aids in static analysis and debugging, ensuring that the configurations are used correctly. The class is designed to be easily extensible, allowing for additional parameters or modifications to be incorporated with minimal disruption to existing functionality. The use of default values for parameters ensures that the class can be instantiated with minimal configuration, while still allowing for detailed customization when needed.\n\nThe technical stack primarily involves Python, with dependencies on OpenAI's API for model interaction. While specific libraries are not explicitly mentioned in the code snippet, it is likely that the implementation relies on standard Python libraries for data handling and possibly third-party libraries for API communication and configuration management. The class is part of a larger system that manages interactions with OpenAI's chat models, likely interfacing with other components responsible for input processing, output formatting, and integration with user interfaces or other systems requiring natural language processing capabilities. In the broader context, this configuration class plays a critical role in ensuring that the chat model operates within the desired parameters, providing a flexible and robust interface for developers to tailor the chat completion process to specific use cases or application requirements. This makes it an essential component in systems that leverage OpenAI's chat models for tasks such as customer support, content generation, and interactive applications.",
+    "children_ids": []
+}

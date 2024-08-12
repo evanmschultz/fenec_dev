@@ -1,0 +1,46 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "id": "fenec:utilities:processing_context.py__*__MODULE",
+    "file_path": "fenec/utilities/processing_context.py",
+    "parent_id": "fenec:utilities__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 30,
+    "code_content": "from dataclasses import dataclass\n\nimport libcst\n\n\n@dataclass\nclass PositionData:\n    \"\"\"Positional data for a node in the syntax tree.\"\"\"\n\n    start: int\n    end: int\n\n\n@dataclass\nclass NodeAndPositionData:\n    \"\"\"A node in the syntax tree and its positional data.\"\"\"\n\n    nodes: list[libcst.CSTNode]\n    start: int\n    end: int\n\n\n@dataclass\nclass LoggingCallerInfo:\n    \"\"\"Information about the caller of a function that is being logged. Used for `logging_decorator`.\"\"\"\n\n    caller_module_name: str\n    caller_file_path: str\n    caller_line_no: int\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code defines essential data structures for managing syntax tree nodes and logging caller information within a Python application, primarily aimed at facilitating the handling of positional data in syntax trees and providing metadata about function calls for logging purposes. The main goal of this code is to support precise code analysis and transformation tasks by encapsulating positional information and caller metadata, which are crucial for debugging, logging, and code manipulation processes. Key components include: the `PositionData` class, which encapsulates the start and end positions of a node within a syntax tree, allowing precise tracking of node locations; the `NodeAndPositionData` class, which combines a list of `libcst.CSTNode` objects with their positional data, enabling the association of multiple syntax tree nodes with their respective positions; and the `LoggingCallerInfo` class, which captures detailed information about the caller of a function, such as the module name, file path, and line number, crucial for logging and debugging purposes.\n\nThe implementation leverages Python's `dataclasses` module, which provides a concise and efficient way to define classes that primarily store data, automatically generating special methods like `__init__()`, `__repr__()`, and `__eq__()`. This use of `dataclasses` enhances code readability and maintainability by reducing boilerplate code. The `libcst` library is employed to represent nodes in the syntax tree, indicating that this code is part of a larger system involving code analysis or transformation, as `libcst` is a library designed for parsing, modifying, and generating Python code with full-fidelity. The `dataclasses` module is part of Python's standard library, streamlining the creation of data-centric classes, while `libcst` provides the capability to work with concrete syntax trees, essential for tasks requiring precise code manipulation and analysis.\n\nIn the context of a broader project, these data structures are likely integral to a code processing or analysis tool, interacting with components that parse, analyze, or transform Python code. They may be used in conjunction with logging systems to track function calls and their origins, providing valuable insights during debugging and code analysis. This code could be part of a larger framework that supports static code analysis, refactoring tools, or automated code review systems, where understanding the structure and context of code is crucial. By encapsulating both structural and positional data of syntax tree nodes and providing detailed caller information, these classes play a critical role in enabling precise and efficient code analysis and manipulation within such systems.",
+    "children_ids": [
+        "fenec:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData",
+        "fenec:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData",
+        "fenec:utilities:processing_context.py__*__MODULE__*__CLASS-LoggingCallerInfo"
+    ]
+}

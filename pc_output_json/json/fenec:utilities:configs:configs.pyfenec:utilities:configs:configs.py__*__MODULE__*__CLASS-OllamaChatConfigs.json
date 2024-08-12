@@ -1,0 +1,49 @@
+{
+    "class_name": "OllamaChatConfigs",
+    "decorators": null,
+    "bases": [
+        "ChatConfigs",
+        "BaseModel"
+    ],
+    "docstring": "Configs for the Ollama completion.\n\nUsed to set the chat completion parameters for the Ollama chat completions method call.\n\nArgs:\n    - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n    - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n    - `stream` (bool): Whether to stream back partial progress. Default is False.\n    - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\nNotes:\n    - `model` must be a valid Ollama model name with a valid parameter syntax.\n\nExamples:\n    ```Python\n    ollama_completion_configs = OllamaConfigs(\n        model=\"codellama:13b\",\n    ```",
+    "keywords": null,
+    "id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OllamaChatConfigs",
+    "file_path": "fenec/utilities/configs/configs.py",
+    "parent_id": "fenec:utilities:configs:configs.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 169,
+    "end_line_num": 195,
+    "code_content": "\n\nclass OllamaChatConfigs(ChatConfigs, BaseModel):\n    \"\"\"\n    Configs for the Ollama completion.\n\n    Used to set the chat completion parameters for the Ollama chat completions method call.\n\n    Args:\n        - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - `stream` (bool): Whether to stream back partial progress. Default is False.\n        - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - `model` must be a valid Ollama model name with a valid parameter syntax.\n\n    Examples:\n        ```Python\n        ollama_completion_configs = OllamaConfigs(\n            model=\"codellama:13b\",\n        ```\n    \"\"\"\n\n    model: str = \"codellama:7b\"\n    system_message: str = chat_prompts.DEFAULT_SYSTEM_PROMPT\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-ChatConfigs"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "chat_prompts",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.ai_services.chat.prompts",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:chat:prompts:chat_prompts.py__*__MODULE"
+        }
+    ],
+    "summary": "The `OllamaChatConfigs` class is designed to manage and validate configuration parameters for chat completions within the Ollama chat system, specifically tailored for the Ollama completion method. Its primary purpose is to encapsulate settings such as the model type, token limits, streaming options, and sampling temperature, which are crucial for customizing the behavior of chat completions. This class inherits from both `ChatConfigs` and Pydantic's `BaseModel`, providing a structured and type-safe approach to defining and validating these parameters. Key components of the class include attributes like `model`, `max_tokens`, `stream`, and `temperature`, each with default values that guide the chat completion process. The `model` attribute defaults to \"codellama:7b\" and must be a valid Ollama model name, ensuring compatibility with the Ollama API. Additionally, the `system_message` attribute is initialized with a default system prompt from `chat_prompts`, serving as a standardized starting point for chat interactions.\n\nThe implementation leverages Python's type hinting and default values to ensure robust configuration management. Pydantic's `BaseModel` is utilized to facilitate data validation and management, ensuring that any instance of `OllamaChatConfigs` is correctly initialized with valid parameters. This reduces runtime errors and enhances code reliability by enforcing data integrity and providing a clear schema for configuration objects. The technical stack primarily involves Python's data modeling capabilities, with Pydantic playing a crucial role in maintaining data integrity.\n\nIn the context of a larger chat application, this configuration class is a critical component for setting up and executing chat completions. It interfaces with the Ollama API to ensure that chat interactions are conducted with the desired parameters and models, allowing for flexible and dynamic chat experiences. This class likely interacts with other components of the chat system, such as user interfaces or backend services, to provide a seamless and customizable chat experience. By encapsulating configuration details, it allows other parts of the system to focus on higher-level logic without worrying about the specifics of chat completion parameters. This modular approach supports the scalability and adaptability of the chat system, enabling it to accommodate various user requirements and preferences.",
+    "children_ids": []
+}

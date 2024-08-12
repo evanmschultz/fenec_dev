@@ -1,0 +1,95 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.base_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:base_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging_decorator",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                }
+            ],
+            "imported_from": "fenec.utilities.logger.decorators",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:utilities:logger:decorators.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ParameterListModel"
+                },
+                {
+                    "name": "FunctionSpecificAttributes",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes"
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-FunctionModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "fenec.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:enums.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE",
+    "file_path": "fenec/python_parser/model_builders/function_model_builder.py",
+    "parent_id": "fenec:python_parser:model_builders__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 101,
+    "code_content": "from typing import Any\n\nfrom fenec.python_parser.model_builders.base_model_builder import BaseModelBuilder\n\nfrom fenec.utilities.logger.decorators import logging_decorator\nfrom fenec.models.models import (\n    DecoratorModel,\n    FunctionModel,\n    FunctionSpecificAttributes,\n    ParameterListModel,\n)\nfrom fenec.models.enums import BlockType\n\n\nclass FunctionModelBuilder(BaseModelBuilder):\n    \"\"\"\n    A builder class for constructing a model of a Python function.\n\n    This class extends BaseModelBuilder and specializes in building a detailed model of a Python function, capturing various aspects such as function name, docstring, parameters, decorators, return type, and whether the function is a method or asynchronous.\n\n    Attributes:\n        - function_attributes (FunctionSpecificAttributes): An instance containing attributes specific to a function.\n\n    Args:\n        - id (str): The unique identifier for the function model.\n        - function_name (str): The name of the function.\n        - parent_id (str): The identifier of the parent model (e.g., module or class containing this function).\n    \"\"\"\n\n    def __init__(\n        self, id: str, function_name: str, parent_id: str, file_path: str\n    ) -> None:\n        super().__init__(\n            id=id,\n            file_path=file_path,\n            block_type=BlockType.FUNCTION,\n            parent_id=parent_id,\n        )\n        self.function_attributes = FunctionSpecificAttributes(\n            function_name=function_name,\n            docstring=None,\n            decorators=None,\n            parameters=None,\n            is_method=False,\n            is_async=False,\n            returns=None,\n        )\n\n    def set_parameters_list(\n        self, parameter_list_model: ParameterListModel | None\n    ) -> \"FunctionModelBuilder\":\n        \"\"\"Adds a parameter to the function model.\"\"\"\n        self.function_attributes.parameters = parameter_list_model\n        return self\n\n    def set_decorators(\n        self, decorators: list[DecoratorModel] | None\n    ) -> \"FunctionModelBuilder\":\n        \"\"\"Adds decorator to the decorators list in the class model.\"\"\"\n        if decorators:\n            self.function_attributes.decorators = decorators\n        else:\n            self.function_attributes.decorators = None\n        return self\n\n    def set_docstring(self, docstring: str | None) -> \"FunctionModelBuilder\":\n        \"\"\"Sets the docstring.\"\"\"\n        self.function_attributes.docstring = docstring\n        return self\n\n    def set_return_annotation(self, return_type: str) -> \"FunctionModelBuilder\":\n        \"\"\"Sets the return type.\"\"\"\n        self.function_attributes.returns = return_type\n        return self\n\n    def set_is_method(self, is_method: bool) -> \"FunctionModelBuilder\":\n        \"\"\"Sets the is_method attribute in the function model.\"\"\"\n        self.function_attributes.is_method = is_method\n        return self\n\n    def set_is_async(self, is_async: bool) -> \"FunctionModelBuilder\":\n        \"\"\"Sets the is_async attribute in the function model.\"\"\"\n        self.function_attributes.is_async = is_async\n        return self\n\n    def _get_function_specific_attributes(self) -> dict[str, Any]:\n        \"\"\"\n        Gets the function specific attributes from the builder.\n        \"\"\"\n        return self.function_attributes.model_dump()\n\n    @logging_decorator(message=\"Building function model\")\n    def build(self) -> FunctionModel:\n        \"\"\"Builds and returns the function model instance after building and setting the children models.\"\"\"\n        self.build_children()\n        self.set_children_ids()\n        return FunctionModel(\n            **self._get_common_attributes(),\n            **self._get_function_specific_attributes(),\n        )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The `FunctionModelBuilder` class is a pivotal component within a Python code parsing and modeling system, specifically designed to construct detailed models of Python functions. Its primary purpose is to encapsulate various attributes of a function, such as its name, docstring, parameters, decorators, return type, and its nature (whether it is a method or asynchronous), thereby facilitating code analysis, refactoring, or documentation generation. This class extends the `BaseModelBuilder`, inheriting its foundational structure and enhancing it with function-specific capabilities, making it significant for systems that require a structured representation of Python functions.\n\nKey components of the `FunctionModelBuilder` include: the constructor `__init__`, which initializes the function's attributes and sets up the builder with identifiers and file path information; `set_parameters_list`, which assigns a list of parameters to the function model using a `ParameterListModel`; `set_decorators`, which manages the addition of decorators to the function model; `set_docstring`, which assigns a docstring to the function; `set_return_annotation`, which specifies the return type of the function; `set_is_method` and `set_is_async`, which define whether the function is a method or asynchronous; `_get_function_specific_attributes`, which retrieves the function-specific attributes for model construction; and `build`, which constructs and returns the complete function model, integrating both common and function-specific attributes.\n\nThe implementation leverages object-oriented principles, particularly the builder pattern, to incrementally construct a function model. This pattern allows for a flexible and modular approach to model construction, enabling the addition of attributes in a step-by-step manner. The class employs a logging decorator, `logging_decorator`, to track the build process, providing enhanced traceability and debugging support. This decorator logs messages during the model building process, ensuring that any issues can be easily identified and resolved. The `FunctionSpecificAttributes` data structure is used to store function-specific details, ensuring a clear separation of concerns and facilitating easy access to these attributes during model construction.\n\nThe technical stack includes Python's type hinting, which enhances code clarity and robustness by specifying expected data types for function arguments and return values. This feature is crucial for maintaining code quality and reducing errors in a complex system. Additionally, the custom logging decorator is a key component of the technical stack, providing advanced logging capabilities that are essential for monitoring and debugging the model building process. The `fenec` package provides several custom modules: `BaseModelBuilder` for foundational model building, `FunctionSpecificAttributes` for managing function-specific data, `DecoratorModel`, `FunctionModel`, and `ParameterListModel` for representing various components of a function, and `BlockType` for categorizing the function as a block type.\n\nIn the context of a larger system, this code is part of a Python parser that models code structures, interfacing with other components to provide a comprehensive representation of Python functions. It interacts with other model builders and parsers within the `fenec` framework to create a detailed and interconnected model of Python codebases. This functionality is crucial for systems that require an in-depth understanding of code, such as automated refactoring tools, documentation generators, or static analysis platforms. The modular design of the `FunctionModelBuilder` allows it to be easily integrated into larger systems, supporting various use cases in software development and maintenance.",
+    "children_ids": [
+        "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+    ]
+}

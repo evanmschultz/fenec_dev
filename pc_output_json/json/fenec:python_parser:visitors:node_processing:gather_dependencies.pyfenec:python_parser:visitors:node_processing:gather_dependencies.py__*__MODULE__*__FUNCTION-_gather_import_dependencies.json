@@ -1,0 +1,50 @@
+{
+    "function_name": "_gather_import_dependencies",
+    "docstring": "Gathers import dependencies from the provided code content.\n\nThis function checks for the presence of import names (and their aliases) in the given code content\nand returns a list of import models that are dependencies for the code block.\n\nArgs:\n    - imports (list[ImportModel] | None): A list of import models to check against the code content.\n    - code_content (str): The string content of the code block being analyzed.\n\nReturns:\n    - list[ImportModel]: A list of import models that the code content depends on.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[ImportModel]",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_gather_import_dependencies",
+    "file_path": "fenec/python_parser/visitors/node_processing/gather_dependencies.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 55,
+    "end_line_num": 87,
+    "code_content": "\n\ndef _gather_import_dependencies(\n    imports: list[ImportModel] | None, code_content: str\n) -> list[ImportModel]:\n    \"\"\"\n    Gathers import dependencies from the provided code content.\n\n    This function checks for the presence of import names (and their aliases) in the given code content\n    and returns a list of import models that are dependencies for the code block.\n\n    Args:\n        - imports (list[ImportModel] | None): A list of import models to check against the code content.\n        - code_content (str): The string content of the code block being analyzed.\n\n    Returns:\n        - list[ImportModel]: A list of import models that the code content depends on.\n    \"\"\"\n\n    block_dependencies: list[ImportModel] = []\n\n    if imports:\n        for import_model in imports:\n            for import_name_model in import_model.import_names:\n                if import_name_model.as_name:\n                    if import_name_model.as_name in code_content:\n                        block_dependencies.append(import_model)\n\n                if import_name_model.name in code_content:\n                    block_dependencies.append(import_model)\n\n    return block_dependencies\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "re",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "DependencyModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": "The code's primary purpose is to identify and collect import dependencies from a given block of code content, which is essential for understanding the external modules or libraries a code block relies on. This functionality is significant in scenarios such as code analysis, refactoring, or dependency management, where understanding these dependencies can aid in optimizing and maintaining the codebase. The key component of this code is the `_gather_import_dependencies` function, which takes a list of `ImportModel` objects and a string representing the code content. It returns a list of `ImportModel` objects that are identified as dependencies based on their presence in the code content. The implementation involves iterating over the provided list of `ImportModel` objects, each containing import names and their possible aliases. The function checks if either the import name or its alias is present in the code content using conditional checks and basic list operations. If a match is found, the corresponding `ImportModel` is appended to the list of dependencies. This approach ensures that both direct imports and those imported under an alias are correctly identified, providing a comprehensive view of the code's dependencies.\n\nThe technical stack is minimal, leveraging Python's built-in list and string operations, which makes the function efficient and easy to integrate into larger systems. The function assumes the existence of an `ImportModel` class or data structure, which encapsulates the import names and their aliases, providing a structured way to represent import statements. In the context of a larger project, this function could be part of a code analysis or refactoring tool, where it plays a role in determining the dependencies of a code block. This can facilitate tasks such as dependency visualization, impact analysis during refactoring, or ensuring that all necessary modules are included in a deployment package. By identifying dependencies, the function aids in maintaining a clean and efficient codebase, potentially interacting with other components that handle code parsing, dependency resolution, or module management within the system. This function is crucial for maintaining the integrity and functionality of the codebase, ensuring that all necessary dependencies are accounted for and managed effectively.",
+    "children_ids": []
+}

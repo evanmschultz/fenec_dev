@@ -1,0 +1,114 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Mapping",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "print",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "rich",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Client",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "ollama",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "SummarizationPromptCreator",
+                    "as_name": null,
+                    "local_block_id": "fenec:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE__*__CLASS-SummarizationPromptCreator"
+                }
+            ],
+            "imported_from": "fenec.ai_services.summarizer.prompts.prompt_creator",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:summarizer:prompts:prompt_creator.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OllamaSummarizationConfigs",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OllamaSummarizationConfigs"
+                },
+                {
+                    "name": "OpenAIReturnContext",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OpenAIReturnContext"
+                }
+            ],
+            "imported_from": "fenec.utilities.configs.configs",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:utilities:configs:configs.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OllamaMessage",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.types.ollama",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:types:ollama.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:ai_services:summarizer:ollama_summarizer.py__*__MODULE",
+    "file_path": "fenec/ai_services/summarizer/ollama_summarizer.py",
+    "parent_id": "fenec:ai_services:summarizer__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 292,
+    "code_content": "import logging\nfrom typing import Any, Mapping\n\nfrom rich import print\nfrom ollama import Client\n\nfrom fenec.ai_services.summarizer.prompts.prompt_creator import (\n    SummarizationPromptCreator,\n)\nfrom fenec.utilities.configs.configs import (\n    OllamaSummarizationConfigs,\n    OpenAIReturnContext,\n)\nfrom fenec.types.ollama import OllamaMessage\n\n\nclass OllamaSummarizer:\n    \"\"\"\n    A class for summarizing code snippets using the Ollama API.\n\n    This class provides functionality to generate summaries of code snippets using Ollama's language models.\n    It supports multi-pass summarization, allowing for more comprehensive and context-aware summaries.\n\n    Args:\n        - `configs` (OllamaConfigs, optional): Configuration settings for the Ollama summarizer.\n\n    Attributes:\n        - `client` (Ollama): The Ollama client instance.\n        - `configs` (OllamaConfigs): Configuration settings for the summarizer.\n\n    Methods:\n        - `summarize_code`: Summarizes the provided code snippet using the Ollama API.\n        - `test_summarize_code`: A method for testing the summarization functionality.\n\n    Example:\n        ```Python\n        summarizer = OllamaSummarizer()\n        summary = summarizer.summarize_code(\n            code=\"def hello_world():\\n    print('Hello, world!')\",\n            model_id=\"function_1\",\n            children_summaries=\"No child functions.\",\n            dependency_summaries=\"No dependencies.\",\n            import_details=\"No imports.\",\n            parent_summary=\"Module containing greeting functions.\",\n            pass_number=1\n        )\n        print(summary.summary if summary else \"Summarization failed\")\n        ```\n    \"\"\"\n\n    def __init__(\n        self,\n        configs: OllamaSummarizationConfigs = OllamaSummarizationConfigs(),\n    ) -> None:\n        self.configs: OllamaSummarizationConfigs = configs\n        self.client: Client = Client()\n\n    def _create_system_message(self, content: str) -> OllamaMessage:\n        \"\"\"Creates a system message for chat completion using Ollama's Message TypedDict class.\"\"\"\n        return OllamaMessage(content=content, role=\"system\")\n\n    def _create_user_message(self, content: str) -> OllamaMessage:\n        \"\"\"Creates a user message for chat completion using Ollama's Message TypedDict class.\"\"\"\n        return OllamaMessage(content=content, role=\"user\")\n\n    def _create_messages_list(\n        self,\n        system_message: str,\n        user_message: str,\n    ) -> list[OllamaMessage]:\n        \"\"\"\n        Creates a list of messages for chat completion, including both system and user messages.\n\n        Args:\n            - system_message (str): The system message content.\n            - user_message (str): The user message content.\n\n        Returns:\n            - list[ChatCompletionMessageParam]: A list containing the system and user messages as OpenAI's\n                ChatCompletionMessageParam classes.\n        \"\"\"\n\n        return [\n            self._create_system_message(system_message),\n            self._create_user_message(user_message),\n        ]\n\n    def _create_prompt(\n        self,\n        code: str,\n        children_summaries: str | None,\n        dependency_summaries: str | None,\n        import_details: str | None,\n        parent_summary: str | None,\n        pass_number: int,\n        previous_summary: str | None,\n    ) -> str:\n        \"\"\"\n        Creates a prompt for code summarization.\n\n        Args:\n            - `code` (str): The code to summarize.\n            - `children_summaries` (str | None): Summaries of child elements.\n            - `dependency_summaries` (str | None): Summaries of dependencies.\n            - `import_details` (str | None): Details of imports.\n            - `parent_summary` (str | None): Summary of the parent element.\n            - `pass_number` (int): The current pass number in multi-pass summarization.\n            - `previous_summary` (str | None): The summary from the previous pass.\n\n        Returns:\n            - `str`: The created prompt.\n\n        Raises:\n            - `Exception`: If prompt creation fails.\n        \"\"\"\n        prompt_creator: SummarizationPromptCreator = SummarizationPromptCreator()\n        prompt: str | None = prompt_creator.create_prompt(\n            code,\n            children_summaries,\n            dependency_summaries,\n            import_details,\n            parent_summary,\n            pass_number,\n            previous_summary,\n        )\n\n        if prompt:\n            # print(f\"[blue]Prompt:[/blue] {prompt}\")\n            return prompt\n        else:\n            raise Exception(\"Prompt creation failed.\")\n\n    def _get_summary(\n        self,\n        messages: list[OllamaMessage],\n    ) -> str | None:\n        \"\"\"\n        Retrieves the summary from the OpenAI API based on the provided messages and configuration settings.\n\n        Args:\n            - messages (list[ChatCompletionMessageParam]): A list of messages for chat completion.\n\n        Returns:\n            str | None: The summary generated by the OpenAI API, or None if no summary is found.\n        \"\"\"\n\n        try:\n            response: Mapping[str, Any] = self.client.chat(\n                model=self.configs.model,\n                messages=messages,\n                format=\"json\",\n            )\n            print(f\"[green]Response:[/green] {response}\")\n            message_dict: dict | None = response.get(\"message\")\n            if message_dict:\n                return message_dict.get(\"content\")\n            return None\n\n        except Exception as e:\n            logging.error(e)\n            return None\n\n    def summarize_code(\n        self,\n        code: str,\n        *,\n        model_id: str,\n        children_summaries: str | None,\n        dependency_summaries: str | None,\n        import_details: str | None,\n        parent_summary: str | None = None,\n        pass_number: int = 1,\n        previous_summary: str | None = None,\n    ) -> str | None:\n        \"\"\"\n        Summarizes the provided code snippet using the OpenAI API.\n\n        This method generates a summary of the given code, taking into account various contextual\n        information such as children summaries, dependencies, imports, and parent summaries.\n        It supports multi-pass summarization, allowing for refinement of summaries over multiple passes.\n\n        Args:\n            - `code` (str): The code snippet to summarize.\n            - `model_id` (str): The identifier of the model being summarized.\n            - `children_summaries` (str | None): Summaries of child elements, if any.\n            - `dependency_summaries` (str | None): Summaries of dependencies, if any.\n            - `import_details` (str | None): Details of imports used in the code.\n            - `parent_summary` (str | None): Summary of the parent element, if applicable.\n            - `pass_number` (int): The current pass number in multi-pass summarization. Default is 1.\n\n        Returns:\n            - `str | None`: A context object containing the summary and token usage information,\n                                          or None if summarization fails.\n\n        Example:\n            ```Python\n            summarizer = OpenAISummarizer()\n            summary_context = summarizer.summarize_code(\n                code=\"def greet(name):\\n    return f'Hello, {name}!'\",\n                model_id=\"function_greet\",\n                children_summaries=None,\n                dependency_summaries=None,\n                import_details=None,\n                parent_summary=\"Module with greeting functions\",\n                pass_number=2\n            )\n            if summary_context:\n                print(f\"Summary: {summary_context.summary}\")\n                print(f\"Tokens used: {summary_context.prompt_tokens + summary_context.completion_tokens}\")\n            ```\n        \"\"\"\n\n        logging.info(\n            f\"([blue]Pass {pass_number}[/blue]) - [green]Summarizing code for model:[/green] {model_id}\"\n        )\n        prompt: str = self._create_prompt(\n            code,\n            children_summaries,\n            dependency_summaries,\n            import_details,\n            parent_summary,\n            pass_number,\n            previous_summary,\n        )\n        messages: list[OllamaMessage] = self._create_messages_list(\n            system_message=self.configs.system_message, user_message=prompt\n        )\n\n        summary: str | None = self._get_summary(messages)\n        return summary\n\n    def test_summarize_code(\n        self,\n        code: str,\n        *,\n        model_id: str,\n        children_summaries: str | None,\n        dependency_summaries: str | None,\n        import_details: str | None,\n        parent_summary: str | None = None,\n        pass_number: int = 1,\n    ) -> OpenAIReturnContext | None:\n        \"\"\"\n        A method for testing the summarize_code functionality without making API calls.\n\n        This method mimics the behavior of summarize_code but returns a predefined summary instead of\n        making an actual API call. It's useful for testing the summarization pipeline without incurring\n        API costs or when you want to test the surrounding logic.\n\n        Args:\n            - `code` (str): The code snippet to summarize (not used in the test method).\n            - `model_id` (str): The identifier of the model being summarized.\n            - `children_summaries` (str | None): Summaries of child elements, if any.\n            - `dependency_summaries` (str | None): Summaries of dependencies, if any.\n            - `import_details` (str | None): Details of imports used in the code.\n            - `parent_summary` (str | None): Summary of the parent element, if applicable.\n            - `pass_number` (int): The current pass number in multi-pass summarization. Default is 1.\n\n        Returns:\n            - OpenAIReturnContext | None: A context object containing a test summary and token usage information.\n\n        Example:\n            ```Python\n            summarizer = OpenAISummarizer()\n            test_summary = summarizer.test_summarize_code(\n                code=\"print('Hello, World!')\",\n                model_id=\"test_function\",\n                children_summaries=None,\n                dependency_summaries=None,\n                import_details=None,\n                parent_summary=\"Test Module\",\n                pass_number=1\n            )\n            print(test_summary.summary if test_summary else \"Test summarization failed\")\n            ```\n        \"\"\"\n\n        summary = f\"\"\"\\nTest Summary for {model_id}:\\n\n        Pass Number: {pass_number}\n        Parent Summary: {parent_summary}\n        Children Summaries: {children_summaries}\n        Dependency Summaries: {dependency_summaries}\n        Import Details: {import_details}\n        \"\"\"\n        summary_context = OpenAIReturnContext(\n            summary=summary,\n            prompt_tokens=1,\n            completion_tokens=1,\n        )\n\n        return summary_context\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The `OllamaSummarizer` class is a specialized component designed to generate detailed and context-aware summaries of code snippets using the Ollama API, which leverages advanced language models. Its primary purpose is to facilitate multi-pass summarization, allowing for iterative refinement by considering various contextual elements such as child elements, dependencies, imports, and parent summaries. This functionality is crucial for enhancing code understanding and documentation processes within larger systems, particularly in environments where comprehensive code analysis is required.\n\nKey components of the `OllamaSummarizer` include: the `__init__` method, which initializes the summarizer with configuration settings encapsulated in `OllamaSummarizationConfigs` and establishes a `Client` instance for API interactions; `_create_system_message` and `_create_user_message`, which generate structured system and user messages using the `OllamaMessage` TypedDict class, ensuring consistent message formatting; `_create_messages_list`, which compiles these messages into a list formatted for chat completion; `_create_prompt`, which constructs a summarization prompt by integrating various contextual inputs such as code snippets, child summaries, dependency summaries, import details, and parent summaries; `_get_summary`, which retrieves the summary from the API, handling exceptions to ensure robustness; `summarize_code`, which orchestrates the summarization process, supporting multi-pass refinement; and `test_summarize_code`, which simulates the summarization process for testing purposes without incurring API costs.\n\nThe implementation employs a modular design pattern, emphasizing reusability and integration within larger systems. It uses Python's type hinting and modern features like type unions to ensure clarity and robustness. The summarization process involves creating structured prompts and messages, interacting with the Ollama API to obtain summaries, and handling exceptions to maintain reliability. The use of a `SummarizationPromptCreator` class for prompt generation and a `Client` class for API interactions highlights a design focused on encapsulation and separation of concerns, allowing for easy maintenance and extension.\n\nThe technical stack includes the Ollama API for language model interactions, which is central to the summarization functionality. The code also utilizes Python's logging module for error handling and potentially integrates with custom modules from the `fenec` framework for configuration and prompt creation. The `rich` library is used for enhanced console output, providing a more user-friendly interface. This setup suggests a reliance on a robust framework that supports configuration management and client-server communication, making it suitable for integration into larger systems that require automated code summarization capabilities.\n\nIn the context of a larger project or system, the `OllamaSummarizer` serves as a component for automated code summarization, potentially integrating with other AI services and utilities within the `fenec` framework to provide comprehensive code analysis and documentation capabilities. Its ability to perform multi-pass summarization allows it to refine summaries over multiple iterations, making it a valuable tool for developers and analysts seeking to understand complex codebases. The class's design and implementation ensure that it can be easily adapted to different summarization needs, supporting a wide range of applications from code review to documentation generation.",
+    "children_ids": [
+        "fenec:ai_services:summarizer:ollama_summarizer.py__*__MODULE__*__CLASS-OllamaSummarizer"
+    ]
+}

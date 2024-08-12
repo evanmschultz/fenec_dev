@@ -1,0 +1,33 @@
+{
+    "function_name": "_func_is_async",
+    "docstring": "Returns true if the function is async.\n\nArgs:\n    - node (libcst.FunctionDef): The function definition node.\n\nReturns:\n    - bool: True if the function is async, False otherwise.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "bool",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE__*__FUNCTION-_func_is_async",
+    "file_path": "fenec/python_parser/visitors/node_processing/function_def_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 140,
+    "end_line_num": 154,
+    "code_content": "\n\ndef _func_is_async(node: libcst.FunctionDef) -> bool:\n    \"\"\"\n    Returns true if the function is async.\n\n    Args:\n        - node (libcst.FunctionDef): The function definition node.\n\n    Returns:\n        - bool: True if the function is async, False otherwise.\n    \"\"\"\n\n    return True if node.asynchronous else False\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code is a specialized utility function within a Python code analysis or transformation tool, designed to determine the asynchronous nature of a function defined in a Python abstract syntax tree (AST). Its primary purpose is to facilitate the identification of async functions, which are crucial in asynchronous programming for handling non-blocking operations, thereby improving the efficiency of code analysis, refactoring, or transformation processes. The key component of this code is the `_func_is_async` function, which takes a `libcst.FunctionDef` node as its parameter and returns a boolean value indicating whether the function is asynchronous. The implementation is straightforward, leveraging the `libcst` library's `FunctionDef` class to inspect the `asynchronous` attribute of the node. It employs a simple conditional check to return `True` if the `asynchronous` attribute is present, otherwise `False`, thus providing a clear and efficient mechanism for detecting async functions.\n\nThe technical stack prominently features the `libcst` (LibCST) library, which is a robust tool for parsing and manipulating Python code as concrete syntax trees. This library is particularly beneficial for static code analysis and transformation tasks, as it allows for precise and safe modifications to Python code while preserving formatting and comments. In the broader context of a larger system, this function could be integrated into a comprehensive code analysis tool or a refactoring utility that processes extensive Python codebases. It would likely interact with other components responsible for traversing syntax trees, performing code transformations, or generating new code. This function's role would be to identify async functions, potentially triggering further analysis or modifications by other parts of the system, thereby contributing to the overall functionality of the tool in managing and optimizing asynchronous code patterns. By efficiently identifying async functions, this utility aids in maintaining and enhancing the performance and readability of Python codebases, especially those leveraging asynchronous programming paradigms.",
+    "children_ids": []
+}

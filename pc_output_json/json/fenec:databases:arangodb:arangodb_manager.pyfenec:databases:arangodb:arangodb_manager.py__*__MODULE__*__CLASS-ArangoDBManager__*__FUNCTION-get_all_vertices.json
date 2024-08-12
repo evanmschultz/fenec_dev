@@ -1,0 +1,33 @@
+{
+    "function_name": "get_all_vertices",
+    "docstring": "Retrieves all vertices from the graph.\n\nReturns:\n    list[ModelType] | None: List of vertices or None if an error occurs.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[ModelType] | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager__*__FUNCTION-get_all_vertices",
+    "file_path": "fenec/databases/arangodb/arangodb_manager.py",
+    "parent_id": "fenec:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 600,
+    "end_line_num": 637,
+    "code_content": "\ndef get_all_vertices(self) -> list[ModelType] | None:\n    \"\"\"\n        Retrieves all vertices from the graph.\n\n        Returns:\n            list[ModelType] | None: List of vertices or None if an error occurs.\n        \"\"\"\n\n    all_vertices: list[ModelType] = []\n    vertex_collections: list[str] = (\n        helper_functions.pluralized_and_lowered_block_types()\n    )\n\n    for collection_name in vertex_collections:\n        try:\n            collection: StandardCollection = self.db_connector.db.collection(\n                collection_name\n            )\n            cursor: Result[Cursor] = collection.all()\n\n            for doc in cursor:  # type: ignore # FIXME: Fix type error\n                model_class: ModelType | None = (\n                    self._get_model_class_from_collection_name(collection_name)\n                )\n                if model_class:\n                    model: ModelType = model_class(**doc)  # type: ignore # FIXME: Fix type error\n                    all_vertices.append(model)\n                else:\n                    logging.warning(\n                        f\"No model class found for collection: {collection_name}\"\n                    )\n\n        except Exception as e:\n            logging.error(f\"Error fetching vertices from {collection_name}: {e}\")\n\n    return all_vertices\n",
+    "important_comments": [
+        {
+            "content": "# type: ignore # FIXME: Fix type error",
+            "comment_types": [
+                "FIXME"
+            ]
+        },
+        {
+            "content": "# type: ignore # FIXME: Fix type error",
+            "comment_types": [
+                "FIXME"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": "This code is designed to function as a data access layer within a larger system, specifically tasked with retrieving and converting all vertices from a graph database into structured model instances. Its primary purpose is to extract data from various collections within a graph database, transform each document into a corresponding model object, and return a comprehensive list of these objects for further processing or analysis. Key components include the `get_all_vertices` function, which orchestrates the entire retrieval and conversion process; `helper_functions.pluralized_and_lowered_block_types`, which dynamically generates the collection names by pluralizing and lowering block types; and `_get_model_class_from_collection_name`, a method that maps each collection name to its respective model class, ensuring the correct instantiation of model objects.\n\nThe implementation involves iterating over a list of collection names obtained from the helper function, using a database connector to access each collection, and retrieving all documents via a cursor. For each document, the code attempts to instantiate a model object using the mapped model class, appending it to the `all_vertices` list. The code includes type hinting for clarity and robustness, although there are noted type errors marked with comments for future resolution. The use of Python's type hinting enhances code readability and maintainability, while the `try-except` block ensures that the process is resilient to runtime errors, returning `None` if an error occurs.\n\nThe technical stack likely involves a NoSQL database, given the use of a `StandardCollection` and `Cursor`, which are typical in document-based databases. The database connector is a critical component, interfacing with the database to facilitate data retrieval. This function fits into the larger project as a foundational component of the data access layer, enabling the conversion of raw database entries into structured model instances. These instances can then be utilized by other system components, such as data processing modules or analytical tools, to derive insights or perform further operations. The modular design and use of helper functions suggest that this code is part of a scalable and maintainable architecture, supporting the dynamic nature of the data and its various applications within the system.",
+    "children_ids": []
+}

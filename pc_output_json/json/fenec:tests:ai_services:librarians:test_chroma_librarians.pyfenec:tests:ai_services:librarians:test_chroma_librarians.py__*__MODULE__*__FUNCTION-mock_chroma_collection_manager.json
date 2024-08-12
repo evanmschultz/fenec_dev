@@ -1,0 +1,113 @@
+{
+    "function_name": "mock_chroma_collection_manager",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "Generator[MagicMock, Any, None]",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-mock_chroma_collection_manager",
+    "file_path": "fenec/tests/ai_services/librarians/test_chroma_librarians.py",
+    "parent_id": "fenec:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 20,
+    "end_line_num": 28,
+    "code_content": "\n\n@pytest.fixture\ndef mock_chroma_collection_manager() -> Generator[MagicMock, Any, None]:\n    with patch(\n        \"fenec.databases.chroma.chromadb_collection_manager.ChromaCollectionManager\"\n    ) as mock_manager:\n        yield mock_manager()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Generator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Generator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "pytest",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "patch",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "MagicMock",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "unittest.mock",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "patch",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "MagicMock",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "unittest.mock",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "fenec:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "fenec.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        }
+    ],
+    "summary": "This code defines a pytest fixture named `mock_chroma_collection_manager`, which is crucial for unit testing within a Python application that interacts with a database management component, specifically the `ChromaCollectionManager`. The primary purpose of this fixture is to create a mock instance of the `ChromaCollectionManager` class, allowing tests to be conducted in a controlled environment where the real implementation is substituted with a mock object. This is particularly significant for testing scenarios where the `ChromaCollectionManager` interfaces with external systems or databases, ensuring that tests remain isolated, consistent, and independent of the actual database operations.\n\nKey components of this implementation include the `mock_chroma_collection_manager` fixture itself, which leverages the `patch` function from the `unittest.mock` module. This function temporarily replaces the `ChromaCollectionManager` class within the `fenec.databases.chroma.chromadb_collection_manager` module with a `MagicMock` object. The `patch` function is used as a context manager, ensuring that the mock substitution is active only during the test execution, after which the original class is restored. This approach allows for capturing and asserting interactions with the `ChromaCollectionManager`, providing a robust mechanism for verifying expected behaviors and interactions during tests.\n\nThe technical stack supporting this implementation includes `pytest`, a widely-used testing framework in Python that facilitates writing and executing tests efficiently. Additionally, `unittest.mock` is employed for creating mock objects and patching, which is essential for isolating the unit under test from its dependencies. The use of `MagicMock` provides flexible mocking capabilities, allowing detailed inspection and verification of method calls and attribute accesses on the `ChromaCollectionManager`.\n\nIn the context of a larger codebase, this fixture plays a vital role in the testing suite, particularly for components that interact with the `ChromaCollectionManager`. By decoupling tests from actual database operations, it ensures that tests can be executed reliably and efficiently, without requiring a live database connection. This is crucial for maintaining a fast and stable continuous integration pipeline, as it reduces the complexity and potential flakiness of tests that depend on external resources. Overall, the `mock_chroma_collection_manager` fixture enhances the testability of the system by providing a flexible and isolated testing environment, thereby supporting robust software development practices and ensuring high-quality code.",
+    "children_ids": []
+}

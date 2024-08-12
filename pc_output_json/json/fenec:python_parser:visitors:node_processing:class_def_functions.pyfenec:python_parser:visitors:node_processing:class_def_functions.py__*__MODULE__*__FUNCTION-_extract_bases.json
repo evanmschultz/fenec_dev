@@ -1,0 +1,45 @@
+{
+    "function_name": "_extract_bases",
+    "docstring": "Extracts the base classes from a sequence of libcst.Arg representing class bases.\n\nArgs:\n    - bases (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class base classes.\n\nReturns:\n    - list[str] | None: A list of base class names, or None if there are no bases.\n\nExample:\n    ```Python\n    class_bases = _extract_bases(class_node.bases)\n    # Returns a list of base class names from the class definition.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[str] | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE__*__FUNCTION-_extract_bases",
+    "file_path": "fenec/python_parser/visitors/node_processing/class_def_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 51,
+    "end_line_num": 79,
+    "code_content": "\n\ndef _extract_bases(bases: Sequence[libcst.Arg]) -> list[str] | None:\n    \"\"\"\n    Extracts the base classes from a sequence of libcst.Arg representing class bases.\n\n    Args:\n        - bases (Sequence[libcst.Arg]): A sequence of libcst.Arg nodes representing class base classes.\n\n    Returns:\n        - list[str] | None: A list of base class names, or None if there are no bases.\n\n    Example:\n        ```Python\n        class_bases = _extract_bases(class_node.bases)\n        # Returns a list of base class names from the class definition.\n        ```\n    \"\"\"\n\n    bases_list: list[str] = []\n    for base in bases:\n        if (\n            isinstance(base, libcst.Arg)\n            and isinstance(base.value, libcst.Name)\n            and base.value.value\n        ):\n            bases_list.append(base.value.value)\n    return bases_list if bases_list else None\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code defines a utility function `_extract_bases`, which is designed to analyze and extract base class names from a sequence of `libcst.Arg` objects within a Python abstract syntax tree (AST). The primary purpose of this function is to facilitate static code analysis and transformation tasks by providing a list of base class names or returning `None` if no bases are present. This aids in understanding and manipulating class hierarchies, which is crucial for tasks such as code refactoring, dependency analysis, and code quality checks. Key components include the function `_extract_bases`, which iterates over a sequence of `libcst.Arg` nodes, checking each node to ensure it is an instance of `libcst.Arg` and that its value is a `libcst.Name` with a non-empty string. If these conditions are met, the base class name is appended to a list. The implementation employs a straightforward iteration and type-checking mechanism, leveraging Python's type hinting for clarity and robustness, to filter and collect valid base class names, ensuring that only meaningful names are included in the result.\n\nThe technical stack prominently features the `libcst` library, which is used for parsing and manipulating Python code as concrete syntax trees. `libcst` provides the necessary classes and methods for AST node handling, allowing for precise and reliable code analysis and transformation. This library is particularly suited for applications requiring syntactic fidelity, such as code linters, formatters, or refactoring tools, due to its ability to preserve the original formatting and comments of the source code.\n\nIn the context of a larger system, this function could be part of a static analysis tool or a code transformation utility, where understanding class hierarchies is crucial. It interacts with other components that parse and analyze Python code, contributing to a comprehensive code analysis or refactoring process. This function could be used in conjunction with other tools that perform tasks such as dependency analysis, code quality checks, or automated refactoring, thereby fitting into a broader ecosystem of tools designed to enhance code maintainability and readability. Its role in extracting base class information makes it a valuable component in systems that require detailed insights into class structures, such as those used in large-scale software development projects or educational tools for teaching object-oriented programming concepts. By providing a reliable method for extracting base class names, this function supports the development of tools that improve code quality and facilitate the understanding of complex codebases.",
+    "children_ids": []
+}

@@ -1,0 +1,144 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "wraps",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "functools",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "inspect",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FrameInfo",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "inspect",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "LogRecord",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Callable",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData"
+                },
+                {
+                    "name": "LoggingCallerInfo",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:processing_context.py__*__MODULE__*__CLASS-LoggingCallerInfo"
+                }
+            ],
+            "imported_from": "fenec.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:utilities:processing_context.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:utilities:logger:decorators.py__*__MODULE",
+    "file_path": "fenec/utilities/logger/decorators.py",
+    "parent_id": "fenec:utilities:logger__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 155,
+    "code_content": "from functools import wraps\nimport inspect\nfrom inspect import FrameInfo\nimport logging\nfrom logging import LogRecord, Logger\nfrom typing import Callable\nimport libcst\n\n\nimport fenec.python_parser.visitors.node_processing.common_functions as common_functions\nfrom fenec.utilities.processing_context import LoggingCallerInfo, NodeAndPositionData\n\n\ndef logging_decorator(\n    level=logging.DEBUG,\n    *,\n    message: str | None = None,\n    syntax_highlighting: bool = False,\n) -> Callable:\n    \"\"\"\n    A decorator for adding enhanced logging to functions, with optional syntax highlighting.\n\n    This decorator logs the call to the decorated function at the specified logging level. If syntax_highlighting is enabled and the first argument of the function is a libcst.CSTNode, the decorator logs the node's content with syntax highlighting.\n\n    Args:\n        level (int): The logging level. Defaults to logging.DEBUG.\n        message (str | None): Custom log message. If None, a default message is generated.\n        syntax_highlighting (bool): If True, enables syntax highlighting for libcst.CSTNode arguments.\n\n    Returns:\n        Callable: The decorated function with enhanced logging capability.\n\n    Example:\n        >>> @logging_decorator(level=logging.INFO, message=\"Function start\", syntax_highlighting=True)\n        >>> def sample_function(arg1):\n        >>>     pass\n        # This decorates 'sample_function' with enhanced logging at INFO level.\n    \"\"\"\n\n    def decorator(func):\n        @wraps(func)\n        def wrapper(*args, **kwargs):\n            log_message: str = (\n                message if message else (f\"Calling function: {func.__name__}\")\n            )\n            frame_info: inspect.FrameInfo = inspect.stack()[1]\n            caller_info: LoggingCallerInfo = _get_caller_info(frame_info)\n            code_content: str = _gather_code_content(syntax_highlighting, args)\n            logger: Logger = _get_logger(caller_info.caller_module_name)\n\n            _handle_logging(\n                logger,\n                caller_info,\n                level,\n                log_message,\n                syntax_highlighting,\n                code_content,\n            )\n\n            return func(*args, **kwargs)\n\n        return wrapper\n\n    return decorator\n\n\ndef _gather_log_record_context(\n    caller_info: LoggingCallerInfo, level: int, msg: str\n) -> logging.LogRecord:\n    \"\"\"Creates and returns a LogRecord with specified context information.\"\"\"\n\n    return logging.LogRecord(\n        name=caller_info.caller_module_name,\n        level=level,\n        pathname=caller_info.caller_file_path,\n        lineno=caller_info.caller_line_no,\n        msg=msg,\n        args=None,\n        exc_info=None,\n    )\n\n\ndef _get_caller_info(frame_info: FrameInfo) -> LoggingCallerInfo:\n    \"\"\"Extracts and returns caller information from a frame object.\"\"\"\n\n    caller_module_name: str = frame_info.filename.split(\"/\")[-1].split(\".\")[0]\n    caller_file_path: str = frame_info.filename\n    caller_line_no: int = frame_info.lineno\n    return LoggingCallerInfo(caller_module_name, caller_file_path, caller_line_no)\n\n\ndef _get_logger(caller_module_name: str) -> Logger:\n    \"\"\"Retrieves and returns a Logger instance for the specified module name.\"\"\"\n\n    return logging.getLogger(caller_module_name)\n\n\ndef _gather_code_content(syntax_highlighting: bool, args: tuple) -> str:\n    \"\"\"Gathers and returns code content for logging, if `syntax_highlighting` else returns empty string.\"\"\"\n\n    if not syntax_highlighting or not args:\n        return \"\"\n\n    arg_0 = args[0]\n    content: str = \"\"\n\n    if isinstance(arg_0, libcst.CSTNode):\n        content = common_functions.extract_code_content(arg_0)\n    elif isinstance(arg_0, list) and all(\n        isinstance(node, libcst.CSTNode) for node in arg_0\n    ):\n        content = \"\\n\".join(\n            common_functions.extract_stripped_code_content(node) for node in arg_0\n        )\n    elif isinstance(arg_0, NodeAndPositionData):\n        content = \"\\n\".join(\n            common_functions.extract_stripped_code_content(node) for node in arg_0.nodes\n        )\n\n    return content\n\n\ndef _handle_syntax_highlighting(\n    syntax_highlighting: bool,\n    log_record: logging.LogRecord,\n    logger: Logger,\n    content: str,\n) -> None:\n    \"\"\"Handles syntax highlighting for the log record if enabled.\"\"\"\n\n    if syntax_highlighting:\n        log_record.syntax_highlight = syntax_highlighting\n        log_record.content = content\n        logger.handle(log_record)\n\n\ndef _handle_logging(\n    logger: Logger,\n    caller_info: LoggingCallerInfo,\n    level: int,\n    log_message: str,\n    syntax_highlighting: bool,\n    code_content: str,\n) -> None:\n    \"\"\"Handles the logging process, including the creation and handling of log records.\"\"\"\n\n    if logger.isEnabledFor(level):\n        log_record: LogRecord = _gather_log_record_context(\n            caller_info, level, log_message\n        )\n        logger.handle(log_record)  # Print log message\n        _handle_syntax_highlighting(\n            syntax_highlighting, log_record, logger, code_content\n        )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This Python code implements a sophisticated logging decorator designed to enhance the logging capabilities of functions by providing detailed, context-rich log outputs with optional syntax highlighting. The primary purpose of this code is to facilitate comprehensive logging of function calls, which is particularly beneficial in environments that require code analysis and syntax highlighting, such as integrated development environments (IDEs) or static analysis tools. The decorator logs function calls at a specified logging level and, if enabled, highlights the syntax of the first argument when it is a `libcst.CSTNode`, thereby improving the readability and utility of log messages.\n\nKey components of the code include: the `logging_decorator` function, which configures the logging behavior with parameters like `level`, `message`, and `syntax_highlighting`; the `decorator` function, which wraps the target function to apply logging enhancements; and the `wrapper` function, which executes the logging logic before invoking the original function. Supporting functions include `_gather_log_record_context`, which creates log records with contextual information; `_get_caller_info`, which extracts caller information from stack frames; `_get_logger`, which retrieves a logger instance for the specified module; `_gather_code_content`, which extracts code content for logging, particularly when syntax highlighting is enabled; `_handle_syntax_highlighting`, which manages the syntax highlighting process in logs; and `_handle_logging`, which orchestrates the overall logging process, including log record creation and handling.\n\nThe implementation leverages several notable techniques and libraries. It uses `functools.wraps` to preserve the original function's metadata, ensuring that the decorated function retains its original signature and documentation. The `inspect` module is employed to access stack frames and extract caller information, which is crucial for creating context-rich log records. The `logging` module is used extensively to create and manage log records, while `libcst` is utilized for syntax tree manipulation, enabling syntax highlighting when the first argument is a `libcst.CSTNode`. The code also integrates custom utilities from the `fenec` library, specifically for processing context and node data, which are essential for extracting and formatting code content for logging.\n\nThe technical stack includes Python's standard `logging` and `inspect` modules for logging and stack inspection, respectively. The `libcst` library is used for handling code syntax trees, allowing for advanced code analysis and manipulation. Additionally, the `fenec` library provides utilities for processing context and node data, which are integral to the code's functionality.\n\nWithin the larger project or system, this code serves as a utility for developers to integrate enhanced logging into their applications. It is particularly significant in environments that require detailed code analysis and syntax highlighting, such as IDEs or static analysis tools. The decorator can be applied to any function, extending its logging capabilities without altering the function's core logic. This modular approach allows for seamless integration with other components, providing developers with a powerful tool for debugging and monitoring code execution. By improving the granularity and context of log messages, this code contributes to a more robust and maintainable codebase, facilitating easier identification and resolution of issues.",
+    "children_ids": [
+        "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator",
+        "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_gather_log_record_context",
+        "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_get_caller_info",
+        "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_get_logger",
+        "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_gather_code_content",
+        "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_handle_syntax_highlighting",
+        "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_handle_logging"
+    ]
+}

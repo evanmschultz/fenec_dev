@@ -1,0 +1,105 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "sys",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ImportNameModel"
+                },
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE",
+    "file_path": "fenec/python_parser/visitors/node_processing/module_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 218,
+    "code_content": "import sys\nfrom typing import Sequence\n\nimport libcst\n\nfrom fenec.models.models import ImportModel, ImportNameModel, ImportModuleType\nimport fenec.python_parser.visitors.node_processing.common_functions as common_functions\n\n\ndef extract_content_from_empty_lines(\n    sequence: Sequence[libcst.EmptyLine],\n) -> list[str]:\n    \"\"\"\n    Extracts comments from a sequence of EmptyLine nodes.\n\n    Args:\n        - sequence (Sequence[libcst.EmptyLine]): A sequence of libcst.EmptyLine nodes to process.\n\n    Returns:\n        - list[str]: A list of string comments extracted from the EmptyLine nodes.\n\n    Example:\n        ```Python\n        extract_content_from_empty_lines([libcst.EmptyLine(comment=libcst.Comment(\"# Comment\"))])\n        # Returns: ['# Comment']\n        ```\n    \"\"\"\n\n    return [line.comment.value for line in sequence if line.comment]\n\n\ndef process_import(node: libcst.Import) -> ImportModel:\n    \"\"\"\n    Processes an Import node to create an ImportModel.\n\n    Args:\n        - node (libcst.Import): The Import node to process.\n\n    Returns:\n        - ImportModel: An ImportModel representing the processed import.\n\n    Example:\n        ```Python\n        import_model = process_import(libcst.Import(names=[libcst.ImportAlias(name=libcst.Name(\"module\"))]))\n        ```\n    \"\"\"\n\n    import_name_model: ImportNameModel = _build_import_name_model(node)\n    import_model: ImportModel = _build_import_model(\n        import_name_models=[import_name_model]\n    )\n    return import_model\n\n\ndef process_import_from(node: libcst.ImportFrom) -> ImportModel:\n    \"\"\"\n    Processes an ImportFrom node to create an ImportModel.\n\n    Args:\n        - node (libcst.ImportFrom): The ImportFrom node to process.\n\n    Returns:\n        - ImportModel: An ImportModel representing the processed import from statement.\n\n    Example:\n        ```Python\n        import_model = process_import_from(libcst.ImportFrom(module=libcst.Name(\"module\"), names=[libcst.ImportAlias(name=libcst.Name(\"submodule\"))]))\n        ```\n    \"\"\"\n\n    module_name: str | None = (\n        _get_full_module_path(node.module) if node.module else None\n    )\n    import_names: list[ImportNameModel] = _build_import_from_name_models(node)\n    import_module_type: ImportModuleType = _get_import_from_module_type(module_name)\n\n    import_model = ImportModel(\n        import_names=import_names,\n        imported_from=module_name,\n        import_module_type=import_module_type,\n    )\n    return import_model\n\n\ndef _get_import_name(node: libcst.Import) -> str:\n    \"\"\"Gets the import name from an Import node.\"\"\"\n\n    return common_functions.extract_code_content(node.names[0].name)\n\n\ndef _get_as_name(node: libcst.Import) -> str | None:\n    \"\"\"Gets the as name from an Import node.\"\"\"\n\n    first_name: libcst.ImportAlias = node.names[0]\n\n    if first_name.asname and isinstance(first_name.asname, libcst.AsName):\n        as_name_node = first_name.asname.name\n        if isinstance(as_name_node, libcst.Name):\n            return as_name_node.value\n\n\ndef _build_import_name_model(node: libcst.Import) -> ImportNameModel:\n    \"\"\"Builds an ImportNameModel from an Import node.\"\"\"\n\n    import_name: str | None = _get_import_name(node)\n    as_name: str | None = _get_as_name(node)\n    return ImportNameModel(name=import_name, as_name=as_name)\n\n\ndef _is_standard_library_import(import_name: str) -> bool:\n    \"\"\"Checks if an import is a standard library import.\"\"\"\n\n    return import_name in sys.stdlib_module_names\n\n\ndef _third_party_imports() -> list[str]:\n    \"\"\"Gets a list of all third party imports.\"\"\"\n\n    third_party_imports: list[str] = []\n\n    for module_name, module in sys.modules.items():\n        if module_name in sys.stdlib_module_names or not hasattr(module, \"__file__\"):\n            continue\n\n        module_file: str | None = module.__file__\n        if module_file and (\n            \"site-packages\" in module_file or \"dist-packages\" in module_file\n        ):\n            third_party_imports.append(module_name)\n\n    return third_party_imports\n\n\ndef _is_third_party_import(import_name: str) -> bool:\n    \"\"\"Checks if an import is a third party import.\"\"\"\n\n    return import_name in _third_party_imports()\n\n\ndef _determine_import_module_type(module_name: str) -> ImportModuleType:\n    \"\"\"Determines the type of import a module is.\"\"\"\n\n    if _is_standard_library_import(module_name):\n        return ImportModuleType.STANDARD_LIBRARY\n    elif _is_third_party_import(module_name):\n        return ImportModuleType.THIRD_PARTY\n    else:\n        return ImportModuleType.LOCAL\n\n\ndef _get_import_module_type(\n    import_name_models: list[ImportNameModel],\n) -> ImportModuleType:\n    \"\"\"Gets the import module type of a list of ImportNameModels.\"\"\"\n\n    for import_name_model in import_name_models:\n        module_type = _determine_import_module_type(import_name_model.name)\n        if module_type != ImportModuleType.LOCAL:\n            return module_type\n    return ImportModuleType.LOCAL\n\n\ndef _get_import_from_module_type(module_name: str | None) -> ImportModuleType:\n    \"\"\"Gets the import module type of an ImportFrom node.\"\"\"\n\n    if module_name:\n        return _determine_import_module_type(module_name)\n    return ImportModuleType.LOCAL\n\n\ndef _build_import_model(\n    import_name_models: list[ImportNameModel],\n) -> ImportModel:\n    \"\"\"Builds an ImportModel from a list of ImportNameModels.\"\"\"\n\n    import_module_type: ImportModuleType = _get_import_module_type(import_name_models)\n    return ImportModel(\n        import_names=import_name_models,\n        imported_from=None,\n        import_module_type=import_module_type,\n    )\n\n\ndef _get_full_module_path(node) -> str:\n    \"\"\"Recursively gets the full module path from a node and returns it as a string.\"\"\"\n\n    if isinstance(node, libcst.Name):\n        return node.value\n    elif isinstance(node, libcst.Attribute):\n        return common_functions.extract_code_content(node)\n    else:\n        print(f\"\\n\\nImport Node type: {type(node)}\\n\")\n        # return str(node)\n        return common_functions.extract_code_content(node)\n\n\ndef _extract_as_name(import_alias: libcst.ImportAlias) -> str | None:\n    \"\"\"Extracts the as name from an ImportAlias node.\"\"\"\n\n    if import_alias.asname and isinstance(import_alias.asname, libcst.AsName):\n        if isinstance(import_alias.asname.name, libcst.Name):\n            return import_alias.asname.name.value\n\n\ndef _build_import_from_name_models(node: libcst.ImportFrom) -> list[ImportNameModel]:\n    \"\"\"Builds a list of ImportNameModels from an ImportFrom node.\"\"\"\n\n    import_names: list[ImportNameModel] = []\n    if isinstance(node.names, libcst.ImportStar):\n        import_names.append(ImportNameModel(name=\"*\", as_name=None))\n    else:\n        for import_alias in node.names:\n            if isinstance(import_alias, libcst.ImportAlias):\n                name = str(import_alias.name.value)\n                as_name = _extract_as_name(import_alias)\n                import_names.append(ImportNameModel(name=name, as_name=as_name))\n    return import_names\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This Python code is part of a static analysis or refactoring tool designed to process and analyze import statements within a Python abstract syntax tree (AST) using the `libcst` library. Its primary goal is to extract, model, and categorize information about import statements, distinguishing between standard library, third-party, and local imports. This functionality is significant for tasks such as dependency management, code quality checks, and automated refactoring, providing insights into the dependencies and structure of Python codebases.\n\nKey components of the code include: `extract_content_from_empty_lines`, which extracts comments from sequences of `libcst.EmptyLine` nodes; `process_import` and `process_import_from`, which convert `libcst.Import` and `libcst.ImportFrom` nodes into `ImportModel` objects; helper functions such as `_build_import_name_model`, `_determine_import_module_type`, and `_get_full_module_path`, which construct import models and determine import types. The code also includes utility functions like `_get_import_name` and `_get_as_name` for extracting import names and aliases, and `_is_standard_library_import` and `_is_third_party_import` for classifying imports.\n\nThe implementation leverages a series of helper functions to build models representing import statements, using data structures like `ImportModel` and `ImportNameModel` to encapsulate import details. It employs algorithms to determine the type of import (standard library, third-party, or local) by checking against system module names and file paths, utilizing functions like `_is_standard_library_import` and `_is_third_party_import` to classify imports. The code uses a recursive approach in functions like `_get_full_module_path` to accurately extract module paths from syntax tree nodes.\n\nThe technical stack includes `libcst` for parsing and manipulating Python code, which provides a concrete syntax tree for Python that is useful for code analysis and transformation. The `fenec` library is used for modeling import data, providing the `ImportModel`, `ImportNameModel`, and `ImportModuleType` classes to encapsulate and categorize import information. The code also relies on Python's built-in `sys` module for accessing standard library module names and inspecting the runtime environment.\n\nIn the context of a larger system, this code fits into a comprehensive framework for static code analysis or refactoring. It interacts with other components that parse and process Python code to provide insights or transformations based on import statements. This code likely integrates with tools that perform broader code analysis tasks, such as dependency management, code quality checks, or automated refactoring, contributing to a comprehensive understanding of a codebase's structure and dependencies. By converting import statements into structured models, it enables downstream components to perform more sophisticated analyses or transformations, enhancing the overall functionality and effectiveness of the system.",
+    "children_ids": [
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-extract_content_from_empty_lines",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-process_import",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-process_import_from",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_import_name",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_as_name",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_build_import_name_model",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_is_standard_library_import",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_third_party_imports",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_is_third_party_import",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_determine_import_module_type",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_import_module_type",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_import_from_module_type",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_build_import_model",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_full_module_path",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_extract_as_name",
+        "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_build_import_from_name_models"
+    ]
+}

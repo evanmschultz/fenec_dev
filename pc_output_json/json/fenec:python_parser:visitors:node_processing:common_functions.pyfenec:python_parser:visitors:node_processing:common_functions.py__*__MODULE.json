@@ -1,0 +1,86 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "file_path": "fenec/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 285,
+    "code_content": "import logging\nfrom typing import Sequence\nimport libcst\n\n\nfrom fenec.models.models import CommentModel, DecoratorModel, CommentType\n\n\ndef extract_code_content(\n    node: libcst.CSTNode,\n) -> str:\n    \"\"\"\n    Extracts the code content from a given CST node.\n\n    This function converts a CST node to its string representation, maintaining the original code format.\n\n    Args:\n        - node (libcst.CSTNode): The CST node to extract code from.\n\n    Returns:\n        - str: The string representation of the code for the given CST node.\n\n    Example:\n        ```Python\n        extract_code_content(some_cst_node)\n        # Returns the code content as a string.\n        ```\n    \"\"\"\n\n    return libcst.Module([]).code_for_node(node)\n\n\ndef extract_stripped_code_content(\n    node: libcst.CSTNode,\n) -> str:\n    \"\"\"\n    Extracts the stripped code content from a given CST node.\n\n    Similar to extract_code_content, but also strips leading and trailing whitespace from the code string.\n\n    Args:\n        - node (libcst.CSTNode): The CST node to extract code from.\n\n    Returns:\n        - str: The stripped string representation of the code for the CST node.\n\n    Example:\n        ```Python\n        extract_stripped_code_content(some_cst_node)\n        # Returns the stripped code content as a string.\n        ```\n    \"\"\"\n\n    return extract_code_content(node).strip()\n\n\ndef extract_important_comment(\n    comment_or_empty_line_node: libcst.CSTNode,\n) -> CommentModel | None:\n    \"\"\"\n    Extracts an important comment from a given CST node.\n\n    Processes a libcst.Comment or libcst.EmptyLine node to extract important comments, categorizing them based on predefined types.\n\n    Args:\n        - comment_or_empty_line_node (libcst.CSTNode): A CST node representing a comment or an empty line with a comment.\n\n    Returns:\n        - CommentModel | None: A CommentModel object if an important comment is found, otherwise None.\n\n    Example:\n        ```Python\n        extract_important_comment(some_comment_node)\n        # Returns a CommentModel for the comment, or None if not important.\n        ```\n    \"\"\"\n\n    comment_text: str | None = None\n\n    if isinstance(comment_or_empty_line_node, libcst.EmptyLine):\n        if comment_or_empty_line_node.comment:\n            comment_text = comment_or_empty_line_node.comment.value\n    elif isinstance(comment_or_empty_line_node, libcst.Comment):\n        comment_text = comment_or_empty_line_node.value\n\n    if not comment_text:\n        return None\n\n    comment_types: list[CommentType] = [\n        comment_type\n        for comment_type in CommentType\n        if comment_type.value in comment_text.upper()\n    ]\n\n    if comment_types:\n        return CommentModel(\n            content=comment_text,\n            comment_types=comment_types,\n        )\n\n\ndef extract_decorators(\n    decorators: Sequence[libcst.Decorator],\n) -> list[DecoratorModel] | None:\n    \"\"\"\n    Extracts a list of decorator models from a sequence of libcst.Decorator nodes.\n\n    Processes each decorator node to form a model representing the decorator's name and its arguments, if any.\n\n    Args:\n        - decorators (Sequence[libcst.Decorator]): A sequence of libcst.Decorator nodes.\n\n    Returns:\n        - list[DecoratorModel] | None: A list of DecoratorModel objects, or None if no decorators are found.\n\n    Example:\n        ```Python\n        extract_decorators(function_node.decorators)\n        # Returns a list of DecoratorModel objects representing each decorator in the function.\n        ```\n    \"\"\"\n\n    decorators_list: list[DecoratorModel] = []\n    for decorator in decorators:\n        decorator_model: DecoratorModel | None = extract_decorator(decorator)\n        if isinstance(decorator_model, DecoratorModel):\n            decorators_list.append(extract_decorator(decorator))  # type: ignore\n    return decorators_list if decorators_list else None\n\n\ndef extract_decorator(\n    decorator: libcst.Decorator,\n) -> DecoratorModel | None:\n    \"\"\"\n    Extracts the decorator from a libcst.Decorator node.\n\n    Processes a single decorator node to create a model representing the decorator's name and arguments.\n\n    Args:\n        - decorator (libcst.Decorator): A libcst.Decorator node.\n\n    Returns:\n        - DecoratorModel | None: A DecoratorModel object if the decorator is valid, otherwise None.\n\n    Example:\n        ```Python\n        extract_decorator(some_decorator_node)\n        # Returns a DecoratorModel object for the decorator.\n        ```\n    \"\"\"\n\n    decorator_name: str = \"\"\n    arg_list: list[str] | None = None\n    if isinstance(decorator.decorator, libcst.Name):\n        decorator_name: str = decorator.decorator.value\n    if isinstance(decorator.decorator, libcst.Call):\n        func = decorator.decorator.func\n        if isinstance(func, libcst.Name) or isinstance(func, libcst.Attribute):\n            if decorator.decorator.args:\n                arg_list = [\n                    extract_stripped_code_content(arg)\n                    for arg in decorator.decorator.args\n                ]\n        if isinstance(func, libcst.Name):\n            decorator_name = func.value\n        elif isinstance(func, libcst.Attribute):\n            decorator_name = func.attr.value\n        else:\n            logging.warning(\"Decorator func is not a Name or Attribute node\")\n\n    return (\n        DecoratorModel(\n            content=extract_stripped_code_content(decorator),\n            decorator_name=decorator_name,\n            decorator_args=arg_list,\n        )\n        if decorator_name\n        else None\n    )\n\n\ndef extract_type_annotation(node: libcst.CSTNode) -> str | None:\n    \"\"\"\n    Extracts the type annotation from a node.\n\n    Processes a libcst.CSTNode to extract the type annotation, if present.\n    It handles various forms of type annotations, including generics and unions.\n\n    Args:\n        - node (libcst.CSTNode): The node to extract the type annotation from.\n\n    Returns:\n        - str | None: The extracted type annotation as a string, or None if no type annotation is found.\n\n    Example:\n        ```Python\n        extract_type_annotation(some_cst_node)\n        # Returns the type annotation as a string, or None if not present.\n        ```\n    \"\"\"\n\n    annotation: libcst.Annotation | None = _get_node_annotation(node)\n    if annotation and isinstance(annotation, libcst.Annotation):\n        return _process_type_annotation_expression(annotation.annotation)\n    return None\n\n\ndef _get_node_annotation(node: libcst.CSTNode) -> libcst.Annotation | None:\n    \"\"\"\n    Retrieves the annotation of a given CSTNode.\n\n    Args:\n        - node (libcst.CSTNode): The CSTNode to retrieve the annotation from.\n\n    Returns:\n        - libcst.Annotation | None: The annotation of the CSTNode if present, otherwise None.\n    \"\"\"\n\n    if isinstance(node, libcst.Param) or isinstance(node, libcst.AnnAssign):\n        return node.annotation\n    elif isinstance(node, libcst.Annotation):\n        return node\n    return None\n\n\ndef _process_type_annotation_expression(expression: libcst.BaseExpression) -> str:\n    \"\"\"\n    Process the type annotation expression and return a string representation recursively.\n\n    Args:\n        - expression (libcst.BaseExpression): The type annotation expression to process.\n\n    Returns:\n        - str: The string representation of the processed type annotation expression.\n    \"\"\"\n\n    if isinstance(expression, libcst.Subscript):\n        return _extract_generic_types_from_subscript(expression)\n    elif isinstance(expression, libcst.BinaryOperation):\n        left: str = _process_type_annotation_expression(expression.left)\n        right: str = _process_type_annotation_expression(expression.right)\n        return f\"{left} | {right}\"\n    elif isinstance(expression, libcst.Name):\n        return expression.value\n    return \"\"\n\n\ndef _extract_generic_types_from_subscript(\n    node: libcst.Subscript | libcst.BaseExpression,\n) -> str:\n    \"\"\"\n    Recursively extracts generic types from a Subscript node or a BaseExpression node.\n\n    Args:\n        - node (libcst.Subscript | libcst.BaseExpression): The Subscript or BaseExpression node to extract generic types from.\n\n    Returns:\n        - str: The string representation of the extracted generic types.\n    \"\"\"\n\n    if isinstance(node, libcst.Subscript):\n        generics: list[str] = []\n        for element in node.slice:\n            if isinstance(element.slice, libcst.Index):\n                if isinstance(element.slice.value, libcst.BinaryOperation):\n                    union_type: str = _process_type_annotation_expression(\n                        element.slice.value\n                    )\n                    generics.append(union_type)\n                else:\n                    generic_type: str = _extract_generic_types_from_subscript(\n                        element.slice.value\n                    )\n                    generics.append(generic_type)\n\n        if isinstance(node.value, libcst.Name):\n            generics_str = \", \".join(generics)\n            return f\"{node.value.value}[{generics_str}]\"\n        else:\n            return \"\"\n\n    elif isinstance(node, libcst.Name):\n        return node.value\n    return \"\"\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code serves as a utility module for processing and extracting elements from Python code represented as Concrete Syntax Tree (CST) nodes using the `libcst` library. Its primary purpose is to facilitate the analysis and transformation of Python code by extracting code content, comments, decorators, and type annotations from CST nodes, which is crucial for tasks such as code refactoring, linting, and documentation generation. Key components include: `extract_code_content`, which converts CST nodes to their string representation while preserving the original code format; `extract_stripped_code_content`, which provides a whitespace-trimmed version of the code; `extract_important_comment`, which identifies and categorizes significant comments using predefined types; `extract_decorators` and `extract_decorator`, which parse decorators and their arguments into structured models; `extract_type_annotation`, which retrieves type annotations from nodes, handling complex cases like generics and unions; and helper functions `_get_node_annotation`, `_process_type_annotation_expression`, and `_extract_generic_types_from_subscript`, which manage type annotations and generics.\n\nThe implementation leverages the `libcst` library to traverse and manipulate CST nodes, employing pattern matching to identify node types and extract relevant information. It uses data structures such as lists to collect decorators and comment types, and applies recursive strategies for processing complex type annotations. The code also includes logging for handling unexpected node types in decorators, enhancing its robustness. The technical stack includes `libcst` for CST manipulation, and custom models such as `CommentModel`, `DecoratorModel`, and `CommentType` for structured data representation. These models are likely part of a larger framework, possibly within the `fenec` package, which suggests a broader system for code analysis and transformation.\n\nIn the context of a larger project, this code serves as a utility module within a Python code analysis or transformation tool, interacting with other components that may perform tasks like code linting, refactoring, or documentation generation. Its modular design allows for integration with broader code processing pipelines, enhancing the ability to analyze and modify Python code programmatically. This module's ability to extract and categorize code elements makes it a valuable component in systems that require detailed code introspection and manipulation, supporting developers in maintaining and improving code quality. By providing a reliable method for extracting and processing code elements, this module contributes to the overall goal of automating and streamlining code analysis and transformation processes within a larger software development ecosystem.",
+    "children_ids": [
+        "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_code_content",
+        "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_stripped_code_content",
+        "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_important_comment",
+        "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorators",
+        "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorator",
+        "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_type_annotation",
+        "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_get_node_annotation",
+        "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_process_type_annotation_expression",
+        "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_extract_generic_types_from_subscript"
+    ]
+}

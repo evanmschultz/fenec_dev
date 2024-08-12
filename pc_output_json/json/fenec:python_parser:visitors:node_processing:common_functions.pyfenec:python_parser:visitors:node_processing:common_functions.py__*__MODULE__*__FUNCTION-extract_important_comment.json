@@ -1,0 +1,77 @@
+{
+    "function_name": "extract_important_comment",
+    "docstring": "Extracts an important comment from a given CST node.\n\nProcesses a libcst.Comment or libcst.EmptyLine node to extract important comments, categorizing them based on predefined types.\n\nArgs:\n    - comment_or_empty_line_node (libcst.CSTNode): A CST node representing a comment or an empty line with a comment.\n\nReturns:\n    - CommentModel | None: A CommentModel object if an important comment is found, otherwise None.\n\nExample:\n    ```Python\n    extract_important_comment(some_comment_node)\n    # Returns a CommentModel for the comment, or None if not important.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "CommentModel | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_important_comment",
+    "file_path": "fenec/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 55,
+    "end_line_num": 100,
+    "code_content": "\n\ndef extract_important_comment(\n    comment_or_empty_line_node: libcst.CSTNode,\n) -> CommentModel | None:\n    \"\"\"\n    Extracts an important comment from a given CST node.\n\n    Processes a libcst.Comment or libcst.EmptyLine node to extract important comments, categorizing them based on predefined types.\n\n    Args:\n        - comment_or_empty_line_node (libcst.CSTNode): A CST node representing a comment or an empty line with a comment.\n\n    Returns:\n        - CommentModel | None: A CommentModel object if an important comment is found, otherwise None.\n\n    Example:\n        ```Python\n        extract_important_comment(some_comment_node)\n        # Returns a CommentModel for the comment, or None if not important.\n        ```\n    \"\"\"\n\n    comment_text: str | None = None\n\n    if isinstance(comment_or_empty_line_node, libcst.EmptyLine):\n        if comment_or_empty_line_node.comment:\n            comment_text = comment_or_empty_line_node.comment.value\n    elif isinstance(comment_or_empty_line_node, libcst.Comment):\n        comment_text = comment_or_empty_line_node.value\n\n    if not comment_text:\n        return None\n\n    comment_types: list[CommentType] = [\n        comment_type\n        for comment_type in CommentType\n        if comment_type.value in comment_text.upper()\n    ]\n\n    if comment_types:\n        return CommentModel(\n            content=comment_text,\n            comment_types=comment_types,\n        )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": "This code is designed to extract and categorize significant comments from a given Concrete Syntax Tree (CST) node, specifically targeting nodes that represent comments or empty lines with comments. Its primary purpose is to identify and extract comments deemed important based on predefined types, which can be crucial for code analysis, documentation generation, or other forms of codebase insights. The main function, `extract_important_comment`, processes `libcst.Comment` or `libcst.EmptyLine` nodes to determine if they contain comments that match any of the predefined important types.\n\nKey components include: the `extract_important_comment` function, which serves as the core logic for processing and categorizing comments; the use of `CommentModel`, a data structure presumably defined elsewhere, to encapsulate the extracted comment and its types; and `CommentType`, an enumeration that defines the types of comments considered important. The implementation involves checking the type of CST node, extracting the comment text if present, and matching the text against a list of predefined comment types. If a match is found, a `CommentModel` object is returned, encapsulating the comment content and its associated types.\n\nThe implementation employs a straightforward algorithm that first determines the type of CST node it is dealing with, either `libcst.EmptyLine` or `libcst.Comment`. It then extracts the comment text, if available, and checks this text against a list of predefined comment types, which are likely defined in the `CommentType` enumeration. This is done using a list comprehension that iterates over all possible `CommentType` values, checking if any of these values appear in the comment text (converted to uppercase for case-insensitive matching). If any matches are found, a `CommentModel` is instantiated with the comment text and the list of matching comment types.\n\nThe technical stack includes the `libcst` library, which provides the CST node structures used for parsing and analyzing Python code. This library is essential for traversing and manipulating the syntax tree of Python code, allowing for precise extraction and analysis of comments. The use of type hints such as `CommentModel | None` and `str | None` indicates the code is written in Python 3.10 or later, leveraging the new union type syntax for improved readability and type safety.\n\nIn the context of a larger system, this function could be part of a code analysis or documentation tool, interfacing with other components that parse codebases, analyze syntax trees, or generate documentation based on code comments. Its role is to filter and highlight comments that meet specific criteria, aiding in the identification of key information within code comments. This functionality could be integrated into a larger pipeline that processes entire codebases, providing insights into code quality, documentation coverage, or even compliance with coding standards. By focusing on important comments, this function helps prioritize the extraction of valuable information, which can be used for further analysis or reporting within the system.",
+    "children_ids": []
+}

@@ -1,0 +1,23 @@
+{
+    "id": "fenec__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "fenec",
+    "sub_directories_ids": [
+        "fenec:databases__*__DIRECTORY",
+        "fenec:types__*__DIRECTORY",
+        "fenec:ai_services__*__DIRECTORY",
+        "fenec:tests__*__DIRECTORY",
+        "fenec:python_parser__*__DIRECTORY",
+        "fenec:models__*__DIRECTORY",
+        "fenec:json_management__*__DIRECTORY",
+        "fenec:utilities__*__DIRECTORY",
+        "fenec:updaters__*__DIRECTORY"
+    ],
+    "children_ids": [
+        "fenec:__init__.py__*__MODULE",
+        "fenec:api.py__*__MODULE",
+        "fenec:cli_app.py__*__MODULE"
+    ],
+    "parent_id": null,
+    "summary": null
+}

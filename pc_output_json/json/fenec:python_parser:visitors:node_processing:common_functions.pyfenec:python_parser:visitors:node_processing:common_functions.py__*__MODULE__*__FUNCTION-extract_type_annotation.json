@@ -1,0 +1,39 @@
+{
+    "function_name": "extract_type_annotation",
+    "docstring": "Extracts the type annotation from a node.\n\nProcesses a libcst.CSTNode to extract the type annotation, if present.\nIt handles various forms of type annotations, including generics and unions.\n\nArgs:\n    - node (libcst.CSTNode): The node to extract the type annotation from.\n\nReturns:\n    - str | None: The extracted type annotation as a string, or None if no type annotation is found.\n\nExample:\n    ```Python\n    extract_type_annotation(some_cst_node)\n    # Returns the type annotation as a string, or None if not present.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_type_annotation",
+    "file_path": "fenec/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 180,
+    "end_line_num": 206,
+    "code_content": "\n\ndef extract_type_annotation(node: libcst.CSTNode) -> str | None:\n    \"\"\"\n    Extracts the type annotation from a node.\n\n    Processes a libcst.CSTNode to extract the type annotation, if present.\n    It handles various forms of type annotations, including generics and unions.\n\n    Args:\n        - node (libcst.CSTNode): The node to extract the type annotation from.\n\n    Returns:\n        - str | None: The extracted type annotation as a string, or None if no type annotation is found.\n\n    Example:\n        ```Python\n        extract_type_annotation(some_cst_node)\n        # Returns the type annotation as a string, or None if not present.\n        ```\n    \"\"\"\n\n    annotation: libcst.Annotation | None = _get_node_annotation(node)\n    if annotation and isinstance(annotation, libcst.Annotation):\n        return _process_type_annotation_expression(annotation.annotation)\n    return None\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_get_node_annotation"
+        },
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_process_type_annotation_expression"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code is designed to extract type annotations from nodes within a Concrete Syntax Tree (CST) using the `libcst` library, which is a powerful tool for parsing and manipulating Python code. The primary purpose of the `extract_type_annotation` function is to process a `libcst.CSTNode` and retrieve any associated type annotation, accommodating various forms such as generics and unions. This functionality is significant for static analysis, code quality checking, and refactoring tasks, where understanding type usage is crucial.\n\nKey components of this implementation include the `extract_type_annotation` function, which serves as the main interface for extracting type annotations. It relies on two helper functions: `_get_node_annotation`, which checks if the node contains an annotation, and `_process_type_annotation_expression`, which processes the annotation expression to return it as a string. The function first attempts to retrieve an annotation using `_get_node_annotation`. If an annotation is found and is an instance of `libcst.Annotation`, it processes the annotation expression using `_process_type_annotation_expression` to extract the type as a string. If no annotation is found, the function returns `None`.\n\nThe technical stack is centered around the `libcst` library, which is used for parsing and manipulating Python code as a CST. This library enables precise extraction of type annotations by providing a rich API for traversing and analyzing the syntax tree. The use of `libcst` allows for handling complex Python syntax, including type annotations with generics and unions, which are common in modern Python codebases.\n\nIn the context of a larger system, this function could be part of a static analysis tool or a code quality checker. It interacts with other components that analyze or transform Python code, providing insights into type usage and aiding in code refactoring or documentation generation. By extracting type annotations, this function can contribute to generating type-aware documentation, enforcing type consistency across a codebase, or integrating with type-checking tools like `mypy`. Its role in a larger codebase is to enhance the understanding and management of type information, which is essential for maintaining robust and well-documented Python applications. This function is particularly useful in environments where maintaining type safety and clarity is critical, such as in large-scale software projects or educational tools that teach Python programming.",
+    "children_ids": []
+}

@@ -1,0 +1,50 @@
+{
+    "function_name": "_get_logger",
+    "docstring": "Retrieves and returns a Logger instance for the specified module name.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "Logger",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_get_logger",
+    "file_path": "fenec/utilities/logger/decorators.py",
+    "parent_id": "fenec:utilities:logger:decorators.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 90,
+    "end_line_num": 96,
+    "code_content": "\n\ndef _get_logger(caller_module_name: str) -> Logger:\n    \"\"\"Retrieves and returns a Logger instance for the specified module name.\"\"\"\n\n    return logging.getLogger(caller_module_name)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "LogRecord",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Logger",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "logging",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code defines a utility function, `_get_logger`, which is integral to establishing a consistent and centralized logging mechanism within a Python application. Its primary purpose is to facilitate modular and maintainable logging practices by providing a streamlined method for obtaining a `Logger` instance specific to a given module. This ensures that each module can have its own logger configuration, supporting configurable log levels and output formats, which is crucial for maintaining a coherent logging strategy across the application. The key component of this code is the `_get_logger` function, which takes a single argument, `caller_module_name`, and returns a `Logger` instance from Python's built-in `logging` module. This function encapsulates the `logging.getLogger` method, a common design pattern in Python applications, allowing for a hierarchical and organized logging structure where loggers are uniquely identified by their names, typically corresponding to module names.\n\nThe implementation is straightforward, leveraging the `logging` library, a standard tool in Python for logging messages. This library provides a flexible framework for emitting log messages, with capabilities for routing messages to various destinations such as console output, files, or remote servers, and for filtering messages based on severity levels. By using `logging.getLogger`, the function ensures that loggers are uniquely identified and can be configured independently, promoting a modular approach to logging.\n\nIn the context of a larger codebase, `_get_logger` plays a crucial role in promoting a uniform logging strategy across the application. It allows different modules to obtain their respective loggers, simplifying the management of log outputs and ensuring consistent formatting and routing of log messages. This is particularly significant in large-scale applications where a coherent logging strategy is essential for debugging, monitoring, and auditing purposes. By centralizing the logger retrieval process, `_get_logger` enhances the maintainability and scalability of the logging system, making it easier to implement changes to logging configurations globally without modifying individual modules. This function is a foundational component in the logging infrastructure of the application, supporting the overall system's robustness and reliability.",
+    "children_ids": []
+}

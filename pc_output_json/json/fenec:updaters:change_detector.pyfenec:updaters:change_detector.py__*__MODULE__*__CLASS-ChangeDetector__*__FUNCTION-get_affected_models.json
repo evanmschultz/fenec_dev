@@ -1,0 +1,20 @@
+{
+    "function_name": "get_affected_models",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "set[str]",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:updaters:change_detector.py__*__MODULE__*__CLASS-ChangeDetector__*__FUNCTION-get_affected_models",
+    "file_path": "fenec/updaters/change_detector.py",
+    "parent_id": "fenec:updaters:change_detector.py__*__MODULE__*__CLASS-ChangeDetector",
+    "block_type": "FUNCTION",
+    "start_line_num": 15,
+    "end_line_num": 29,
+    "code_content": "\ndef get_affected_models(\n    self, changed_files: list[str], both_directions: bool = False\n) -> set[str]:\n    affected_models = set()\n\n    for model in self.all_models:\n        if isinstance(model, ModuleModel) and model.file_path in changed_files:\n            affected_models.add(model.id)\n            affected_models.update(\n                self._get_connected_models(model.id, both_directions)\n            )\n\n    return affected_models\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code is a critical component of a dependency management system, designed to efficiently identify and return a set of model identifiers that are impacted by changes in a specified list of file paths. Its primary purpose is to facilitate tasks such as incremental builds and dependency analysis by tracking dependencies and their impacts within a network of interconnected models. The main function, `get_affected_models`, iterates over a collection of models (`self.all_models`) to determine which models are directly or indirectly affected by changes in the specified files. It leverages a helper method, `_get_connected_models`, to identify related models, with the option to explore dependencies in both directions if specified, thereby providing comprehensive dependency tracking.\n\nThe implementation involves iterating through the models and checking if each model is an instance of `ModuleModel` and if its file path is among the changed files. If these conditions are met, the model's ID is added to a set, and any connected models' IDs are also included, ensuring uniqueness and enabling quick lookups. This approach efficiently captures the network of dependencies using a set data structure, which is optimal for operations requiring fast membership tests and deduplication. The use of a set indicates that the function is designed to handle potentially large numbers of models and changes, maintaining performance by avoiding duplicate entries.\n\nThe technical stack, while not explicitly detailed in the snippet, likely involves Python's standard library for data handling, particularly utilizing data structures like lists and sets. The `ModuleModel` class is presumably a custom class within the system, representing individual models with attributes such as `id` and `file_path`. The `_get_connected_models` method is a crucial component, likely implementing a graph traversal algorithm to explore model dependencies, which could involve depth-first or breadth-first search techniques.\n\nIn the context of a larger system, this function plays an integral role in a dependency management or build system, interacting with other components that manage model definitions and file tracking. It ensures that only affected models are processed or rebuilt, optimizing performance and resource usage. This functionality is particularly significant in large-scale systems where models are frequently updated, and efficient dependency tracking can lead to substantial time and resource savings. The code likely interfaces with a broader framework that handles model compilation, testing, and deployment, ensuring that changes propagate correctly and efficiently throughout the system.",
+    "children_ids": []
+}

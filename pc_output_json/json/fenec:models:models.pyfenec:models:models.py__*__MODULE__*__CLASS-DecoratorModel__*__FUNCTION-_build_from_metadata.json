@@ -1,0 +1,33 @@
+{
+    "function_name": "_build_from_metadata",
+    "docstring": "Builds a DecoratorModel from a metadata dictionary.",
+    "decorators": [
+        {
+            "content": "@classmethod",
+            "decorator_name": "classmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:models:models.py__*__MODULE__*__CLASS-DecoratorModel__*__FUNCTION-_build_from_metadata",
+    "file_path": "fenec/models/models.py",
+    "parent_id": "fenec:models:models.py__*__MODULE__*__CLASS-DecoratorModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 207,
+    "end_line_num": 249,
+    "code_content": "\n@classmethod\ndef _build_from_metadata(\n    cls, metadata: dict[str, str | list[str] | None]\n) -> \"DecoratorModel\":\n    \"\"\"Builds a DecoratorModel from a metadata dictionary.\"\"\"\n    try:\n        # Ensure the metadata is a dictionary\n        if not isinstance(metadata, dict):\n            raise ValueError(\"Metadata must be a dictionary.\")\n\n        content = metadata.get(\"content\", \"\")\n        decorator_name = metadata.get(\"decorator_name\", \"\")\n\n        if not isinstance(decorator_name, str) and not isinstance(content, str):\n            raise ValueError(\"Decorator name and content must be strings.\")\n\n        # Handle decorator_args, ensuring it's a list[str] or None\n        decorator_args_raw = metadata.get(\"decorator_args\")\n        decorator_args = None  # Default to None\n        if isinstance(decorator_args_raw, list):\n            # If it's a list, ensure all elements are strings\n            if all(isinstance(arg, str) for arg in decorator_args_raw):\n                decorator_args = decorator_args_raw\n            else:\n                raise ValueError(\"All decorator arguments must be strings.\")\n        elif isinstance(decorator_args_raw, str):\n            # If it's a string, wrap it in a list\n            decorator_args = [decorator_args_raw]\n        elif decorator_args_raw is not None:\n            # If it's not a list, string, or None, it's an invalid type\n            raise ValueError(\n                \"Decorator arguments must be a string, a list of strings, or None.\"\n            )\n\n        return cls(content=content, decorator_name=decorator_name, decorator_args=decorator_args)  # type: ignore # FIXME: fix type hinting error\n    except ValueError as ve:\n        print(f\"Error building from metadata: {ve}\")\n        raise\n    except Exception as e:\n        print(f\"An unexpected error occurred: {e}\")\n        raise\n",
+    "important_comments": [
+        {
+            "content": "# type: ignore # FIXME: fix type hinting error",
+            "comment_types": [
+                "FIXME"
+            ]
+        }
+    ],
+    "dependencies": null,
+    "summary": "This code defines a class method `_build_from_metadata` within a class that constructs a `DecoratorModel` object from a given metadata dictionary. The primary purpose of this method is to validate and extract necessary information from the metadata to instantiate a `DecoratorModel`, ensuring that the data types and structures are correct and consistent with expected formats. Key components include the `DecoratorModel` class, which is assumed to be defined elsewhere and represents the object being constructed, and the `_build_from_metadata` method, which is responsible for parsing and validating the metadata dictionary. The implementation involves several validation steps: it first checks that the metadata is a dictionary, then verifies that the `content` and `decorator_name` keys are strings. It also processes the `decorator_args` key, ensuring it is either a list of strings, a single string, or `None`, and raises a `ValueError` for any invalid types. If `decorator_args` is a string, it is wrapped in a list to maintain consistency. The method returns an instance of `DecoratorModel` with the validated and processed data, using Python's built-in exception handling to manage errors.\n\nThe technical stack is minimal, relying solely on Python's built-in data types and exception handling mechanisms. This simplicity suggests that the method is designed to be lightweight and efficient, focusing on data validation and object instantiation without external dependencies. In the context of a larger system, this method likely serves as a utility for dynamically creating decorator models based on metadata, potentially interacting with other components that generate or consume these models. It may be part of a larger framework or application where decorators are used to modify or enhance the behavior of functions or classes, and this method provides a standardized way to construct these decorators from metadata. The method's design emphasizes robustness and flexibility, allowing it to handle various input formats and ensuring that the resulting `DecoratorModel` objects are correctly configured for their intended use within the system.",
+    "children_ids": []
+}

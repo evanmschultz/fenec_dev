@@ -1,0 +1,68 @@
+{
+    "function_name": "_get_import_module_type",
+    "docstring": "Gets the import module type of a list of ImportNameModels.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ImportModuleType",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_import_module_type",
+    "file_path": "fenec/python_parser/visitors/node_processing/module_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 149,
+    "end_line_num": 161,
+    "code_content": "\n\ndef _get_import_module_type(\n    import_name_models: list[ImportNameModel],\n) -> ImportModuleType:\n    \"\"\"Gets the import module type of a list of ImportNameModels.\"\"\"\n\n    for import_name_model in import_name_models:\n        module_type = _determine_import_module_type(import_name_model.name)\n        if module_type != ImportModuleType.LOCAL:\n            return module_type\n    return ImportModuleType.LOCAL\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_determine_import_module_type"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code is part of a system designed to analyze and categorize import statements within a Python project, which is essential for effective dependency management and code organization. Its primary purpose is to determine the type of import modules, distinguishing between local and external modules, which aids in maintaining a clean and efficient codebase by preventing conflicts and ensuring proper module usage. The key components include the `_get_import_module_type` function, which processes a list of `ImportNameModel` objects to ascertain their module types, and the `_determine_import_module_type` function, a helper function that evaluates the specific type of each import name based on its characteristics. The implementation involves iterating over the list of import models, utilizing `_determine_import_module_type` to check each import name. If a module type other than `ImportModuleType.LOCAL` is identified, it is returned immediately, ensuring efficient categorization. If no non-local types are found, the function defaults to returning `ImportModuleType.LOCAL`, indicating all imports are local.\n\nThe technical stack, while not explicitly detailed in the snippet, likely includes custom data structures or enumerations such as `ImportNameModel` and `ImportModuleType`. These are used to encapsulate import names and their corresponding types, facilitating structured analysis. This code is likely part of a larger static code analysis tool or module management system, where it plays a role in classifying and managing dependencies by distinguishing between local and external modules. In the broader context, this function could interact with other components responsible for parsing code, generating dependency graphs, or enforcing coding standards. By doing so, it contributes to the overall robustness and maintainability of the software project, ensuring that dependencies are correctly identified and managed, which is crucial for large-scale software development and deployment.",
+    "children_ids": []
+}

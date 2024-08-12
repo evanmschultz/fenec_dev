@@ -1,0 +1,74 @@
+{
+    "function_name": "_gather_code_content",
+    "docstring": "Gathers and returns code content for logging, if `syntax_highlighting` else returns empty string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-_gather_code_content",
+    "file_path": "fenec/utilities/logger/decorators.py",
+    "parent_id": "fenec:utilities:logger:decorators.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 96,
+    "end_line_num": 121,
+    "code_content": "\n\ndef _gather_code_content(syntax_highlighting: bool, args: tuple) -> str:\n    \"\"\"Gathers and returns code content for logging, if `syntax_highlighting` else returns empty string.\"\"\"\n\n    if not syntax_highlighting or not args:\n        return \"\"\n\n    arg_0 = args[0]\n    content: str = \"\"\n\n    if isinstance(arg_0, libcst.CSTNode):\n        content = common_functions.extract_code_content(arg_0)\n    elif isinstance(arg_0, list) and all(\n        isinstance(node, libcst.CSTNode) for node in arg_0\n    ):\n        content = \"\\n\".join(\n            common_functions.extract_stripped_code_content(node) for node in arg_0\n        )\n    elif isinstance(arg_0, NodeAndPositionData):\n        content = \"\\n\".join(\n            common_functions.extract_stripped_code_content(node) for node in arg_0.nodes\n        )\n\n    return content\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "LoggingCallerInfo",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        }
+    ],
+    "summary": "The `_gather_code_content` function is designed to extract and return code content for logging purposes, specifically when syntax highlighting is enabled. Its primary role is to facilitate the logging or display of code snippets, potentially aiding in debugging or code analysis tasks. This function is significant in scenarios where code representation needs to be human-readable or formatted for better comprehension, such as in development environments or code review tools. Key components of this function include conditional checks to determine the type of the first argument (`arg_0`) and the use of helper functions from the `common_functions` module to extract code content. The function handles three main cases: when `arg_0` is a `libcst.CSTNode`, a list of `libcst.CSTNode` objects, or an instance of `NodeAndPositionData`. In each case, it utilizes `common_functions.extract_code_content` or `common_functions.extract_stripped_code_content` to gather the relevant code content, concatenating results with newline characters when necessary.\n\nThe implementation employs type checking and conditional logic to ensure the correct extraction method is applied based on the input type. This involves checking if the first argument is a `libcst.CSTNode`, a list of such nodes, or a `NodeAndPositionData` object, and then using the appropriate extraction function to retrieve the code content. The use of list comprehensions and string concatenation ensures that the function efficiently processes multiple nodes, producing a single string output that represents the code content. This approach allows for flexible handling of different input types, ensuring that the function can be used in a variety of contexts where code content needs to be extracted and formatted.\n\nThe technical stack includes the `libcst` library, which is used for representing and manipulating Python code as abstract syntax trees. This library is crucial for parsing and transforming Python code, allowing for precise code analysis and modification. Additionally, a custom module `common_functions` is employed for extracting code content, providing specialized functions that handle the intricacies of code extraction and formatting. These components work together to provide a robust solution for code content extraction, supporting the needs of systems that require detailed code analysis and presentation.\n\nIn the context of a larger system, this function likely serves as a utility for logging or displaying code snippets with optional syntax highlighting. It interacts with other components that handle code analysis or transformation tasks, potentially integrating with systems that require code introspection or modification. This function could be part of a code analysis toolchain, a development environment, or a logging framework where understanding and visualizing code structure is essential. Its modular design allows it to be easily integrated into various parts of a codebase, providing a consistent method for extracting and presenting code content. This makes it a valuable tool in environments where code readability and analysis are critical, supporting developers in understanding and debugging complex codebases.",
+    "children_ids": []
+}

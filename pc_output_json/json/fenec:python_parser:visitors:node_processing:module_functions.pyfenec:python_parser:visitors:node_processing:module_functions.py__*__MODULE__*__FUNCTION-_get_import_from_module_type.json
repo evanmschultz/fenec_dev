@@ -1,0 +1,46 @@
+{
+    "function_name": "_get_import_from_module_type",
+    "docstring": "Gets the import module type of an ImportFrom node.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ImportModuleType",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_import_from_module_type",
+    "file_path": "fenec/python_parser/visitors/node_processing/module_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 161,
+    "end_line_num": 169,
+    "code_content": "\n\ndef _get_import_from_module_type(module_name: str | None) -> ImportModuleType:\n    \"\"\"Gets the import module type of an ImportFrom node.\"\"\"\n\n    if module_name:\n        return _determine_import_module_type(module_name)\n    return ImportModuleType.LOCAL\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_determine_import_module_type"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code is a component of a Python-based static analysis or refactoring tool, specifically designed to classify the type of module import for an `ImportFrom` node within an abstract syntax tree (AST). Its primary purpose is to determine whether an import statement is local or from a specific module, which is crucial for understanding import dependencies and facilitating code analysis or refactoring tasks. The key function, `_get_import_from_module_type`, takes a `module_name` parameter, which is annotated with Python's union type hint `str | None`, indicating that the input can be either a string or `None`. This function returns an `ImportModuleType`, likely an enumeration that categorizes the import as either local or module-specific. The function employs a straightforward conditional logic: if `module_name` is provided, it calls a helper function `_determine_import_module_type` to ascertain the module type; otherwise, it defaults to returning `ImportModuleType.LOCAL`.\n\nThe implementation is concise and efficient, leveraging Python's type hinting to enhance code readability and maintainability, ensuring that the function's input and output types are clear. The use of conditional statements allows for efficient decision-making based on the presence or absence of a `module_name`. The technical stack is minimal, relying solely on Python's built-in capabilities, particularly its type hinting system, which is crucial for static type checking and improving code quality in larger projects.\n\nIn the context of a larger system, this function is likely integrated into a static analysis tool or a code refactoring library, where it interacts with other components responsible for parsing and analyzing Python code. It plays a critical role in maintaining or improving code quality by accurately classifying import statements, which can be used to optimize dependency management, detect unused imports, or refactor codebases. This function's ability to discern import types is vital for tools that aim to automate code maintenance tasks, ensuring that the codebase remains clean, efficient, and easy to navigate. By providing precise import classification, it supports the broader goal of enhancing code maintainability and facilitating seamless refactoring processes within the software development lifecycle.",
+    "children_ids": []
+}

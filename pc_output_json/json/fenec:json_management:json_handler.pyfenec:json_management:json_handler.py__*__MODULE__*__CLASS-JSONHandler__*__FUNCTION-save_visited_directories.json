@@ -1,0 +1,28 @@
+{
+    "function_name": "save_visited_directories",
+    "docstring": "Saves a JSON file mapping each visited directory to its Python files.\n\nThe output is saved in a file named 'directory_map.json' within the specified output directory.\n\nArgs:\n    - directory_map_name (str, optional): The name of the output file for the directory map. Defaults to \"directory_map.json\".\n\nExample:\n    ```Python\n    # This example demonstrates how to save visited directories as a JSON map.\n    handler = JSONHandler(directory=\"/path/to/code\", directory_modules={})\n    handler.save_visited_directories(directory_map_name=\"custom_map.json\")\n    ```",
+    "decorators": [
+        {
+            "content": "@logging_decorator(message=\"Saving visited directories\")",
+            "decorator_name": "logging_decorator",
+            "decorator_args": [
+                "message=\"Saving visited directories\""
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler__*__FUNCTION-save_visited_directories",
+    "file_path": "fenec/json_management/json_handler.py",
+    "parent_id": "fenec:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler",
+    "block_type": "FUNCTION",
+    "start_line_num": 83,
+    "end_line_num": 106,
+    "code_content": "\n@logging_decorator(message=\"Saving visited directories\")\ndef save_visited_directories(\n    self, directory_mape_name: str = \"directory_map.json\"\n) -> None:\n    \"\"\"\n        Saves a JSON file mapping each visited directory to its Python files.\n\n        The output is saved in a file named 'directory_map.json' within the specified output directory.\n\n        Args:\n            - directory_map_name (str, optional): The name of the output file for the directory map. Defaults to \"directory_map.json\".\n\n        Example:\n            ```Python\n            # This example demonstrates how to save visited directories as a JSON map.\n            handler = JSONHandler(directory=\"/path/to/code\", directory_modules={})\n            handler.save_visited_directories(directory_map_name=\"custom_map.json\")\n            ```\n        \"\"\"\n\n    output_path: str = self._get_directory_map_output_path(directory_mape_name)\n    self._write_json_directory_map(output_path)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The code is part of a `JSONHandler` class, which is designed to facilitate the serialization and storage of directory mappings into JSON format, specifically focusing on organizing and documenting code components within a project. The primary function, `save_visited_directories`, is responsible for creating a JSON file that maps each visited directory to its Python files, thereby aiding in code analysis and project documentation by providing a structured representation of directory contents. This functionality is particularly significant for large codebases, where maintaining an organized record of directory structures is crucial for further processing, analysis, or integration tasks.\n\nKey components of this implementation include the `save_visited_directories` method itself, which is enhanced with a `logging_decorator` to log the action of saving directories, ensuring traceability and accountability. This method relies on two helper functions: `_get_directory_map_output_path`, which determines the output path for the JSON file, and `_write_json_directory_map`, which handles the serialization and writing of the JSON data to the specified file. These components work in tandem to encapsulate the functionality of generating and saving the directory map efficiently.\n\nThe implementation follows a structured approach where the `save_visited_directories` method first calls `_get_directory_map_output_path` to construct the output path for the JSON file, using the provided or default file name. It then invokes `_write_json_directory_map` to serialize the directory mapping into JSON format and write it to the specified path. The use of a `logging_decorator` suggests a design pattern that emphasizes logging for debugging and monitoring purposes, enhancing the method's functionality by providing insights into its execution.\n\nThe technical stack includes Python's standard library modules, such as `pathlib` for handling file paths and directories, and `shutil` for directory operations, particularly for cleanup tasks. The `logging_decorator` is a custom or external utility that integrates with Python's built-in logging capabilities to provide enhanced logging features. This method is part of a larger system within the `JSONHandler` class, which manages various JSON-related operations, including saving parsed models and cleaning output directories. The class interacts with other components by providing a mechanism to persistently store and retrieve structured directory data, supporting systems that require organized directory information for further analysis or integration. The modular design of the `JSONHandler` class allows it to fit seamlessly into larger projects, offering a robust solution for JSON file management and directory mapping, thereby enhancing the overall functionality and maintainability of the system.",
+    "children_ids": []
+}

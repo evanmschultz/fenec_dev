@@ -1,0 +1,74 @@
+{
+    "class_name": "StandaloneCodeBlockModel",
+    "decorators": null,
+    "bases": [
+        "BaseCodeBlockModel",
+        "StandaloneCodeBlockSpecificAttributes"
+    ],
+    "docstring": "Model for a standalone code block.\n\nAttributes:\n    - id (str): The unique identifier for the standalone code block.\n    - file_path (str): The path to the Python file that the standalone code block represents.\n    - parent_id (str | None): The identifier of the parent (usually a module or class).\n    - block_type (BlockType): The type of code block that the standalone code block represents.\n    - start_line_num (int): The line number of the first line of the standalone code block.\n    - end_line_num (int): The line number of the last line of the standalone code block.\n    - code_content (str): The string content of the standalone code block.\n    - important_comments (list[CommentModel] | None): A list of important comments in the standalone code block.\n    - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the standalone code block.\n    - summary (str | None): A summary of the standalone code block.\n    - children_ids (list[str] | None): A list of the identifiers of the children of the standalone code block.\n    - variable_assignments (list[str] | None): A list of variable assignments in the standalone code block.\n\nMethods:\n    - `convert_to_metadata() -> dict[str, str | int]`\n        - Converts the standalone code block model to a metadata dictionary for ChromaDB.\n    - `build_from_metadata(metadata_dict: dict[str, str | int | list[str]]) -> StandaloneCodeBlockModel`\n        - Builds a StandaloneCodeBlockModel from a metadata dictionary.",
+    "keywords": null,
+    "id": "fenec:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel",
+    "file_path": "fenec/models/models.py",
+    "parent_id": "fenec:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 1135,
+    "end_line_num": 1213,
+    "code_content": "\n\nclass StandaloneCodeBlockModel(\n    BaseCodeBlockModel, StandaloneCodeBlockSpecificAttributes\n):\n    \"\"\"\n    Model for a standalone code block.\n\n    Attributes:\n        - id (str): The unique identifier for the standalone code block.\n        - file_path (str): The path to the Python file that the standalone code block represents.\n        - parent_id (str | None): The identifier of the parent (usually a module or class).\n        - block_type (BlockType): The type of code block that the standalone code block represents.\n        - start_line_num (int): The line number of the first line of the standalone code block.\n        - end_line_num (int): The line number of the last line of the standalone code block.\n        - code_content (str): The string content of the standalone code block.\n        - important_comments (list[CommentModel] | None): A list of important comments in the standalone code block.\n        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the standalone code block.\n        - summary (str | None): A summary of the standalone code block.\n        - children_ids (list[str] | None): A list of the identifiers of the children of the standalone code block.\n        - variable_assignments (list[str] | None): A list of variable assignments in the standalone code block.\n\n    Methods:\n        - `convert_to_metadata() -> dict[str, str | int]`\n            - Converts the standalone code block model to a metadata dictionary for ChromaDB.\n        - `build_from_metadata(metadata_dict: dict[str, str | int | list[str]]) -> StandaloneCodeBlockModel`\n            - Builds a StandaloneCodeBlockModel from a metadata dictionary.\n    \"\"\"\n\n    def convert_to_metadata(self) -> dict[str, str | int]:\n        \"\"\"Converts the standalone code block model to a metadata dictionary for ChromaDB.\"\"\"\n\n        return {\n            **self._convert_base_attributes_to_metadata_dict(),\n            **self._convert_standalone_block_attributes_to_metadata_dict(),\n        }\n\n    @classmethod\n    def _build_from_meta(\n        cls, metadata: dict[str, str | int | list[str]]\n    ) -> \"StandaloneCodeBlockModel\":\n        \"\"\"\n        Builds a StandaloneCodeBlockModel from a metadata dictionary.\n\n        Args:\n            - metadata_dict (dict[str, str | int | list[str]]): A dictionary containing metadata for a standalone code block.\n\n        Returns:\n            - StandaloneCodeBlockModel: An instance of StandaloneCodeBlockModel.\n\n        Raises:\n            - ValueError: If the metadata is not a dictionary.\n            - ValueError: If the metadata is missing required keys.\n            - ValueError: If the metadata contains invalid values.\n            - Exception: If an unexpected error occurs.\n        \"\"\"\n\n        try:\n            if not isinstance(metadata, dict):\n                raise ValueError(\"Metadata must be a dictionary.\")\n\n            standalone_code_block_specific_attributes: (\n                StandaloneCodeBlockSpecificAttributes\n            ) = StandaloneCodeBlockSpecificAttributes._build_from_meta(metadata)\n            base_code_block_model: BaseCodeBlockModel = (\n                BaseCodeBlockModel._build_from_metadata(metadata)\n            )\n\n            return cls(\n                **standalone_code_block_specific_attributes.model_dump(),\n                **base_code_block_model.model_dump(),\n            )\n        except ValueError as ve:\n            logging.error(f\"Error building from metadata: {ve}\")\n            raise ve\n        except Exception as e:\n            logging.error(f\"An unexpected error occurred: {e}\")\n            raise e\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ImportModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-CommentModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockSpecificAttributes"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "The `StandaloneCodeBlockModel` class is a sophisticated component designed to encapsulate and manage metadata for standalone code blocks within Python files, playing a pivotal role in systems that require detailed code analysis and metadata management. Its primary purpose is to facilitate the conversion of code block attributes into a structured metadata format suitable for storage and retrieval in ChromaDB, a database system optimized for handling structured data. Key components of this class include: the `StandaloneCodeBlockModel` class itself, which inherits from both `BaseCodeBlockModel` and `StandaloneCodeBlockSpecificAttributes` to leverage shared functionality and specific attributes; the `convert_to_metadata` method, which aggregates metadata from both base and specific attributes into a dictionary format using Python's dictionary unpacking feature; and the `_build_from_meta` class method, which reconstructs an instance of `StandaloneCodeBlockModel` from a metadata dictionary, ensuring data integrity through comprehensive error handling.\n\nThe implementation employs object-oriented programming principles, utilizing inheritance to extend and encapsulate functionality. The `convert_to_metadata` method combines metadata from inherited attributes using helper methods `_convert_base_attributes_to_metadata_dict` and `_convert_standalone_block_attributes_to_metadata_dict`, ensuring a comprehensive metadata representation. The `_build_from_meta` method uses a robust error-handling mechanism to validate the input metadata, raising exceptions for invalid formats or missing keys, and integrates attributes from both `StandaloneCodeBlockSpecificAttributes` and `BaseCodeBlockModel` through their respective `model_dump` methods. This method ensures that the metadata is well-structured and complete, facilitating the seamless creation of `StandaloneCodeBlockModel` objects.\n\nThe technical stack primarily involves Python's standard library, focusing on object-oriented design patterns without explicit external dependencies, although it is designed to interface with ChromaDB for metadata operations. This suggests a lightweight, modular approach that can be easily integrated into larger systems. The use of Python's type hinting enhances code readability and maintainability, providing clear expectations for function outputs.\n\nIn the context of a larger project, this code likely functions as part of a code analysis or documentation tool, interacting with other models and systems to manage and process code block metadata efficiently. Its design supports modularity and extensibility, allowing it to fit into various workflows that require detailed code block analysis, such as automated documentation generation, code review systems, or integrated development environments (IDEs). The class's ability to convert and reconstruct metadata ensures seamless integration with databases like ChromaDB, facilitating efficient storage and retrieval of code-related information. This functionality is crucial in a broader data processing pipeline, where it acts as a bridge between raw data representation and structured database storage, ensuring that metadata is correctly formatted and integrated into the database, thereby supporting seamless data management and retrieval within the system.",
+    "children_ids": [
+        "fenec:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel__*__FUNCTION-convert_to_metadata",
+        "fenec:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel__*__FUNCTION-_build_from_meta"
+    ]
+}

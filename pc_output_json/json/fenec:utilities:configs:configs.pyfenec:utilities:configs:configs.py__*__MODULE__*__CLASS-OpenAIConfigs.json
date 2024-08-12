@@ -1,0 +1,62 @@
+{
+    "class_name": "OpenAIConfigs",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Configs for the summarization completion.\n\nUsed to set the chat completion parameters for the OpenAI chat completions method call.\n\nArgs:\n    - `system_message` (str): The system message used for chat completion.\n    - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n    - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n    - `stream` (bool): Whether to stream back partial progress. Default is False.\n    - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\nNotes:\n    - model must be a valid OpenAI model name.\n\nExamples:\n    ```Python\n    system_message = \"Summarize the following code.\"\n    summary_completion_configs = SummaryCompletionConfigs(\n        system_message=system_message,\n        model=\"gpt-4o\",\n        max_tokens=100,\n        presence_penalty=0.0,\n        stream=False,\n        temperature=0.0,\n    )\n    ```",
+    "keywords": null,
+    "id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OpenAIConfigs",
+    "file_path": "fenec/utilities/configs/configs.py",
+    "parent_id": "fenec:utilities:configs:configs.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 25,
+    "end_line_num": 79,
+    "code_content": "\n\nclass OpenAIConfigs(BaseModel):\n    \"\"\"\n    Configs for the summarization completion.\n\n    Used to set the chat completion parameters for the OpenAI chat completions method call.\n\n    Args:\n        - `system_message` (str): The system message used for chat completion.\n        - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - `stream` (bool): Whether to stream back partial progress. Default is False.\n        - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - model must be a valid OpenAI model name.\n\n    Examples:\n        ```Python\n        system_message = \"Summarize the following code.\"\n        summary_completion_configs = SummaryCompletionConfigs(\n            system_message=system_message,\n            model=\"gpt-4o\",\n            max_tokens=100,\n            presence_penalty=0.0,\n            stream=False,\n            temperature=0.0,\n        )\n        ```\n    \"\"\"\n\n    system_message: str = summarization_prompts.SUMMARIZER_DEFAULT_INSTRUCTIONS\n    model: Literal[\n        \"gpt-4o\",\n        \"gpt-4o-2024-08-06\",\n        \"gpt-4-1106-preview\",\n        \"gpt-4-vision-preview\",\n        \"gpt-4\",\n        \"gpt-4-0314\",\n        \"gpt-4-0613\",\n        \"gpt-4-32k\",\n        \"gpt-4-32k-0314\",\n        \"gpt-4-32k-0613\",\n        \"gpt-3.5-turbo-1106\",\n        \"gpt-3.5-turbo\",\n        \"gpt-3.5-turbo-16k\",\n        \"gpt-3.5-turbo-0301\",\n        \"gpt-3.5-turbo-0613\",\n        \"gpt-3.5-turbo-16k-0613\",\n    ] = \"gpt-4o-2024-08-06\"\n    max_tokens: int | None = None\n    stream: bool = False\n    temperature: float = 0.0\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "Literal",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Protocol",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "summarization_prompts",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.ai_services.summarizer.prompts",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:summarizer:prompts:summarization_prompts.py__*__MODULE"
+        }
+    ],
+    "summary": "The `OpenAIConfigs` class is a configuration utility designed to manage and validate parameters for interacting with OpenAI's chat completion API, specifically tailored for summarization tasks. Its primary purpose is to provide a structured and reliable way to set up the necessary parameters for generating text completions using OpenAI's models, ensuring that configurations are consistent and compliant with the API's requirements. Key components of this class include several attributes: `system_message`, which initializes the prompt for chat completion and defaults to a predefined summarization instruction; `model`, which specifies the OpenAI model to be used, with a default set to \"gpt-4o-2024-08-06\" and restricted to a predefined list of valid model names using Python's `Literal` type; `max_tokens`, which limits the number of tokens generated, allowing for an unlimited number if set to `None`; `stream`, a boolean that determines whether partial results should be streamed back during the completion process; and `temperature`, a float that controls the randomness of the output, with a default value of 0.0 for deterministic results.\n\nThe implementation leverages Python's type hinting and the `pydantic` library, which provides robust data validation and settings management. This ensures that the configuration parameters are not only correctly typed but also adhere to the constraints necessary for successful API interaction. The use of `pydantic` allows for automatic validation of input data, reducing the likelihood of runtime errors and enhancing the reliability of the configuration setup. The class also includes default values for each attribute, which simplifies the configuration process for common use cases by minimizing the need for explicit parameter specification.\n\nIn terms of the technical stack, the code primarily relies on the `pydantic` library for its data validation capabilities, which is crucial for ensuring that the configuration parameters are both valid and consistent with the expected input types and constraints. This library is widely used in Python applications for its ability to enforce data integrity and provide clear error messages when validation fails.\n\nWithin the larger project or system, this code serves as a configuration utility that can be seamlessly integrated into applications requiring interaction with OpenAI's language models. It plays a critical role in ensuring that the necessary parameters for summarization tasks are consistently and correctly applied, thereby facilitating the development of applications that leverage OpenAI's powerful language models for generating text completions. This class can be part of a larger framework or system that automates text processing tasks, interfaces with user input systems, or integrates with other components that require natural language processing capabilities. By providing a standardized configuration approach, it helps maintain uniformity and reliability across different parts of the system that interact with OpenAI's API.",
+    "children_ids": []
+}

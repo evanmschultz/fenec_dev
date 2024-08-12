@@ -1,0 +1,61 @@
+{
+    "class_name": "ParameterListModel",
+    "decorators": null,
+    "bases": [
+        "BaseModel"
+    ],
+    "docstring": "Class representing a list of parameters.",
+    "keywords": null,
+    "id": "fenec:models:models.py__*__MODULE__*__CLASS-ParameterListModel",
+    "file_path": "fenec/models/models.py",
+    "parent_id": "fenec:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 287,
+    "end_line_num": 357,
+    "code_content": "\n\nclass ParameterListModel(BaseModel):\n    \"\"\"Class representing a list of parameters.\"\"\"\n\n    params: list[ParameterModel] | None = None\n    star_arg: ParameterModel | None = None\n    kwonly_params: list[ParameterModel] | None = None\n    star_kwarg: ParameterModel | None = None\n    posonly_params: list[ParameterModel] | None = None\n\n    def convert_parameters_to_metadata(self) -> str:\n        \"\"\"Converts the parameter list to a metadata string.\"\"\"\n        return self.model_dump_json()\n\n    @classmethod\n    def _build_from_metadata(cls, metadata: dict[str, str]) -> \"ParameterListModel\":\n        \"\"\"Builds a ParameterListModel from a metadata dictionary.\"\"\"\n\n        try:\n            if not isinstance(metadata, dict):\n                raise ValueError(\"Metadata must be a dictionary.\")\n\n            params: list[ParameterModel] | None = (\n                [ParameterModel(content=param) for param in metadata.get(\"params\", [])]\n                if \"params\" in metadata and isinstance(metadata[\"params\"], list)\n                else None\n            )\n            star_arg: ParameterModel | None = (\n                ParameterModel(content=metadata[\"star_arg\"])\n                if \"star_arg\" in metadata and isinstance(metadata[\"star_arg\"], str)\n                else None\n            )\n            kwonly_params: list[ParameterModel] | None = (\n                [\n                    ParameterModel(content=param)\n                    for param in metadata.get(\"kwonly_params\", [])\n                ]\n                if \"kwonly_params\" in metadata\n                and isinstance(metadata[\"kwonly_params\"], list)\n                else None\n            )\n            star_kwarg: ParameterModel | None = (\n                ParameterModel(content=metadata[\"star_kwarg\"])\n                if \"star_kwarg\" in metadata and isinstance(metadata[\"star_kwarg\"], str)\n                else None\n            )\n            posonly_params: list[ParameterModel] | None = (\n                [\n                    ParameterModel(content=param)\n                    for param in metadata.get(\"posonly_params\", [])\n                ]\n                if \"posonly_params\" in metadata\n                and isinstance(metadata[\"posonly_params\"], list)\n                else None\n            )\n\n            return cls(\n                params=params,\n                star_arg=star_arg,\n                kwonly_params=kwonly_params,\n                star_kwarg=star_kwarg,\n                posonly_params=posonly_params,\n            )\n        except ValueError as ve:\n            logging.error(f\"Error building from metadata: {ve}\")\n            raise ve\n        except Exception as e:\n            logging.error(f\"An unexpected error occurred: {e}\")\n            raise e\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ParameterModel"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Field",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "field_validator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "The `ParameterListModel` class is designed to manage and represent a structured list of parameters, facilitating the conversion of parameter data into a structured metadata format and vice versa. This functionality is crucial in scenarios requiring dynamic handling of function signatures, such as API generation or code analysis tools. The class's primary methods include `convert_parameters_to_metadata`, which serializes the parameter list into a JSON string using the `model_dump_json` method, and `_build_from_metadata`, a class method that reconstructs a `ParameterListModel` instance from a metadata dictionary. The `_build_from_metadata` method employs conditional logic to validate and parse the metadata dictionary, ensuring each parameter type is correctly instantiated as a `ParameterModel` object if present. This method uses list comprehensions and type checks to handle the presence and type of each parameter, ensuring robust error handling and data integrity.\n\nKey components of the class include: `params`, `star_arg`, `kwonly_params`, `star_kwarg`, and `posonly_params`, which are optional lists of `ParameterModel` objects representing different parameter types. The implementation leverages Python's type hinting to define these attributes, ensuring clarity and type safety. The `convert_parameters_to_metadata` method abstracts the serialization process, maintaining a clean interface and promoting code reusability. The `_build_from_metadata` method uses exception handling to manage incorrect input types, specifically raising a `ValueError` if the metadata is not a dictionary, thereby enforcing input validation.\n\nThe technical stack primarily involves Python's standard library, with potential dependencies on a `ParameterModel` class and a `BaseModel` superclass, which might provide serialization capabilities like `model_dump_json`. The use of type hinting and list comprehensions indicates a modern Pythonic approach to handling data structures. In the context of a larger system, this class could be part of a framework for dynamically handling function signatures, possibly interacting with other components that require parameter introspection or manipulation. This could include API generators, where the ability to serialize and deserialize parameter configurations is crucial, or code analysis tools that need to understand and manipulate function signatures programmatically. The class's design allows for easy integration into systems that require flexible and dynamic parameter management, making it a valuable component in software that deals with complex function or method signature handling. Its role in the larger system is to ensure consistent and structured metadata management, interacting with configuration management systems, data storage solutions, or APIs that consume or produce JSON data, thereby supporting scalable and maintainable software architecture.",
+    "children_ids": [
+        "fenec:models:models.py__*__MODULE__*__CLASS-ParameterListModel__*__FUNCTION-convert_parameters_to_metadata",
+        "fenec:models:models.py__*__MODULE__*__CLASS-ParameterListModel__*__FUNCTION-_build_from_metadata"
+    ]
+}

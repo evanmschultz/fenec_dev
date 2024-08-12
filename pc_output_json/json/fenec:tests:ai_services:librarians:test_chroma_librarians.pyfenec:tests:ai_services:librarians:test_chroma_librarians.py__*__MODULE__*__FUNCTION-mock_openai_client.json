@@ -1,0 +1,101 @@
+{
+    "function_name": "mock_openai_client",
+    "docstring": null,
+    "decorators": null,
+    "parameters": null,
+    "returns": "Generator[MagicMock, Any, None]",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE__*__FUNCTION-mock_openai_client",
+    "file_path": "fenec/tests/ai_services/librarians/test_chroma_librarians.py",
+    "parent_id": "fenec:tests:ai_services:librarians:test_chroma_librarians.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 14,
+    "end_line_num": 20,
+    "code_content": "\n\n@pytest.fixture\ndef mock_openai_client() -> Generator[MagicMock, Any, None]:\n    with patch(\"openai.OpenAI\") as mock_openai:\n        yield mock_openai()\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Generator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Generator",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "pytest",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "patch",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "MagicMock",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "unittest.mock",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "patch",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "MagicMock",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "unittest.mock",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code defines a pytest fixture named `mock_openai_client`, which is integral to unit testing by providing a mock version of the OpenAI client. The primary purpose of this fixture is to simulate interactions with the OpenAI API, allowing tests to run without making actual network requests. This ensures that tests are reliable, independent of network conditions, and unaffected by the availability of the OpenAI API. The key component of this implementation is the `mock_openai_client` fixture itself, which utilizes the `patch` function from the `unittest.mock` module to temporarily replace the `OpenAI` class with a `MagicMock` object. This substitution is managed within a context manager, ensuring that the mock is active only during the test's execution, and the `MagicMock` instance can be configured to emulate various responses and behaviors of the real OpenAI client.\n\nThe implementation is both straightforward and effective, leveraging the `patch` function to intercept calls to the `OpenAI` class and redirect them to a mock object. This mock object, created by `MagicMock`, can be tailored to return specific data or raise exceptions, facilitating comprehensive testing scenarios. The use of a generator function with the `yield` statement ensures that the mock is properly initialized before the test runs and is automatically cleaned up afterward, maintaining test isolation and preventing side effects.\n\nThe technical stack includes `pytest`, a widely-used testing framework that provides the fixture mechanism for setting up and tearing down test dependencies; `unittest.mock`, a module in the Python standard library that offers tools for creating mock objects and patching; and `MagicMock`, a versatile mock class that can simulate any object behavior. This fixture is part of a larger testing suite within a codebase that interacts with the OpenAI API. It plays a crucial role in ensuring that components relying on the OpenAI client can be tested in isolation, with the ability to simulate a wide range of API responses. This approach enhances test coverage and reliability, making it easier to identify and fix issues in the codebase without being affected by external API changes or downtimes. In the context of a larger system, this fixture supports robust development practices by enabling developers to verify the functionality of their code against expected API interactions, thus ensuring seamless integration and operation within the broader application ecosystem.",
+    "children_ids": []
+}

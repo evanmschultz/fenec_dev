@@ -1,0 +1,45 @@
+{
+    "function_name": "extract_content_from_empty_lines",
+    "docstring": "Extracts comments from a sequence of EmptyLine nodes.\n\nArgs:\n    - sequence (Sequence[libcst.EmptyLine]): A sequence of libcst.EmptyLine nodes to process.\n\nReturns:\n    - list[str]: A list of string comments extracted from the EmptyLine nodes.\n\nExample:\n    ```Python\n    extract_content_from_empty_lines([libcst.EmptyLine(comment=libcst.Comment(\"# Comment\"))])\n    # Returns: ['# Comment']\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[str]",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-extract_content_from_empty_lines",
+    "file_path": "fenec/python_parser/visitors/node_processing/module_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 8,
+    "end_line_num": 30,
+    "code_content": "\n\ndef extract_content_from_empty_lines(\n    sequence: Sequence[libcst.EmptyLine],\n) -> list[str]:\n    \"\"\"\n    Extracts comments from a sequence of EmptyLine nodes.\n\n    Args:\n        - sequence (Sequence[libcst.EmptyLine]): A sequence of libcst.EmptyLine nodes to process.\n\n    Returns:\n        - list[str]: A list of string comments extracted from the EmptyLine nodes.\n\n    Example:\n        ```Python\n        extract_content_from_empty_lines([libcst.EmptyLine(comment=libcst.Comment(\"# Comment\"))])\n        # Returns: ['# Comment']\n        ```\n    \"\"\"\n\n    return [line.comment.value for line in sequence if line.comment]\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code defines a utility function, `extract_content_from_empty_lines`, which is designed to extract comments from a sequence of `libcst.EmptyLine` nodes. These nodes are part of the LibCST library, a powerful tool for parsing and manipulating Python code as concrete syntax trees. The primary purpose of this function is to traverse a given sequence of `EmptyLine` nodes and collect any comments present, returning them as a list of strings. This functionality is significant for tasks that require comment extraction, such as documentation generation, code review, or refactoring processes.\n\nKey components of this code include the function `extract_content_from_empty_lines`, which takes a sequence of `libcst.EmptyLine` objects as input and outputs a list of comment strings. The implementation leverages a list comprehension to efficiently iterate over the sequence, checking each `EmptyLine` node for a `comment` attribute. If a comment is present, the function extracts the comment's value using the `line.comment.value` expression. This approach efficiently filters and collects comments, utilizing Python's list comprehension for concise and readable code.\n\nThe technical stack primarily involves the LibCST library, which provides the `EmptyLine` and `Comment` classes. LibCST is used for parsing and manipulating Python code syntax trees, allowing for precise and reliable code transformations. The library's design facilitates the extraction of comments by providing structured access to code elements, such as comments within empty lines.\n\nIn the context of a larger code analysis or transformation system, this function serves as a utility for extracting and processing comments from Python source files. It can be integrated into a broader code processing pipeline, interacting with other components that handle code parsing and analysis. This function could be particularly useful in systems focused on code quality assurance, automated documentation tools, or refactoring utilities, where understanding and processing comments is crucial. By providing a streamlined method for comment extraction, it enhances the system's ability to analyze and transform Python code effectively.",
+    "children_ids": []
+}

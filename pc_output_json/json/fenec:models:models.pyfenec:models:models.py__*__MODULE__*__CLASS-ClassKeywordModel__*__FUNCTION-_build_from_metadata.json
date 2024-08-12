@@ -1,0 +1,26 @@
+{
+    "function_name": "_build_from_metadata",
+    "docstring": "Builds a ClassKeywordModel from a metadata dictionary.",
+    "decorators": [
+        {
+            "content": "@classmethod",
+            "decorator_name": "classmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel__*__FUNCTION-_build_from_metadata",
+    "file_path": "fenec/models/models.py",
+    "parent_id": "fenec:models:models.py__*__MODULE__*__CLASS-ClassKeywordModel",
+    "block_type": "FUNCTION",
+    "start_line_num": 261,
+    "end_line_num": 281,
+    "code_content": "\n@classmethod\ndef _build_from_metadata(cls, metadata: dict[str, str]) -> \"ClassKeywordModel\":\n    \"\"\"Builds a ClassKeywordModel from a metadata dictionary.\"\"\"\n\n    try:\n        if not isinstance(metadata, dict):\n            raise ValueError(\"Metadata must be a dictionary.\")\n\n        return cls(\n            content=metadata[\"content\"],\n            keyword_name=metadata[\"keyword_name\"],\n            args=metadata[\"args\"] if \"args\" in metadata else None,\n        )\n    except ValueError as ve:\n        logging.error(f\"Error building from metadata: {ve}\")\n        raise ve\n    except Exception as e:\n        logging.error(f\"An unexpected error occurred: {e}\")\n        raise e\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code defines a class method `_build_from_metadata` within the `ClassKeywordModel` class, aimed at constructing an instance of `ClassKeywordModel` from a provided metadata dictionary. The primary purpose of this method is to facilitate the streamlined creation of `ClassKeywordModel` objects by extracting and validating essential information from a dictionary, ensuring that the input is both valid and complete. Key components include the `_build_from_metadata` class method, which performs input validation to confirm that the metadata is a dictionary and extracts values for `content`, `keyword_name`, and optionally `args` from the metadata dictionary. The implementation involves a type check using Python's `isinstance` function to ensure the metadata is a dictionary, followed by the instantiation of the `ClassKeywordModel` using values extracted from the dictionary. The method includes error handling by raising a `ValueError` if the input is not a dictionary, ensuring robust input validation. The technical stack is minimal, relying solely on Python's built-in data structures and exception handling mechanisms, which underscores its simplicity and efficiency. In the context of a larger system, this method likely functions as a utility for initializing `ClassKeywordModel` instances from metadata, potentially interacting with other components that generate or consume such metadata. This ensures consistent object creation across the application, facilitating seamless integration with other parts of the system that rely on `ClassKeywordModel` instances, such as data processing modules or user interface components that require structured keyword data. The method's design supports extensibility and maintainability, allowing for easy adaptation to changes in metadata structure or additional validation requirements, thereby enhancing the robustness and flexibility of the system's data handling capabilities.",
+    "children_ids": []
+}

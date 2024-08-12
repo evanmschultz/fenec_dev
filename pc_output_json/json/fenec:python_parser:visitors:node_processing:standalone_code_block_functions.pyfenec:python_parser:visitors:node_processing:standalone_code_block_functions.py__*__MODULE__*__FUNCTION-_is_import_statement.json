@@ -1,0 +1,33 @@
+{
+    "function_name": "_is_import_statement",
+    "docstring": "Returns True if the statement is an import statement.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "bool",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_is_import_statement",
+    "file_path": "fenec/python_parser/visitors/node_processing/standalone_code_block_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 112,
+    "end_line_num": 120,
+    "code_content": "\n\ndef _is_import_statement(statement: libcst.CSTNode) -> bool:\n    \"\"\"Returns True if the statement is an import statement.\"\"\"\n\n    return isinstance(statement, libcst.SimpleStatementLine) and any(\n        isinstance(elem, (libcst.Import, libcst.ImportFrom)) for elem in statement.body\n    )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code defines a utility function `_is_import_statement` that serves as a crucial component in static code analysis and transformation tasks by identifying import statements within a Python abstract syntax tree (AST) using the LibCST library. The primary purpose of this function is to facilitate the detection and manipulation of import dependencies, which is essential in scenarios such as code optimization, modularization, and refactoring processes. The function is designed to accept a `libcst.CSTNode` as input and returns a boolean value indicating whether the node represents an import statement. The key component, `_is_import_statement`, leverages the `libcst.SimpleStatementLine` class to determine if the node is a simple statement line and employs a generator expression to iterate over the statement's body, checking for instances of `libcst.Import` or `libcst.ImportFrom`. This approach efficiently combines type checking with iteration over the node's elements, ensuring precise detection of import-related syntax.\n\nThe technical stack prominently features the LibCST library, which provides a concrete syntax tree for Python, enabling precise and safe code modifications. LibCST is particularly advantageous for its ability to maintain code formatting and comments, which is crucial for non-destructive code transformations. In the context of a larger code analysis or transformation system, this function could be integrated into a module that processes Python source files, identifying and potentially modifying import statements as part of a broader refactoring or code quality improvement tool. This function might interact with other components responsible for parsing, analyzing, and transforming Python code, contributing to a comprehensive toolset for developers aiming to enhance code maintainability and readability. By focusing on import statements, this utility plays a critical role in managing dependencies and ensuring that codebases remain organized and efficient. Its integration into a larger system could support automated code reviews, dependency management, and the enforcement of coding standards, thereby improving the overall quality and maintainability of software projects.",
+    "children_ids": []
+}

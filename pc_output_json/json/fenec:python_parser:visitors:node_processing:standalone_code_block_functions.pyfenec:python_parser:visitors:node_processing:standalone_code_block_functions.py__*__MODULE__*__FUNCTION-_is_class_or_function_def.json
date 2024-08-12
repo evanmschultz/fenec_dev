@@ -1,0 +1,33 @@
+{
+    "function_name": "_is_class_or_function_def",
+    "docstring": "Returns True if the statement is a class or function definition.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "bool",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE__*__FUNCTION-_is_class_or_function_def",
+    "file_path": "fenec/python_parser/visitors/node_processing/standalone_code_block_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 106,
+    "end_line_num": 112,
+    "code_content": "\n\ndef _is_class_or_function_def(statement: libcst.CSTNode) -> bool:\n    \"\"\"Returns True if the statement is a class or function definition.\"\"\"\n\n    return isinstance(statement, (libcst.ClassDef, libcst.FunctionDef))\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code defines a utility function, `_is_class_or_function_def`, which serves the purpose of identifying whether a given statement in a Python abstract syntax tree (AST) is a class or function definition. This function is crucial for static analysis, code transformation, and refactoring tasks, as it helps pinpoint key structural elements within a codebase. The function accepts a `libcst.CSTNode` as its parameter and returns a boolean value. It leverages Python's `isinstance` function to efficiently determine if the node is an instance of `libcst.ClassDef` or `libcst.FunctionDef`, ensuring precise type checking necessary for accurate AST manipulation.\n\nKey components of this implementation include the use of the `libcst` library, which provides a concrete syntax tree for Python, allowing for precise and safe code modifications. The `libcst` library is particularly advantageous in scenarios where preserving the original code formatting and comments is essential, as it maintains these elements during transformations. This function is likely integrated into a larger static analysis tool or code transformation framework, where it interacts with other components responsible for traversing and manipulating the AST.\n\nThe technical stack is centered around the LibCST library, which is a powerful tool for parsing and transforming Python code while preserving its original structure. This function is a part of a broader system that may include modules for AST traversal, transformation application, and code generation. Such a system could be used for various purposes, including code linting, formatting, or automated refactoring, by identifying and processing specific code structures.\n\nIn the context of a larger system, this function plays a pivotal role in enabling the identification of class and function definitions, which can then be further analyzed or transformed by other components. It fits into a comprehensive pipeline that may involve modules for traversing the AST, applying transformations, and generating modified code. This modular approach facilitates the development of sophisticated tools capable of performing complex code analysis and transformation tasks, thereby enhancing the maintainability and quality of large codebases.",
+    "children_ids": []
+}

@@ -1,0 +1,275 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "json",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "os",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "GraphDBSummarizationManager",
+                    "as_name": null,
+                    "local_block_id": "fenec:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager"
+                }
+            ],
+            "imported_from": "fenec.ai_services.summarizer.graph_db_summarization_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OpenAISummarizer",
+                    "as_name": null,
+                    "local_block_id": "fenec:ai_services:summarizer:openai_summarizer.py__*__MODULE__*__CLASS-OpenAISummarizer"
+                }
+            ],
+            "imported_from": "fenec.ai_services.summarizer.openai_summarizer",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:summarizer:openai_summarizer.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OllamaSummarizer",
+                    "as_name": null,
+                    "local_block_id": "fenec:ai_services:summarizer:ollama_summarizer.py__*__MODULE__*__CLASS-OllamaSummarizer"
+                }
+            ],
+            "imported_from": "fenec.ai_services.summarizer.ollama_summarizer",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:summarizer:ollama_summarizer.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "SummarizationMapper",
+                    "as_name": null,
+                    "local_block_id": "fenec:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper"
+                }
+            ],
+            "imported_from": "fenec.ai_services.summarizer.summarization_mapper",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:summarizer:summarization_mapper.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.ai_services.summarizer.summarizer_factory",
+                    "as_name": "summarizer_factory",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:summarizer:summarizer_factory.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Summarizer",
+                    "as_name": null,
+                    "local_block_id": "fenec:ai_services:summarizer:summarizer_protocol.py__*__MODULE__*__CLASS-Summarizer"
+                }
+            ],
+            "imported_from": "fenec.ai_services.summarizer.summarizer_protocol",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:summarizer:summarizer_protocol.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ArangoDBConnector",
+                    "as_name": null,
+                    "local_block_id": "fenec:databases:arangodb:arangodb_connector.py__*__MODULE__*__CLASS-ArangoDBConnector"
+                }
+            ],
+            "imported_from": "fenec.databases.arangodb.arangodb_connector",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:arangodb:arangodb_connector.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ArangoDBManager",
+                    "as_name": null,
+                    "local_block_id": "fenec:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager"
+                }
+            ],
+            "imported_from": "fenec.databases.arangodb.arangodb_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:arangodb:arangodb_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "fenec:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "fenec.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.databases.chroma.chroma_setup",
+                    "as_name": "chroma_setup",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:chroma:chroma_setup.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "JSONHandler",
+                    "as_name": null,
+                    "local_block_id": "fenec:json_management:json_handler.py__*__MODULE__*__CLASS-JSONHandler"
+                }
+            ],
+            "imported_from": "fenec.json_management.json_handler",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:json_management:json_handler.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ModuleModel"
+                },
+                {
+                    "name": "DirectoryModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DirectoryModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "VisitorManagerProcessFilesReturn",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManagerProcessFilesReturn"
+                },
+                {
+                    "name": "VisitorManager",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager"
+                }
+            ],
+            "imported_from": "fenec.python_parser.visitor_manager.visitor_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitor_manager:visitor_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.types.fenec",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:types:fenec.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChangeDetector",
+                    "as_name": null,
+                    "local_block_id": "fenec:updaters:change_detector.py__*__MODULE__*__CLASS-ChangeDetector"
+                }
+            ],
+            "imported_from": "fenec.updaters.change_detector",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:updaters:change_detector.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.updaters.git_updater",
+                    "as_name": "git_updater",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:updaters:git_updater.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "OpenAISummarizationConfigs",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OpenAISummarizationConfigs"
+                },
+                {
+                    "name": "OllamaSummarizationConfigs",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OllamaSummarizationConfigs"
+                }
+            ],
+            "imported_from": "fenec.utilities.configs.configs",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:utilities:configs:configs.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:updaters:graph_db_updater.py__*__MODULE",
+    "file_path": "fenec/updaters/graph_db_updater.py",
+    "parent_id": "fenec:updaters__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 291,
+    "code_content": "import json\nimport logging\nimport os\n\nfrom fenec.ai_services.summarizer.graph_db_summarization_manager import (\n    GraphDBSummarizationManager,\n)\nfrom fenec.ai_services.summarizer.openai_summarizer import OpenAISummarizer\nfrom fenec.ai_services.summarizer.ollama_summarizer import OllamaSummarizer\nfrom fenec.ai_services.summarizer.summarization_mapper import SummarizationMapper\nimport fenec.ai_services.summarizer.summarizer_factory as summarizer_factory\nfrom fenec.ai_services.summarizer.summarizer_protocol import Summarizer\nfrom fenec.databases.arangodb.arangodb_connector import ArangoDBConnector\n\nfrom fenec.databases.arangodb.arangodb_manager import ArangoDBManager\nfrom fenec.databases.chroma.chromadb_collection_manager import (\n    ChromaCollectionManager,\n)\nimport fenec.databases.chroma.chroma_setup as chroma_setup\nfrom fenec.json_management.json_handler import JSONHandler\nfrom fenec.models.models import (\n    DirectoryModel,\n    ModuleModel,\n)\nfrom fenec.python_parser.visitor_manager.visitor_manager import (\n    VisitorManager,\n    VisitorManagerProcessFilesReturn,\n)\nfrom fenec.types.fenec import ModelType\nfrom fenec.updaters.change_detector import ChangeDetector\nimport fenec.updaters.git_updater as git_updater\nfrom fenec.utilities.configs.configs import (\n    OllamaSummarizationConfigs,\n    OpenAISummarizationConfigs,\n)\n\n\nclass GraphDBUpdater:\n    \"\"\"\n    Graph DB based updater supporting multi-pass summarization.\n\n    Updates, parses the files in a directory, saves the models as JSON, in the graph database, and in a ChromaDB collection.\n\n    Args:\n        - `directory` (str) - The directory of the project to update.\n            default - \".\"\n        - `summarization_configs` (OpenAISummarizationConfigs | OllamaSummarizationConfigs) - The configs for the summarizer that will\n            be used to create the summarizer and set its configurations.\n        - `output_directory` (str) - The directory to save the JSON files.\n            - default - \"pc_output_json\"\n        - `graph_connector` (ArangoDBConnector) - The ArangoDB connector to use for connecting to the graph database.\n            - default - ArangoDBConnector() - instantiates a new ArangoDBConnector with its default values\n\n    Example:\n        ```Python\n        from fenec.databases.arangodb.arangodb_connector import ArangoDBConnector\n        from fenec.updaters.graph_db_updater import GraphDBUpdater\n\n        # Create the ArangoDB connector.\n        arango_connector = ArangoDBConnector()\n\n        # Create the GraphDBUpdater.\n        graph_updater = GraphDBUpdater(directory, output_directory, arango_connector)\n\n        # Update all the models for the project and setup Chroma.\n        chroma_collection_manager = graph_updater.update_all()\n        ```\n    \"\"\"\n\n    def __init__(\n        self,\n        directory: str = \".\",\n        *,\n        summarization_configs: (\n            OpenAISummarizationConfigs | OllamaSummarizationConfigs\n        ) = OllamaSummarizationConfigs(),\n        output_directory: str = \"pc_output_json\",\n        graph_connector: ArangoDBConnector = ArangoDBConnector(),\n    ) -> None:\n        self.directory: str = directory\n        self.summarization_configs: (\n            OpenAISummarizationConfigs | OllamaSummarizationConfigs\n        ) = summarization_configs\n        self.summarizer: Summarizer = summarizer_factory.create_summarizer(\n            summarization_configs\n        )\n        self.output_directory: str = output_directory\n        self.graph_connector: ArangoDBConnector = graph_connector\n\n        self.graph_manager = ArangoDBManager(graph_connector)\n        self.last_commit_file = os.path.join(self.output_directory, \"last_commit.json\")\n\n    def update_changed(self, num_passes: int = 1) -> ChromaCollectionManager:\n        \"\"\"\n        Updates only the changed files and their connected code blocks since the last update.\n\n        Args:\n            last_commit_hash (str): The commit hash of the last update.\n            num_passes (int): Number of summarization passes to perform. Must be either 1 or 3. Default is 1.\n\n        Returns:\n            ChromaCollectionManager: The updated ChromaDB collection manager.\n        \"\"\"\n        if num_passes not in [1, 3]:\n            raise ValueError(\"Number of passes must be either 1 or 3\")\n\n        last_commit_hash: str = self._get_last_commit_hash()\n        changed_files: list[str] = git_updater.get_changed_files_since_last_update(\n            last_commit_hash\n        )\n\n        # Parse all files (we need the full structure to detect connections)\n        process_files_return = self._visit_and_parse_files(self.directory)\n        all_models = process_files_return.models_tuple\n\n        # Detect affected models\n        change_detector = ChangeDetector(\n            all_models,\n            self.graph_manager,\n        )\n        affected_model_ids: set[str] = change_detector.get_affected_models(\n            changed_files, both_directions=True if num_passes == 3 else False\n        )\n\n        # Filter models to only affected ones\n        affected_models = [\n            model for model in all_models if model.id in affected_model_ids\n        ]\n        affected_models = tuple(affected_models)\n\n        # Update graph DB with all models (to ensure structure is up-to-date)\n        self._upsert_models_to_graph_db(all_models)\n\n        # Summarize and update only affected models\n        finalized_models = self._map_and_summarize_models(affected_models, num_passes)\n\n        if not finalized_models:\n            raise Exception(\"No finalized models returned from summarization.\")\n\n        # Update databases with finalized models\n        self._upsert_models_to_graph_db(tuple(finalized_models))\n        chroma_manager = chroma_setup.setup_chroma_with_update(finalized_models)\n\n        current_commit_hash = git_updater.get_current_commit_hash()\n        self._save_last_commit_hash(current_commit_hash)\n\n        return chroma_manager\n\n    def _save_last_commit_hash(self, commit_hash: str) -> None:\n        \"\"\"\n        Saves the last commit hash to a file.\n\n        Args:\n            commit_hash (str): The commit hash to save.\n        \"\"\"\n        os.makedirs(os.path.dirname(self.last_commit_file), exist_ok=True)\n        with open(self.last_commit_file, \"w\") as f:\n            json.dump({\"last_commit\": commit_hash}, f)\n\n    def _get_last_commit_hash(self) -> str:\n        \"\"\"\n        Retrieves the last commit hash from the file.\n\n        Returns:\n            str: The last commit hash, or an empty string if the file doesn't exist.\n        \"\"\"\n        if not os.path.exists(self.last_commit_file):\n            return \"\"\n        with open(self.last_commit_file, \"r\") as f:\n            data = json.load(f)\n            return data.get(\"last_commit\", \"\")\n\n    def update_all(self, num_passes: int = 1) -> ChromaCollectionManager:\n        \"\"\"\n        Updates all the models for a project using the graph database with multi-pass summarization support.\n\n        Args:\n            - num_passes (int): Number of summarization passes to perform. Must be either 1 or 3. Default is 1.\n\n        Note:\n            This method will delete all the existing collections in the graph database, summarize every code block in the project,\n            and save the new models in the graph database and as JSON. Use with caution as it is expensive with respect to time, resources,\n            and money.\n\n        Returns:\n            - `chroma_collection_manager` (ChromaDBCollectionManager): The ChromaDB collection manager.\n\n        Raises:\n            - `Exception`: If no finalized models are returned from summarization.\n            - `ValueError`: If num_passes is not 1 or 3.\n\n        Example:\n            ```Python\n            graph_updater = GraphDBUpdater(directory, output_directory)\n\n            # Update all the models for the project with multi-pass summarization and setup Chroma.\n            chroma_manager = graph_updater.update_all(num_passes=3)\n            ```\n        \"\"\"\n        if num_passes not in [1, 3]:\n            raise ValueError(\"Number of passes must be either 1 or 3\")\n\n        self.graph_connector.delete_all_collections()\n        self.graph_connector.ensure_collections()\n\n        process_files_return: VisitorManagerProcessFilesReturn = (\n            self._visit_and_parse_files(self.directory)\n        )\n        models_tuple: tuple[ModelType, ...] = process_files_return.models_tuple\n\n        self._upsert_models_to_graph_db(models_tuple)\n\n        finalized_models: list[ModelType] | None = self._map_and_summarize_models(\n            models_tuple, num_passes\n        )\n\n        if not finalized_models:\n            raise Exception(\"No finalized models returned from summarization.\")\n\n        json_manager = JSONHandler(\n            self.directory,\n            process_files_return.directory_modules,\n            self.output_directory,\n        )\n        self._save_json(finalized_models, json_manager)\n        self._upsert_models_to_graph_db(tuple(finalized_models))\n\n        current_commit_hash: str = git_updater.get_current_commit_hash()\n        self._save_last_commit_hash(current_commit_hash)\n\n        return chroma_setup.setup_chroma_with_update(finalized_models)\n\n    def _visit_and_parse_files(\n        self, directory: str\n    ) -> VisitorManagerProcessFilesReturn:\n        \"\"\"Visits and parses the files in the directory.\"\"\"\n\n        logging.info(\"Starting the directory parsing.\")\n        visitor_manager = VisitorManager(directory)\n\n        return visitor_manager.process_files()\n\n    def _get_module_ids(self, models_tuple: tuple[ModelType, ...]) -> list[str]:\n        \"\"\"Returns a list of module IDs from the models tuple.\"\"\"\n\n        return [model.id for model in models_tuple if isinstance(model, ModuleModel)]\n\n    def _upsert_models_to_graph_db(self, models_tuple: tuple[ModelType, ...]) -> None:\n        \"\"\"Upserts the models to the graph database.\"\"\"\n\n        self.graph_manager.upsert_models(\n            list(models_tuple)\n        ).process_imports_and_dependencies().get_or_create_graph()\n\n    def _save_json(self, models: list[ModelType], json_manager: JSONHandler) -> None:\n        \"\"\"Saves the models as JSON.\"\"\"\n\n        logging.info(\"Saving models as JSON\")\n        for model in models:\n            if isinstance(model, DirectoryModel):\n                output_path: str = model.id\n\n            else:\n                output_path: str = model.file_path + model.id\n            json_manager.save_model_as_json(model, output_path)\n\n        json_manager.save_visited_directories()\n        logging.info(\"JSON save complete\")\n\n    def _map_and_summarize_models(\n        self,\n        models_tuple: tuple[ModelType, ...],\n        num_passes: int,\n    ) -> list[ModelType] | None:\n        \"\"\"Maps and summarizes the models using multi-pass summarization.\"\"\"\n\n        module_ids: list[str] = self._get_module_ids(models_tuple)\n        summarization_mapper = SummarizationMapper(\n            module_ids, models_tuple, self.graph_manager\n        )\n        summarization_manager = GraphDBSummarizationManager(\n            models_tuple, summarization_mapper, self.summarizer, self.graph_manager\n        )\n\n        finalized_models: list[ModelType] | None = (\n            summarization_manager.create_summaries_and_return_updated_models(num_passes)\n        )\n        logging.info(f\"Multi-pass summarization complete (passes: {num_passes})\")\n\n        return finalized_models if finalized_models else None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The `GraphDBUpdater` class is a pivotal component within a system designed to maintain and update project models in a graph database and a ChromaDB collection, ensuring data consistency and facilitating efficient data retrieval and analysis. Its primary purpose is to parse project files, detect changes, and update the corresponding models in a graph database using a configurable multi-pass summarization process, which can be set to one or three passes depending on the required detail and resource constraints. This ensures that the data structure remains current and accurate, supporting the system's overall integrity and performance.\n\nKey components of the code include the `GraphDBUpdater` class, which orchestrates the entire update process; `ArangoDBConnector` and `ArangoDBManager` for managing interactions with the ArangoDB graph database; `VisitorManager` for parsing project files and extracting models; `ChangeDetector` for identifying modified files and their dependencies; and `SummarizationMapper` and `GraphDBSummarizationManager` for handling the summarization process. The `OpenAISummarizer` and `OllamaSummarizer` are utilized to generate summaries, selected based on the provided configuration.\n\nThe implementation involves several critical steps: initially, it parses the project directory to extract all models using the `VisitorManager`. It then detects changes by comparing the current state with the last known commit hash, utilizing the `ChangeDetector` to identify affected models. The code employs a visitor pattern for file parsing and a factory method pattern for summarizer creation. The summarization process is managed by the `GraphDBSummarizationManager`, which uses the `SummarizationMapper` to map models to their summaries. The updated models are then upserted into the graph database and saved as JSON files. The system also updates a ChromaDB collection with the finalized models, ensuring that both the graph database and ChromaDB reflect the latest project state.\n\nThe technical stack includes several libraries and frameworks: ArangoDB for graph database management, providing a robust platform for handling complex data relationships; ChromaDB for collection management, which supports efficient data storage and retrieval; and JSON for data serialization, enabling easy data interchange. Additional dependencies include `git_updater` for version control integration, ensuring that updates are based on the latest code changes, and `chroma_setup` for configuring ChromaDB collections. The summarization process is configured using either `OpenAISummarizationConfigs` or `OllamaSummarizationConfigs`, which dictate the summarization strategy and parameters.\n\nIn the context of a larger system, this code serves as a critical component for maintaining up-to-date project models in a graph database. It interfaces with version control systems to track changes and ensures that the summarization process is efficient and scalable. The `GraphDBUpdater` integrates with other components like the ChromaDB setup and JSON management to provide a comprehensive solution for project model updates and summarization. This integration allows for seamless updates and ensures that the project's data structure is always current, facilitating accurate and efficient data retrieval and analysis within the larger system.",
+    "children_ids": [
+        "fenec:updaters:graph_db_updater.py__*__MODULE__*__CLASS-GraphDBUpdater"
+    ]
+}

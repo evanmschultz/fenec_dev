@@ -1,0 +1,59 @@
+{
+    "class_name": "ChangeDetector",
+    "decorators": null,
+    "bases": null,
+    "docstring": null,
+    "keywords": null,
+    "id": "fenec:updaters:change_detector.py__*__MODULE__*__CLASS-ChangeDetector",
+    "file_path": "fenec/updaters/change_detector.py",
+    "parent_id": "fenec:updaters:change_detector.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 4,
+    "end_line_num": 49,
+    "code_content": "\n\nclass ChangeDetector:\n    def __init__(\n        self, all_models: tuple[ModelType, ...], arangodb_manager: ArangoDBManager\n    ) -> None:\n        self.all_models: tuple[ModelType, ...] = all_models\n        self.id_to_model: dict[str, ModelType] = {\n            model.id: model for model in all_models\n        }\n        self.arangodb_manager: ArangoDBManager = arangodb_manager\n\n    def get_affected_models(\n        self, changed_files: list[str], both_directions: bool = False\n    ) -> set[str]:\n        affected_models = set()\n\n        for model in self.all_models:\n            if isinstance(model, ModuleModel) and model.file_path in changed_files:\n                affected_models.add(model.id)\n                affected_models.update(\n                    self._get_connected_models(model.id, both_directions)\n                )\n\n        return affected_models\n\n    def _get_connected_models(self, model_id: str, both_directions: bool) -> set[str]:\n        connected_models = set()\n\n        # Get outbound models (dependencies and children)\n        outbound_models: list[ModelType] | None = (\n            self.arangodb_manager.get_outbound_models(model_id)\n        )\n        if outbound_models:\n            connected_models.update(model.id for model in outbound_models)\n\n        if both_directions:\n            # Get inbound models (dependents and parents)\n            inbound_models: list[ModelType] | None = (\n                self.arangodb_manager.get_inbound_models(model_id)\n            )\n            if inbound_models:\n                connected_models.update(model.id for model in inbound_models)\n\n        return connected_models\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "ArangoDBManager",
+                    "as_name": null,
+                    "local_block_id": "fenec:databases:arangodb:arangodb_manager.py__*__MODULE__*__CLASS-ArangoDBManager"
+                }
+            ],
+            "imported_from": "fenec.databases.arangodb.arangodb_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:arangodb:arangodb_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ModuleModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.types.fenec",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:types:fenec.py__*__MODULE"
+        }
+    ],
+    "summary": "The `ChangeDetector` class is designed to efficiently identify and track changes in a set of models, focusing on their dependencies and relationships within a system. Its primary goal is to determine which models are affected by changes in specific files, using a graph-based approach to model dependencies. This is particularly significant in systems where model dependencies are complex, and changes need to be propagated accurately to maintain system integrity. Key components include the `__init__` method, which initializes the class with a tuple of models and an `ArangoDBManager` instance, mapping model IDs to model instances for quick access; the `get_affected_models` method, which identifies models impacted by changes in specified files and optionally considers bidirectional dependencies, leveraging the `_get_connected_models` method to retrieve models connected to a given model ID. This method considers both outbound and inbound relationships based on the `both_directions` flag, allowing for flexible dependency tracking.\n\nThe implementation employs a set data structure to efficiently manage and update the collection of affected models, ensuring that each model is only processed once. The use of a dictionary to map model IDs to model instances allows for rapid lookups, which is crucial for performance in large systems. The `ChangeDetector` interacts with an ArangoDB database through the `ArangoDBManager`, which provides methods to fetch outbound and inbound model connections. This interaction facilitates the detection of dependencies and dependents, enabling the system to maintain an accurate representation of model relationships. The `_get_connected_models` method utilizes ArangoDB's graph traversal capabilities to explore model dependencies, potentially using depth-first or breadth-first search techniques to efficiently gather connected models.\n\nThe technical stack includes Python, leveraging its type hinting features for tuples and dictionaries to ensure type safety and clarity. The `ArangoDBManager` class is a crucial component, likely built on top of the official ArangoDB Python driver, which facilitates communication with the ArangoDB database, a multi-model NoSQL database known for its flexibility and performance. The `ModuleModel` class is presumably a custom class within the system, representing individual models with attributes such as `id` and `file_path`.\n\nIn the context of a larger system, this code is likely part of a module responsible for updating or synchronizing model states in response to file changes. It interfaces with other components that manage model definitions and their persistence in a database, ensuring that any changes in the underlying files are accurately reflected in the system's model state. This functionality is crucial for systems that rely on dynamic model configurations, such as those found in microservices architectures or modular software platforms, where changes in one component can have cascading effects on others. The `ChangeDetector` ensures that only affected models are processed or rebuilt, optimizing performance and resource usage, and is integral to a dependency management or build system, interacting with other components that manage model definitions and file tracking.",
+    "children_ids": [
+        "fenec:updaters:change_detector.py__*__MODULE__*__CLASS-ChangeDetector__*__FUNCTION-__init__",
+        "fenec:updaters:change_detector.py__*__MODULE__*__CLASS-ChangeDetector__*__FUNCTION-get_affected_models",
+        "fenec:updaters:change_detector.py__*__MODULE__*__CLASS-ChangeDetector__*__FUNCTION-_get_connected_models"
+    ]
+}

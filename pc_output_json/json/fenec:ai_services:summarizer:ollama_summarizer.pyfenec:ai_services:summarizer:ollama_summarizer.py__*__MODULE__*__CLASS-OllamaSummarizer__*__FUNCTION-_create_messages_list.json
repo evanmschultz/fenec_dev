@@ -1,0 +1,20 @@
+{
+    "function_name": "_create_messages_list",
+    "docstring": "Creates a list of messages for chat completion, including both system and user messages.\n\nArgs:\n    - system_message (str): The system message content.\n    - user_message (str): The user message content.\n\nReturns:\n    - list[ChatCompletionMessageParam]: A list containing the system and user messages as OpenAI's\n        ChatCompletionMessageParam classes.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[OllamaMessage]",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:ai_services:summarizer:ollama_summarizer.py__*__MODULE__*__CLASS-OllamaSummarizer__*__FUNCTION-_create_messages_list",
+    "file_path": "fenec/ai_services/summarizer/ollama_summarizer.py",
+    "parent_id": "fenec:ai_services:summarizer:ollama_summarizer.py__*__MODULE__*__CLASS-OllamaSummarizer",
+    "block_type": "FUNCTION",
+    "start_line_num": 65,
+    "end_line_num": 87,
+    "code_content": "\ndef _create_messages_list(\n    self,\n    system_message: str,\n    user_message: str,\n) -> list[OllamaMessage]:\n    \"\"\"\n        Creates a list of messages for chat completion, including both system and user messages.\n\n        Args:\n            - system_message (str): The system message content.\n            - user_message (str): The user message content.\n\n        Returns:\n            - list[ChatCompletionMessageParam]: A list containing the system and user messages as OpenAI's\n                ChatCompletionMessageParam classes.\n        \"\"\"\n\n    return [\n        self._create_system_message(system_message),\n        self._create_user_message(user_message),\n    ]\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code defines a method `_create_messages_list` within a class, designed to generate a structured list of chat messages for a chat completion system, which is likely part of a conversational AI framework. The primary purpose of this method is to encapsulate system and user inputs into instances of a custom class `OllamaMessage`, facilitating the integration of these messages into a coherent conversational flow for further processing by a chat model. Key components of this method include the `_create_system_message` and `_create_user_message` methods, which are responsible for transforming raw input strings into structured message objects. These helper methods likely instantiate `OllamaMessage` objects, encapsulating the message content and possibly additional metadata required for chat processing.\n\nThe implementation of `_create_messages_list` is straightforward, leveraging these helper methods to create a list of `OllamaMessage` objects. This list is then returned, formatted to be compatible with OpenAI's `ChatCompletionMessageParam` classes, suggesting that the system is designed to interface with OpenAI's chat models or similar AI systems. The method's design follows a simple factory pattern, where the creation of message objects is abstracted into dedicated methods, promoting modularity and reusability.\n\nThe technical stack, while not explicitly detailed in the code snippet, implies the use of a custom message class `OllamaMessage`, which may be part of a larger library or framework for handling chat interactions. This framework likely includes components for message parsing, formatting, and possibly integration with external AI services like OpenAI's GPT models. The method's role within the larger system is to act as a utility function, preparing message data for processing by a conversational AI model. It serves as a bridge between raw input data and the structured format required by the chat model, ensuring that both system and user dialogues are seamlessly integrated into the chat flow. This functionality is crucial for maintaining the coherence and context of conversations, enabling the AI to generate more accurate and contextually relevant responses.",
+    "children_ids": []
+}

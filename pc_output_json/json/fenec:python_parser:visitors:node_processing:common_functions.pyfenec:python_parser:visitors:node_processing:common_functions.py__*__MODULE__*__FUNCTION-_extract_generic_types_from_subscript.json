@@ -1,0 +1,36 @@
+{
+    "function_name": "_extract_generic_types_from_subscript",
+    "docstring": "Recursively extracts generic types from a Subscript node or a BaseExpression node.\n\nArgs:\n    - node (libcst.Subscript | libcst.BaseExpression): The Subscript or BaseExpression node to extract generic types from.\n\nReturns:\n    - str: The string representation of the extracted generic types.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_extract_generic_types_from_subscript",
+    "file_path": "fenec/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 246,
+    "end_line_num": 285,
+    "code_content": "\n\ndef _extract_generic_types_from_subscript(\n    node: libcst.Subscript | libcst.BaseExpression,\n) -> str:\n    \"\"\"\n    Recursively extracts generic types from a Subscript node or a BaseExpression node.\n\n    Args:\n        - node (libcst.Subscript | libcst.BaseExpression): The Subscript or BaseExpression node to extract generic types from.\n\n    Returns:\n        - str: The string representation of the extracted generic types.\n    \"\"\"\n\n    if isinstance(node, libcst.Subscript):\n        generics: list[str] = []\n        for element in node.slice:\n            if isinstance(element.slice, libcst.Index):\n                if isinstance(element.slice.value, libcst.BinaryOperation):\n                    union_type: str = _process_type_annotation_expression(\n                        element.slice.value\n                    )\n                    generics.append(union_type)\n                else:\n                    generic_type: str = _extract_generic_types_from_subscript(\n                        element.slice.value\n                    )\n                    generics.append(generic_type)\n\n        if isinstance(node.value, libcst.Name):\n            generics_str = \", \".join(generics)\n            return f\"{node.value.value}[{generics_str}]\"\n        else:\n            return \"\"\n\n    elif isinstance(node, libcst.Name):\n        return node.value\n    return \"\"\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_process_type_annotation_expression"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code is designed to recursively extract and return a string representation of generic type annotations from nodes within a Python abstract syntax tree (AST) using the LibCST library. Its primary purpose is to parse and handle complex type expressions, such as unions, from `Subscript` or `BaseExpression` nodes, which are common structures in Python type annotations. Key components include the `_extract_generic_types_from_subscript` function, which is responsible for the recursive extraction process, and the `_process_type_annotation_expression` function, which processes complex type expressions like unions. The implementation involves checking the type of each node using `isinstance` to determine if it is a `Subscript` or `Name`. For `Subscript` nodes, it iterates over the `slice` attribute, which contains elements that may be of type `Index`. If an element's slice value is a `BinaryOperation`, it indicates a union type, which is processed by `_process_type_annotation_expression`. Otherwise, the function recursively calls itself to handle nested type annotations, accumulating the extracted generic types in a list. The function returns a concatenated string of these types. The technical stack is centered around the LibCST library, which provides a concrete syntax tree for Python, facilitating code analysis and transformation tasks. In the context of a larger system, this function could be part of a static analysis tool or a type-checking utility that processes Python code to extract and analyze type annotations. It could interface with other components that handle code parsing, transformation, or validation, contributing to a comprehensive code analysis framework that ensures type safety and consistency across a codebase. This utility is particularly significant in projects that require rigorous type checking and validation, such as large-scale Python applications or libraries where type correctness is crucial for maintainability and reliability.",
+    "children_ids": []
+}

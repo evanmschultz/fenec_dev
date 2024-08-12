@@ -1,0 +1,104 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "ABC",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "abc",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Literal",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Protocol",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "dataclass",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "dataclasses",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModel",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "pydantic",
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "summarization_prompts",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.ai_services.summarizer.prompts",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:summarizer:prompts:summarization_prompts.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "chat_prompts",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.ai_services.chat.prompts",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:ai_services:chat:prompts:chat_prompts.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:utilities:configs:configs.py__*__MODULE",
+    "file_path": "fenec/utilities/configs/configs.py",
+    "parent_id": "fenec:utilities:configs__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 211,
+    "code_content": "from abc import ABC\nfrom typing import Literal, Protocol\nfrom dataclasses import dataclass\n\nfrom pydantic import BaseModel\n\nfrom fenec.ai_services.summarizer.prompts import summarization_prompts\nfrom fenec.ai_services.chat.prompts import chat_prompts\n\n\nclass SummarizationConfigs(ABC):\n    \"\"\"\n    SummarizerConfigs is an abstract base class for summarizer configurations.\n    \"\"\"\n\n    ...\n\n\nclass ChatConfigs(ABC):\n    \"\"\"\n    ChatConfigs is an abstract base class for chat configurations.\n    \"\"\"\n\n    ...\n\n\nclass OpenAIConfigs(BaseModel):\n    \"\"\"\n    Configs for the summarization completion.\n\n    Used to set the chat completion parameters for the OpenAI chat completions method call.\n\n    Args:\n        - `system_message` (str): The system message used for chat completion.\n        - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - `stream` (bool): Whether to stream back partial progress. Default is False.\n        - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - model must be a valid OpenAI model name.\n\n    Examples:\n        ```Python\n        system_message = \"Summarize the following code.\"\n        summary_completion_configs = SummaryCompletionConfigs(\n            system_message=system_message,\n            model=\"gpt-4o\",\n            max_tokens=100,\n            presence_penalty=0.0,\n            stream=False,\n            temperature=0.0,\n        )\n        ```\n    \"\"\"\n\n    system_message: str = summarization_prompts.SUMMARIZER_DEFAULT_INSTRUCTIONS\n    model: Literal[\n        \"gpt-4o\",\n        \"gpt-4o-2024-08-06\",\n        \"gpt-4-1106-preview\",\n        \"gpt-4-vision-preview\",\n        \"gpt-4\",\n        \"gpt-4-0314\",\n        \"gpt-4-0613\",\n        \"gpt-4-32k\",\n        \"gpt-4-32k-0314\",\n        \"gpt-4-32k-0613\",\n        \"gpt-3.5-turbo-1106\",\n        \"gpt-3.5-turbo\",\n        \"gpt-3.5-turbo-16k\",\n        \"gpt-3.5-turbo-0301\",\n        \"gpt-3.5-turbo-0613\",\n        \"gpt-3.5-turbo-16k-0613\",\n    ] = \"gpt-4o-2024-08-06\"\n    max_tokens: int | None = None\n    stream: bool = False\n    temperature: float = 0.0\n\n\nclass OpenAISummarizationConfigs(SummarizationConfigs, OpenAIConfigs):\n    \"\"\"\n    Configs for the summarization completion.\n\n    Used to set the chat completion parameters for the OpenAI chat completions method call.\n\n    Args:\n        - `system_message` (str): The system message used for chat completion.\n        - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - `stream` (bool): Whether to stream back partial progress. Default is False.\n        - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - model must be a valid OpenAI model name.\n\n    Examples:\n        ```Python\n        system_message = \"Summarize the following code.\"\n        summary_completion_configs = SummaryCompletionConfigs(\n            system_message=system_message,\n            model=\"gpt-4o\",\n            max_tokens=100,\n            presence_penalty=0.0,\n            stream=False,\n            temperature=0.0,\n        )\n        ```\n    \"\"\"\n\n\nclass OpenAIChatConfigs(OpenAISummarizationConfigs, ChatConfigs):\n    \"\"\"\n    Configs for the chat completion.\n\n    Used to set the chat completion parameters for the OpenAI chat completions method call.\n\n    Args:\n        - `system_message` (str): The system message used for chat completion.\n        - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - `stream` (bool): Whether to stream back partial progress. Default is False.\n        - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - model must be a valid OpenAI model name.\n\n    Examples:\n        ```Python\n        system_message = \"Summarize the following code.\"\n        chat_completion_configs = ChatCompletionConfigs(\n            system_message=system_message,\n            model=\"gpt-4o\",\n            max_tokens=100,\n            presence_penalty=0.0,\n            stream=False,\n            temperature=0.0,\n        )\n        ```\n    \"\"\"\n\n    system_message: str = chat_prompts.DEFAULT_SYSTEM_PROMPT\n\n\nclass OllamaSummarizationConfigs(SummarizationConfigs, BaseModel):\n    \"\"\"\n    Configs for the Ollama completion.\n\n    Used to set the chat completion parameters for the Ollama chat completions method call.\n\n    Args:\n        - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - `stream` (bool): Whether to stream back partial progress. Default is False.\n        - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - `model` must be a valid Ollama model name with a valid parameter syntax.\n\n    Examples:\n        ```Python\n        ollama_completion_configs = OllamaConfigs(\n            model=\"codellama:13b-python\",\n        ```\n    \"\"\"\n\n    model: str = \"codellama:7b\"\n    system_message: str = summarization_prompts.SUMMARIZER_DEFAULT_INSTRUCTIONS\n\n\nclass OllamaChatConfigs(ChatConfigs, BaseModel):\n    \"\"\"\n    Configs for the Ollama completion.\n\n    Used to set the chat completion parameters for the Ollama chat completions method call.\n\n    Args:\n        - `model` (str): The model to use for the completion. Default is \"gpt-4o\".\n        - `max_tokens` (int | None): The maximum number of tokens to generate. 'None' implies no limit. Default is None.\n        - `stream` (bool): Whether to stream back partial progress. Default is False.\n        - `temperature` (float): Sampling temperature to use. Default is 0.0.\n\n    Notes:\n        - `model` must be a valid Ollama model name with a valid parameter syntax.\n\n    Examples:\n        ```Python\n        ollama_completion_configs = OllamaConfigs(\n            model=\"codellama:13b\",\n        ```\n    \"\"\"\n\n    model: str = \"codellama:7b\"\n    system_message: str = chat_prompts.DEFAULT_SYSTEM_PROMPT\n\n\n@dataclass\nclass OpenAIReturnContext:\n    \"\"\"\n    A dataclass for storing the return context of an OpenAI completion.\n\n    Attributes:\n        - `prompt_tokens` (int): The number of tokens in the prompt.\n        - `completion_tokens` (int): The number of tokens in the completion.\n        - `summary` (str | None): The summary of the code snippet.\n    \"\"\"\n\n    prompt_tokens: int\n    completion_tokens: int\n    summary: str | None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code defines a comprehensive configuration framework for managing chat and summarization completions using OpenAI and Ollama models, providing a structured approach to configuring parameters essential for AI-driven text generation tasks. The primary purpose of this framework is to encapsulate configuration settings such as model selection, token limits, and sampling temperature, which are crucial for customizing and optimizing the performance of AI models in generating text completions. Key components include abstract base classes `SummarizationConfigs` and `ChatConfigs`, which serve as interfaces for defining configuration structures; `OpenAIConfigs`, a Pydantic-based class that specifies settings for OpenAI models, including parameters like `system_message`, `model`, `max_tokens`, `stream`, and `temperature`; `OpenAISummarizationConfigs` and `OpenAIChatConfigs`, which extend the base configurations to cater specifically to summarization and chat tasks using OpenAI models; `OllamaSummarizationConfigs` and `OllamaChatConfigs`, which provide similar configurations for Ollama models, with default models like \"codellama:7b\"; and `OpenAIReturnContext`, a dataclass that stores metadata about the completion process, such as token counts and generated summaries.\n\nThe implementation leverages object-oriented principles, particularly inheritance and composition, to create a flexible and extensible configuration system. It uses Pydantic for data validation and type enforcement, ensuring that configuration parameters adhere to expected formats and constraints. The use of abstract base classes from Python's `abc` module allows for the definition of common interfaces, promoting consistency across different configuration types. The `dataclasses` module is employed to define `OpenAIReturnContext`, providing a lightweight and efficient way to store structured data related to the completion process. The framework also integrates with external modules such as `fenec.ai_services.summarizer.prompts` and `fenec.ai_services.chat.prompts` to retrieve default system messages for summarization and chat tasks, respectively.\n\nThe technical stack includes Python's `abc` module for abstract base classes, `dataclasses` for structured data storage, and `pydantic` for robust data validation and management. Additionally, the framework integrates with external modules such as `fenec.ai_services.summarizer.prompts` and `fenec.ai_services.chat.prompts` to retrieve default system messages for summarization and chat tasks, respectively.\n\nIn the context of a larger system, this code is part of a comprehensive architecture that integrates AI models for text processing. It fits into a broader ecosystem that likely includes AI service orchestration, user interaction management, and possibly a user interface for configuring and deploying AI models. The configuration objects provided by this framework are used to initialize and control interactions with AI models, ensuring consistency and reusability across various AI-driven functionalities. This modular design supports seamless integration with other components of the system, facilitating the deployment of AI models in diverse applications such as automated summarization, conversational agents, and other text generation tasks. By providing a standardized configuration approach, it helps maintain uniformity and reliability across different parts of the system that interact with AI models, enabling efficient and scalable AI-driven solutions.",
+    "children_ids": [
+        "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-SummarizationConfigs",
+        "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-ChatConfigs",
+        "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OpenAIConfigs",
+        "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OpenAISummarizationConfigs",
+        "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OpenAIChatConfigs",
+        "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OllamaSummarizationConfigs",
+        "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OllamaChatConfigs",
+        "fenec:utilities:configs:configs.py__*__MODULE__*__CLASS-OpenAIReturnContext"
+    ]
+}

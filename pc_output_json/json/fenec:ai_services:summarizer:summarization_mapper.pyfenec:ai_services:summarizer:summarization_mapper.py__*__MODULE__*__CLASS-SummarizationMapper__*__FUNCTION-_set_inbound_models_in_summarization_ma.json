@@ -1,0 +1,20 @@
+{
+    "function_name": "_set_inbound_models_in_summarization_map",
+    "docstring": "Sets inbound models in the summarization map recursively.\n\nArgs:\n    model_id (str): The ID of the model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper__*__FUNCTION-_set_inbound_models_in_summarization_map",
+    "file_path": "fenec/ai_services/summarizer/summarization_mapper.py",
+    "parent_id": "fenec:ai_services:summarizer:summarization_mapper.py__*__MODULE__*__CLASS-SummarizationMapper",
+    "block_type": "FUNCTION",
+    "start_line_num": 56,
+    "end_line_num": 72,
+    "code_content": "\ndef _set_inbound_models_in_summarization_map(self, model_id: str) -> None:\n    \"\"\"\n        Sets inbound models in the summarization map recursively.\n\n        Args:\n            model_id (str): The ID of the model.\n        \"\"\"\n    if model_id in self.model_visited_in_db:\n        return\n    self.model_visited_in_db.add(model_id)\n    inbound_models = self.arangodb_manager.get_inbound_models(model_id)\n    if inbound_models:\n        for model in inbound_models:\n            self._set_inbound_models_in_summarization_map(model.id)\n            self.temp_map.append(model)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code is a critical component of a system designed to manage and summarize the relationships between models stored in a database, specifically focusing on recursively setting inbound models in a summarization map. The primary purpose of the function `_set_inbound_models_in_summarization_map` is to efficiently traverse and store inbound model relationships for a given model ID, ensuring that each model is processed only once to avoid redundant operations and maintain an accurate representation of model dependencies. Key components include the method `_set_inbound_models_in_summarization_map`, which implements the recursive logic for traversing model relationships; `self.model_visited_in_db`, a set that tracks models already processed to prevent duplication; and `self.temp_map`, a list that temporarily holds models for summarization. The implementation employs a recursive algorithm that first checks if a model has been visited. If not, it marks the model as visited by adding it to `self.model_visited_in_db`, retrieves its inbound models using `self.arangodb_manager.get_inbound_models`, and recursively processes each inbound model. The models are appended to `self.temp_map` only if they haven't been processed yet, ensuring efficient summarization.\n\nThe technical stack likely includes an ArangoDB database, as suggested by the use of `self.arangodb_manager`, which is responsible for managing interactions with the database, specifically fetching inbound model data. Although specific libraries are not explicitly mentioned, the use of ArangoDB implies a reliance on its Python client for database operations. In the context of a larger system, this function is integral to constructing a comprehensive map of model relationships, which can be utilized for various tasks such as dependency analysis, impact assessment, or visualization within a data management or analytics platform. It interacts with the database layer to fetch model data and contributes to the overall goal of maintaining an accurate and up-to-date representation of model dependencies. This functionality is crucial for systems that require an understanding of model interconnections, such as those used in complex data ecosystems or enterprise-level analytics solutions. By ensuring that each model is processed only once, the code optimizes performance and prevents redundant database queries, which is essential for scalability in large-scale systems.",
+    "children_ids": []
+}

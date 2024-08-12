@@ -1,0 +1,16 @@
+{
+    "id": "fenec:python_parser:model_builders__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "model_builders",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "fenec:python_parser:model_builders:module_model_builder.py__*__MODULE",
+        "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE",
+        "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE",
+        "fenec:python_parser:model_builders:builder_factory.py__*__MODULE",
+        "fenec:python_parser:model_builders:class_model_builder.py__*__MODULE",
+        "fenec:python_parser:model_builders:base_model_builder.py__*__MODULE"
+    ],
+    "parent_id": "fenec:python_parser__*__DIRECTORY",
+    "summary": null
+}

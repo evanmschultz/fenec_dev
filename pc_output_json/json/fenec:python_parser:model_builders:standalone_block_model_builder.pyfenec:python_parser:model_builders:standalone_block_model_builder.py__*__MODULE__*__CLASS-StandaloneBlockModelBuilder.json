@@ -1,0 +1,108 @@
+{
+    "class_name": "StandaloneBlockModelBuilder",
+    "decorators": null,
+    "bases": [
+        "BaseModelBuilder"
+    ],
+    "docstring": "A builder class for constructing a model of a standalone code block.\n\nThis class extends BaseModelBuilder and specializes in building models of standalone code blocks, which are blocks of code not part of any class or function definitions. It captures details such as variable assignments within the block.\n\nAttributes:\n    - standalone_block_attributes (StandaloneCodeBlockSpecificAttributes): An instance containing attributes specific to a standalone code block, such as variable assignments.\n\nArgs:\n    - id (str): The unique identifier for the standalone code block model.\n    - parent_id (str): The identifier of the parent model (e.g., module or class containing this standalone block).\n\nExample:\n    ```Python\n    standalone_block_builder = StandaloneBlockModelBuilder(id='block1', parent_id='module1')\n    standalone_block_builder.set_variable_assignments(['x = 1', 'y = 2'])\n    # Configures the builder with variable assignments for the standalone code block.\n    ```",
+    "keywords": null,
+    "id": "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder",
+    "file_path": "fenec/python_parser/model_builders/standalone_block_model_builder.py",
+    "parent_id": "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 10,
+    "end_line_num": 63,
+    "code_content": "\n\nclass StandaloneBlockModelBuilder(BaseModelBuilder):\n    \"\"\"\n    A builder class for constructing a model of a standalone code block.\n\n    This class extends BaseModelBuilder and specializes in building models of standalone code blocks, which are blocks of code not part of any class or function definitions. It captures details such as variable assignments within the block.\n\n    Attributes:\n        - standalone_block_attributes (StandaloneCodeBlockSpecificAttributes): An instance containing attributes specific to a standalone code block, such as variable assignments.\n\n    Args:\n        - id (str): The unique identifier for the standalone code block model.\n        - parent_id (str): The identifier of the parent model (e.g., module or class containing this standalone block).\n\n    Example:\n        ```Python\n        standalone_block_builder = StandaloneBlockModelBuilder(id='block1', parent_id='module1')\n        standalone_block_builder.set_variable_assignments(['x = 1', 'y = 2'])\n        # Configures the builder with variable assignments for the standalone code block.\n        ```\n    \"\"\"\n\n    def __init__(self, id: str, parent_id: str, file_path: str) -> None:\n        super().__init__(\n            id=id,\n            block_type=BlockType.STANDALONE_CODE_BLOCK,\n            parent_id=parent_id,\n            file_path=file_path,\n        )\n\n        self.standalone_block_attributes = StandaloneCodeBlockSpecificAttributes(\n            variable_assignments=None,\n        )\n\n    def set_variable_assignments(\n        self, variable_declarations: list[str]\n    ) -> \"StandaloneBlockModelBuilder\":\n        \"\"\"Sets the list of variable declarations to the standalone code block model.\"\"\"\n        self.standalone_block_attributes.variable_assignments = variable_declarations\n        return self\n\n    def _get_standalone_block_specific_attributes(self) -> dict[str, Any]:\n        \"\"\"Gets the standalone block specific attributes.\"\"\"\n        return self.standalone_block_attributes.model_dump()\n\n    @logging_decorator(message=\"Building standalone code block model\")\n    def build(self) -> StandaloneCodeBlockModel:\n        \"\"\"Creates a StandaloneCodeBlockModel instance after building and setting the children models.\"\"\"\n        return StandaloneCodeBlockModel(\n            **self._get_common_attributes(),\n            **self._get_standalone_block_specific_attributes(),\n        )\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockSpecificAttributes",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "StandaloneCodeBlockSpecificAttributes",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging_decorator",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                }
+            ],
+            "imported_from": "fenec.utilities.logger.decorators",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:utilities:logger:decorators.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.base_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:base_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "fenec.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:enums.py__*__MODULE"
+        }
+    ],
+    "summary": "The `StandaloneBlockModelBuilder` class is a specialized component within a model-building framework, designed to construct models for standalone code blocks, which are segments of code not encapsulated within any class or function definitions. This class extends the `BaseModelBuilder`, inheriting its foundational model-building capabilities while adding specific functionality to handle standalone code blocks. The primary purpose of this class is to capture and model details such as variable assignments within these blocks, ensuring they are accurately represented within the broader codebase model. Key components of the `StandaloneBlockModelBuilder` include: the constructor `__init__`, which initializes the builder with a unique identifier, parent model identifier, and file path, and sets up attributes specific to standalone code blocks using an instance of `StandaloneCodeBlockSpecificAttributes`; the `set_variable_assignments` method, which assigns a list of variable declarations to the model, allowing for the configuration of variable assignments specific to the standalone block; the `_get_standalone_block_specific_attributes` method, which retrieves attributes specific to the standalone block by calling the `model_dump` method on the `StandaloneCodeBlockSpecificAttributes` instance; and the `build` method, which constructs and returns a `StandaloneCodeBlockModel` instance, incorporating both common and specific attributes. The `build` method is enhanced with a logging decorator, providing insights and traceability during the model construction process.\n\nThe implementation leverages object-oriented principles, utilizing inheritance to extend functionality from `BaseModelBuilder` and encapsulating standalone block attributes within a `StandaloneCodeBlockSpecificAttributes` instance. This design pattern promotes modularity and reusability, allowing the `StandaloneBlockModelBuilder` to seamlessly integrate with other model builders within the framework. The use of a logging decorator suggests a focus on maintainability and debugging, offering detailed logs during the execution of critical methods. The technical stack primarily involves Python's standard library, utilizing type hinting for improved code clarity and maintainability, and decorators for enhancing method functionality. The logging decorator, possibly custom, is used to provide enhanced logging capabilities, which is crucial for tracking the model-building process in complex systems.\n\nIn the context of a larger system, the `StandaloneBlockModelBuilder` is part of a comprehensive model-building framework, likely used in a code analysis or transformation tool. It interacts with other model builders to represent various code structures, ensuring that standalone code blocks are accurately modeled and integrated within the broader representation of a codebase. This class plays a critical role in the system by providing a detailed and structured representation of standalone code blocks, which can be essential for tasks such as code refactoring, analysis, and transformation. Its integration with the larger framework allows for a cohesive and comprehensive modeling of the entire codebase, facilitating advanced code analysis and manipulation capabilities.",
+    "children_ids": [
+        "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder__*__FUNCTION-__init__",
+        "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder__*__FUNCTION-set_variable_assignments",
+        "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder__*__FUNCTION-_get_standalone_block_specific_attributes",
+        "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder__*__FUNCTION-build"
+    ]
+}

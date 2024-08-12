@@ -1,0 +1,26 @@
+{
+    "function_name": "create_prompt",
+    "docstring": "Creates a prompt for the Chroma Librarian by interpolating the given prompt template with the given user question and queries count.\n\nArgs:\n    - user_question (str): The user's question.\n    - prompt_template (str): The template to interpolate.\n        - default: DEFAULT_CHROMA_LIBRARIAN_PROMPT defined in `chroma_librarian_prompts.py`.\n    - queries_count (int): The number of queries to make.\n        - default: 3",
+    "decorators": [
+        {
+            "content": "@staticmethod",
+            "decorator_name": "staticmethod",
+            "decorator_args": null
+        }
+    ],
+    "parameters": null,
+    "returns": "str",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:ai_services:librarians:prompts:prompt_creator.py__*__MODULE__*__CLASS-ChromaLibrarianPromptCreator__*__FUNCTION-create_prompt",
+    "file_path": "fenec/ai_services/librarians/prompts/prompt_creator.py",
+    "parent_id": "fenec:ai_services:librarians:prompts:prompt_creator.py__*__MODULE__*__CLASS-ChromaLibrarianPromptCreator",
+    "block_type": "FUNCTION",
+    "start_line_num": 21,
+    "end_line_num": 44,
+    "code_content": "\n@staticmethod\ndef create_prompt(\n    user_question: str,\n    prompt_template: str = prompts.DEFAULT_CHROMA_LIBRARIAN_PROMPT,\n    queries_count: int = 3,\n) -> str:\n    \"\"\"\n        Creates a prompt for the Chroma Librarian by interpolating the given prompt template with the given user question and queries count.\n\n        Args:\n            - user_question (str): The user's question.\n            - prompt_template (str): The template to interpolate.\n                - default: DEFAULT_CHROMA_LIBRARIAN_PROMPT defined in `chroma_librarian_prompts.py`.\n            - queries_count (int): The number of queries to make.\n                - default: 3\n        \"\"\"\n\n    return prompt_template.format(\n        user_question=user_question,\n        prompt_template=prompt_template,\n        queries_count=queries_count,\n    )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code defines a static method `create_prompt` within a Python module, designed to dynamically generate a formatted prompt for the Chroma Librarian system. The primary purpose of this function is to facilitate the creation of contextually relevant prompts by interpolating a user-provided question and a specified number of queries into a predefined prompt template. This enhances the Chroma Librarian's ability to handle user queries effectively by ensuring that the prompts are tailored to specific user inputs and operational requirements. Key components of this implementation include the `create_prompt` method itself, which accepts three parameters: `user_question`, a string representing the user's inquiry; `prompt_template`, a string template for the prompt, defaulting to `DEFAULT_CHROMA_LIBRARIAN_PROMPT` sourced from `chroma_librarian_prompts.py`; and `queries_count`, an integer indicating the number of queries to include, defaulting to 3.\n\nThe implementation leverages Python's built-in string formatting capabilities, specifically the `str.format()` method, to interpolate the provided arguments into the template. This ensures that the resulting prompt is accurately constructed based on the input parameters, maintaining consistency and relevance. The technical stack primarily involves Python's native string handling and formatting functions, with dependencies on external prompt templates defined in the broader system, particularly within the `chroma_librarian_prompts.py` module.\n\nIn the context of the larger Chroma Librarian project, this function is likely part of a subsystem responsible for managing and generating prompts, interacting with other components that handle user input, query processing, and response generation. Its role is crucial in ensuring that prompts are correctly formatted and contextually relevant, thereby improving the system's overall efficiency and user experience. By providing a flexible and dynamic approach to prompt generation, this method supports the Chroma Librarian's operations, enabling it to adapt to varying user queries and maintain a high level of responsiveness and accuracy in its interactions. This functionality is integral to the system's ability to deliver precise and context-aware responses, which is essential for maintaining user engagement and satisfaction.",
+    "children_ids": []
+}

@@ -1,0 +1,96 @@
+{
+    "function_name": "setup_chroma_with_update",
+    "docstring": "Sets up Chroma with model updates and return a Chroma Collection Manager.\n\nNotes:\n    - This will wipe the existing Chroma collection and replace it with the provided models.\n\nArgs:\n    - models (list[ModelType]): List of models to upsert into the Chroma collection.\n    - collection_name (str, optional): Name of the Chroma collection. Defaults to \"fenec\".\n\nReturns:\n    - ChromaCollectionManager: An instance of ChromaCollectionManager for the specified collection\n      with the provided models upserted.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ChromaCollectionManager",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:databases:chroma:chroma_setup.py__*__MODULE__*__FUNCTION-setup_chroma_with_update",
+    "file_path": "fenec/databases/chroma/chroma_setup.py",
+    "parent_id": "fenec:databases:chroma:chroma_setup.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 36,
+    "end_line_num": 74,
+    "code_content": "\n\ndef setup_chroma_with_update(\n    models: list[ModelType], collection_name: str = \"fenec\"\n) -> ChromaCollectionManager:\n    \"\"\"\n    Sets up Chroma with model updates and return a Chroma Collection Manager.\n\n    Notes:\n        - This will wipe the existing Chroma collection and replace it with the provided models.\n\n    Args:\n        - models (list[ModelType]): List of models to upsert into the Chroma collection.\n        - collection_name (str, optional): Name of the Chroma collection. Defaults to \"fenec\".\n\n    Returns:\n        - ChromaCollectionManager: An instance of ChromaCollectionManager for the specified collection\n          with the provided models upserted.\n    \"\"\"\n\n    chroma_settings = chroma_types.Settings(allow_reset=True)\n    chroma_client: chroma_types.ClientAPI = chromadb.PersistentClient(\n        settings=chroma_settings\n    )\n    chroma_client_manager = ChromaClientHandler(chroma_client)\n\n    logging.debug(f\"Resetting Chroma client\")\n    if chroma_client_manager.reset_client():\n        logging.debug(\"Client reset\")\n\n    chroma_collection: chroma_types.Collection = (\n        chroma_client_manager.get_or_create_collection(collection_name)\n    )\n    chroma_collection_manager = ChromaCollectionManager(chroma_collection)\n    chroma_collection_manager.upsert_models(tuple(models))\n    logging.debug(f\"Upserted models to Chroma collection {chroma_collection.name}\")\n\n    return chroma_collection_manager\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:databases:chroma:chroma_setup.py__*__MODULE__*__FUNCTION-setup_chroma"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "chromadb",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaClientHandler",
+                    "as_name": null,
+                    "local_block_id": "fenec:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler"
+                }
+            ],
+            "imported_from": "fenec.databases.chroma.chromadb_client_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:chroma:chromadb_client_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ChromaCollectionManager",
+                    "as_name": null,
+                    "local_block_id": "fenec:databases:chroma:chromadb_collection_manager.py__*__MODULE__*__CLASS-ChromaCollectionManager"
+                }
+            ],
+            "imported_from": "fenec.databases.chroma.chromadb_collection_manager",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:databases:chroma:chromadb_collection_manager.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.types.chroma",
+                    "as_name": "chroma_types",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:types:chroma.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModelType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.types.fenec",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:types:fenec.py__*__MODULE"
+        }
+    ],
+    "summary": "The `setup_chroma_with_update` function is designed to manage and refresh Chroma collections by clearing existing data and inserting new models, ensuring that the collection remains current and accurate. This function is essential in environments where data consistency and freshness are critical, such as dynamic data management systems or machine learning pipelines. Key components include the `setup_chroma_with_update` function, which orchestrates the setup and update process; `ChromaCollectionManager`, which oversees the lifecycle and operations of the Chroma collection; and `ChromaClientHandler`, which facilitates interactions with the Chroma client, including resetting and accessing collections.\n\nThe implementation begins by configuring a `PersistentClient` with settings that allow for client reset, using `chroma_types.Settings` to specify this configuration. The `ChromaClientHandler` is then used to reset the client, ensuring that any pre-existing data in the collection is cleared. This is followed by obtaining or creating a Chroma collection through the `get_or_create_collection` method, which is then managed by a `ChromaCollectionManager` instance. This design employs a reset mechanism to ensure the collection is in a clean state before new models are upserted, thus maintaining data integrity and consistency.\n\nThe technical stack includes the `chroma_types` module, which provides type definitions and settings crucial for configuring the Chroma client and collections; `chromadb`, the underlying database client library that facilitates persistent storage and retrieval operations; and Python's `logging` module, which is used for debugging and tracking the execution flow, particularly during the client reset process.\n\nIn the context of a larger system, this function is likely integrated into a data management or machine learning pipeline where Chroma collections serve as repositories for model data. It interacts with other components by providing a refreshed and updated collection state, ensuring that the latest models are readily available for downstream processes such as analysis, training, or inference. This function's ability to reset and update collections makes it a vital component in systems that require frequent data updates and model management, supporting the overall goal of maintaining an efficient and reliable data pipeline.",
+    "children_ids": []
+}

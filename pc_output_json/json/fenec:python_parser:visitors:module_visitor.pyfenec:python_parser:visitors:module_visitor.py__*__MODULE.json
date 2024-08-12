@@ -1,0 +1,227 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-ClassIDGenerationStrategy"
+                },
+                {
+                    "name": "FunctionIDGenerationStrategy",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:id_generation:id_generation_strategies.py__*__MODULE__*__CLASS-FunctionIDGenerationStrategy"
+                }
+            ],
+            "imported_from": "fenec.python_parser.id_generation.id_generation_strategies",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:id_generation:id_generation_strategies.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BuilderFactory",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:builder_factory.py__*__MODULE__*__CLASS-BuilderFactory"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.builder_factory",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:builder_factory.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "ParameterListModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ParameterListModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "fenec.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:enums.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseVisitor",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:visitors:base_code_block_visitor.py__*__MODULE__*__CLASS-BaseVisitor"
+                }
+            ],
+            "imported_from": "fenec.python_parser.visitors.base_code_block_visitor",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:base_code_block_visitor.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.class_def_functions",
+                    "as_name": "class_def_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:class_def_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.function_def_functions",
+                    "as_name": "function_def_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:function_def_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.module_functions",
+                    "as_name": "module_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.standalone_code_block_functions",
+                    "as_name": "standalone_code_block_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:standalone_code_block_functions.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "PositionData",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:processing_context.py__*__MODULE__*__CLASS-PositionData"
+                },
+                {
+                    "name": "NodeAndPositionData",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:processing_context.py__*__MODULE__*__CLASS-NodeAndPositionData"
+                }
+            ],
+            "imported_from": "fenec.utilities.processing_context",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:utilities:processing_context.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "gather_and_set_children_dependencies",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-gather_and_set_children_dependencies"
+                }
+            ],
+            "imported_from": "fenec.python_parser.visitors.node_processing.gather_dependencies",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:python_parser:visitors:module_visitor.py__*__MODULE",
+    "file_path": "fenec/python_parser/visitors/module_visitor.py",
+    "parent_id": "fenec:python_parser:visitors__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 220,
+    "code_content": "import libcst\n\nfrom fenec.python_parser.id_generation.id_generation_strategies import (\n    ClassIDGenerationStrategy,\n    FunctionIDGenerationStrategy,\n)\n\nfrom fenec.python_parser.model_builders.builder_factory import BuilderFactory\nfrom fenec.python_parser.model_builders.class_model_builder import ClassModelBuilder\nfrom fenec.python_parser.model_builders.function_model_builder import (\n    FunctionModelBuilder,\n)\nfrom fenec.python_parser.model_builders.module_model_builder import (\n    ModuleModelBuilder,\n)\nfrom fenec.python_parser.model_builders.standalone_block_model_builder import (\n    StandaloneBlockModelBuilder,\n)\n\nfrom fenec.models.models import (\n    ImportModel,\n    ParameterListModel,\n)\nfrom fenec.models.enums import BlockType\nfrom fenec.python_parser.visitors.base_code_block_visitor import BaseVisitor\nimport fenec.python_parser.visitors.node_processing.class_def_functions as class_def_functions\nimport fenec.python_parser.visitors.node_processing.function_def_functions as function_def_functions\nimport fenec.python_parser.visitors.node_processing.module_functions as module_functions\nimport fenec.python_parser.visitors.node_processing.standalone_code_block_functions as standalone_code_block_functions\n\nfrom fenec.utilities.processing_context import (\n    NodeAndPositionData,\n    PositionData,\n)\nfrom fenec.python_parser.visitors.node_processing.gather_dependencies import (\n    gather_and_set_children_dependencies,\n)\n\n\nclass ModuleVisitor(BaseVisitor):\n    \"\"\"\n    Visitor class for traversing and building a model of a Python module.\n\n    This class extends BaseVisitor and is used to visit different nodes in a Python module's concrete\n    syntax tree (CST) using the libcst library. It builds a structured model of the module, including\n    imports, classes, and functions.\n\n    Attributes:\n        - id (str): The ID of the module to be generated before instantiation.\n        - builder (ModuleModelBuilder): The builder used to construct the module model.\n\n    Example:\n        ```Python\n        module_builder = ModuleModelBuilder(id=\"module1\", name=\"example_module\")\n        visitor = ModuleVisitor(id=\"module1\", module_builder=module_builder)\n        libcst.parse_module(\"import os\\\\nclass MyClass:\\\\n    pass\").visit(visitor)\n        # This will process the module and build its corresponding model using the provided module builder.\n        ```\n    \"\"\"\n\n    def __init__(self, id: str, module_builder: ModuleModelBuilder) -> None:\n        super().__init__(id=id)\n        self.builder: ModuleModelBuilder = module_builder\n        self.builder_stack.append(module_builder)\n\n    def visit_Module(self, node: libcst.Module) -> bool | None:\n        \"\"\"\n        Visits the root Module node of the CST.\n\n        Extracts various components of the module such as docstring, header, footer, and code content, and\n        updates the module builder with these details.\n        \"\"\"\n\n        docstring: str | None = node.get_docstring()\n        header: list[str] = module_functions.extract_content_from_empty_lines(\n            node.header\n        )\n        footer: list[str] = module_functions.extract_content_from_empty_lines(\n            node.footer\n        )\n        content: str = node.code if node.code else \"\"\n        position_data: PositionData = self.get_node_position_data(node)\n        (\n            self.builder.set_docstring(docstring)\n            .set_header_content(header)\n            .set_footer_content(footer)\n            .set_code_content(content)\n            .set_start_line_num(position_data.start)\n            .set_end_line_num(position_data.end)\n        )\n        standalone_blocks: list[NodeAndPositionData] = (\n            standalone_code_block_functions.gather_standalone_lines(node.body, self)\n        )\n        standalone_block_models: list[StandaloneBlockModelBuilder] = (\n            standalone_code_block_functions.process_standalone_blocks(\n                code_blocks=standalone_blocks,\n                parent_id=self.id,\n                file_path=self.builder.common_attributes.file_path,\n            )\n        )\n        for standalone_block_model in standalone_block_models:\n            self.builder.add_child_builder(standalone_block_model)\n\n    def visit_Import(self, node: libcst.Import) -> None:\n        \"\"\"\n        Visits an Import node in the CST.\n\n        Processes the import statement and updates the module builder with the import model.\n        \"\"\"\n\n        import_model: ImportModel = module_functions.process_import(node)\n        self.builder.add_import(import_model)\n\n    def visit_ImportFrom(self, node: libcst.ImportFrom) -> None:\n        \"\"\"\n        Visits an ImportFrom node in the CST.\n\n        Processes the 'from ... import ...' statement and updates the module builder with the import model.\n        \"\"\"\n\n        import_model: ImportModel = module_functions.process_import_from(node)\n        self.builder.add_import(import_model)\n\n    def visit_ClassDef(self, node: libcst.ClassDef) -> None:\n        \"\"\"\n        Visits a ClassDef node in the CST.\n\n        Initiates the process of building a class model from the class definition.\n        \"\"\"\n\n        parent_id: str = self.builder_stack[-1].id\n        class_id: str = ClassIDGenerationStrategy.generate_id(\n            parent_id=parent_id, class_name=node.name.value\n        )\n\n        class_builder: ClassModelBuilder = BuilderFactory.create_builder_instance(\n            block_type=BlockType.CLASS,\n            id=class_id,\n            name=node.name.value,\n            parent_id=parent_id,\n            file_path=self.builder.common_attributes.file_path,\n        )\n\n        builder = self.builder_stack[-1]\n        builder.add_child_builder(class_builder)\n        self.builder_stack.append(class_builder)\n\n        position_data: PositionData = self.get_node_position_data(node)\n        class_def_functions.process_class_def(node, position_data, class_builder)\n\n    def leave_ClassDef(self, original_node: libcst.ClassDef) -> None:\n        \"\"\"\n        Leaves a ClassDef node in the CST.\n\n        Finalizes the class model building process by popping the current builder from the stack.\n        \"\"\"\n\n        self.builder_stack.pop()\n\n    def visit_FunctionDef(self, node: libcst.FunctionDef) -> None:\n        \"\"\"\n        Visits a FunctionDef node in the CST.\n\n        Initiates the process of building a function model from the function definition.\n        \"\"\"\n\n        parent_id: str = self.builder_stack[-1].id\n        func_id: str = FunctionIDGenerationStrategy.generate_id(\n            parent_id=parent_id, function_name=node.name.value\n        )\n\n        func_builder: FunctionModelBuilder = BuilderFactory.create_builder_instance(\n            block_type=BlockType.FUNCTION,\n            id=func_id,\n            name=node.name.value,\n            parent_id=parent_id,\n            file_path=self.builder.common_attributes.file_path,\n        )\n        builder = self.builder_stack[-1]\n        builder.add_child_builder(func_builder)\n        self.builder_stack.append(func_builder)\n\n        position_data: PositionData = self.get_node_position_data(node)\n        function_def_functions.process_func_def(\n            func_id, node, position_data, func_builder\n        )\n\n    def visit_Parameters(self, node: libcst.Parameters) -> None:\n        \"\"\"\n        Visits a Parameters node in the CST.\n\n        Processes the parameters of a function and updates the current function model builder with these parameters.\n        \"\"\"\n\n        builder = self.builder_stack[-1]\n        parameter_list: ParameterListModel | None = (\n            function_def_functions.process_parameters(node)\n        )\n\n        if isinstance(builder, FunctionModelBuilder):\n            builder.set_parameters_list(parameter_list)\n\n    def leave_FunctionDef(self, original_node: libcst.FunctionDef) -> None:\n        \"\"\"\n        Leaves a FunctionDef node in the CST.\n\n        Finalizes the function model building process by popping the current builder from the stack.\n        \"\"\"\n\n        self.builder_stack.pop()\n\n    def leave_Module(self, original_node: libcst.Module) -> None:\n        \"\"\"\n        Leaves the root Module node in the CST.\n\n        Finalizes the module model building process by setting dependencies for children of the module.\n        \"\"\"\n\n        gather_and_set_children_dependencies(self.builder)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The provided Python code defines a `ModuleVisitor` class, which is a specialized component designed to traverse and construct a detailed model of a Python module's concrete syntax tree (CST) using the `libcst` library. The primary purpose of this code is to facilitate the systematic analysis of Python source code by extracting structural elements such as imports, classes, functions, and standalone code blocks, and building a comprehensive model representation of the module. This functionality is crucial for applications that require in-depth code analysis, refactoring, or documentation generation, as it provides a structured and detailed view of the code's architecture and dependencies.\n\nKey components of the code include the `ModuleVisitor` class, which extends `BaseVisitor` to handle various CST nodes; `ModuleModelBuilder`, `ClassModelBuilder`, `FunctionModelBuilder`, and `StandaloneBlockModelBuilder`, which are responsible for constructing models for modules, classes, functions, and standalone blocks, respectively. The `ClassIDGenerationStrategy` and `FunctionIDGenerationStrategy` are employed to generate unique identifiers for classes and functions, ensuring distinct model elements. The code also utilizes a series of node processing functions from modules such as `module_functions`, `class_def_functions`, `function_def_functions`, and `standalone_code_block_functions`, which handle specific node types and their attributes.\n\nThe implementation employs the visitor pattern to traverse the CST, allowing the `ModuleVisitor` to systematically visit each node type such as `Module`, `Import`, `ImportFrom`, `ClassDef`, and `FunctionDef`. For each node, the visitor extracts relevant information, such as docstrings, headers, footers, and code content, and updates the corresponding model builder. A stack (`builder_stack`) is used to manage the current context of builders, ensuring that nested structures like classes and functions are correctly modeled. The code processes function parameters and sets dependencies among module components using the `gather_and_set_children_dependencies` function, which ensures that the relationships between different parts of the module are accurately represented.\n\nThe technical stack includes the `libcst` library, which is used for parsing and traversing Python code, providing a robust framework for CST manipulation. The `fenec` package is utilized for model building and ID generation, offering a suite of tools for constructing detailed representations of code structures. These components work in tandem to facilitate the construction of a comprehensive model of a Python module, enabling further analysis and transformation.\n\nIn the context of a larger system, this code is part of a Python parser that integrates with other components for code analysis and transformation. It interacts with model builders and ID generation strategies to produce detailed representations of code structures, which can be used for further processing, such as dependency analysis or code refactoring. The modular design of the `ModuleVisitor` and its associated components allows for easy extension and integration with other tools in a code analysis pipeline, making it a versatile component in a larger software development or maintenance ecosystem. This integration supports a wide range of applications, from automated code review systems to advanced refactoring tools, enhancing the overall capability of the software development lifecycle.",
+    "children_ids": [
+        "fenec:python_parser:visitors:module_visitor.py__*__MODULE__*__CLASS-ModuleVisitor"
+    ]
+}

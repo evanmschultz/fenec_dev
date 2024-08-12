@@ -1,0 +1,45 @@
+{
+    "function_name": "_get_full_module_path",
+    "docstring": "Recursively gets the full module path from a node and returns it as a string.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_full_module_path",
+    "file_path": "fenec/python_parser/visitors/node_processing/module_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 182,
+    "end_line_num": 195,
+    "code_content": "\n\ndef _get_full_module_path(node) -> str:\n    \"\"\"Recursively gets the full module path from a node and returns it as a string.\"\"\"\n\n    if isinstance(node, libcst.Name):\n        return node.value\n    elif isinstance(node, libcst.Attribute):\n        return common_functions.extract_code_content(node)\n    else:\n        print(f\"\\n\\nImport Node type: {type(node)}\\n\")\n        # return str(node)\n        return common_functions.extract_code_content(node)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "fenec.python_parser.visitors.node_processing.common_functions",
+                    "as_name": "common_functions",
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE"
+        }
+    ],
+    "summary": "This code snippet is part of a utility function designed to extract the full module path from a node within a syntax tree, leveraging the LibCST library for parsing and manipulating Python code. Its primary purpose is to accurately determine and return the complete module path as a string, which is crucial for tasks such as code refactoring, static analysis, or code generation that require precise module identification. The key component of this code is the `_get_full_module_path` function, which employs a recursive strategy to handle different node types, specifically `libcst.Name` and `libcst.Attribute`. When the node is a `Name`, the function directly returns its value. If the node is an `Attribute`, it utilizes the `common_functions.extract_code_content` to obtain the string representation of the node's content, ensuring accurate construction of the full module path by traversing the syntax tree nodes.\n\nThe implementation is straightforward yet effective, using a recursive pattern to navigate the syntax tree. It leverages the LibCST library, which provides robust capabilities for parsing and analyzing Python code syntax trees, allowing for precise manipulation and extraction of code elements. Additionally, the code relies on a custom module, `common_functions`, which likely contains utility functions tailored for extracting and processing code content, enhancing the modularity and reusability of the codebase. This approach ensures that the function can accurately construct the full module path by traversing the syntax tree nodes.\n\nIn the context of a larger system, this function is likely a component of a code analysis or transformation tool, where it interacts with other modules that require detailed module path information. This could include systems for automated code refactoring, static code analysis tools that check for code quality and compliance, or code generation utilities that need to resolve module dependencies accurately. By providing a reliable method for extracting module paths, this function plays a critical role in ensuring the accuracy and efficiency of these higher-level operations within the broader software development lifecycle. The technical stack includes the LibCST library for syntax tree manipulation and a custom `common_functions` module for content extraction, which together facilitate the precise and efficient handling of Python code structures.",
+    "children_ids": []
+}

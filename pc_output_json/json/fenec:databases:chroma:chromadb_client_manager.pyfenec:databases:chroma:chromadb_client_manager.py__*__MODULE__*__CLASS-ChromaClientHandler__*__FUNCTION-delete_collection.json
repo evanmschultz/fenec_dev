@@ -1,0 +1,20 @@
+{
+    "function_name": "delete_collection",
+    "docstring": "Deletes a ChromaDB collection with the given name.\n\nArgs:\n    - `name` (str): The name of the collection to delete.\n\nRaises:\n    - `ValueError`: If the collection does not exist.\n\nExamples:\n    ```Python\n    client_manager.delete_collection(\"my_collection\")\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler__*__FUNCTION-delete_collection",
+    "file_path": "fenec/databases/chroma/chromadb_client_manager.py",
+    "parent_id": "fenec:databases:chroma:chromadb_client_manager.py__*__MODULE__*__CLASS-ChromaClientHandler",
+    "block_type": "FUNCTION",
+    "start_line_num": 95,
+    "end_line_num": 117,
+    "code_content": "\ndef delete_collection(self, name: str) -> None:\n    \"\"\"\n        Deletes a ChromaDB collection with the given name.\n\n        Args:\n            - `name` (str): The name of the collection to delete.\n\n        Raises:\n            - `ValueError`: If the collection does not exist.\n\n        Examples:\n            ```Python\n            client_manager.delete_collection(\"my_collection\")\n            ```\n        \"\"\"\n\n    if self.client.get_collection(name):\n        logging.info(f\"Deleting collection {name}\")\n        self.client.delete_collection(name)\n    else:\n        raise ValueError(f\"Collection {name} does not exist.\")\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code defines a method `delete_collection` within a class, likely part of a client manager module, designed to manage collections in a ChromaDB database. The primary purpose of this method is to facilitate the deletion of a specified collection by name, thereby managing database resources effectively and maintaining the integrity of the database. The key component is the `delete_collection` method itself, which accepts a single parameter, `name`, representing the collection's name to be deleted. The implementation involves invoking the `delete_collection` method on the `self.client` object, which is an instance of a ChromaDB client, to execute the deletion operation. This method includes error handling by raising a `ValueError` if the specified collection does not exist, ensuring robustness and preventing attempts to delete non-existent collections.\n\nThe technical stack, while not explicitly detailed in the code, likely includes a ChromaDB client library, which provides the necessary interface for interacting with the ChromaDB database. This library abstracts the complexities of direct database manipulation, handling the underlying database connection and operations. In the context of a larger system, this method is part of a client manager class or module that interfaces with ChromaDB, providing essential database management functionalities such as collection deletion. It interacts with other components that manage or utilize database collections, potentially including modules for data insertion, querying, and updating. This method is crucial for maintaining the integrity and organization of the database by allowing for the removal of obsolete or unnecessary collections, thereby optimizing database performance and resource usage. In a broader system, this functionality supports efficient data lifecycle management, ensuring that the database remains clean and performant, which is vital for applications relying on timely and accurate data retrieval and storage.",
+    "children_ids": []
+}

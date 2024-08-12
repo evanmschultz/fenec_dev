@@ -1,0 +1,14 @@
+{
+    "id": "fenec:databases:chroma__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "chroma",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "fenec:databases:chroma:chromadb_collection_manager.py__*__MODULE",
+        "fenec:databases:chroma:chromadb_builder.py__*__MODULE",
+        "fenec:databases:chroma:chroma_setup.py__*__MODULE",
+        "fenec:databases:chroma:chromadb_client_manager.py__*__MODULE"
+    ],
+    "parent_id": "fenec:databases__*__DIRECTORY",
+    "summary": null
+}

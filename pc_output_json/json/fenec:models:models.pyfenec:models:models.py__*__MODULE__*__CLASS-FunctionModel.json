@@ -1,0 +1,80 @@
+{
+    "class_name": "FunctionModel",
+    "decorators": null,
+    "bases": [
+        "BaseCodeBlockModel",
+        "FunctionSpecificAttributes"
+    ],
+    "docstring": "A model for a function.\n\nAttributes:\n    - id (str): The unique identifier for the function.\n    - file_path (str): The path to the Python file that the function represents.\n    - parent_id (str | None): The identifier of the parent (usually a module or class).\n    - block_type (BlockType): The type of code block that the function represents.\n    - start_line_num (int): The line number of the first line of the function.\n    - end_line_num (int): The line number of the last line of the function.\n    - code_content (str): The string content of the function.\n    - important_comments (list[CommentModel] | None): A list of important comments in the function.\n    - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the function.\n    - summary (str | None): A summary of the function.\n    - children_ids (list[str] | None): A list of the identifiers of the children of the function.\n    - function_name (str): The name of the function.\n    - docstring (str | None): The docstring of the function.\n    - decorators (list[DecoratorModel] | None): A list of decorators for the function.\n    - parameters (ParameterListModel | None): A model representing the function's parameters.\n    - returns (str | None): A string representing the function's return annotation.\n    - is_method (bool): True if the function is a method, False otherwise.\n    - is_async (bool): True if the function is asynchronous, False otherwise.\n\nMethods:\n    - `convert_to_metadata() -> dict[str, str | int]`\n        - Converts the function model to a metadata dictionary for ChromaDB.\n    - `build_from_metadata(metadata_dict: dict[str, str | int | list[str]]) -> FunctionModel`\n        - Builds a FunctionModel from a metadata dictionary.",
+    "keywords": null,
+    "id": "fenec:models:models.py__*__MODULE__*__CLASS-FunctionModel",
+    "file_path": "fenec/models/models.py",
+    "parent_id": "fenec:models:models.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 1006,
+    "end_line_num": 1087,
+    "code_content": "\n\nclass FunctionModel(BaseCodeBlockModel, FunctionSpecificAttributes):\n    \"\"\"\n    A model for a function.\n\n    Attributes:\n        - id (str): The unique identifier for the function.\n        - file_path (str): The path to the Python file that the function represents.\n        - parent_id (str | None): The identifier of the parent (usually a module or class).\n        - block_type (BlockType): The type of code block that the function represents.\n        - start_line_num (int): The line number of the first line of the function.\n        - end_line_num (int): The line number of the last line of the function.\n        - code_content (str): The string content of the function.\n        - important_comments (list[CommentModel] | None): A list of important comments in the function.\n        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the function.\n        - summary (str | None): A summary of the function.\n        - children_ids (list[str] | None): A list of the identifiers of the children of the function.\n        - function_name (str): The name of the function.\n        - docstring (str | None): The docstring of the function.\n        - decorators (list[DecoratorModel] | None): A list of decorators for the function.\n        - parameters (ParameterListModel | None): A model representing the function's parameters.\n        - returns (str | None): A string representing the function's return annotation.\n        - is_method (bool): True if the function is a method, False otherwise.\n        - is_async (bool): True if the function is asynchronous, False otherwise.\n\n    Methods:\n        - `convert_to_metadata() -> dict[str, str | int]`\n            - Converts the function model to a metadata dictionary for ChromaDB.\n        - `build_from_metadata(metadata_dict: dict[str, str | int | list[str]]) -> FunctionModel`\n            - Builds a FunctionModel from a metadata dictionary.\n    \"\"\"\n\n    def convert_to_metadata(self) -> dict[str, str | int]:\n        \"\"\"Converts the function model to a metadata dictionary for ChromaDB.\"\"\"\n\n        return {\n            **self._convert_base_attributes_to_metadata_dict(),\n            **self._convert_function_attributes_to_metadata_dict(),\n        }\n\n    @classmethod\n    def build_from_metadata(\n        cls, metadata_dict: dict[str, str | int | list[str] | bool]\n    ) -> \"FunctionModel\":\n        \"\"\"\n        Builds a FunctionModel from a metadata dictionary.\n\n        Args:\n            - metadata_dict (dict[str, str | int | list[str]]): A dictionary containing metadata for a function.\n\n        Returns:\n            FunctionModel: An instance of FunctionModel.\n\n        Raises:\n            - ValueError: If the metadata is not a dictionary.\n            - ValueError: If the metadata is missing required keys.\n            - ValueError: If the metadata contains invalid values.\n            - Exception: If an unexpected error occurs.\n        \"\"\"\n        try:\n            if not isinstance(metadata_dict, dict):\n                raise ValueError(\"Metadata must be a dictionary.\")\n\n            function_specific_attributes: FunctionSpecificAttributes = (\n                FunctionSpecificAttributes._build_from_meta(metadata_dict)  # type: ignore # FIXME: fix type hinting error\n            )  # type: ignore # FIXME: fix type hinting error\n            base_code_block_model: BaseCodeBlockModel = (\n                BaseCodeBlockModel._build_from_metadata(metadata_dict)\n            )\n\n            return cls(\n                **function_specific_attributes.model_dump(),\n                **base_code_block_model.model_dump(),\n            )\n        except ValueError as ve:\n            logging.error(f\"Error building from metadata: {ve}\")\n            raise ve\n        except Exception as e:\n            logging.error(f\"An unexpected error occurred: {e}\")\n            raise e\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ImportModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-CommentModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ParameterListModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-BaseCodeBlockModel"
+        },
+        {
+            "code_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-FunctionSpecificAttributes"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "The `FunctionModel` class is a sophisticated component designed to encapsulate and manage metadata for Python functions within a larger codebase, facilitating their conversion into a structured format suitable for storage or further processing, such as in a database like ChromaDB. This class is significant for systems that require detailed insights into function-level metadata, supporting tasks like code analysis, documentation generation, and dependency management. Key components of the `FunctionModel` include attributes such as `id`, `file_path`, `parent_id`, `block_type`, `start_line_num`, `end_line_num`, `code_content`, `important_comments`, `dependencies`, `summary`, `children_ids`, `function_name`, `docstring`, `decorators`, `parameters`, `returns`, `is_method`, and `is_async`. The class provides two main methods: `convert_to_metadata`, which transforms the function's attributes into a metadata dictionary, and `build_from_metadata`, a class method that reconstructs a `FunctionModel` instance from a given metadata dictionary.\n\nThe implementation leverages object-oriented principles, inheriting from `BaseCodeBlockModel` and `FunctionSpecificAttributes` to ensure a modular and extensible design. The `convert_to_metadata` method combines base and function-specific attributes into a dictionary, utilizing helper methods `_convert_base_attributes_to_metadata_dict` and `_convert_function_attributes_to_metadata_dict` to streamline the conversion process. The `build_from_metadata` method validates and extracts necessary information from a metadata dictionary to instantiate a `FunctionModel`, incorporating error handling to manage invalid input scenarios by raising `ValueError` for incorrect data types or missing keys. This method also uses internal methods `_build_from_meta` and `_build_from_metadata` from the inherited classes to construct the necessary attributes, ensuring a robust and error-resilient instantiation process.\n\nThe technical stack primarily involves Python's standard library, with no external libraries explicitly mentioned, although it implies integration with a database system like ChromaDB for metadata storage. The code fits into a larger system by providing a structured way to manage and interact with function-level metadata, likely supporting features such as code analysis, documentation generation, or dependency management. It interacts with other components by serving as a bridge between raw code and its metadata representation, enabling seamless integration with systems that require detailed function-level insights. This class is crucial in a codebase that emphasizes metadata-driven development, allowing for efficient storage, retrieval, and manipulation of function-related data across various modules and services. The `FunctionModel` class, through its methods, ensures that function metadata is both comprehensive and accessible, playing a vital role in maintaining the integrity and usability of the metadata management subsystem within the larger project.",
+    "children_ids": [
+        "fenec:models:models.py__*__MODULE__*__CLASS-FunctionModel__*__FUNCTION-convert_to_metadata",
+        "fenec:models:models.py__*__MODULE__*__CLASS-FunctionModel__*__FUNCTION-build_from_metadata"
+    ]
+}

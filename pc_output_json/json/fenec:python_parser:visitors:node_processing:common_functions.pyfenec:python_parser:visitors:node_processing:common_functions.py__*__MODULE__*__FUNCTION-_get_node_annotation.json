@@ -1,0 +1,33 @@
+{
+    "function_name": "_get_node_annotation",
+    "docstring": "Retrieves the annotation of a given CSTNode.\n\nArgs:\n    - node (libcst.CSTNode): The CSTNode to retrieve the annotation from.\n\nReturns:\n    - libcst.Annotation | None: The annotation of the CSTNode if present, otherwise None.",
+    "decorators": null,
+    "parameters": null,
+    "returns": " | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_get_node_annotation",
+    "file_path": "fenec/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 206,
+    "end_line_num": 224,
+    "code_content": "\n\ndef _get_node_annotation(node: libcst.CSTNode) -> libcst.Annotation | None:\n    \"\"\"\n    Retrieves the annotation of a given CSTNode.\n\n    Args:\n        - node (libcst.CSTNode): The CSTNode to retrieve the annotation from.\n\n    Returns:\n        - libcst.Annotation | None: The annotation of the CSTNode if present, otherwise None.\n    \"\"\"\n\n    if isinstance(node, libcst.Param) or isinstance(node, libcst.AnnAssign):\n        return node.annotation\n    elif isinstance(node, libcst.Annotation):\n        return node\n    return None\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code defines a utility function `_get_node_annotation` that is integral to extracting type annotations from nodes within a Concrete Syntax Tree (CST) using the `libcst` library. The primary purpose of this function is to facilitate the retrieval of type annotations from specific CST nodes, which is essential for tasks such as static analysis, code transformation, or refactoring that require an understanding of type information embedded in Python code. Key components include the `_get_node_annotation` function itself, which employs a type-checking mechanism using Python's `isinstance` function to determine if the node is of type `libcst.Param`, `libcst.AnnAssign`, or `libcst.Annotation`. It returns the corresponding annotation attribute if present, or `None` if no annotation is found, ensuring robust handling of different node types.\n\nThe implementation leverages the `libcst` library, a powerful tool for parsing and manipulating Python code as a CST, which allows for precise and safe code modifications. This makes it particularly suitable for applications that require detailed analysis or transformation of Python code. The function's design is straightforward yet effective, utilizing conditional checks to identify and extract annotations, thereby supporting the broader goals of maintaining and improving codebases through automated analysis and transformation processes.\n\nIn the context of a larger system, this function could be integrated into a static analysis tool or a code refactoring utility. It would interact with other components responsible for parsing Python code and performing transformations or checks based on type annotations. By providing a reliable method for accessing type information, it enhances the system's ability to enforce coding standards, automate code modifications, and ultimately improve code quality. This function's ability to accurately extract type annotations makes it a valuable component in systems that aim to enhance code quality, enforce coding standards, or automate code modifications.",
+    "children_ids": []
+}

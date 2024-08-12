@@ -1,0 +1,20 @@
+{
+    "function_name": "set_is_async",
+    "docstring": "Sets the is_async attribute in the function model.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "No return annotation",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder__*__FUNCTION-set_is_async",
+    "file_path": "fenec/python_parser/model_builders/function_model_builder.py",
+    "parent_id": "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder",
+    "block_type": "FUNCTION",
+    "start_line_num": 80,
+    "end_line_num": 85,
+    "code_content": "\ndef set_is_async(self, is_async: bool) -> \"FunctionModelBuilder\":\n    \"\"\"Sets the is_async attribute in the function model.\"\"\"\n    self.function_attributes.is_async = is_async\n    return self\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code defines a method within the `FunctionModelBuilder` class, aimed at configuring the asynchronous behavior of a function model by setting the `is_async` attribute. The primary purpose of this method is to enable or disable asynchronous operations within the function model, which is essential for optimizing performance in systems that require concurrent or distributed processing. Key components include the `set_is_async` method, which takes a boolean parameter `is_async` and assigns it to the `is_async` attribute of the `function_attributes` object, an internal data structure of the `FunctionModelBuilder` class. This method returns the `FunctionModelBuilder` instance itself, supporting method chaining, a design pattern that enhances code readability and conciseness by allowing multiple configuration calls to be linked in a single statement.\n\nThe implementation is straightforward, involving a direct assignment of the `is_async` attribute and a return statement. This simplicity indicates that the `FunctionModelBuilder` class is designed for ease of configuration, enabling developers to efficiently set various attributes of a function model. The method's design supports a fluent interface, facilitating the chaining of multiple configuration methods to streamline the setup process. The technical stack is minimal, as the code leverages Python's built-in capabilities without relying on external libraries or frameworks.\n\nIn the context of a larger system, this method is likely part of a comprehensive function model configuration framework, where it interacts with other components to define the behavior of function models. By allowing developers to specify whether a function should operate asynchronously, this method plays a crucial role in systems that demand high performance and scalability, such as web servers, data processing pipelines, or distributed computing environments. It likely interfaces with other configuration methods and components within the `FunctionModelBuilder` class to provide a versatile and robust toolset for building and managing function models in complex software systems. This method's ability to toggle asynchronous behavior is vital for optimizing resource utilization and ensuring responsive system performance in environments where concurrency is a key requirement.",
+    "children_ids": []
+}

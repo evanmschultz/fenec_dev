@@ -1,0 +1,20 @@
+{
+    "function_name": "_get_local_import_summary",
+    "docstring": "Retrieves the summary of a local import to be used in the prompt.\n\nArgs:\n    - `dependency` (ImportModel): The import to retrieve the summary for.\n\nReturns:\n    - `str | None`: The summary of the local import or None if the import is not local.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str | None",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager__*__FUNCTION-_get_local_import_summary",
+    "file_path": "fenec/ai_services/summarizer/graph_db_summarization_manager.py",
+    "parent_id": "fenec:ai_services:summarizer:graph_db_summarization_manager.py__*__MODULE__*__CLASS-GraphDBSummarizationManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 393,
+    "end_line_num": 416,
+    "code_content": "\ndef _get_local_import_summary(self, dependency: ImportModel) -> str | None:\n    \"\"\"\n        Retrieves the summary of a local import to be used in the prompt.\n\n        Args:\n            - `dependency` (ImportModel): The import to retrieve the summary for.\n\n        Returns:\n            - `str | None`: The summary of the local import or None if the import is not local.\n        \"\"\"\n    if model := next(\n        (m for m in self.all_models_tuple if m.id == dependency.local_module_id),\n        None,\n    ):\n        if isinstance(model, DirectoryModel):\n            return None\n        return (\n            model.summary\n            if model.summary\n            else f\"Imported module ({dependency.local_module_id}) code content:\\n{model.code_content}\\n\"\n        )\n    return None\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code defines a method `_get_local_import_summary` within a class, designed to retrieve a summary of a local import based on a given `ImportModel` instance. The primary purpose of this function is to determine if a specified import is local and, if so, return its summary, which is crucial for generating documentation or facilitating code analysis. Key components include the `ImportModel` class, which encapsulates the details of the import to be summarized, and the `DirectoryModel` class, which is used to identify directory-type models that do not require a summary. The implementation involves iterating over a tuple of models, `self.all_models_tuple`, using a generator expression to efficiently find a model with an ID matching the `local_module_id` of the provided `dependency`. If a matching model is found and it is not an instance of `DirectoryModel`, the function returns the model's summary; otherwise, it returns `None`. This approach leverages Python's type hinting for clarity and uses conditional expressions for concise logic flow. The technical stack primarily involves Python's built-in features, such as type hinting and generator expressions, to ensure efficient and readable code. In the context of a larger system, this function likely interacts with a collection of models representing various imports, facilitating the generation of summaries for local modules. This functionality could be integral to a documentation generation tool or a code analysis system, where understanding the structure and dependencies of a codebase is essential. The method's design supports modularity and scalability, allowing it to be easily integrated into larger systems that manage and analyze code dependencies.",
+    "children_ids": []
+}

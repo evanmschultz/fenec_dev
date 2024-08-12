@@ -1,0 +1,28 @@
+{
+    "function_name": "_get_python_files",
+    "docstring": "Gets all Python files in the specified directory.",
+    "decorators": [
+        {
+            "content": "@logging_decorator(message=\"Getting Python files\")",
+            "decorator_name": "logging_decorator",
+            "decorator_args": [
+                "message=\"Getting Python files\""
+            ]
+        }
+    ],
+    "parameters": null,
+    "returns": "list[str]",
+    "is_method": true,
+    "is_async": false,
+    "id": "fenec:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager__*__FUNCTION-_get_python_files",
+    "file_path": "fenec/python_parser/visitor_manager/visitor_manager.py",
+    "parent_id": "fenec:python_parser:visitor_manager:visitor_manager.py__*__MODULE__*__CLASS-VisitorManager",
+    "block_type": "FUNCTION",
+    "start_line_num": 199,
+    "end_line_num": 206,
+    "code_content": "\n@logging_decorator(message=\"Getting Python files\")\ndef _get_python_files(self) -> list[str]:\n    \"\"\"Gets all Python files in the specified directory.\"\"\"\n\n    all_files: list[str] = self._walk_directories()\n    return self._filter_python_files(all_files)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This code snippet is part of a larger system designed for managing and analyzing code files, specifically focusing on the retrieval of Python files from a specified directory. Its primary purpose is to filter and list Python files, which can then be utilized for further processing tasks such as static analysis, code quality assessments, or automated testing. The main function, `_get_python_files`, is responsible for orchestrating the retrieval of Python files. It is enhanced with a `@logging_decorator`, which logs the operation to improve traceability and aid in debugging efforts. This function relies on two auxiliary methods: `_walk_directories`, which traverses the directory structure to collect all files, and `_filter_python_files`, which refines this list to include only files with a `.py` extension, effectively filtering out non-Python files.\n\nThe implementation employs a decorator pattern to seamlessly integrate logging functionality, allowing the core logic of the method to remain unaltered while still providing comprehensive logging. This design choice highlights a separation of concerns, where logging is decoupled from the primary functionality, promoting cleaner and more maintainable code. The technical stack includes a custom `logging_decorator`, which is assumed to be part of a broader logging framework within the codebase, providing structured logging capabilities that are likely configurable to suit different logging levels or outputs.\n\nIn the context of a larger project, this code is likely a component of a file management or code analysis tool. It interacts with other system components that require a curated list of Python files, such as modules responsible for performing static code analysis, conducting code quality assessments, or executing automated test suites. By providing a reliable mechanism to gather Python files, this code snippet plays a crucial role in the preprocessing stage of these operations, ensuring that only relevant files are passed on for further analysis or testing. This modular approach allows for easy integration and scalability within the larger system, supporting various workflows that depend on accurate file retrieval.",
+    "children_ids": []
+}

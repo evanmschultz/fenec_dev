@@ -1,0 +1,36 @@
+{
+    "function_name": "_process_type_annotation_expression",
+    "docstring": "Process the type annotation expression and return a string representation recursively.\n\nArgs:\n    - expression (libcst.BaseExpression): The type annotation expression to process.\n\nReturns:\n    - str: The string representation of the processed type annotation expression.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "str",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_process_type_annotation_expression",
+    "file_path": "fenec/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 224,
+    "end_line_num": 246,
+    "code_content": "\n\ndef _process_type_annotation_expression(expression: libcst.BaseExpression) -> str:\n    \"\"\"\n    Process the type annotation expression and return a string representation recursively.\n\n    Args:\n        - expression (libcst.BaseExpression): The type annotation expression to process.\n\n    Returns:\n        - str: The string representation of the processed type annotation expression.\n    \"\"\"\n\n    if isinstance(expression, libcst.Subscript):\n        return _extract_generic_types_from_subscript(expression)\n    elif isinstance(expression, libcst.BinaryOperation):\n        left: str = _process_type_annotation_expression(expression.left)\n        right: str = _process_type_annotation_expression(expression.right)\n        return f\"{left} | {right}\"\n    elif isinstance(expression, libcst.Name):\n        return expression.value\n    return \"\"\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-_extract_generic_types_from_subscript"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code is part of a system designed to process and convert type annotation expressions within a Python abstract syntax tree (AST) into their string representations, utilizing the LibCST library. The primary purpose of this code is to facilitate tasks such as code analysis, refactoring, or documentation generation by providing a mechanism to interpret and represent type annotations in a human-readable format. The key component of this code is the `_process_type_annotation_expression` function, which serves as the main recursive processor for various types of expressions. It specifically handles `libcst.Subscript` to extract and process generic types, `libcst.BinaryOperation` to manage binary operations within type annotations, and `libcst.Name` to directly return the name value of simple type annotations. The implementation employs a recursive strategy to traverse and process AST nodes, using Python's `isinstance` function for type checking to determine the specific type of expression and apply the appropriate processing logic. This approach ensures that each node in the AST is correctly interpreted and converted into its string representation.\n\nThe technical stack is centered around the LibCST library, which provides a concrete syntax tree for Python that is both mutable and capable of preserving code formatting. This makes it particularly suitable for tasks involving code modification and analysis, as it allows for precise manipulation of Python code while maintaining its original structure and style. In the context of a larger system, this function could be integrated into a code analysis tool or a refactoring engine. It would interact with other components responsible for parsing Python code into ASTs, providing detailed type information necessary for further processing or transformation tasks. This function's ability to accurately interpret and represent type annotations is crucial for systems that require a deep understanding of code semantics, such as automated refactoring tools, static analysis frameworks, or documentation generators. By converting complex type annotations into a standardized string format, this code facilitates the integration and interoperability of various components within a larger codebase, enhancing the overall functionality and efficiency of the system.",
+    "children_ids": []
+}

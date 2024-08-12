@@ -1,0 +1,13 @@
+{
+    "id": "fenec:databases:arangodb__*__DIRECTORY",
+    "block_type": "DIRECTORY",
+    "directory_name": "arangodb",
+    "sub_directories_ids": [],
+    "children_ids": [
+        "fenec:databases:arangodb:arangodb_connector.py__*__MODULE",
+        "fenec:databases:arangodb:helper_functions.py__*__MODULE",
+        "fenec:databases:arangodb:arangodb_manager.py__*__MODULE"
+    ],
+    "parent_id": "fenec:databases__*__DIRECTORY",
+    "summary": null
+}

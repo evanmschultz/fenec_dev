@@ -1,0 +1,36 @@
+{
+    "class_name": "ImportModuleType",
+    "decorators": null,
+    "bases": [
+        "str",
+        "Enum"
+    ],
+    "docstring": "Enum of import module types.",
+    "keywords": null,
+    "id": "fenec:models:enums.py__*__MODULE__*__CLASS-ImportModuleType",
+    "file_path": "fenec/models/enums.py",
+    "parent_id": "fenec:models:enums.py__*__MODULE",
+    "block_type": "CLASS",
+    "start_line_num": 2,
+    "end_line_num": 13,
+    "code_content": "\n\nclass ImportModuleType(str, Enum):\n    \"\"\"Enum of import module types.\"\"\"\n\n    STANDARD_LIBRARY = \"STANDARD_LIBRARY\"\n    LOCAL = \"LOCAL\"\n    THIRD_PARTY = \"THIRD_PARTY\"\n\n    def __str__(self) -> str:\n        return self.value\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "Enum",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "enum",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "This code defines an enumeration class, `ImportModuleType`, which categorizes Python import modules into three distinct types: standard library imports, local imports, and third-party imports. The primary purpose of this class is to enhance code organization and readability by providing a structured and type-safe way to classify import statements, which is particularly useful in large codebases where managing dependencies and understanding module origins is crucial. Key components include the `ImportModuleType` class itself, which inherits from both `str` and `Enum`. This dual inheritance allows enumeration members to be used interchangeably with strings, facilitating seamless integration with existing code that expects string representations of module types. The `__str__` method is overridden to return the enumeration value, ensuring that the string representation of each enum member is its value, which aids in logging and debugging.\n\nThe implementation leverages Python's `Enum` class to create a type-safe enumeration, ensuring that only predefined module types can be used, thus preventing errors related to invalid module type specifications. By inheriting from `str`, the class allows for easy comparison and manipulation of module type values as strings, which is a common requirement in code analysis and refactoring tools. The `__str__` method is a crucial component, providing a human-readable string representation of the enum members, which enhances usability in debugging, logging, and user interfaces. The technical stack is minimal, relying solely on Python's standard library, specifically the `enum` module, which provides the foundational functionality for creating enumerations. This choice of using the standard library ensures compatibility and reduces external dependencies, which is advantageous in maintaining a lightweight and efficient codebase.\n\nIn the context of a larger project, this enumeration class could be integrated into a code analysis or refactoring tool designed to classify and manage import statements. It could interact with other components that parse or modify Python code, such as AST (Abstract Syntax Tree) parsers or code formatters, to automate the organization of imports based on their type. This functionality is particularly significant in projects that aim to enforce coding standards or improve code readability by systematically organizing imports. Additionally, it could be used in dependency management systems to track and report on the types of modules used across a project, aiding in dependency audits and ensuring compliance with project guidelines regarding the use of third-party libraries. The class's design supports integration with tools that require precise import categorization, thereby contributing to the overall maintainability and clarity of the codebase.",
+    "children_ids": [
+        "fenec:models:enums.py__*__MODULE__*__CLASS-ImportModuleType__*__FUNCTION-__str__"
+    ]
+}

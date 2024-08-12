@@ -1,0 +1,120 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "re",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Callable",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:class_model_builder.py__*__MODULE__*__CLASS-ClassModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.class_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:class_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "FunctionModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE__*__CLASS-FunctionModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.function_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:function_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ModuleModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.module_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:module_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "StandaloneBlockModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE__*__CLASS-StandaloneBlockModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.standalone_block_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:standalone_block_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "DependencyModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DependencyModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE",
+    "file_path": "fenec/python_parser/visitors/node_processing/gather_dependencies.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 239,
+    "code_content": "import re\nfrom typing import Callable, Sequence\n\nfrom fenec.python_parser.model_builders.class_model_builder import ClassModelBuilder\nfrom fenec.python_parser.model_builders.function_model_builder import (\n    FunctionModelBuilder,\n)\nfrom fenec.python_parser.model_builders.module_model_builder import (\n    ModuleModelBuilder,\n)\nfrom fenec.python_parser.model_builders.standalone_block_model_builder import (\n    StandaloneBlockModelBuilder,\n)\nfrom fenec.models.models import ImportModel, DependencyModel\n\n\ndef gather_and_set_children_dependencies(module_builder: ModuleModelBuilder) -> None:\n    \"\"\"\n    Gathers and sets dependencies for each child code block in the module.\n\n    This function iterates over each child builder of the module builder, gathers import and non-import dependencies,\n    and sets these dependencies for each block.\n\n    Args:\n        - module_builder (ModuleModelBuilder): A builder object representing the entire module.\n\n    Example:\n        ```Python\n        module_builder = ModuleModelBuilder(...)  # initialize with necessary parameters\n        gather_and_set_children_dependencies(module_builder)\n        # After execution, each child block builder of the module_builder will have its dependencies set.\n        ```\n    \"\"\"\n\n    for block_builder in module_builder.child_builders:\n        block_dependencies: list[ImportModel | DependencyModel] = []\n        code_content: str = block_builder.common_attributes.code_content\n\n        import_dependencies: list[ImportModel] = _gather_import_dependencies(\n            module_builder.module_attributes.imports, code_content\n        )\n        block_dependencies.extend(import_dependencies)\n\n        non_import_dependencies: list[DependencyModel] = (\n            _gather_non_import_dependencies(\n                module_builder.child_builders,\n                block_builder,\n                code_content,\n                _create_module_dependency_model,\n            )\n        )\n        block_dependencies.extend(non_import_dependencies)\n\n        block_builder.set_dependencies(block_dependencies)\n\n\ndef _gather_import_dependencies(\n    imports: list[ImportModel] | None, code_content: str\n) -> list[ImportModel]:\n    \"\"\"\n    Gathers import dependencies from the provided code content.\n\n    This function checks for the presence of import names (and their aliases) in the given code content\n    and returns a list of import models that are dependencies for the code block.\n\n    Args:\n        - imports (list[ImportModel] | None): A list of import models to check against the code content.\n        - code_content (str): The string content of the code block being analyzed.\n\n    Returns:\n        - list[ImportModel]: A list of import models that the code content depends on.\n    \"\"\"\n\n    block_dependencies: list[ImportModel] = []\n\n    if imports:\n        for import_model in imports:\n            for import_name_model in import_model.import_names:\n                if import_name_model.as_name:\n                    if import_name_model.as_name in code_content:\n                        block_dependencies.append(import_model)\n\n                if import_name_model.name in code_content:\n                    block_dependencies.append(import_model)\n\n    return block_dependencies\n\n\ndef _get_standalone_block_dependency(\n    builder: StandaloneBlockModelBuilder,\n    code_content: str,\n    dependency_creator: Callable[[str], DependencyModel],\n) -> DependencyModel | None:\n    \"\"\"\n    Identifies if the given standalone block is a dependency based on variable usage.\n\n    This function checks if any of the variable assignments in the standalone block are used in the given code content.\n    If so, it returns the ID of the standalone block builder.\n\n    Args:\n        - builder (StandaloneBlockModelBuilder): The standalone block builder to check for dependencies.\n        - code_content (str): The code content to analyze for variable usage.\n        - dependency_creator (Callable[[str], DependencyModel]): A callable function to create a DependencyModel.\n\n    Returns:\n        - DependencyModel | None: The ID of the standalone block builder if a dependency is found, otherwise None.\n    \"\"\"\n\n    variables: list[str] | None = (\n        builder.standalone_block_attributes.variable_assignments\n    )\n    if variables:\n        for variable in variables:\n            if re.search(rf\"\\b{variable}\\b\\s*=\", code_content) is None and re.search(\n                rf\"\\b{variable}\\b\", code_content\n            ):\n                return dependency_creator(builder.id)\n\n\ndef _gather_standalone_block_dependency_for_standalone_block(\n    builder: StandaloneBlockModelBuilder,\n    code_content: str,\n    dependency_creator: Callable[[str], DependencyModel],\n) -> DependencyModel | None:\n    \"\"\"\n    Determines if a given standalone block is a dependency for another standalone block.\n\n    This function checks if any of the variable assignments in the provided standalone block\n    are present in the given code content of another standalone block.\n\n    Args:\n        - builder (StandaloneBlockModelBuilder): The standalone block builder to check for dependencies.\n        - code_content (str): The code content of another standalone block to analyze.\n\n    Returns:\n        - DependencyModel | None: The ID of the standalone block builder if a dependency is found, otherwise None.\n    \"\"\"\n\n    variables: list[str] | None = (\n        builder.standalone_block_attributes.variable_assignments\n    )\n    if variables:\n        for variable in variables:\n            if variable in code_content:\n                return dependency_creator(builder.id)\n\n\ndef _not_same_builder(\n    builder: ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder,\n    block_builder: (\n        ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder\n    ),\n) -> bool:\n    \"\"\"\n    Checks if the given builders are not the same, returning boolean.\n\n    Args:\n        - builder (ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder): The first builder to compare.\n        - block_builder (ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder): The second builder to compare.\n\n    Returns:\n        - bool: True if the builders are not the same, False otherwise.\n    \"\"\"\n\n    return builder != block_builder\n\n\ndef _gather_non_import_dependencies(\n    children_builders: Sequence[\n        ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder\n    ],\n    block_builder: (\n        ClassModelBuilder | FunctionModelBuilder | StandaloneBlockModelBuilder\n    ),\n    code_content: str,\n    dependency_creator: Callable[[str], DependencyModel],\n) -> list[DependencyModel]:\n    \"\"\"\n    Gather non-import dependencies from the given `children_builders` and `block_builder`\n    based on the provided `code_content`.\n\n    Args:\n        - children_builders (Sequence): List of builders representing child nodes.\n        - block_builder: Builder representing the current block.\n        - code_content (str): Content of the code.\n        - dependency_creator (Callable[[str], DependencyModel]): A callable function to create a DependencyModel.\n\n    Returns:\n        - list[DependencyModel]: List of dependencies.\n    \"\"\"\n\n    block_dependencies: list[DependencyModel] = []\n    for builder in children_builders:\n        if _not_same_builder(builder, block_builder):\n            if isinstance(builder, ClassModelBuilder):\n                if builder.class_attributes.class_name in code_content:\n                    module_dependency = dependency_creator(builder.id)\n                    block_dependencies.append(module_dependency)\n\n            elif isinstance(builder, FunctionModelBuilder):\n                if builder.function_attributes.function_name in code_content:\n                    module_dependency = dependency_creator(builder.id)\n                    block_dependencies.append(module_dependency)\n\n            elif isinstance(builder, StandaloneBlockModelBuilder) and isinstance(\n                block_builder, StandaloneBlockModelBuilder\n            ):\n                module_dependency: DependencyModel | None = (\n                    _gather_standalone_block_dependency_for_standalone_block(\n                        builder, code_content, dependency_creator\n                    )\n                )\n                if module_dependency:\n                    block_dependencies.append(module_dependency)\n\n            # TODO: Improve logic to find variable dependencies\n            elif isinstance(builder, StandaloneBlockModelBuilder):\n                module_dependency = _get_standalone_block_dependency(\n                    builder, code_content, dependency_creator\n                )\n                if module_dependency:\n                    block_dependencies.append(module_dependency)\n\n    return block_dependencies\n\n\ndef _create_module_dependency_model(module_code_block_id: str) -> DependencyModel:\n    \"\"\"\n    Creates a DependencyModel for a module based on its code block ID.\n\n    Args:\n        - module_code_block_id (str): The code block ID of the module.\n\n    Returns:\n        - DependencyModel: A DependencyModel instance for the module.\n    \"\"\"\n\n    return DependencyModel(code_block_id=module_code_block_id)\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "This Python code is part of a sophisticated system designed to analyze and manage dependencies among code blocks within a module, focusing on both import and non-import dependencies. Its primary purpose is to facilitate the organization and management of code dependencies, which is crucial for maintaining modularity and understanding code interactions within a larger system. This functionality is significant in scenarios such as code analysis, refactoring, or dependency management, where understanding these dependencies can aid in optimizing and maintaining the codebase. Key components include the `gather_and_set_children_dependencies` function, which orchestrates the dependency gathering process by iterating over each child builder of the `ModuleModelBuilder` and setting dependencies for each block; `_gather_import_dependencies` for identifying import-related dependencies by checking for the presence of import names and their aliases in the code content; `_gather_non_import_dependencies` for detecting dependencies based on code content and variable usage, utilizing helper functions like `_get_standalone_block_dependency` and `_gather_standalone_block_dependency_for_standalone_block` to identify dependencies in standalone blocks; `_not_same_builder` to ensure builders are not the same when comparing; and `_create_module_dependency_model` for creating dependency models based on module code block IDs.\n\nThe implementation employs a modular design pattern, leveraging builder classes such as `ClassModelBuilder`, `FunctionModelBuilder`, and `StandaloneBlockModelBuilder` to encapsulate different code block types. It uses a combination of string matching and builder comparisons to identify dependencies, iterating over child builders and checking for class names, function names, and variable assignments within the code content. The code also uses a callable function to create `DependencyModel` instances, which are then appended to the list of block dependencies. The technical stack includes the `re` module for regular expressions and type hinting from `typing`, alongside custom classes from the `fenec` library, which provide structured models for imports and dependencies.\n\nIn the context of a larger system, this code is part of a module-building process, where it ensures that each code block within a module is aware of its dependencies, facilitating modular and maintainable code development. This function interacts with other components by modifying the state of `ModuleModelBuilder` instances, which are presumably used elsewhere in the system to compile or analyze code modules. This process is crucial for maintaining the integrity and functionality of the module, as it ensures that all necessary components are available and correctly linked, supporting a seamless integration into the larger codebase. By identifying dependencies, the system can ensure that changes in one block do not inadvertently affect others, thereby maintaining the integrity and functionality of the overall codebase. This code is likely part of a larger code analysis or transformation tool that manages dependencies between modular code blocks, ensuring that each block has its necessary import and non-import dependencies correctly identified and assigned.",
+    "children_ids": [
+        "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-gather_and_set_children_dependencies",
+        "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_gather_import_dependencies",
+        "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_get_standalone_block_dependency",
+        "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_gather_standalone_block_dependency_for_standalone_block",
+        "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_not_same_builder",
+        "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_gather_non_import_dependencies",
+        "fenec:python_parser:visitors:node_processing:gather_dependencies.py__*__MODULE__*__FUNCTION-_create_module_dependency_model"
+    ]
+}

@@ -1,0 +1,111 @@
+{
+    "function_name": "process_import_from",
+    "docstring": "Processes an ImportFrom node to create an ImportModel.\n\nArgs:\n    - node (libcst.ImportFrom): The ImportFrom node to process.\n\nReturns:\n    - ImportModel: An ImportModel representing the processed import from statement.\n\nExample:\n    ```Python\n    import_model = process_import_from(libcst.ImportFrom(module=libcst.Name(\"module\"), names=[libcst.ImportAlias(name=libcst.Name(\"submodule\"))]))\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "ImportModel",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-process_import_from",
+    "file_path": "fenec/python_parser/visitors/node_processing/module_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 53,
+    "end_line_num": 83,
+    "code_content": "\n\ndef process_import_from(node: libcst.ImportFrom) -> ImportModel:\n    \"\"\"\n    Processes an ImportFrom node to create an ImportModel.\n\n    Args:\n        - node (libcst.ImportFrom): The ImportFrom node to process.\n\n    Returns:\n        - ImportModel: An ImportModel representing the processed import from statement.\n\n    Example:\n        ```Python\n        import_model = process_import_from(libcst.ImportFrom(module=libcst.Name(\"module\"), names=[libcst.ImportAlias(name=libcst.Name(\"submodule\"))]))\n        ```\n    \"\"\"\n\n    module_name: str | None = (\n        _get_full_module_path(node.module) if node.module else None\n    )\n    import_names: list[ImportNameModel] = _build_import_from_name_models(node)\n    import_module_type: ImportModuleType = _get_import_from_module_type(module_name)\n\n    import_model = ImportModel(\n        import_names=import_names,\n        imported_from=module_name,\n        import_module_type=import_module_type,\n    )\n    return import_model\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-process_import"
+        },
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_import_from_module_type"
+        },
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_get_full_module_path"
+        },
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:module_functions.py__*__MODULE__*__FUNCTION-_build_import_from_name_models"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportNameModel",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "ImportModuleType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        }
+    ],
+    "summary": "The code defines a function `process_import_from` that serves the primary purpose of transforming an `ImportFrom` node from the `libcst` library into an `ImportModel`, which encapsulates the details of a Python import statement. This transformation is crucial for static analysis tools or code transformation frameworks that require a structured representation of import statements for further analysis or manipulation. Key components of this function include: `process_import_from`, which orchestrates the transformation process; `_get_full_module_path`, a helper function that extracts the full module path from the `ImportFrom` node; `_build_import_from_name_models`, which constructs a list of `ImportNameModel` instances representing the imported names; and `_get_import_from_module_type`, which determines the type of the import module. These components collectively work to instantiate an `ImportModel` object, encapsulating the import details such as the names being imported, the module they are imported from, and the type of import, which are essential for downstream processing.\n\nThe implementation leverages the `libcst` library, which provides a concrete syntax tree (CST) for Python code, allowing for precise parsing and manipulation of Python code structures. This is particularly advantageous over traditional abstract syntax trees (ASTs) as it retains formatting information, making it suitable for tools that need to analyze or refactor Python code while preserving its original structure and style. The function employs modern Python features such as type hints and union types (e.g., `str | None`) to enhance code readability and maintainability. The `ImportModel` and related data structures are likely part of a custom framework or library designed to model and analyze Python code imports.\n\nIn terms of the technical stack, the code relies heavily on the `libcst` library for parsing and manipulating Python code as a CST. This library is integral to the function's ability to accurately process and transform import statements. The `ImportModel` serves as a structured data model that facilitates sophisticated analysis and manipulation of Python code, supporting tasks such as dependency resolution, import optimization, or codebase restructuring.\n\nWithin the larger project or system, this function is likely a component of a static analysis tool or a code transformation framework. It interacts with other components that analyze or modify Python code based on its import structure, potentially feeding into modules that perform dependency analysis, code refactoring, or compliance checks. By converting import statements into a structured model, it enables more advanced analysis and manipulation of Python code, thereby supporting the overall goal of maintaining and optimizing large codebases. This function's role is pivotal in ensuring that import statements are accurately represented and processed, which is fundamental for any system that aims to automate or enhance code quality and maintainability.",
+    "children_ids": []
+}

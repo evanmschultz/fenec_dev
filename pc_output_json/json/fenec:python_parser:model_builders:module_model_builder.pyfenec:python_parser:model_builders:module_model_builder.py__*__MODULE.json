@@ -1,0 +1,129 @@
+{
+    "docstring": null,
+    "header": [],
+    "footer": [],
+    "imports": [
+        {
+            "import_names": [
+                {
+                    "name": "Union",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "ctypes",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "TYPE_CHECKING",
+                    "as_name": null,
+                    "local_block_id": null
+                },
+                {
+                    "name": "Any",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BaseModelBuilder",
+                    "as_name": null,
+                    "local_block_id": "fenec:python_parser:model_builders:base_model_builder.py__*__MODULE__*__CLASS-BaseModelBuilder"
+                }
+            ],
+            "imported_from": "fenec.python_parser.model_builders.base_model_builder",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:python_parser:model_builders:base_model_builder.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "logging_decorator",
+                    "as_name": null,
+                    "local_block_id": "fenec:utilities:logger:decorators.py__*__MODULE__*__FUNCTION-logging_decorator"
+                }
+            ],
+            "imported_from": "fenec.utilities.logger.decorators",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:utilities:logger:decorators.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ImportModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ImportModel"
+                },
+                {
+                    "name": "ModuleSpecificAttributes",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ModuleSpecificAttributes"
+                },
+                {
+                    "name": "ModuleModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ModuleModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "BlockType",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:enums.py__*__MODULE__*__CLASS-BlockType"
+                }
+            ],
+            "imported_from": "fenec.models.enums",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:enums.py__*__MODULE"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "ClassModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-ClassModel"
+                },
+                {
+                    "name": "FunctionModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-FunctionModel"
+                },
+                {
+                    "name": "StandaloneCodeBlockModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-StandaloneCodeBlockModel"
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        }
+    ],
+    "id": "fenec:python_parser:model_builders:module_model_builder.py__*__MODULE",
+    "file_path": "fenec/python_parser/model_builders/module_model_builder.py",
+    "parent_id": "fenec:python_parser:model_builders__*__DIRECTORY",
+    "block_type": "MODULE",
+    "start_line_num": 1,
+    "end_line_num": 153,
+    "code_content": "from ctypes import Union\nfrom typing import TYPE_CHECKING, Any\n\nfrom fenec.python_parser.model_builders.base_model_builder import BaseModelBuilder\n\nfrom fenec.utilities.logger.decorators import logging_decorator\nfrom fenec.models.models import (\n    ModuleModel,\n    ImportModel,\n    ModuleSpecificAttributes,\n)\nfrom fenec.models.enums import BlockType\n\n\nfrom fenec.models.models import (\n    ClassModel,\n    FunctionModel,\n    StandaloneCodeBlockModel,\n)\n\n\nclass ModuleModelBuilder(BaseModelBuilder):\n    \"\"\"\n    A builder class for constructing a model of a Python module.\n\n    This class extends BaseModelBuilder and specializes in building a detailed model of a Python module, capturing various aspects such as the module's docstring, header content, footer content, and imports. It allows for the incremental construction of the module model by adding or setting various components.\n\n    Attributes:\n        - module_attributes (ModuleSpecificAttributes): An instance containing attributes specific to a module, like file path, docstring, header, footer, and imports.\n\n    Args:\n        - id (str): The unique identifier for the module model.\n        - file_path (str): The file path of the module being modeled.\n\n    Example:\n        ```Python\n        module_builder = ModuleModelBuilder(id='module1', file_path='/path/to/module.py')\n        module_builder.set_docstring(\"This is a docstring\").add_import(some_import_model)\n        # Configures the module builder with a docstring and an import.\n        ```\n    \"\"\"\n\n    def __init__(self, id: str, file_path: str, parent_id: str) -> None:\n        super().__init__(\n            id=id, block_type=BlockType.MODULE, parent_id=parent_id, file_path=file_path\n        )\n\n        self.module_attributes = ModuleSpecificAttributes(\n            docstring=None,\n            header=None,\n            footer=None,\n            imports=None,\n        )\n\n    def set_docstring(self, docstring: str | None) -> \"ModuleModelBuilder\":\n        \"\"\"Set the docstring.\"\"\"\n        if docstring:\n            self.module_attributes.docstring = docstring\n        return self\n\n    def set_header_content(self, header_content: list[str]) -> \"ModuleModelBuilder\":\n        \"\"\"Set the header.\"\"\"\n        if not self.module_attributes.header:\n            self.module_attributes.header = []\n        for line in header_content:\n            self.module_attributes.header.append(line)\n        return self\n\n    def set_footer_content(self, footer_content: list[str]) -> \"ModuleModelBuilder\":\n        \"\"\"Set the footer.\"\"\"\n        if not self.module_attributes.footer:\n            self.module_attributes.footer = []\n        for line in footer_content:\n            self.module_attributes.footer.append(line)\n        return self\n\n    def add_import(self, import_model: ImportModel) -> \"ModuleModelBuilder\":\n        \"\"\"Add an import to the imports list.\"\"\"\n        if not self.module_attributes.imports:\n            self.module_attributes.imports = []\n        # if \"OpenAISummarizer\" in [name.name for name in import_model.import_names]:\n        #     print(\"Adding OpenAISummarizer import\")\n        self.module_attributes.imports.append(import_model)\n        return self\n\n    def update_import(\n        self, updated_import_model: ImportModel, old_import_model: ImportModel\n    ) -> \"ModuleModelBuilder\":\n        \"\"\"\n        Update an import in the imports list.\n\n        Loops through the imports list and replaces the old import with the updated import.\n\n        Args:\n            updated_import_model (ImportModel): The updated import model.\n            old_import_model\n\n        Returns:\n            ModuleModelBuilder: The module model builder instance.\n\n        Raises:\n            Exception: If the import to be updated is not found.\n        \"\"\"\n        if self.module_attributes.imports:\n            import_to_remove: ImportModel | None = None\n            for existing_import in self.module_attributes.imports:\n                if (\n                    existing_import.import_names == old_import_model.import_names\n                    and existing_import.imported_from == old_import_model.imported_from\n                    and existing_import.import_module_type\n                    == old_import_model.import_module_type\n                ):\n                    import_to_remove = existing_import\n                    # if \"OpenAISummarizer\" in [\n                    #     name.name for name in existing_import.import_names\n                    # ]:\n                    #     print(\"Updating OpenAISummarizer import\")\n                    break\n\n            if not import_to_remove:\n                # raise Exception(f\"Could not find import to remove: {old_import_model}\")\n                # print(f\"Could not find import to remove: {old_import_model}\")\n                ...\n            else:\n                self.module_attributes.imports.remove(import_to_remove)\n                self.module_attributes.imports.append(updated_import_model)\n        else:\n            raise Exception(\n                f\"No imports in the builders imports list: {self.module_attributes.imports}\"\n            )\n        return self\n\n    def _get_module_specific_attributes(self) -> dict[str, Any]:\n        \"\"\"Get the module specific attributes.\"\"\"\n        return self.module_attributes.model_dump()\n\n    @logging_decorator(message=\"Building module model\")\n    def build(\n        self,\n    ) -> tuple[\n        ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None\n    ]:\n        \"\"\"Builds and returns the module model instance after building and setting the children models.\"\"\"\n        self.build_children()\n        self.set_children_ids()\n        return (\n            ModuleModel(\n                **self._get_common_attributes(),\n                **self._get_module_specific_attributes(),\n            ),\n            self.child_models,\n        )\n",
+    "important_comments": null,
+    "dependencies": null,
+    "summary": "The `ModuleModelBuilder` class is a crucial component of a Python code analysis framework, designed to construct a detailed and structured representation of a Python module. Its primary purpose is to facilitate the parsing, modeling, and transformation of Python code by capturing essential elements of a module, such as its docstring, header, footer, and import statements. This class extends the `BaseModelBuilder`, inheriting its foundational structure while introducing specialized functionalities tailored to module modeling. Key components include the `__init__` method, which initializes the builder with a unique identifier, file path, and parent ID, and sets up an instance of `ModuleSpecificAttributes` to store module-specific data; methods like `set_docstring`, `set_header_content`, and `set_footer_content`, which allow for setting the module's docstring, header, and footer, respectively; `add_import` and `update_import` methods, which manage the module's import statements by adding new imports or updating existing ones; `_get_module_specific_attributes`, which retrieves the module-specific attributes for model construction; and the `build` method, which constructs and returns the module model along with its child models, utilizing a logging decorator to monitor the build process.\n\nThe implementation leverages object-oriented programming principles, particularly the builder pattern, to enable a step-by-step construction of the module model. This pattern supports the flexible addition and modification of module attributes, promoting a modular and extensible design. The class uses a dictionary-like structure to store module attributes and employs list operations to manage imports, ensuring efficient data handling. The `update_import` method includes a mechanism to search and replace specific import models, raising an exception if the import to be updated is not found, which adds robustness to the import management process.\n\nThe technical stack includes Python's type hinting, which enhances code readability and maintainability by specifying method signatures. The `ctypes` and `typing` modules are used for type annotations, while custom modules from the `fenec` package, such as `BaseModelBuilder`, `ModuleModel`, `ImportModel`, and `BlockType`, provide foundational structures and enumerations necessary for building and managing module models. A custom logging decorator from `fenec.utilities.logger.decorators` is used to provide insights into the build process, aiding in debugging and performance monitoring.\n\nIn the context of a larger system, this code is part of a comprehensive framework for parsing and modeling Python code. It interacts with other components like class and function model builders to create a holistic representation of Python modules. This modular design supports various use cases, including code analysis, documentation generation, and code transformation. The `ModuleModelBuilder` class plays a crucial role in ensuring that each module is accurately represented, facilitating seamless integration with other parts of the system and enabling advanced code manipulation and analysis capabilities.",
+    "children_ids": [
+        "fenec:python_parser:model_builders:module_model_builder.py__*__MODULE__*__CLASS-ModuleModelBuilder"
+    ]
+}

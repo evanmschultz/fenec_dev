@@ -1,0 +1,57 @@
+{
+    "function_name": "process_codebase",
+    "docstring": "Process the codebase at the given path.",
+    "decorators": null,
+    "parameters": null,
+    "returns": "None",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:cli_app.py__*__MODULE__*__FUNCTION-process_codebase",
+    "file_path": "fenec/cli_app.py",
+    "parent_id": "fenec:cli_app.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 13,
+    "end_line_num": 30,
+    "code_content": "\n\ndef process_codebase(\n    fenec_instance: Fenec,\n    num_of_passes: int = 1,\n    process_all: bool = False,\n) -> None:\n    \"\"\"\n    Process the codebase at the given path.\n    \"\"\"\n    try:\n        fenec_instance.process_codebase(num_of_passes, process_all)\n        typer.echo(\"Codebase processing complete.\")\n    except Exception as e:\n        logging.exception(\"Error processing codebase\")\n        typer.echo(f\"Error processing codebase: {e}\")\n        raise typer.Exit(1)\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "import_names": [
+                {
+                    "name": "logging",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "typer",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Fenec",
+                    "as_name": null,
+                    "local_block_id": "fenec:api.py__*__MODULE__*__CLASS-Fenec"
+                }
+            ],
+            "imported_from": "fenec",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:api.py__*__MODULE"
+        }
+    ],
+    "summary": "The code defines a function `process_codebase` that serves as a command-line interface utility for orchestrating the processing of a codebase through a specified number of passes, with an optional parameter to process all files. This function is integral to the operation of a larger system, likely involved in code analysis, transformation, or compilation tasks. The primary component is the `process_codebase` function, which interfaces with an instance of the `Fenec` class. This class is presumed to encapsulate the core logic required for processing the codebase, allowing for operations such as multi-pass analysis or transformation. The function accepts parameters `num_of_passes` and `process_all`, which dictate the strategy for processing, providing flexibility in how the codebase is handled.\n\nThe implementation leverages the `typer` library to manage command-line interactions, enhancing user experience by facilitating message echoing and handling exceptions gracefully. Within the function, the `process_codebase` method of the `Fenec` instance is invoked inside a try-except block. This design ensures that any exceptions are caught, and the application exits with a status code of 1, maintaining robustness and reliability in error scenarios. The use of `typer.Exit` for controlled termination underscores the focus on creating a resilient command-line tool.\n\nThe technical stack prominently features the `typer` library, which is chosen for its ability to streamline command-line interface development, making the tool accessible to developers and automated systems. This choice indicates an emphasis on ease of use and integration within larger workflows, such as continuous integration pipelines or automated code quality checks.\n\nIn the context of the larger system, this function likely acts as an entry point for automating codebase processing tasks. It abstracts the complexities of the underlying processing logic through the `Fenec` instance, promoting modularity and scalability. This design allows the function to fit seamlessly into a broader ecosystem that may include tools for code analysis, refactoring, or transformation, and it could be a critical component in development environments or continuous integration systems. By providing a straightforward interface for codebase management, the function supports efficient and automated handling of code, contributing to improved code quality and development efficiency.",
+    "children_ids": []
+}

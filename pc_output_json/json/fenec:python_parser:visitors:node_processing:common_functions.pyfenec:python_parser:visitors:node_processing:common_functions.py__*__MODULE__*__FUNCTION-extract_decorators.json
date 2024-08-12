@@ -1,0 +1,70 @@
+{
+    "function_name": "extract_decorators",
+    "docstring": "Extracts a list of decorator models from a sequence of libcst.Decorator nodes.\n\nProcesses each decorator node to form a model representing the decorator's name and its arguments, if any.\n\nArgs:\n    - decorators (Sequence[libcst.Decorator]): A sequence of libcst.Decorator nodes.\n\nReturns:\n    - list[DecoratorModel] | None: A list of DecoratorModel objects, or None if no decorators are found.\n\nExample:\n    ```Python\n    extract_decorators(function_node.decorators)\n    # Returns a list of DecoratorModel objects representing each decorator in the function.\n    ```",
+    "decorators": null,
+    "parameters": null,
+    "returns": "list[DecoratorModel] | None",
+    "is_method": false,
+    "is_async": false,
+    "id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorators",
+    "file_path": "fenec/python_parser/visitors/node_processing/common_functions.py",
+    "parent_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE",
+    "block_type": "FUNCTION",
+    "start_line_num": 100,
+    "end_line_num": 129,
+    "code_content": "\n\ndef extract_decorators(\n    decorators: Sequence[libcst.Decorator],\n) -> list[DecoratorModel] | None:\n    \"\"\"\n    Extracts a list of decorator models from a sequence of libcst.Decorator nodes.\n\n    Processes each decorator node to form a model representing the decorator's name and its arguments, if any.\n\n    Args:\n        - decorators (Sequence[libcst.Decorator]): A sequence of libcst.Decorator nodes.\n\n    Returns:\n        - list[DecoratorModel] | None: A list of DecoratorModel objects, or None if no decorators are found.\n\n    Example:\n        ```Python\n        extract_decorators(function_node.decorators)\n        # Returns a list of DecoratorModel objects representing each decorator in the function.\n        ```\n    \"\"\"\n\n    decorators_list: list[DecoratorModel] = []\n    for decorator in decorators:\n        decorator_model: DecoratorModel | None = extract_decorator(decorator)\n        if isinstance(decorator_model, DecoratorModel):\n            decorators_list.append(extract_decorator(decorator))  # type: ignore\n    return decorators_list if decorators_list else None\n",
+    "important_comments": null,
+    "dependencies": [
+        {
+            "code_block_id": "fenec:python_parser:visitors:node_processing:common_functions.py__*__MODULE__*__FUNCTION-extract_decorator"
+        },
+        {
+            "import_names": [
+                {
+                    "name": "Sequence",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "typing",
+            "import_module_type": "STANDARD_LIBRARY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "libcst",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": null,
+            "import_module_type": "THIRD_PARTY",
+            "local_module_id": null
+        },
+        {
+            "import_names": [
+                {
+                    "name": "CommentModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-CommentModel"
+                },
+                {
+                    "name": "DecoratorModel",
+                    "as_name": null,
+                    "local_block_id": "fenec:models:models.py__*__MODULE__*__CLASS-DecoratorModel"
+                },
+                {
+                    "name": "CommentType",
+                    "as_name": null,
+                    "local_block_id": null
+                }
+            ],
+            "imported_from": "fenec.models.models",
+            "import_module_type": "LOCAL",
+            "local_module_id": "fenec:models:models.py__*__MODULE"
+        }
+    ],
+    "summary": "This code is designed to extract and model decorators from a sequence of `libcst.Decorator` nodes, which are part of the LibCST library used for parsing and manipulating Python code. Its primary purpose is to transform these decorator nodes into a structured format, encapsulating each decorator's name and its arguments, if present, into `DecoratorModel` objects. This functionality is significant for applications requiring detailed introspection of Python code, such as static analysis, code refactoring, or documentation generation.\n\nKey components of the code include the `extract_decorators` function, which iterates over a sequence of `libcst.Decorator` nodes, and the `extract_decorator` function, which is assumed to convert individual decorator nodes into `DecoratorModel` objects. The `extract_decorators` function initializes an empty list, `decorators_list`, to store the resulting `DecoratorModel` objects. It processes each decorator node by calling `extract_decorator`, checks if the result is a valid `DecoratorModel`, and appends it to the list. The function returns the list of `DecoratorModel` objects if any are found, or `None` if the sequence is empty.\n\nThe implementation leverages a straightforward iteration and conditional logic to build the list of decorator models. It uses type hinting to ensure clarity and correctness in the expected input and output types, enhancing the code's robustness and maintainability. The design pattern employed here is a simple transformation pattern, where input data (decorator nodes) is transformed into a different representation (decorator models).\n\nThe technical stack primarily involves the LibCST library, which provides the `Decorator` nodes for parsing Python code, and a custom `DecoratorModel` class for representing decorators. LibCST is a powerful library for parsing, modifying, and generating Python code, making it suitable for tasks that require precise code manipulation.\n\nIn the context of a larger system, this function could be part of a code analysis or transformation tool, interfacing with other components that require detailed information about function decorators. It could be integrated into a pipeline that performs static analysis to ensure code quality, refactors code to improve maintainability, or generates documentation by extracting metadata from decorators. This function's ability to model decorators accurately is crucial for systems that need to understand and manipulate Python code at a syntactic level.",
+    "children_ids": []
+}
