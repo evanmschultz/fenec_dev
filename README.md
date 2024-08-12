@@ -1,4 +1,4 @@
-# Postcode
+# Fenec
 
 This project is designed to parse a Python codebase and generate summaries for each code block and its dependencies. The goal is to enhance an AI's capability to engage in meaningful conversations with the codebase. The goal is to create a python package that others can use with their own projects.
 
@@ -9,14 +9,14 @@ Ensure you have Poetry installed. If not, install it by following the instructio
 Clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/evanmschultz/postcode.git
-cd postcode
+git clone https://github.com/evanmschultz/fenec.git
+cd fenec
 poetry install
 ```
 
 ## Usage
 
-To simple chat with the Postcode Project as is, run the following command:
+To simple chat with the Fenec Project as is, run the following command:
 
 ```bash
 ollama pull codellama:13b-python # Or any other Ollama model you wish to use

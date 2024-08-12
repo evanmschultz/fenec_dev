@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "postcode"
+name = "fenec"
 version = "0.1.0"
 description = ""
 authors = ["Evan Schultz <evan@postulate.llc>"]
@@ -24,4 +24,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-postcode = "postcode.cli_app:app"
+fenec = "fenec.cli_app:app"
