@@ -64,7 +64,7 @@ class Fenec:
 
     def process_codebase(
         self,
-        num_of_passes: int = 3,
+        num_of_passes: int = 1,
         process_all: bool = False,
     ) -> None:
         """

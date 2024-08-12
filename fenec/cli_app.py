@@ -14,7 +14,7 @@ fenec_instance: Optional[Fenec] = None
 
 def process_codebase(
     fenec_instance: Fenec,
-    num_of_passes: int = 3,
+    num_of_passes: int = 1,
     process_all: bool = False,
 ) -> None:
     """
@@ -110,7 +110,7 @@ def main(
         typer.Argument(
             help="The number of passes the summarizer will take, 1 is bottom-up, 3 is bottom-up, top-down, then bottom-up again"
         ),
-    ] = 3,
+    ] = 1,
 ) -> None:
     """
     Process the codebase and start a chat session with Fenec.

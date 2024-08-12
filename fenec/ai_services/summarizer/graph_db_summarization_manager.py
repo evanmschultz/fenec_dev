@@ -226,7 +226,7 @@ class GraphDBSummarizationManager:
                     model.summary = stripped_summary
             else:
                 summary_return_context: OpenAIReturnContext | str | None = (
-                    self.summarizer.summarize_code(
+                    self.summarizer.test_summarize_code(
                         code_content,
                         model_id=model.id,
                         children_summaries=children_summaries,
@@ -234,7 +234,7 @@ class GraphDBSummarizationManager:
                         import_details=import_details,
                         parent_summary=parent_summary,
                         pass_number=pass_number,
-                        previous_summary=previous_summary,
+                        # previous_summary=previous_summary,
                     )
                 )
                 if summary_return_context and isinstance(
