@@ -57,6 +57,7 @@ class OpenAIConfigs(BaseModel):
     system_message: str = summarization_prompts.SUMMARIZER_DEFAULT_INSTRUCTIONS
     model: Literal[
         "gpt-4o",
+        "gpt-4o-2024-08-06",
         "gpt-4-1106-preview",
         "gpt-4-vision-preview",
         "gpt-4",
@@ -71,7 +72,7 @@ class OpenAIConfigs(BaseModel):
         "gpt-3.5-turbo-0301",
         "gpt-3.5-turbo-0613",
         "gpt-3.5-turbo-16k-0613",
-    ] = "gpt-4o"
+    ] = "gpt-4o-2024-08-06"
     max_tokens: int | None = None
     stream: bool = False
     temperature: float = 0.0

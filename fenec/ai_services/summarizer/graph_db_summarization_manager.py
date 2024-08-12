@@ -76,11 +76,13 @@ class GraphDBSummarizationManager:
     @property
     def total_cost(self) -> float:
         """Provides the total cost of the summarization process."""
-        prompt_cost: int = self.prompt_tokens * 1  # Costs 1 cent per 1,000 tokens
-        completion_cost: int = (
-            self.completion_tokens * 3
-        )  # Costs 3 cents per 1,000 tokens
-        return (prompt_cost + completion_cost) / 100_000  # Convert to dollars
+        gpt_4o_2024_08_06_prompt_cost_per_token: float = 0.0000025
+        prompt_cost: float = self.prompt_tokens * gpt_4o_2024_08_06_prompt_cost_per_token
+        gpt_4o_2024_08_06_completion_cost_per_token: float = gpt_4o_2024_08_06_prompt_cost_per_token * 4
+        completion_cost: float = (
+            self.completion_tokens * gpt_4o_2024_08_06_completion_cost_per_token
+        )  
+        return (prompt_cost + completion_cost) 
 
     def create_summaries_and_return_updated_models(
         self, num_passes: int = 1
