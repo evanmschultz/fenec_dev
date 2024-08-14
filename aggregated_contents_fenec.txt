@@ -1,0 +1,689 @@
+File: visitor_manager.py
+----------------------------------------
+from dataclasses import dataclass
+import logging
+from pathlib import Path
+from typing import Union
+
+from fenec.python_parser.model_builders.module_model_builder import (
+    ModuleModelBuilder,
+)
+from fenec.utilities.logger.decorators import logging_decorator
+
+from fenec.python_parser.parsers.python_parser import PythonParser
+from fenec.python_parser.visitor_manager.import_and_dependency_updater import (
+    ImportAndDependencyUpdater,
+)
+from fenec.models.models import (
+    ClassModel,
+    DirectoryModel,
+    FunctionModel,
+    ModuleModel,
+    StandaloneCodeBlockModel,
+)
+
+
+from fenec.python_parser.model_builders.class_model_builder import (
+    ClassModelBuilder,
+)
+from fenec.python_parser.model_builders.function_model_builder import (
+    FunctionModelBuilder,
+)
+from fenec.python_parser.model_builders.standalone_block_model_builder import (
+    StandaloneBlockModelBuilder,
+)
+
+from fenec.python_parser.id_generation.id_generation_strategies import (
+    ModuleIDGenerationStrategy,
+    DirectoryIDGenerationStrategy,
+)
+from fenec.types.fenec import ModelType
+
+
+BuilderType = Union[
+    ModuleModelBuilder,
+    ClassModelBuilder,
+    FunctionModelBuilder,
+    StandaloneBlockModelBuilder,
+]
+
+# ModelType = Union[
+#     ModuleModel,
+#     ClassModel,
+#     FunctionModel,
+#     StandaloneCodeBlockModel,
+#     DirectoryModel,
+# ]
+
+EXCLUDED_DIRECTORIES: set[str] = {".venv", "node_modules", "__pycache__", ".git"}
+
+
+@dataclass
+class VisitorManagerProcessFilesReturn:
+    """
+    Represents the return value of the VisitorManager.process_files() method.
+
+    Attributes:
+        - models_tuple (tuple[ModuleModel, ...]): A tuple of ModuleModel objects representing the parsed modules.
+        - directory_modules (dict[str, list[str]]): A dictionary mapping directory paths to lists of module names.
+            This is used to keep track of the modules present in each directory.
+    """
+
+    models_tuple: tuple[ModelType, ...]
+    directory_modules: dict[str, list[str]]
+
+
+@dataclass
+class DirectoryDetails:
+    """
+    Represents the details of a directory.
+
+    Attributes:
+        - directory_name (str): The name of the directory.
+        - sub_directories (list[str]): A list of the names of the sub-directories of the directory.
+        - module_ids (list[str]): A list of the module ids of the modules in the directory.
+    """
+
+    directory_name: str
+    sub_directories: list[str]
+    module_ids: list[str]
+
+
+class VisitorManager:
+    """
+    Manages the visiting and processing of Python files in a given directory.
+
+    This class scans a specified directory, filters for Python files, parses them, and saves the parsed data in a structured JSON format.
+    It also maintains a mapping of directories to the Python files they contain.
+
+    Attributes:
+        - directory (str): The root directory to scan for Python files.
+        - directory_modules (dict[str, list[str]]): A mapping of directories to their contained Python files.
+
+    Example:
+        ```Python
+        visitor_manager = VisitorManager("/path/to/python/code")
+        visitor_manager.process_files()
+        # This will process all Python files in /path/to/python/code and save their parsed data in the output directory.
+        ```
+    """
+
+    @logging_decorator(message="Initializing VisitorManager")
+    def __init__(self, directory: str) -> None:
+        self.directory: str = directory
+        self.directory_modules: dict[str, list[str]] = {}
+
+    def process_files(self) -> VisitorManagerProcessFilesReturn:
+        """
+        Process the files in the directory and return the module models.
+
+        This function iterates through all the Python files in the directory, processes each file,
+        updates the imports, and builds module models for each file. It returns a tuple of module models
+        and a dictionary of directory modules.
+
+        Returns:
+            - VisitorManagerProcessFilesReturn, a named tuple containing:
+                - models_tuple (tuple[ModuleModel, ...]): A tuple of module models.
+                - directory_modules (dict[str, ModuleModel]): A dictionary of directory modules.
+
+        Examples:
+            ```Python
+            visitor_manager = VisitorManager()
+            result = visitor_manager.process_files()
+            print(result.models_tuple)
+            # (ModuleModel(file_path='/path/to/file1.py'), ModuleModel(file_path='/path/to/file2.py'))
+            print(result.directory_modules)
+            {'/path/to/directory1': ModuleModel(file_path='/path/to/directory1/__init__.py')}
+            ```
+        """
+
+        logging.info("Processing files")
+        python_files: list[str] = self._get_python_files()
+        model_builder_list: list[ModuleModelBuilder] = []
+        for file_path in python_files:
+            if model_builder := self._process_file(file_path):
+                model_builder_list.append((model_builder))
+
+        logging.info("File processing completed")
+        logging.info("Updating imports")
+
+        model_builder_tuple: tuple[ModuleModelBuilder, ...] = tuple(model_builder_list)
+
+        import_and_dependency_updater = ImportAndDependencyUpdater(model_builder_tuple)
+        import_and_dependency_updater.update_imports()
+        logging.info("Updated imports")
+
+        models_list: list[
+            ModuleModel | ClassModel | FunctionModel | StandaloneCodeBlockModel
+        ] = []
+        for module_model_builder in model_builder_tuple:
+            module_model_return: tuple[
+                ModuleModel,
+                list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None,
+            ] = self._build_module_model(module_model_builder)
+            models_list.append(module_model_return[0])
+            if module_model_return[1]:
+                models_list.extend(module_model_return[1])
+
+        directory_models_list: list[DirectoryModel] = []
+        for directory_path in self.directory_modules.keys():
+            directory_model: DirectoryModel = self._build_directory_model(
+                directory_path
+            )
+            directory_models_list.append(directory_model)
+
+        all_models: list[ModelType] = [
+            *models_list,
+            *directory_models_list,
+        ]
+
+        models_tuple: tuple[ModelType, ...] = tuple(all_models)
+
+        return VisitorManagerProcessFilesReturn(
+            models_tuple=models_tuple, directory_modules=self.directory_modules
+        )
+
+    def _walk_directories(self) -> list[str]:
+        """Walks the specified directory and returns a list of all files."""
+
+        all_files: list[str] = []
+        for file_path in Path(self.directory).rglob("*"):
+            if not any(
+                excluded in file_path.parts for excluded in EXCLUDED_DIRECTORIES
+            ):
+                all_files.append(str(file_path))
+        return all_files
+
+    def _filter_python_files(self, files: list[str]) -> list[str]:
+        """Filters a list of files to only include Python files."""
+
+        return [file for file in files if file.endswith(".py")]
+
+    @logging_decorator(message="Getting Python files")
+    def _get_python_files(self) -> list[str]:
+        """Gets all Python files in the specified directory."""
+
+        all_files: list[str] = self._walk_directories()
+        return self._filter_python_files(all_files)
+
+    def _process_file(self, file_path: str) -> ModuleModelBuilder | None:
+        """Processes a single Python file."""
+
+        file_path_obj = Path(file_path)
+        root = str(file_path_obj.parent)
+        self.directory_modules.setdefault(root, []).append(file_path_obj.name)
+        return self._parse_file(file_path)
+
+    @logging_decorator(message="Processing file")
+    def _parse_file(self, file_path: str) -> ModuleModelBuilder | None:
+        """Parses a Python file and saves the parsed data as JSON."""
+
+        parser = PythonParser(file_path)
+        code: str = parser.open_file()
+
+        parent_id: str | None = self._get_parent_directory_id(file_path)
+        if not parent_id:
+            parent_id = ""
+
+        module_model_builder: ModuleModelBuilder | None = parser.parse(code, parent_id)
+
+        return module_model_builder if module_model_builder else None
+
+    def _build_module_model(
+        self, visitor_stack: ModuleModelBuilder | None
+    ) -> tuple[
+        ModuleModel, list[ClassModel | FunctionModel | StandaloneCodeBlockModel] | None
+    ]:
+        """
+        Builds a module model from the provided module builder.
+
+        Args:
+            - visitor_stack (ModuleModelBuilder): The module builder to build the model from.
+
+        Returns:
+            - ModuleModel: A structured module model.
+        """
+
+        if not isinstance(visitor_stack, ModuleModelBuilder):
+            raise TypeError("Expected the first builder to be a ModuleModelBuilder")
+
+        return visitor_stack.build()
+
+    def _build_directory_model(self, directory_path: str) -> DirectoryModel:
+        """Builds a directory model for the given directory path."""
+
+        id: str = DirectoryIDGenerationStrategy().generate_id(directory_path)
+        parent_id: str | None = self._get_parent_directory_id(directory_path)
+
+        return DirectoryModel(
+            id=id,
+            parent_id=parent_id,
+            directory_name=self._get_directory_name(directory_path),
+            sub_directories_ids=self._get_subdirectory_ids(directory_path),
+            children_ids=self._generate_module_ids(directory_path),
+        )
+
+    def _get_subdirectory_ids(self, directory_path: str) -> list[str]:
+        """Gets the sub-directories of the given directory."""
+
+        subdirectories: list[str] = [
+            directory.name
+            for directory in Path(directory_path).iterdir()
+            if directory.is_dir() and directory.name not in EXCLUDED_DIRECTORIES
+        ]
+
+        subdirectory_ids: list[str] = [
+            DirectoryIDGenerationStrategy().generate_id(
+                str(Path(directory_path) / subdirectory)
+            )
+            for subdirectory in subdirectories
+        ]
+
+        return subdirectory_ids
+
+    def _get_directory_name(self, directory_path: str) -> str:
+        """Gets the name of the given directory."""
+
+        return Path(directory_path).name
+
+    def _generate_module_ids(self, directory_path: str) -> list[str]:
+        """Generates module ids for the given directory."""
+
+        file_names: list[str] = self.directory_modules.get(directory_path, [])
+        python_files: list[str] = self._filter_python_files(file_names)
+
+        return [
+            ModuleIDGenerationStrategy.generate_id(str(Path(directory_path) / module))
+            for module in python_files
+        ]
+
+    def _get_parent_directory_id(self, directory_path: str) -> str | None:
+        """Gets the parent id of the given directory."""
+
+        parent_path: str = str(Path(directory_path).parent)
+        if parent_path == self.directory:
+            return None
+        else:
+            return DirectoryIDGenerationStrategy().generate_id(parent_path)
+
+
+
+File: import_and_dependency_updater.py
+----------------------------------------
+# TODO: Add logic to update imports when defined in a StandaloneCodeBlock
+# TODO: Add logic to track down the import's definition location
+# FIXME: There is still an issue with the imports being updated twice for some reason
+
+from fenec.python_parser.model_builders.module_model_builder import (
+    ModuleModelBuilder,
+)
+from fenec.models.models import (
+    DependencyModel,
+    ImportModel,
+    ImportNameModel,
+    ImportModuleType,
+)
+
+
+class ImportAndDependencyUpdater:
+    """
+    The ImportAndDependencyUpdater class is designed to update import statements and
+    dependencies in a set of module model builders. It manages two main tasks: updating
+    import statements using an ImportUpdater and updating dependencies using a DependencyUpdater.
+    This class ensures that both imports and dependencies are consistent and up-to-date
+    across the provided module model builders.
+
+    Attributes:
+        - model_builder_tuple (tuple[ModuleModelBuilder, ...]): A tuple of ModuleModelBuilder instances
+        to be processed for import and dependency updates.
+
+    Example:
+        ```Python
+        model_builders = [ModuleModelBuilder(), ModuleModelBuilder()]
+        updater = ImportAndDependencyUpdater(model_builders)
+        updater.update_imports()
+        ```
+    """
+
+    def __init__(self, model_builder_tuple: tuple[ModuleModelBuilder, ...]) -> None:
+        self.model_builder_tuple: tuple[ModuleModelBuilder, ...] = model_builder_tuple
+
+    def update_imports(self) -> None:
+        """
+        Processes each module model builder in the model_builder_tuple and updates their import
+        statements. This method is the primary entry point for initiating the import update process.
+
+        Example:
+            ```Python
+            updater = ImportAndDependencyUpdater(model_builders)
+            updater.update_imports()
+            ```
+        """
+
+        for model_builder in self.model_builder_tuple:
+            import_updater: ImportUpdater = ImportUpdater(self.model_builder_tuple)
+            import_updater.process_builder(model_builder)
+
+            # for model_builder in self.model_builder_tuple:
+            ...
+        # Track down and add imports for the imports that were defined outside of the module that it is imported from
+
+
+class ImportUpdater:
+    """
+    The ImportUpdater class is designed to manage and update import statements across
+    a collection of module model builders. It processes each builder in the provided
+    list, handling and updating import models as required. This class plays a crucial
+    role in ensuring that import statements are correctly managed and updated in response
+    to changes in the module models.
+
+    Attributes:
+        - model_builder_tuple (tuple[ModuleModelBuilder, ...]): A tuple of ModuleModelBuilder
+        instances to be processed for import updates.
+
+    Example:
+        ```Python
+        model_builders = [ModuleModelBuilder(), ModuleModelBuilder()]
+        import_updater = ImportUpdater(model_builders)
+        for builder in model_builders:
+            import_updater.process_builder(builder)
+        ```
+    """
+
+    def __init__(self, model_builder_tuple: tuple[ModuleModelBuilder, ...]) -> None:
+        self.model_builder_tuple: tuple[ModuleModelBuilder, ...] = model_builder_tuple
+
+    def process_builder(self, builder: ModuleModelBuilder) -> None:
+        """
+        Processes a single module model builder to update its import statements.
+
+        Args:
+            - builder (ModuleModelBuilder): The module model builder to process.
+        """
+
+        if module_imports := builder.module_attributes.imports:
+            module_imports_tuple = tuple(module_imports)
+            self._handle_import_models(builder, module_imports_tuple)
+            # print(module_imports_tuple)
+
+    def _handle_import_models(
+        self, builder: ModuleModelBuilder, module_imports_tuple: tuple[ImportModel, ...]
+    ) -> None:
+        """
+        Handles the import models for a given builder and updates them as necessary.
+
+        Args:
+            - builder (ModuleModelBuilder): The builder whose import models are to be handled.
+            - module_imports (tuple[ImportModel]): A tuple of import models to process.
+        """
+
+        # module_imports_tuple = tuple(module_imports)
+        # # HACK: Converts to tuple in order to prevent missing elements as the list was getting modified during iteration
+
+        for import_model in module_imports_tuple:
+            self._update_import_for_builder(builder, import_model)
+
+            DependencyUpdater.update_dependencies(builder)
+
+    def _update_import_for_builder(
+        self, builder: ModuleModelBuilder, import_model: ImportModel
+    ) -> None:
+        """
+        Updates a single import model for the given builder. Determines if the import is local,
+        and if so, updates the import path and names accordingly.
+
+        Args:
+            - builder (ModuleModelBuilder): The builder that owns the import model.
+            - import_model (ImportModel): The import model to be updated.
+
+        Example:
+            ```Python
+            updater = ImportUpdater(model_builder_tuple)
+            updater._update_import_for_builder(builder_instance, import_model_instance)
+            ```
+        """
+
+        if self._is_local_import(import_model):
+            import_path: str = self._get_import_path(import_model)
+            import_names: list[str] | None = None
+
+            if import_model.imported_from:
+                import_names = self._get_import_names(import_model)
+            # else:
+            #     import_path: str = self._get_import_path(import_model)
+
+            for external_builder in self.model_builder_tuple:
+                if self._should_skip_builder(
+                    builder, external_builder, import_path, import_model
+                ):
+                    continue
+
+                self._update_import_model(
+                    import_model, import_names, builder, external_builder
+                )
+
+    def _is_local_import(self, import_model: ImportModel) -> bool:
+        """Returns boolean indicating whether the import is local to the project."""
+        return import_model.import_module_type == ImportModuleType.LOCAL
+
+    def _get_import_names(self, import_model: ImportModel) -> list[str]:
+        """Returns a list of import names for the given import model."""
+        return [name.name for name in import_model.import_names]
+
+    def _get_import_path(self, import_model: ImportModel) -> str:
+        """Returns the import path for the given import model."""
+
+        if import_model.imported_from:
+            return import_model.imported_from.replace(".", ":")
+        else:
+            return import_model.import_names[0].name.replace(".", ":")
+
+    def _should_skip_builder(
+        self,
+        builder: ModuleModelBuilder,
+        external_builder: ModuleModelBuilder,
+        import_path: str,
+        import_model: ImportModel,
+    ) -> bool:
+        """Returns boolean indicating if the given builder should be skipped."""
+
+        return (
+            external_builder.id == builder.id
+            or not import_path in external_builder.id
+            or import_model.local_module_id is not None
+        )
+
+    def _update_import_model(
+        self,
+        import_model: ImportModel,
+        import_names: list[str] | None,
+        builder: ModuleModelBuilder,
+        external_builder: ModuleModelBuilder,
+    ) -> None:
+        """
+        Updates the import model with new import names and assigns the local module ID to the external builder.
+
+        Args:
+            - import_model (ImportModel): The import model to be updated.
+            - import_names (list[str] | None): The list of new import names.
+            - builder (ModuleModelBuilder): The module model builder.
+            - external_builder (ModuleModelBuilder): The external module model builder.
+
+        Returns:
+            - None
+
+        Example:
+            ```Python
+            import_updater._update_import_model(import_model_instance, import_names_list, builder_instance, external_builder_instance)
+            ```
+        """
+        new_import_model: ImportModel = import_model.model_copy()
+        new_import_model.local_module_id = external_builder.id
+
+        if not import_model.imported_from:
+            builder.update_import(new_import_model, import_model)
+            return
+
+        if import_names:
+            new_import_name_models: list[ImportNameModel] = (
+                self._get_new_import_name_models(
+                    external_builder, import_names, import_model
+                )
+            )
+            # print(f"{len(new_import_name_models)} : {len(import_model.import_names)}")
+            if len(new_import_name_models) < len(import_model.import_names):
+                # TODO: Add logic to track down the import's definition location
+
+                new_import_name_models = self._add_missing_imports(
+                    new_import_name_models, import_model.import_names
+                )
+
+            new_import_model.import_names = new_import_name_models
+            builder.update_import(new_import_model, import_model)
+
+    def _get_new_import_name_models(
+        self,
+        external_builder: ModuleModelBuilder,
+        import_names: list[str],
+        import_model: ImportModel,
+    ) -> list[ImportNameModel]:
+        """
+        Returns a list of new ImportNameModel objects based on the given import names.
+
+        Args:
+            - external_builder (ModuleModelBuilder): The external module builder.
+            - import_names (list[str]): The list of import names.
+            - import_model (ImportModel): The import model.
+
+        Returns:
+            - list[ImportNameModel]: The list of new ImportNameModel objects.
+
+        Example:
+            ```Python
+            new_import_name_models = import_updater._get_new_import_name_models(external_builder_instance, import_names_list, import_model_instance)
+            ```
+        """
+
+        new_import_name_models: list = []
+        for child_builder in external_builder.child_builders:
+            for import_name in import_names:
+                child_builder_id_split: list[str] = child_builder.id.split("-")
+
+                if import_name == child_builder_id_split[-1]:
+                    for import_name_model in import_model.import_names:
+                        if import_name_model.name == import_name:
+                            new_import_name_model: ImportNameModel = (
+                                import_name_model.model_copy()
+                            )
+                            # if import_name_model.name == "OpenAISummarizer":
+                            #     print(f"Found OpenAISummarizer: id")
+
+                            new_import_name_model.local_block_id = child_builder.id
+                            new_import_name_models.append(new_import_name_model)
+                            break
+
+        return new_import_name_models
+
+    def _add_missing_imports(
+        self,
+        new_import_name_models: list[ImportNameModel],
+        existing_import_names: list[ImportNameModel],
+    ) -> list[ImportNameModel]:
+        """
+        Adds missing import names to the list of new ImportNameModel objects.
+
+        Args:
+            - new_import_name_models (list[ImportNameModel]): The list of new ImportNameModel objects.
+            - existing_import_names (list[ImportNameModel]): The list of existing ImportNameModel objects.
+
+        Returns:
+            - list[ImportNameModel]: The updated list of new ImportNameModel objects.
+
+        Example:
+            ```Python
+            updated_import_names = import_updater._add_missing_imports(new_import_name_models_list, existing_import_names_list)
+            ```
+        """
+
+        for import_name_model in existing_import_names:
+            if import_name_model.name not in [
+                name.name for name in new_import_name_models
+            ]:
+                new_import_name_models.append(import_name_model)
+
+        return new_import_name_models
+
+
+class DependencyUpdater:
+    """
+    Class responsible for updating dependencies in a module.
+
+    Methods:
+        - `update_dependencies` (staticmethod): Updates the dependencies in the module.
+
+    Examples:
+        ```Python
+        model_builder = ModuleModelBuilder()
+
+        DependencyUpdater.update_dependencies(model_builder)
+        ```
+    """
+
+    @staticmethod
+    def update_dependencies(model_builder: ModuleModelBuilder) -> None:
+        """
+        Updates the dependencies in the module.
+
+        Args:
+            - model_builder (ModuleModelBuilder): The module model builder to update the dependencies for.
+
+        Returns:
+            - None
+
+        Example:
+            ```Python
+            model_builder = ModuleModelBuilder()
+
+            DependencyUpdater.update_dependencies(model_builder)
+            ```
+        """
+
+        import_model_list: list[ImportModel] | None = (
+            model_builder.module_attributes.imports
+        )
+        if model_builder.child_builders:
+            for child_builder in model_builder.child_builders:
+                if (
+                    not child_builder.common_attributes.dependencies
+                    or not import_model_list
+                ):
+                    continue
+
+                dependencies_to_process: tuple[ImportModel | DependencyModel, ...] = (
+                    tuple(child_builder.common_attributes.dependencies)
+                )
+                imports_to_process: tuple[ImportModel, ...] = tuple(import_model_list)
+                for dependency in dependencies_to_process:
+                    if isinstance(dependency, DependencyModel):
+                        continue
+
+                    dependency_import_names: list[str] = [
+                        name.name for name in dependency.import_names
+                    ]
+
+                    for import_model in imports_to_process:
+                        import_model_import_names: list[str] = [
+                            name.name for name in import_model.import_names
+                        ]
+
+                        if (
+                            dependency_import_names == import_model_import_names
+                            and dependency.imported_from == import_model.imported_from
+                        ):
+                            child_builder.update_import_dependency(
+                                import_model, dependency
+                            )
+                            break
+
+
+

@@ -1,17 +1,16 @@
 from pathlib import Path
+
 from fenec.ai_services.summarizer.summarizer_protocol import Summarizer
 from fenec.updaters.graph_db_updater import GraphDBUpdater
 from fenec.databases.chroma.chromadb_collection_manager import (
     ChromaCollectionManager,
 )
-from fenec.utilities.configs.configs import (
+from fenec.configs import (
     OpenAIChatConfigs,
-    ChatConfigs,
     OllamaChatConfigs,
     OpenAISummarizationConfigs,
     OllamaSummarizationConfigs,
 )
-from fenec.ai_services.summarizer.summarizer_factory import create_summarizer
 from fenec.ai_services.chat.openai_agents import OpenAIChatAgent
 from fenec.ai_services.librarians.chroma_librarians import ChromaLibrarian
 from fenec.databases.chroma.chroma_setup import setup_chroma
