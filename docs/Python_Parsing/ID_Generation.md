@@ -42,7 +42,7 @@ This abstract base class defines the interface for all ID generation strategies:
 
     - Generates IDs for standalone code snippets within a module.
     - Method: `generate_id(parent_id: str, count: int) -> str`
-    - Format: `{parent_id}__*__STANDALONE_BLOCK-{count}`
+    - Format: `{parent_id}__*__STANDALONE_CODE_BLOCK-{count}`
 
 5. **DirectoryIDGenerationStrategy**
     - Generates IDs for directories in the project structure.

@@ -1,26 +1,49 @@
 # Fenec 🦊
 
-The anti-devin, no fancy reveal, this sucks, and will suck for awhile. It however could be something. Who knows!?
+The anti-devin, no fancy reveal, this sucks, and will continue to suck... In time it might become something, who knows!?
 
-Fenec is an experimental Python library aimed at enhancing code comprehension and interaction through the use of Large Language Models (LLMs). It's like having a tiny, overeducated, incompetent, know-it-all fox rummaging through your codebase, occasionally giving you insights, either through its greater understanding or lack there of, or because it broke and you learned that you need to deal with your tech debt!
+Fenec is an experimental Python library aimed at enhancing code comprehension and interaction through the use of Large Language Models (LLMs). It's like having a tiny, incompetent, know-it-all fox rummaging through your codebase. Occasionally, it provides insights—either through its genuine insights or its absurd answers. If it breaks, you know you need to deal with tech debt! (Or, maybe it's just a bug.)
 
-Fenec is an experimental Python library aimed at enhancing code comprehension and interaction through the use of Large Language Models (LLMs). Currently in early development, Fenec explores innovative approaches to parsing, summarizing, and querying Python projects.
+> **⚠️ Note:** When developing Fenec, I took had to take an 8 month break from it. Then, two weeks ago, I decided it had to get out of my head now or never. Due to that lengthy break, and the subsequent rush, many features that I considered to be MVPs do not yet exist, notably testing, error handling, user control of parsing and summarization, etc., more reliable 'partial' updates of the codebase, and more. I apologize in advance for revealing Fenec to the world while its pants were still down!
+>
+> Literally any contributions, feedback, or otherwise are more than welcome and will help shape the project's direction and functionality.
 
-> **⚠️ Note:** Fenec is in its early stages and is not yet ready for production use. Features and capabilities are actively evolving. Contributions and feedback to help shape the project's direction and functionality are more than welcome.
+<!-- ## 🎥 Fenec Example Screen Cast
 
-🎯 Project Vision
-Fenec aspires to:
+![Fenec Screen Cast Example](assets/imgs/Fenec_Screen_Cast.GIF) -->
 
-Parse Python codebases into structured, analyzable formats (because
+##
 
 ## 🎯 Project Vision
 
 Fenec aspires to:
 
--   Parse Python codebases into structured, analyzable formats
--   Generate concise, context-aware summaries of code elements
--   Facilitate natural language interactions with codebases
--   Integrate with AI services to provide intelligent code insights
+-   Parse Python codebases into structured, analyzable formats (because who has time to read 10,000 lines of code when you can have an AI misunderstand it for you?)
+-   Generate context-aware summaries of code elements for LLM RAG (Retrieval-Augmented Generation) (because let's face it, documentation is often just a well-intentioned work of fiction)
+-   Facilitate natural language interactions with codebases (perfect for when you want to spend time arguing with code before actually debugging it)
+
+## 🚫 Why Fenec Sucks
+
+1. It's slower than a sloth on sedatives. Parsing and summarizing large codebases might make you question your life choices.
+2. It's a money pit if you're using OpenAI or other API-based LLMs. Kiss your savings goodbye!
+3. Has more bugs than a picnic in a swamp. Error handling? What is that?
+4. About as reliable as a chocolate teapot when parsing malformed Python code.
+5. Makes a terrible pair programmer. By the time it catches your typo, you could have rewritten the entire codebase.
+6. Can't solve your crippling depression.
+7. Won't help you understand why your crush left you on read, maybe that can explain your depression.
+8. Can't explain why Python uses 'self' but JavaScript uses 'this'. (Spoiler: Neither can we)
+
+## 🔮 Potential Uses for Fenec after Further Development
+
+1. Open-source project explainer: Helping users understand packages and pinpoint their mistakes (because who really spends the time reading docs. Just let a bot do the teaching!).
+2. Documentation producer: In time, could be used for automating the production of detailed docs (finally, you won't need to explain what you did and why).
+3. Docstring police: Evaluating, correcting, or producing docstrings (because who can be trusted to write them properly... not me).
+4. API chatbot: For when devs don't want their idiocy confirmed by a self-superior 🍆 on [Stack Overflow](https://stackoverflow.com/).
+5. Imposter syndrome confirmer: Judge other's code and shriek at yours!
+6. Ego deflator: Reminding you that even with AI, your code still favors inheritance over composition. No matter how much you look in the mirror and say it will be different today... (Since AI learned from us, it does the same!)
+7. Knowledgeable, self guided, agent programer... What Devin wishes to be! (Who are we kidding... It will take people way smarter than us to make that a reality!)
+
+Remember, Fenec is here to make your coding experience marginally less painful, or at least give you something new to complain about in stand-up meetings. Use at your own risk, and keep a real software engineer around, just in case.
 
 ## 🌟 Current Features
 
@@ -32,8 +55,11 @@ Fenec aspires to:
 -   🧠 Code summarization using LLMs (OpenAI or Ollama):
     -   Generates summaries that incorporate contextual information from related code blocks
     -   Provides a more holistic understanding of each code element's role in the project
--   🕸️ Preliminary integration with ArangoDB for storing code structure and relationships
--   🔍 Initial implementation of vector storage (ChromaDB) for efficient retrieval of code summaries
+-   🕸️ Integration with ArangoDB for storing code structure and relationships:
+    -   Enables graph-based representation of code structures
+    -   Supports visualization of code structures using ArangoDB's built-in tools
+    -   Allows construction of ArangoDB graphs from ChromaDB collections
+-   🔍 Vector storage (ChromaDB) for efficient retrieval of code summaries
 -   🖥️ Command-line interface for basic interactions and codebase exploration
 -   🐍 Initial simple Python API for programmatic use and integration into development workflows
     -   Greater integration with existing and future project functionalities are planned to allow for more control and customization
@@ -42,7 +68,7 @@ Contributions from people that are interested in exploring new methods of using 
 
 ##
 
-[Features](#-features) | [Installation](#️️-installation) | [CLI - Quick Start](#️️-cli---quick-start) | [API - Quick Start](#️️-api---quick-start) | [Contributing](#-contributing) | [License](#-license) | [Acknowledgments](#-acknowledgments) | [Example Output](#example-output)
+[Features](#features) | [Installation](#️️installation) | [CLI - Quick Start](#️️cli---quick-start) | [API - Quick Start](#️️api---quick-start) | [Contributing](#contributing) | [License](#license) | [Acknowledgments](#acknowledgments) | [Example Output](#example-output)
 
 ## 🌟 Features
 
@@ -136,10 +162,18 @@ To process and interact with your own codebase:
     This connects to the existing vectorstore and starts a chat session about your processed codebase.
 
 4. Process and chat in one command:
+
     ```bash
     fenec /path/to/your/codebase --update-all --passes 3 --chat
     ```
+
     This processes the entire codebase and then starts a chat session.
+
+5. Construct ArangoDB graph (if needed):
+    ```bash
+    fenec --construct-graph
+    ```
+    This command connects to the existing vectorstore and constructs an ArangoDB graph from the ChromaDB data.
 
 CLI Options:
 
@@ -147,12 +181,17 @@ CLI Options:
 -   `--update-all`: Process and update the entire codebase
 -   `--chat`: Start a chat session after processing (default: True)
 -   `--passes`: Number of summarization passes (1 or 3, default: 1)
+-   `--construct-graph`: Construct ArangoDB graph from ChromaDB data
 
-    > **NOTE:** The `--passes` arg sets the number of passes the summarizer will take (1 or 3). The summarizer will first summarize the code blocks that are at the lowest level (the ones that have no children, eg. a method of a function often doesn't have any child code blocks), or doesn't have any code blocks defined in the project that it depends on. Then, it will summarize the code blocks that depend on the previously summarized code blocks, and so on.
-    >
-    > if the `--passes` arg is set to 3, the second pass will run from the top level of the project, eg. the entry points and directories, and summarize the code blocks that depend on the code blocks that were summarized in the first pass, using the existing summaries and the summaries of the parent code blocks to make the summaries of each code block include further information and how the code block fits into the project, eg. its purpose. The third run like the first pass but with greater context.
+> **NOTE:** The `--passes` arg sets the number of passes the summarizer will take (1 or 3). The summarizer will first summarize the code blocks that are at the lowest level (the ones that have no children, eg. a method of a function often doesn't have any child code blocks), or doesn't have any code blocks defined in the project that it depends on. Then, it will summarize the code blocks that depend on the previously summarized code blocks, and so on.
+>
+> if the `--passes` arg is set to 3, the second pass will run from the top level of the project, eg. the entry points and directories, and summarize the code blocks that depend on the code blocks that were summarized in the first pass, using the existing summaries and the summaries of the parent code blocks to make the summaries of each code block include further information and how the code block fits into the project, eg. its purpose. The third run like the first pass but with greater context.
 
-    > **NOTE:** The first time you run Fenec, it will take some time to process the codebase and build the databases. Subsequent runs should be faster and cheaper as it will use version control to only process the changed files and the summaries for the code blocks that depend on them.
+> **NOTE:** The first time you run Fenec, it will take some time to process the codebase and build the databases. Subsequent runs should be faster and cheaper as it will use version control to only process the changed files and the summaries for the code blocks that depend on them.
+
+> **⚠️ Important Note:** When you clone the Fenec project or share vectorstored information between collaborators, the ArangoDB graph will not be automatically constructed on your machine. If you wish to use the visualization tools in ArangoDB or update project summaries, you'll need to explicitly construct the graph using the `--construct-graph` option.
+
+> **💡 Tip for Collaboration:** When collaborating on projects using Fenec, it's recommended to share the ChromaDB vectorstore data. Each collaborator can then construct their own local ArangoDB graph as needed using the shared vectorstore information.
 
 ## 🚀 API - Quick Start
 
@@ -213,7 +252,18 @@ response = fenec.chat("How are errors handled in the database module?")
 print(response)
 ```
 
-This API allows you to integrate Fenec's capabilities into your own Python scripts or applications, giving you programmatic control over codebase processing and AI interactions.
+5. Construct ArangoDB graph (if needed):
+
+```python
+# Construct the graph from ChromaDB
+fenec.construct_graph_from_chromadb(force=True)
+```
+
+This step constructs an ArangoDB graph representation of your code structure based on data stored in ChromaDB. It's particularly useful when you want to transition from a vector-based representation to a graph-based one for more complex querying and analysis, or if you want to use ArangoDB's visualization tools.
+
+> **⚠️ Important:** The ArangoDB graph is not automatically constructed when you clone the project or share vectorstored information. You need to explicitly construct it using the method above if you want to use ArangoDB features.
+
+This API allows you to integrate Fenec's capabilities into your own Python scripts or applications, giving you programmatic control over codebase processing, AI interactions, and graph construction.
 
 > **NOTE:** Fenec is built to be extensible and thus access to the chromadb, vectorstore, and chroma_librarian could be relatively easily added to the API. If you wish for this please open an issue or a pull request.
 

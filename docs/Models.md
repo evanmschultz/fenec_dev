@@ -1,16 +1,17 @@
 # 🏗️ Fenec Models
 
-The models in Fenec are the core structures used to represent and handle code blocks within a project. They play a crucial role in parsing projects, storing information in both vector and graph databases, and facilitating code analysis and interaction.
+The models in Fenec are the core structures used to represent and handle code blocks within a project. They play a crucial role in parsing projects, storing information in both vector and graph databases, and facilitating code analysis and interaction. Due to the recent decision to use ChromaDB as the primary database (a single source of truth), the current model structure is less than optimal and a temporary stop gap. We welcome any suggestions for improvement.
 
 ## 🌟 Features
 
 -   📊 Hierarchical representation of code structures
 -   🔗 Support for various code block types (modules, classes, functions, etc.)
--   🧠 Integration with AI services for code summarization
--   🔄 Conversion methods for database storage and retrieval
--   🧩 Extensible design for future enhancements
+-   🧠 Integration with and use by AI services for code summarization
+-   🔄 Conversion methods for ChromaDB storage and retrieval
 
 > **NOTE:** The models in Fenec are internal structures used for code analysis and are not intended for direct interaction by end-users. They are designed to be used by Fenec's code analysis pipeline to parse, store, and analyze code structures. The documentation is provided for reference and internal development purposes and should be used for diagnosing issues, extending Fenec's functionality, or gaining a better understanding of how Fenec works.
+
+> **IMPORTANT:** Due to time constraints and the need to quickly adapt to using ChromaDB as a single source of truth, the current model structure may not be optimal. We welcome any suggestions for improvement. If you have ideas for better ways to structure these models or to work with ChromaDB's limitations, or if you think a different database should be added as a single source of truth, please open an issue or submit a pull request. Your contributions can help shape the future of Fenec!
 
 ## 🧩 Core Components
 
@@ -115,48 +116,57 @@ function = FunctionModel(
 module.children_ids.append(function.id)
 ```
 
-## 🔄 Database Integration
+## 🔄 ChromaDB Integration
 
-Each model includes methods for converting to and from metadata dictionaries, facilitating storage and retrieval from databases, ChromaDB and ArangoDB currently:
+Each model includes methods for converting to and from metadata dictionaries, facilitating storage and retrieval from ChromaDB:
 
--   `convert_to_metadata()`: Converts and flattens the model to a metadata dictionary for database storage.
--   `build_from_metadata()`: Creates a model instance from a metadata dictionary retrieved from the database.
+-   `convert_to_metadata()`: Converts and flattens the model to a metadata dictionary for ChromaDB storage.
+-   `build_from_metadata()`: Creates a model instance from a metadata dictionary retrieved from ChromaDB.
+
+These methods have been adapted to work with ChromaDB's flat structure, which presents some limitations compared to the original model design. The current implementation uses JSON serialization for complex nested structures to fit within ChromaDB's constraints.
 
 ## 🚧 Under Development
 
 The model structure in Fenec is under active development. Current areas of focus include:
 
--   Optimizing model structures for more efficient parsing and storage
--   Enhancing support for complex code relationships
+-   Optimizing model structures for more efficient parsing and storage in ChromaDB
+-   Enhancing support for complex code relationships within ChromaDB's limitations
 -   Improving integration with AI services for better code summarization
+-   Exploring alternative strategies for storing hierarchical data in ChromaDB
 
 ## 🔮 Future Enhancements
 
-1. **Project Model**: A new model is planned to represent an entire project, storing a comprehensive summary above the directory and module levels.
+1. **Directory Model Integration**: Enhancing the parsing and summarization logic to include use of the DirectoryModel to give the LLM a more comprehensive overview of the codebase.
 
-2. **Customizable CommentType Enum**: Allowing users to define their own important comment types for better code analysis of their projects.
+2. **Project Model**: A new model is planned to represent an entire project, storing a comprehensive summary above the directory and module levels.
 
-3. **Partial Project Update**: The models may be extended or changed to better support updating parts of the project that have changed without needing to use git and remember to run Fenec on each commit.
+3. **Customizable CommentType Enum**: Allowing users to define their own important comment types for better code analysis of their projects.
+
+4. **Partial Project Update**: The models may be extended or changed to better support updating parts of the project that have changed without needing to use git and remember to run Fenec on each commit.
+
+5. **Alternative Data Storage**: Exploring options for storing hierarchical data more efficiently, possibly using a combination of ChromaDB and other storage solutions.
 
 ## 🤝 Contributing
 
-We welcome contributions to improve and expand the model structures in Fenec! If you have ideas for better ways to represent code structures or enhance the existing models, please check our [Contributing Guidelines](../CONTRIBUTING.md) and consider opening an issue or submitting a pull request.
+We welcome contributions to improve and expand the model structures in Fenec! If you have ideas for better ways to represent code structures, enhance the existing models, or work around ChromaDB's limitations, please check our [Contributing Guidelines](../CONTRIBUTING.md) and consider opening an issue or submitting a pull request.
 
 Some areas where contributions would be particularly valuable:
 
 -   Tests, yes testing is lacking here too!
--   Optimizing model structures for performance and memory efficiency
--   Enhancing model conversion methods for different database types
+-   Optimizing model structures for performance and memory efficiency within ChromaDB constraints
+-   Enhancing model conversion methods for ChromaDB compatibility
 -   Implementing support for additional programming language constructs
 -   Developing utilities for model analysis and visualization
+-   Proposing alternative strategies for storing and retrieving hierarchical data in ChromaDB
 
 ## 🗺️ Roadmap
 
 The future development of Fenec's models will focus on:
 
 1. Tests, tests, and more tests!
-2. Implementing the Project Model for comprehensive project representation\
-3. Reevaluating the model structure at its route to possibly decouple them and make them easier to work with databases, without conversion.
+2. Implementing the Project Model for comprehensive project representation
+3. Reevaluating the model structure to better align with ChromaDB's capabilities and limitations
+4. Exploring hybrid storage solutions to overcome ChromaDB's flat structure limitations
 
 For a more comprehensive view of our plans, please refer to our [Roadmap](../ROADMAP.md).
 
