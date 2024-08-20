@@ -3,7 +3,7 @@
 import logging
 from rich import print
 
-from fenec.utilities.configs.configs import OpenAIReturnContext
+from fenec.configs import OpenAIReturnContext
 from fenec.ai_services.summarizer.summarizer_protocol import Summarizer
 from fenec.ai_services.summarizer.openai_summarizer import OpenAISummarizer
 from fenec.ai_services.summarizer.ollama_summarizer import OllamaSummarizer
@@ -77,12 +77,16 @@ class GraphDBSummarizationManager:
     def total_cost(self) -> float:
         """Provides the total cost of the summarization process."""
         gpt_4o_2024_08_06_prompt_cost_per_token: float = 0.0000025
-        prompt_cost: float = self.prompt_tokens * gpt_4o_2024_08_06_prompt_cost_per_token
-        gpt_4o_2024_08_06_completion_cost_per_token: float = gpt_4o_2024_08_06_prompt_cost_per_token * 4
+        prompt_cost: float = (
+            self.prompt_tokens * gpt_4o_2024_08_06_prompt_cost_per_token
+        )
+        gpt_4o_2024_08_06_completion_cost_per_token: float = (
+            gpt_4o_2024_08_06_prompt_cost_per_token * 4
+        )
         completion_cost: float = (
             self.completion_tokens * gpt_4o_2024_08_06_completion_cost_per_token
-        )  
-        return (prompt_cost + completion_cost) 
+        )
+        return prompt_cost + completion_cost
 
     def create_summaries_and_return_updated_models(
         self, num_passes: int = 1

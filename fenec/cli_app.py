@@ -1,6 +1,7 @@
 import logging
 import typer
-from typing import Annotated, Literal, Optional, Any
+from typing import Optional, Any
+from typing_extensions import Annotated
 from pathlib import Path
 from fenec import Fenec
 from fenec.updaters.graph_db_updater import GraphDBUpdater
@@ -111,6 +112,9 @@ def main(
             help="The number of passes the summarizer will take, 1 is bottom-up, 3 is bottom-up, top-down, then bottom-up again"
         ),
     ] = 1,
+    construct_graph: Annotated[
+        bool, typer.Option(help="Construct graph from ChromaDB if it doesn't exist")
+    ] = False,
 ) -> None:
     """
     Process the codebase and start a chat session with Fenec.
@@ -126,7 +130,11 @@ def main(
         global fenec_instance
         fenec_instance = Fenec(path=resolved_path)
 
-        if update:
+        if construct_graph:
+            print("[bold blue]FENEC[/bold blue]\n\nConstructing graph from ChromaDB")
+            connect_to_vectorstore(fenec_instance)
+            fenec_instance.construct_graph_from_chromadb(force=True)
+        elif update:
             print(
                 f"[bold blue]FENEC[/bold blue]\n\nProcessing updated codebase at path: '{resolved_path}'"
             )

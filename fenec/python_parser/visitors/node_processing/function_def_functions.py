@@ -9,7 +9,7 @@ from fenec.python_parser.model_builders.function_model_builder import (
 from fenec.models.models import (
     DecoratorModel,
     ParameterListModel,
-    ParameterModel,
+    # ParameterModel,
 )
 from fenec.models.enums import BlockType
 import fenec.python_parser.visitors.node_processing.common_functions as common_functions
@@ -90,27 +90,48 @@ def process_parameters(
         ```
     """
 
-    params: list[ParameterModel] | None = (
-        _get_parameters_list(node.params) if node.params else []
-    )
-    kwonly_params: list[ParameterModel] | None = (
-        _get_parameters_list(node.kwonly_params) if node.kwonly_params else []
-    )
-    posonly_params: list[ParameterModel] | None = (
-        _get_parameters_list(node.posonly_params) if node.posonly_params else []
+    # params: list[ParameterModel] | None = (
+    #     _get_parameters_list(node.params) if node.params else []
+    # )
+    params: list[str] | None = (
+        _get_parameters_list(node.params) if node.params else None
     )
 
-    star_arg: ParameterModel | None = (
-        ParameterModel(
-            content=common_functions.extract_stripped_code_content(node.star_arg)
-        )
+    # kwonly_params: list[ParameterModel] | None = (
+    #     _get_parameters_list(node.kwonly_params) if node.kwonly_params else []
+    # )
+    # posonly_params: list[ParameterModel] | None = (
+    #     _get_parameters_list(node.posonly_params) if node.posonly_params else []
+    # )
+
+    # star_arg: ParameterModel | None = (
+    #     ParameterModel(
+    #         content=common_functions.extract_stripped_code_content(node.star_arg)
+    #     )
+    #     if node.star_arg and isinstance(node.star_arg, libcst.Param)
+    #     else None
+    # )
+    # star_kwarg: ParameterModel | None = (
+    #     ParameterModel(
+    #         content=common_functions.extract_stripped_code_content(node.star_kwarg)
+    #     )
+    #     if node.star_kwarg
+    #     else None
+    # )
+    kwonly_params: list[str] | None = (
+        _get_parameters_list(node.kwonly_params) if node.kwonly_params else None
+    )
+    posonly_params: list[str] | None = (
+        _get_parameters_list(node.posonly_params) if node.posonly_params else None
+    )
+
+    star_arg: str | None = (
+        common_functions.extract_stripped_code_content(node.star_arg)
         if node.star_arg and isinstance(node.star_arg, libcst.Param)
         else None
     )
-    star_kwarg: ParameterModel | None = (
-        ParameterModel(
-            content=common_functions.extract_stripped_code_content(node.star_kwarg)
-        )
+    star_kwarg: str | None = (
+        common_functions.extract_stripped_code_content(node.star_kwarg)
         if node.star_kwarg
         else None
     )
@@ -155,25 +176,37 @@ def _func_is_async(node: libcst.FunctionDef) -> bool:
 
 def _get_parameters_list(
     parameter_sequence: Sequence[libcst.Param],
-) -> list[ParameterModel] | None:
+    # ) -> list[ParameterModel] | None:
+) -> list[str] | None:
+    # """
+    # Returns a list of ParameterModel representing the parameters in a function definition.
+
+    # Args:
+    #     - parameter_sequence (Sequence[libcst.Param]): The sequence of parameters from the function definition.
+
+    # Returns:
+    #     - list[ParameterModel] | None: A list of ParameterModel instances or None if there are no parameters.
+    # """
     """
-    Returns a list of ParameterModel representing the parameters in a function definition.
+    Returns a list of strings representing the parameters in a function definition.
 
     Args:
-        - parameter_sequence (Sequence[libcst.Param]): The sequence of parameters from the function definition.
+        - `parameter_sequence` (Sequence[libcst.Param]): The sequence of parameters from the function definition.
 
     Returns:
-        - list[ParameterModel] | None: A list of ParameterModel instances or None if there are no parameters.
+        - `list[str] | None`: A list of strings or None if there are no parameters.
     """
 
-    params: list[ParameterModel] | None = None
+    # params: list[ParameterModel] | None = None
+    params: list[str] | None = None
 
     if parameter_sequence:
         params = []
         for parameter in parameter_sequence:
-            param: ParameterModel = ParameterModel(
-                content=common_functions.extract_stripped_code_content(parameter)
-            )
+            # param: ParameterModel = ParameterModel(
+            # content=common_functions.extract_stripped_code_content(parameter)
+            # )
+            param = common_functions.extract_stripped_code_content(parameter)
             params.append(param)
 
     return params if params else None

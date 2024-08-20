@@ -2,11 +2,11 @@ import logging
 from typing import Sequence
 from openai import OpenAI
 
-from fenec.utilities.configs.configs import OpenAIConfigs
+from fenec.configs import OpenAIChatConfigs
 import fenec.types.chroma as chroma_types
 import fenec.types.openai as openai_types
 
-from fenec.ai_services.librarians.chroma_librarians import ChromaLibrarian
+from fenec.ai_services.librarian.chroma_librarian import ChromaLibrarian
 from fenec.ai_services.chat.prompts.chat_prompts import (
     DEFAULT_PROMPT_TEMPLATE,
     DEFAULT_SYSTEM_PROMPT,
@@ -19,7 +19,7 @@ class OpenAIChatAgent:
 
     Args:
         - `chroma_librarian` (ChromaLibrarian): The librarian handling Chroma queries.
-        - `configs` (OpenAIConfigs, optional): Configuration settings for the OpenAI agent.
+        - `configs` (OpenAIChatConfigs, optional): Configuration settings for the OpenAI agent.
 
     Methods:
         - `get_response`(user_question, prompt_template=DEFAULT_PROMPT_TEMPLATE):
@@ -36,10 +36,10 @@ class OpenAIChatAgent:
     def __init__(
         self,
         chroma_librarian: ChromaLibrarian,
-        configs: OpenAIConfigs = OpenAIConfigs(),
+        configs: OpenAIChatConfigs = OpenAIChatConfigs(),
     ) -> None:
         self.chroma_librarian: ChromaLibrarian = chroma_librarian
-        self.configs: OpenAIConfigs = configs
+        self.configs: OpenAIChatConfigs = configs
         self.client = OpenAI()
 
     def get_response(

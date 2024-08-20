@@ -7,7 +7,7 @@ from ollama import Client
 from fenec.ai_services.summarizer.prompts.prompt_creator import (
     SummarizationPromptCreator,
 )
-from fenec.utilities.configs.configs import (
+from fenec.configs import (
     OllamaSummarizationConfigs,
     OpenAIReturnContext,
 )

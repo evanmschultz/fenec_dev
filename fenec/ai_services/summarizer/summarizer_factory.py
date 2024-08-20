@@ -1,7 +1,7 @@
 from fenec.ai_services.summarizer.ollama_summarizer import OllamaSummarizer
 from fenec.ai_services.summarizer.openai_summarizer import OpenAISummarizer
 from fenec.ai_services.summarizer.summarizer_protocol import Summarizer
-from fenec.utilities.configs.configs import (
+from fenec.configs import (
     OpenAISummarizationConfigs,
     OllamaSummarizationConfigs,
 )

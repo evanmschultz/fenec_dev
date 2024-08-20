@@ -13,8 +13,8 @@ from openai.types.chat.chat_completion import ChatCompletion
 from fenec.ai_services.summarizer.prompts.prompt_creator import (
     SummarizationPromptCreator,
 )
-from fenec.utilities.configs.configs import (
-    OpenAIConfigs,
+from fenec.configs import (
+    OpenAISummarizationConfigs,
     OpenAIReturnContext,
 )
 
@@ -27,11 +27,11 @@ class OpenAISummarizer:
     It supports multi-pass summarization, allowing for more comprehensive and context-aware summaries.
 
     Args:
-        - `configs` (OpenAIConfigs, optional): Configuration settings for the OpenAI summarizer.
+        - `configs` (OpenAISummarizationConfigs, optional): Configuration settings for the OpenAI summarizer.
 
     Attributes:
         - client (OpenAI): The OpenAI client instance.
-        - configs (OpenAIConfigs): Configuration settings for the summarizer.
+        - configs (OpenAISummarizationConfigs): Configuration settings for the summarizer.
 
     Methods:
         - summarize_code: Summarizes the provided code snippet using the OpenAI API.
@@ -55,10 +55,10 @@ class OpenAISummarizer:
 
     def __init__(
         self,
-        configs: OpenAIConfigs = OpenAIConfigs(),
+        configs: OpenAISummarizationConfigs = OpenAISummarizationConfigs(),
     ) -> None:
         self.client: OpenAI = OpenAI()
-        self.configs: OpenAIConfigs = configs
+        self.configs: OpenAISummarizationConfigs = configs
 
     def _create_system_message(self, content: str) -> ChatCompletionSystemMessageParam:
         """Creates a system message for chat completion using OpenAi's ChatCompletionSystemMessageParam class."""

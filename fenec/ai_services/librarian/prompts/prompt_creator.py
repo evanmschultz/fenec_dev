@@ -1,4 +1,4 @@
-import fenec.ai_services.librarians.prompts.chroma_librarian_prompts as prompts
+import fenec.ai_services.librarian.prompts.chroma_librarian_prompts as prompts
 
 
 class ChromaLibrarianPromptCreator:

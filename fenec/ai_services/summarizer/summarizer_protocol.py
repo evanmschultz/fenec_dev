@@ -1,5 +1,5 @@
 from typing import Protocol
-from fenec.utilities.configs.configs import OpenAIReturnContext
+from fenec.configs import OpenAIReturnContext
 
 
 class Summarizer(Protocol):

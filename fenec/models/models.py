@@ -1,4 +1,4 @@
-import logging
+import json
 from pydantic import BaseModel, Field, field_validator
 
 from fenec.models.enums import (
@@ -15,36 +15,21 @@ class ImportNameModel(BaseModel):
     as_name: str | None = None
     local_block_id: str | None = None
 
-    @classmethod
-    def _build_from_metadata(cls, metadata: dict[str, str]) -> "ImportNameModel":
-        """
-        Builds an ImportNameModel from a metadata dictionary.
+    @field_validator("as_name")
+    def _check_as_name(cls, v) -> str:
+        """Validates the as_name field."""
+        if v is None:
+            return ""
+        else:
+            return v
 
-        Args:
-            metadata (dict[str, str]): A dictionary containing metadata for an import name.
-
-        Returns:
-            ImportNameModel: An instance of ImportNameModel.
-        """
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            name: str | None = metadata.get("name")
-            if not name:
-                raise ValueError("Import name must be a string.")
-
-            return cls(
-                name=name,
-                as_name=metadata.get("as_name"),
-                local_block_id=metadata.get("local_block_id"),
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+    @field_validator("local_block_id")
+    def _check_local_block_id(cls, v) -> str:
+        """Validates the local_block_id field."""
+        if v is None:
+            return ""
+        else:
+            return v
 
 
 class ImportModel(BaseModel):
@@ -55,71 +40,25 @@ class ImportModel(BaseModel):
     import_module_type: ImportModuleType = ImportModuleType.STANDARD_LIBRARY
     local_module_id: str | None = None
 
-    def convert_import_to_metadata(self) -> str:
+    @field_validator("imported_from")
+    def _check_imported_from(cls, v) -> str:
+        """Validates the imported_from field."""
+        if v is None:
+            return ""
+        else:
+            return v
+
+    @field_validator("local_module_id")
+    def _check_local_module_id(cls, v) -> str:
+        """Validates the local_module_id field."""
+        if v is None:
+            return ""
+        else:
+            return v
+
+    def _convert_import_to_metadata(self) -> str:
         """Converts the import to a metadata string."""
         return self.model_dump_json()
-
-    @classmethod
-    def _build_from_metadata(
-        cls, metadata: dict[str, str | list[dict[str, str]]]
-    ) -> "ImportModel":
-        """
-        Builds an ImportModel from a metadata dictionary.
-
-        Args:
-            metadata (dict): A dictionary containing metadata for an import statement.
-
-        Returns:
-            ImportModel: An instance of ImportModel.
-        """
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            import_names_data = metadata.get("import_names", [])
-            if not isinstance(import_names_data, list):
-                raise ValueError("import_names must be a list.")
-
-            import_names = [
-                ImportNameModel._build_from_metadata(name) for name in import_names_data
-            ]
-
-            import_from = metadata.get("imported_from")
-
-            if not isinstance(import_from, str):
-                raise ValueError("imported_from must be a string.")
-
-            if import_from == "":
-                import_from = None
-
-            import_module_type_raw = metadata.get("import_module_type")
-            if not isinstance(import_module_type_raw, str):
-                raise ValueError("import_module_type must be a string.")
-
-            try:
-                import_module_type = ImportModuleType(metadata["import_module_type"])
-            except ValueError:
-                raise ValueError("Invalid import module type.")
-
-            local_module_id = metadata.get("local_module_id")
-            if not isinstance(local_module_id, str):
-                raise ValueError("local_module_id must be a string.")
-
-            if not local_module_id:
-                raise ValueError("local_module_id cannot be empty.")
-
-            return cls(
-                import_names=import_names,
-                imported_from=import_from,
-                import_module_type=import_module_type,
-                local_module_id=local_module_id,
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
 
 
 class DependencyModel(BaseModel):
@@ -127,27 +66,9 @@ class DependencyModel(BaseModel):
 
     code_block_id: str
 
-    def convert_dependency_to_metadata(self) -> str:
+    def _convert_dependency_to_metadata(self) -> str:
         """Converts the dependency to a metadata string."""
         return self.model_dump_json()
-
-    @classmethod
-    def _build_from_metadata(cls, metadata: dict[str, str]) -> "DependencyModel":
-        """Builds a DependencyModel from a metadata dictionary."""
-
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            return cls(
-                code_block_id=metadata["code_block_id"],
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
 
 
 class CommentModel(BaseModel):
@@ -156,42 +77,9 @@ class CommentModel(BaseModel):
     content: str
     comment_types: list[CommentType]
 
-    def convert_comment_to_metadata(self) -> str:
+    def _convert_comment_to_metadata(self) -> str:
         """Converts the comment to a metadata string."""
         return self.model_dump_json()
-
-    @classmethod
-    def _build_from_metadata(
-        cls, metadata: dict[str, str | list[str]]
-    ) -> "CommentModel":
-        """Builds a CommentModel from a metadata dictionary."""
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            content = metadata.get("content", "")
-            if not isinstance(content, str):
-                raise ValueError("Content must be a string.")
-
-            comment_types_raw = metadata.get("comment_types", [])
-            if not isinstance(comment_types_raw, list):
-                raise ValueError("Comment types must be a list.")
-
-            comment_types: list[CommentType] = []
-            for comment_type_str in comment_types_raw:
-                try:
-                    comment_type = CommentType(comment_type_str)
-                    comment_types.append(comment_type)
-                except ValueError:
-                    raise ValueError(f"Invalid comment type: {comment_type_str}")
-
-            return cls(content=content, comment_types=comment_types)
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise
 
 
 class DecoratorModel(BaseModel):
@@ -201,51 +89,17 @@ class DecoratorModel(BaseModel):
     decorator_name: str
     decorator_args: list[str] | None = None
 
-    def convert_decorator_to_metadata(self) -> str:
+    @field_validator("decorator_args")
+    def _check_decorator_args(cls, v) -> list[str]:
+        """Validates the decorator_args field."""
+        if v is None:
+            return []
+        else:
+            return v
+
+    def _convert_decorator_to_metadata(self) -> str:
         """Converts the decorator to a metadata string."""
         return self.model_dump_json()
-
-    @classmethod
-    def _build_from_metadata(
-        cls, metadata: dict[str, str | list[str] | None]
-    ) -> "DecoratorModel":
-        """Builds a DecoratorModel from a metadata dictionary."""
-        try:
-            # Ensure the metadata is a dictionary
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            content = metadata.get("content", "")
-            decorator_name = metadata.get("decorator_name", "")
-
-            if not isinstance(decorator_name, str) and not isinstance(content, str):
-                raise ValueError("Decorator name and content must be strings.")
-
-            # Handle decorator_args, ensuring it's a list[str] or None
-            decorator_args_raw = metadata.get("decorator_args")
-            decorator_args = None  # Default to None
-            if isinstance(decorator_args_raw, list):
-                # If it's a list, ensure all elements are strings
-                if all(isinstance(arg, str) for arg in decorator_args_raw):
-                    decorator_args = decorator_args_raw
-                else:
-                    raise ValueError("All decorator arguments must be strings.")
-            elif isinstance(decorator_args_raw, str):
-                # If it's a string, wrap it in a list
-                decorator_args = [decorator_args_raw]
-            elif decorator_args_raw is not None:
-                # If it's not a list, string, or None, it's an invalid type
-                raise ValueError(
-                    "Decorator arguments must be a string, a list of strings, or None."
-                )
-
-            return cls(content=content, decorator_name=decorator_name, decorator_args=decorator_args)  # type: ignore # FIXME: fix type hinting error
-        except ValueError as ve:
-            print(f"Error building from metadata: {ve}")
-            raise
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-            raise
 
 
 class ClassKeywordModel(BaseModel):
@@ -255,105 +109,106 @@ class ClassKeywordModel(BaseModel):
     keyword_name: str
     args: str | None = None
 
-    def convert_class_keyword_to_metadata(self) -> str:
+    @field_validator("args")
+    def _check_args(cls, v) -> str:
+        """Validates the args field."""
+        if v is None:
+            return ""
+        else:
+            return v
+
+    def _convert_class_keyword_to_metadata(self) -> str:
         """Converts the class keyword to a metadata string."""
         return self.model_dump_json()
-
-    @classmethod
-    def _build_from_metadata(cls, metadata: dict[str, str]) -> "ClassKeywordModel":
-        """Builds a ClassKeywordModel from a metadata dictionary."""
-
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            return cls(
-                content=metadata["content"],
-                keyword_name=metadata["keyword_name"],
-                args=metadata["args"] if "args" in metadata else None,
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
-
-
-class ParameterModel(BaseModel):
-    """Class representing a function parameter."""
-
-    content: str
 
 
 class ParameterListModel(BaseModel):
     """Class representing a list of parameters."""
 
-    params: list[ParameterModel] | None = None
-    star_arg: ParameterModel | None = None
-    kwonly_params: list[ParameterModel] | None = None
-    star_kwarg: ParameterModel | None = None
-    posonly_params: list[ParameterModel] | None = None
+    params: list[str] | None = None
+    star_arg: str | None = None
+    kwonly_params: list[str] | None = None
+    star_kwarg: str | None = None
+    posonly_params: list[str] | None = None
 
-    def convert_parameters_to_metadata(self) -> str:
+    @field_validator("params")
+    def _check_params(cls, v) -> list[str]:
+        """Validates the params field."""
+        if v is None:
+            return []
+        else:
+            return v
+
+    @field_validator("star_arg")
+    def _check_star_arg(cls, v) -> str:
+        """Validates the star_arg field."""
+        if v is None:
+            # return ParameterModel(content="")
+            return ""
+        else:
+            return v
+
+    @field_validator("kwonly_params")
+    def _check_kwonly_params(cls, v) -> list[str]:
+        """Validates the kwonly_params field."""
+        if v is None:
+            return []
+        else:
+            return v
+
+    @field_validator("star_kwarg")
+    def _check_star_kwarg(cls, v) -> str:
+        """Validates the star_kwarg field."""
+        if v is None:
+            # return ParameterModel(content="")
+            return ""
+        else:
+            return v
+
+    @field_validator("posonly_params")
+    def _check_posonly_params(cls, v) -> list[str]:
+        """Validates the posonly_params field."""
+        if v is None:
+            return []
+        else:
+            return v
+
+    def _convert_parameters_to_metadata(self) -> str:
         """Converts the parameter list to a metadata string."""
-        return self.model_dump_json()
+
+        params: str = json.dumps(self.params, indent=4)
+        kwonly_params: str = json.dumps(self.kwonly_params, indent=4)
+        posonly_params: str = json.dumps(self.posonly_params, indent=4)
+        return json.dumps(
+            {
+                "params": params,
+                "star_arg": self.star_arg,
+                "kwonly_params": kwonly_params,
+                "star_kwarg": self.star_kwarg,
+                "posonly_params": posonly_params,
+            }
+        )
 
     @classmethod
-    def _build_from_metadata(cls, metadata: dict[str, str]) -> "ParameterListModel":
-        """Builds a ParameterListModel from a metadata dictionary."""
+    def _build_parameter_list_model_from_metadata(
+        cls, metadata: str
+    ) -> "ParameterListModel":
+        """Builds a parameter list model from metadata."""
 
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
+        meta_data: dict = json.loads(metadata)
+        params: list[str] = json.loads(meta_data["params"])
+        star_arg: str = meta_data["star_arg"]
+        kwonly_params: list[str] = json.loads(meta_data["kwonly_params"])
+        star_kwarg: str = meta_data["star_kwarg"]
+        posonly_params: list[str] = json.loads(meta_data["posonly_params"])
 
-            params: list[ParameterModel] | None = (
-                [ParameterModel(content=param) for param in metadata.get("params", [])]
-                if "params" in metadata and isinstance(metadata["params"], list)
-                else None
-            )
-            star_arg: ParameterModel | None = (
-                ParameterModel(content=metadata["star_arg"])
-                if "star_arg" in metadata and isinstance(metadata["star_arg"], str)
-                else None
-            )
-            kwonly_params: list[ParameterModel] | None = (
-                [
-                    ParameterModel(content=param)
-                    for param in metadata.get("kwonly_params", [])
-                ]
-                if "kwonly_params" in metadata
-                and isinstance(metadata["kwonly_params"], list)
-                else None
-            )
-            star_kwarg: ParameterModel | None = (
-                ParameterModel(content=metadata["star_kwarg"])
-                if "star_kwarg" in metadata and isinstance(metadata["star_kwarg"], str)
-                else None
-            )
-            posonly_params: list[ParameterModel] | None = (
-                [
-                    ParameterModel(content=param)
-                    for param in metadata.get("posonly_params", [])
-                ]
-                if "posonly_params" in metadata
-                and isinstance(metadata["posonly_params"], list)
-                else None
-            )
-
-            return cls(
-                params=params,
-                star_arg=star_arg,
-                kwonly_params=kwonly_params,
-                star_kwarg=star_kwarg,
-                posonly_params=posonly_params,
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        return cls(
+            params=params,
+            star_arg=star_arg,
+            kwonly_params=kwonly_params,
+            star_kwarg=star_kwarg,
+            posonly_params=posonly_params,
+        )
 
 
 class BaseCodeBlockModel(BaseModel):
@@ -372,7 +227,7 @@ class BaseCodeBlockModel(BaseModel):
     children_ids: list[str] | None = []
 
     @field_validator("parent_id")
-    def check_parent_id(cls, v, values) -> str | None:
+    def _check_parent_id(cls, v, values) -> str:
         """Validates that parent_id is a non-empty string unless block_type is MODULE."""
         block_type = (
             values.get("block_type")
@@ -387,166 +242,115 @@ class BaseCodeBlockModel(BaseModel):
                 )
         return v
 
-    def _convert_parent_id_to_metadata(self) -> str:
-        """Converts the parent_id to a metadata string."""
-        return f"{self.parent_id}" if self.parent_id else ""
+    @field_validator("important_comments")
+    def _check_important_comments(cls, v) -> list[CommentModel] | None:
+        """Validates the important_comments field."""
 
-    def _convert_block_type_to_metadata(self) -> str:
-        """Converts the block_type to a metadata string."""
-        return f"{self.block_type.name}"
+        if v is None:
+            return []
+        else:
+            return v
 
-    def _convert_important_comments_to_metadata(self) -> str:
-        """Converts the important comments to a metadata string."""
+    @field_validator("dependencies")
+    def _check_dependencies(cls, v) -> list[ImportModel | DependencyModel] | None:
+        """Validates the dependencies field."""
+        if v is None:
+            return []
+        else:
+            return v
 
-        important_comments: str = (
-            self.model_dump_json() if self.important_comments else ""
+    @field_validator("summary")
+    def _check_summary(cls, v) -> str:
+        """Validates the summary field."""
+        if v is None:
+            return ""
+        else:
+            return v
+
+    @field_validator("children_ids")
+    def _check_children_ids(cls, v) -> list[str]:
+        """Validates the children_ids field."""
+        if v is None:
+            return []
+        else:
+            return v
+
+    def _convert_base_attributes_to_metadata(self) -> dict[str, str | int]:
+        """Converts the base attributes to a metadata dictionary."""
+
+        children_ids: str = json.dumps(self.children_ids, indent=4)
+        dependencies: str = json.dumps(
+            [
+                (
+                    dependency._convert_dependency_to_metadata()
+                    if isinstance(dependency, DependencyModel)
+                    else dependency._convert_import_to_metadata()
+                )
+                for dependency in self.dependencies  # type: ignore
+            ],
+            indent=4,
         )
-
-        return f"{important_comments}"
-
-    def _convert_dependencies_to_metadata(self) -> str:
-        """Converts the dependencies to a metadata string."""
-
-        dependencies_str: str = ""
-
-        if self.dependencies:
-            for dependency in self.dependencies:
-                if isinstance(dependency, ImportModel):
-                    dependencies_str += f"{dependency.convert_import_to_metadata()}\n"
-                elif isinstance(dependency, DependencyModel):
-                    dependencies_str += (
-                        f"{dependency.convert_dependency_to_metadata()}\n"
-                    )
-
-        return dependencies_str
-
-    def _convert_summary_to_metadata(self) -> str:
-        """Converts the summary to a metadata string."""
-        return f"{self.summary}" if self.summary else ""
-
-    def _convert_children_to_metadata(self) -> str:
-        """Converts the children to a metadata string."""
-
-        return str(self.children_ids) if self.children_ids else ""
-
-    def _convert_base_attributes_to_metadata_dict(self) -> dict[str, str | int]:
-        """Converts the base attributes to a metadata dictionary for ChromaDB."""
-
+        important_comments: str = json.dumps(
+            [
+                comment._convert_comment_to_metadata()
+                for comment in self.important_comments  # type: ignore
+            ],
+            indent=4,
+        )
         return {
             "id": self.id,
             "file_path": self.file_path,
-            "parent_id": self._convert_parent_id_to_metadata(),
-            "block_type": self._convert_block_type_to_metadata(),
+            "parent_id": self.parent_id,  # type: ignore
+            "block_type": self.block_type.name,
             "start_line_num": self.start_line_num,
             "end_line_num": self.end_line_num,
             "code_content": self.code_content,
-            "important_comments": self._convert_important_comments_to_metadata(),
-            "dependencies": self._convert_dependencies_to_metadata(),
-            "summary": self._convert_summary_to_metadata(),
-            "children": self._convert_children_to_metadata(),
+            "important_comments": important_comments,
+            "dependencies": dependencies,
+            "summary": self.summary,
+            "children_ids": children_ids,
         }
 
     @classmethod
-    def _build_from_metadata(
-        cls, metadata: dict[str, str | int | list[str]]
+    def _build_base_code_block_model_from_metadata(
+        cls, metadata: dict
     ) -> "BaseCodeBlockModel":
-        """Builds a BaseCodeBlockModel from a metadata dictionary."""
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
+        """Builds a base code block model from metadata."""
 
-            id = metadata.get("id")
-            if not isinstance(id, str):
-                raise ValueError("ID must be a string.")
+        important_comments: list[CommentModel] | None = []
+        for comment in json.loads(metadata["important_comments"]):
+            important_comments.append(CommentModel(**comment))
+        if important_comments is []:
+            important_comments = None
 
-            file_path = metadata.get("file_path")
-            if not isinstance(file_path, str):
-                raise ValueError("File path must be a string.")
-
-            block_type = metadata.get("block_type")
-            if (
-                not isinstance(block_type, str)
-                or block_type not in BlockType._member_names_
-            ):
-                raise ValueError("Invalid block type.")
-
-            start_line_num = metadata.get("start_line_num")
-            if not isinstance(start_line_num, int):
-                raise ValueError("Start line number must be an integer.")
-
-            end_line_num = metadata.get("end_line_num")
-            if not isinstance(end_line_num, int):
-                raise ValueError("End line number must be an integer.")
-
-            parent_id = metadata.get("parent_id")
-            if not isinstance(parent_id, str):
-                raise ValueError("Parent ID must be a string.")
-
-            code_content = metadata.get("code_content", "")
-            if not isinstance(code_content, str):
-                raise ValueError("Code content must be a string.")
-
-            summary = metadata.get("summary")
-            if not isinstance(summary, str):
-                raise ValueError("Summary must be a string.")
-
-            children_ids = metadata.get("children_ids", [])
-            if not isinstance(children_ids, list) or not all(
-                isinstance(child_id, str) for child_id in children_ids
-            ):
-                raise ValueError("Children IDs must be a list of strings.")
-
-            important_comments_data = metadata.get("important_comments", [])
-            if not isinstance(important_comments_data, list) or all(
-                isinstance(comment, dict) for comment in important_comments_data
-            ):
-                raise ValueError("Important comments must be a list.")
-
-            important_comments: list[CommentModel] = []
-            for comment_data in important_comments_data:
-                if not isinstance(comment_data, dict):
-                    raise ValueError("Each important comment must be a dictionary.")
-                comment: CommentModel = CommentModel._build_from_metadata(comment_data)
-                important_comments.append(comment)
-
-            dependencies: list[ImportModel | DependencyModel] = []
-            dependencies_data = metadata.get("dependencies", [])
-            if isinstance(dependencies_data, list):
-                for dependency_data in dependencies_data:
-                    if not isinstance(dependency_data, dict):
-                        raise ValueError("Each dependency must be a dictionary.")
-                    dependency = None
-                    if "import_names" in dependency_data:
-                        dependency = ImportModel._build_from_metadata(dependency_data)
-                    elif "code_block_id" in dependency_data:
-                        dependency = DependencyModel._build_from_metadata(
-                            dependency_data
-                        )
-                    if not dependency:
-                        raise ValueError("Invalid dependency.")
-                    dependencies.append(dependency)
+        dependencies: list[ImportModel | DependencyModel] | None = []
+        for dependency_str in json.loads(metadata["dependencies"]):
+            dependency = json.loads(dependency_str)
+            if "import_names" in dependency:
+                dependencies.append(ImportModel(**dependency))
             else:
-                raise ValueError("Dependencies must be a list.")
+                dependencies.append(DependencyModel(**dependency))
+        if dependencies is []:
+            dependencies = None
 
-            return cls(
-                id=id,
-                file_path=file_path,
-                parent_id=parent_id,
-                block_type=BlockType[block_type],
-                start_line_num=start_line_num,
-                end_line_num=end_line_num,
-                code_content=code_content,
-                important_comments=important_comments,
-                dependencies=dependencies,
-                summary=summary if summary else None,
-                children_ids=children_ids,
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        children_ids: list[str] | None = json.loads(metadata["children_ids"])
+        if children_ids is []:
+            children_ids = None
+
+        instance_dict = {
+            "id": metadata["id"],
+            "file_path": metadata["file_path"],
+            "parent_id": metadata["parent_id"],
+            "block_type": metadata["block_type"],
+            "start_line_num": metadata["start_line_num"],
+            "end_line_num": metadata["end_line_num"],
+            "code_content": metadata["code_content"],
+            "important_comments": important_comments,
+            "dependencies": dependencies,
+            "summary": metadata["summary"],
+            "children_ids": children_ids,
+        }
+        return cls(**instance_dict)
 
 
 class ModuleSpecificAttributes(BaseModel):
@@ -557,156 +361,141 @@ class ModuleSpecificAttributes(BaseModel):
     footer: list[str] | None = None
     imports: list[ImportModel] | None = None
 
-    def _convert_docstring_to_metadata(self) -> str:
-        """Converts the docstring to a metadata string."""
-        return f"{self.docstring}"
+    @field_validator("docstring")
+    def _check_docstring(cls, v) -> str:
+        """Validates the docstring field."""
+        if v is None:
+            return ""
+        else:
+            return v
 
-    def _convert_header_to_metadata(self) -> str:
-        """Converts the header and footer to a metadata string."""
-        return self.model_dump_json()
+    @field_validator("header")
+    def _check_header(cls, v) -> list[str]:
+        """Validates the header field."""
+        if v is None:
+            return []
+        else:
+            return v
 
-    def _convert_footer_to_metadata(self) -> str:
-        """Converts the header and footer to a metadata string."""
-        return self.model_dump_json()
+    @field_validator("footer")
+    def _check_footer(cls, v) -> list[str]:
+        """Validates the footer field."""
+        if v is None:
+            return []
+        else:
+            return v
 
-    def _convert_imports_to_metadata(self) -> str:
-        """Converts the imports to a metadata string."""
-        imports_str: str = self.model_dump_json() if self.imports else ""
-        return f"{imports_str}"
+    @field_validator("imports")
+    def _check_imports(cls, v) -> list[ImportModel]:
+        """Validates the imports field."""
+        if v is None:
+            return []
+        else:
+            return v
 
-    def _convert_module_attributes_to_metadata_dict(self) -> dict[str, str | int]:
-        """Converts the module attributes to a metadata dictionary for ChromaDB."""
+    def _convert_module_attributes_to_metadata(self) -> dict[str, str | int]:
+        """Converts the module attributes to a metadata dictionary."""
 
+        header: str = json.dumps(self.header, indent=4)
+        footer: str = json.dumps(self.footer, indent=4)
+        imports: str = json.dumps([import_model._convert_import_to_metadata() for import_model in self.imports], indent=4)  # type: ignore
         return {
-            "docstring": self._convert_docstring_to_metadata(),
-            "header": self._convert_header_to_metadata(),
-            "footer": self._convert_footer_to_metadata(),
-            "imports": self._convert_imports_to_metadata(),
+            "docstring": self.docstring,  # type: ignore
+            "header": header,
+            "footer": footer,
+            "imports": imports,
         }
 
     @classmethod
-    def _build_from_meta(
-        cls, metadata: dict[str, str | int | list[str]]
+    def _build_module_specific_attributes_from_metadata(
+        cls, metadata: dict
     ) -> "ModuleSpecificAttributes":
-        """Builds a ModuleSpecificAttributes from a metadata dictionary."""
+        """Builds module specific attributes from metadata."""
 
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            docstring = metadata.get("docstring")
-            if not isinstance(docstring, str):
-                raise ValueError("Docstring must be a string.")
-
-            header = metadata.get("header")
-            if not isinstance(header, list):
-                raise ValueError("Header must be a list.")
-
-            footer = metadata.get("footer")
-            if not isinstance(footer, list):
-                raise ValueError("Footer must be a list.")
-
-            imports_data = metadata.get("imports")
-            if not isinstance(imports_data, list):
-                raise ValueError("Imports must be a list.")
-
-            imports = []
-            for import_data in imports_data:
-                if not isinstance(import_data, dict):
-                    raise ValueError("Each import must be a dictionary.")
-                import_model = ImportModel._build_from_metadata(import_data)
-                imports.append(import_model)
-
-            return cls(
-                docstring=docstring,
-                header=header,
-                footer=footer,
-                imports=imports,
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        header: list[str] = json.loads(metadata["header"])
+        footer: list[str] = json.loads(metadata["footer"])
+        imports: list[ImportModel] = []
+        for import_data in json.loads(metadata["imports"]):
+            imports.append(ImportModel(**json.loads(import_data)))
+        instance_dict = {
+            "docstring": metadata["docstring"],
+            "header": header,
+            "footer": footer,
+            "imports": imports,
+        }
+        return cls(**instance_dict)
 
 
 class ModuleModel(BaseCodeBlockModel, ModuleSpecificAttributes):
     """
-    Model for a module.
+    Pydantic model for a module code block.
 
     Attributes:
-        - id (str): The unique identifier for the module.
-        - file_path (str): The path to the Python file that the module represents.
-        - parent_id (str | None): The identifier of the parent (usually a directory).
-        - block_type (BlockType): The type of code block that the module represents.
-        - start_line_num (int): The line number of the first line of the module.
-        - end_line_num (int): The line number of the last line of the module.
-        - code_content (str): The string content of the module.
-        - important_comments (list[CommentModel] | None): A list of important comments in the module.
-        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the module.
-        - summary (str | None): A summary of the module.
-        - children_ids (list[str] | None): A list of the identifiers of the children of the module.
-        - docstring (str | None): The docstring of the module.
-        - header (list[str] | None): The header of the module.
-        - footer (list[str] | None): The footer of the module.
-        - imports (list[ImportModel] | None): A list of import statements in the module.
+        - `id` (str): The unique identifier for the module.
+        - `file_path` (str): The path to the Python file that the module represents.
+        - `parent_id` (str | None): The identifier of the parent (usually a directory).
+        - `block_type` (BlockType): The type of code block that the module represents.
+        - `start_line_num` (int): The line number of the first line of the module.
+        - `end_line_num` (int): The line number of the last line of the module.
+        - `code_content` (str): The string content of the module.
+        - `important_comments` (list[CommentModel] | None): A list of important comments in the module.
+        - `dependencies` (list[ImportModel | DependencyModel] | None): A list of dependencies for the module.
+        - `summary` (str | None): A summary of the module.
+        - `children_ids` (list[str] | None): A list of the identifiers of the children of the module.
+        - `docstring` (str | None): The docstring of the module.
+        - `header` (list[str] | None): The header of the module.
+        - `footer` (list[str] | None): The footer of the module.
+        - `imports` (list[ImportModel] | None): A list of import statements in the module.
 
     Methods:
         - `convert_to_metadata() -> dict[str, str | int]`
             - Converts the module model to a metadata dictionary for ChromaDB.
-        - `build_from_metadata(metadata_dict: dict[str, str | int | list[str]]) -> ModuleModel`
+        - `build_from_metadata(metadata: dict) -> ModuleModel`
             - Builds a ModuleModel from a metadata dictionary.
     """
 
     def convert_to_metadata(self) -> dict[str, str | int]:
-        """Converts the module model to a metadata dictionary for ChromaDB."""
+        """
+        Converts the module model to a metadata dictionary for ChromaDB.
 
+        ChromaDB uses an extremely flat, JSON-like schema that only accepts simple types, [str | int | float | bool]. Thus this method
+        flattens the module model's attributes and saves them in a dictionary to be stored in a ChromaDB collection.
+
+        Returns:
+            - `dict[str, str | int]`: A dictionary containing the module model's attributes.
+        """
         return {
-            **self._convert_base_attributes_to_metadata_dict(),
-            **self._convert_module_attributes_to_metadata_dict(),
+            **self._convert_base_attributes_to_metadata(),
+            **self._convert_module_attributes_to_metadata(),
         }
 
     @classmethod
-    def build_from_metadata(
-        cls, metadata_dict: dict[str, str | int | list[str]]
-    ) -> "ModuleModel":
+    def build_from_metadata(cls, metadata: dict) -> "ModuleModel":
         """
         Builds a ModuleModel from a metadata dictionary.
 
+        This method uses the metadata dictionary from a ChromaDB collection to instantiate a ModuleModel object. It builds a
+        `BaseCodeBlockModel` and a `ModuleSpecificAttributes` object from the metadata, combing them into a `ModuleModel` object.
+
         Args:
-            - metadata_dict (dict[str, str | int | list[str]]): A dictionary containing metadata for a module.
+            - `metadata` (dict): A dictionary containing the metadata for the ModuleModel.
 
         Returns:
-            ModuleModel: An instance of ModuleModel.
-
-        Raises:
-            - ValueError: If the metadata is not a dictionary.
-            - ValueError: If the metadata is missing required keys.
-            - ValueError: If the metadata contains invalid values.
-            - Exception: If an unexpected error occurs.
+            - `ModuleModel`: A ModuleModel object with the attributes from the metadata dictionary.
         """
-        try:
-            if not isinstance(metadata_dict, dict):
-                raise ValueError("Metadata must be a dictionary.")
 
-            module_specific_attributes: ModuleSpecificAttributes = (
-                ModuleSpecificAttributes._build_from_meta(metadata_dict)
+        base_code_block_model: BaseCodeBlockModel = (
+            BaseCodeBlockModel._build_base_code_block_model_from_metadata(metadata)
+        )
+        module_specific_attributes: ModuleSpecificAttributes = (
+            ModuleSpecificAttributes._build_module_specific_attributes_from_metadata(
+                metadata
             )
-            base_code_block_model: BaseCodeBlockModel = (
-                BaseCodeBlockModel._build_from_metadata(metadata_dict)
-            )
-
-            return cls(
-                **module_specific_attributes.model_dump(),
-                **base_code_block_model.model_dump(),
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        )
+        return cls(
+            **module_specific_attributes.model_dump(),
+            **base_code_block_model.model_dump(),
+        )
 
 
 class ClassSpecificAttributes(BaseModel):
@@ -717,181 +506,161 @@ class ClassSpecificAttributes(BaseModel):
     bases: list[str] | None = None
     docstring: str | None = None
     keywords: list[ClassKeywordModel] | None = None
-    # attributes: list[dict] | None = None
 
-    def _convert_decorators_to_metadata(self) -> str:
-        """Converts the decorators to a metadata string."""
-        decorators_str: str = self.model_dump_json() if self.decorators else ""
-        return f"{decorators_str}"
+    @field_validator("decorators")
+    def _check_decorators(cls, v) -> list[DecoratorModel]:
+        if v is None:
+            return []
+        else:
+            return v
 
-    def _convert_bases_to_metadata(self) -> str:
-        """Converts the bases to a metadata string."""
-        return self.model_dump_json() if self.bases else ""
+    @field_validator("bases")
+    def _check_bases(cls, v) -> list[str]:
+        if v is None:
+            return []
+        else:
+            return v
 
-    def _convert_docstring_to_metadata(self) -> str:
-        """Converts the docstring to a metadata string."""
-        return f"{self.docstring}" if self.docstring else ""
+    @field_validator("docstring")
+    def _check_docstring(cls, v) -> str:
+        if v is None:
+            return ""
+        else:
+            return v
 
-    def _convert_keywords_to_metadata(self) -> str:
-        """Converts the keywords to a metadata string."""
-        keywords_str: str = self.model_dump_json() if self.keywords else ""
-        return f"{keywords_str}"
+    @field_validator("keywords")
+    def _check_keywords(cls, v) -> list[ClassKeywordModel]:
+        if v is None:
+            return []
+        else:
+            return v
 
-    def _convert_class_attributes_to_metadata_dict(self) -> dict[str, str | int]:
-        """Converts the class attributes to a metadata dictionary."""
-
+    def _convert_class_attributes_to_metadata(self) -> dict[str, str]:
+        decorators: str = json.dumps(
+            [
+                decorator._convert_decorator_to_metadata()
+                for decorator in self.decorators  # type: ignore
+            ],
+            indent=4,
+        )
+        keywords: str = json.dumps(
+            [
+                keyword._convert_class_keyword_to_metadata()
+                for keyword in self.keywords  # type: ignore
+            ],
+            indent=4,
+        )
+        bases: str = json.dumps(self.bases, indent=4)
         return {
             "class_name": self.class_name,
-            "decorators": self._convert_decorators_to_metadata(),
-            "bases": self._convert_bases_to_metadata(),
-            "docstring": self._convert_docstring_to_metadata(),
-            "keywords": self._convert_keywords_to_metadata(),
+            "decorators": decorators,
+            "bases": bases,
+            "docstring": self.docstring if self.docstring else "",
+            "keywords": keywords,
         }
 
     @classmethod
-    def _build_from_meta(
-        cls, metadata: dict[str, str | int | list[str]]
+    def _build_class_specific_attributes_from_metadata(
+        cls, metadata: dict
     ) -> "ClassSpecificAttributes":
-        """Builds a ClassSpecificAttributes from a metadata dictionary."""
+        """Builds class specific attributes from metadata."""
 
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
+        decorators: list[DecoratorModel] | None = []
+        for decorator_data in json.loads(metadata["decorators"]):
+            decorators.append(DecoratorModel(**json.loads(decorator_data)))
+        if decorators is []:
+            decorators = None
 
-            class_name = metadata.get("class_name")
-            if not isinstance(class_name, str):
-                raise ValueError("Class name must be a string.")
+        keywords: list[ClassKeywordModel] | None = []
+        for keyword_data in json.loads(metadata["keywords"]):
+            keywords.append(ClassKeywordModel(**json.loads(keyword_data)))
+        if keywords is []:
+            keywords = None
 
-            decorators_data = metadata.get("decorators", [])
-            if not isinstance(decorators_data, list):
-                raise ValueError("Decorators must be a list.")
+        bases: list[str] = json.loads(metadata["bases"])
+        docstring: str | None = metadata["docstring"] if metadata["docstring"] else None
 
-            decorators: list[DecoratorModel] = []
-            for decorator_data in decorators_data:
-                if not isinstance(decorator_data, dict):
-                    raise ValueError("Each decorator must be a dictionary.")
-                decorator: DecoratorModel = DecoratorModel._build_from_metadata(
-                    decorator_data
-                )
-                decorators.append(decorator)
-
-            bases = metadata.get("bases", [])
-            if not isinstance(bases, list) or all(
-                isinstance(base, str) for base in bases
-            ):
-                raise ValueError("Bases must be a list.")
-
-            docstring = metadata.get("docstring")
-            if not isinstance(docstring, str):
-                raise ValueError("Docstring must be a string.")
-
-            keywords_data = metadata.get("keywords", [])
-            if not isinstance(keywords_data, list) or all(
-                isinstance(keyword, dict) for keyword in keywords_data
-            ):
-                raise ValueError("Keywords must be a list.")
-
-            keywords: list[ClassKeywordModel] = []
-            for keyword_data in keywords_data:
-                if not isinstance(keyword_data, dict):
-                    raise ValueError("Each keyword must be a dictionary.")
-                keyword: ClassKeywordModel = ClassKeywordModel._build_from_metadata(
-                    keyword_data
-                )
-                keywords.append(keyword)
-
-            return cls(
-                class_name=class_name,
-                decorators=decorators,
-                bases=bases,
-                docstring=docstring,
-                keywords=keywords,
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        return cls(
+            class_name=metadata["class_name"],
+            decorators=decorators,
+            bases=bases,
+            docstring=docstring,
+            keywords=keywords,
+        )
 
 
 class ClassModel(BaseCodeBlockModel, ClassSpecificAttributes):
     """
-    Model for a class.
+    Pydantic model for a class code block.
 
     Attributes:
-        - id (str): The unique identifier for the class.
-        - file_path (str): The path to the Python file that the class represents.
-        - parent_id (str | None): The identifier of the parent (usually a module).
-        - block_type (BlockType): The type of code block that the class represents.
-        - start_line_num (int): The line number of the first line of the class.
-        - end_line_num (int): The line number of the last line of the class.
-        - code_content (str): The string content of the class.
-        - important_comments (list[CommentModel] | None): A list of important comments in the class.
-        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the class.
-        - summary (str | None): A summary of the class.
-        - children_ids (list[str] | None): A list of the identifiers of the children of the class.
-        - class_name (str): The name of the class.
-        - decorators (list[DecoratorModel] | None): A list of decorators for the class.
-        - bases (list[str] | None): A list of base classes for the class.
-        - docstring (str | None): The docstring of the class.
-        - keywords (list[ClassKeywordModel] | None): A list of keywords for the class.
-
+        - `id` (str): The unique identifier for the class.
+        - `file_path` (str): The path to the Python file that the class represents.
+        - `parent_id` (str | None): The identifier of the parent (usually a module).
+        - `block_type` (BlockType): The type of code block that the class represents.
+        - `start_line_num` (int): The line number of the first line of the class.
+        - `end_line_num` (int): The line number of the last line of the class.
+        - `code_content` (str): The string content of the class.
+        - `important_comments` (list[CommentModel] | None): A list of important comments in the class.
+        - `dependencies` (list[ImportModel | DependencyModel] | None): A list of dependencies for the class.
+        - `summary` (str | None): A summary of the class.
+        - `children_ids` (list[str] | None): A list of the identifiers of the children of the class.
+        - `class_name` (str): The name of the class.
+        - `decorators` (list[DecoratorModel] | None): A list of decorators for the class.
+        - `bases` (list[str] | None): A list of base classes for the class.
+        - `docstring` (str | None): The docstring of the class.
+        - `keywords` (list[ClassKeywordModel] | None): A list of keywords for the class.
 
     Methods:
         - `convert_to_metadata() -> dict[str, str | int]`
             - Converts the class model to a metadata dictionary for ChromaDB.
-        - `build_from_metadata(metadata_dict: dict[str, str | int | list[str]]) -> ClassModel`
+        - `build_from_metadata(metadata: dict) -> ClassModel`
             - Builds a ClassModel from a metadata dictionary.
     """
 
     def convert_to_metadata(self) -> dict[str, str | int]:
-        """Converts the class model to a metadata dictionary for ChromaDB."""
+        """
+        Converts the class model to a metadata dictionary for ChromaDB.
+
+        ChromaDB uses an extremely flat, JSON-like schema that only accepts simple types, [str | int | float | bool]. Thus this method
+        flattens the class model's attributes and saves them in a dictionary to be stored in a ChromaDB collection.
+
+        Returns:
+            - `dict[str, str | int]`: A dictionary containing the class model's attributes.
+        """
+
         return {
-            **self._convert_base_attributes_to_metadata_dict(),
-            **self._convert_class_attributes_to_metadata_dict(),
+            **self._convert_base_attributes_to_metadata(),
+            **self._convert_class_attributes_to_metadata(),
         }
 
     @classmethod
-    def build_from_metadata(
-        cls, metadata_dict: dict[str, str | int | list[str]]
-    ) -> "ClassModel":
+    def build_from_metadata(cls, metadata: dict) -> "ClassModel":
         """
         Builds a ClassModel from a metadata dictionary.
 
+        This method uses the metadata dictionary from a ChromaDB collection to instantiate a ClassModel object. It builds a
+        `BaseCodeBlockModel` and a `ClassSpecificAttributes` object from the metadata, combing them into a `ClassModel` object.
+
         Args:
-            - metadata_dict (dict[str, str | int | list[str]]): A dictionary containing metadata for a class.
+            - `metadata` (dict): A dictionary containing the metadata for the ClassModel.
 
         Returns:
-            ClassModel: An instance of ClassModel.
-
-        Raises:
-            - ValueError: If the metadata is not a dictionary.
-            - ValueError: If the metadata is missing required keys.
-            - ValueError: If the metadata contains invalid values.
-            - Exception: If an unexpected error occurs.
+            - `ClassModel`: A ClassModel object with the attributes from the metadata dictionary.
         """
-        try:
-            if not isinstance(metadata_dict, dict):
-                raise ValueError("Metadata must be a dictionary.")
 
-            class_specific_attributes: ClassSpecificAttributes = (
-                ClassSpecificAttributes._build_from_meta(metadata_dict)
+        class_specific_attributes: ClassSpecificAttributes = (
+            ClassSpecificAttributes._build_class_specific_attributes_from_metadata(
+                metadata
             )
-            base_code_block_model: BaseCodeBlockModel = (
-                BaseCodeBlockModel._build_from_metadata(metadata_dict)
-            )
-
-            return cls(
-                **class_specific_attributes.model_dump(),
-                **base_code_block_model.model_dump(),
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        )
+        base_code_block_model: BaseCodeBlockModel = (
+            BaseCodeBlockModel._build_base_code_block_model_from_metadata(metadata)
+        )
+        return cls(
+            **class_specific_attributes.model_dump(),
+            **base_code_block_model.model_dump(),
+        )
 
 
 class FunctionSpecificAttributes(BaseModel):
@@ -905,185 +674,174 @@ class FunctionSpecificAttributes(BaseModel):
     is_method: bool = False
     is_async: bool = False
 
-    def _convert_docstring_to_metadata(self) -> str:
-        """Converts the docstring to a metadata string."""
-        return f"{self.docstring}" if self.docstring else ""
+    @field_validator("docstring")
+    def _check_docstring(cls, v) -> str:
+        if v is None:
+            return ""
+        else:
+            return v
 
-    def _convert_decorators_to_metadata(self) -> str:
-        """Converts the decorators to a metadata string."""
-        decorators_str: str = self.model_dump_json() if self.decorators else ""
-        return f"{decorators_str}"
+    @field_validator("decorators")
+    def _check_decorators(cls, v) -> list[DecoratorModel]:
+        if v is None:
+            return []
+        else:
+            return v
 
-    def _convert_parameters_to_metadata(self) -> str:
-        """Converts the parameters to a metadata string."""
-        return (
-            self.parameters.convert_parameters_to_metadata() if self.parameters else ""
-        )
+    @field_validator("parameters")
+    def _check_parameters(cls, v) -> ParameterListModel:
+        if v is None:
+            return ParameterListModel(
+                params=None,
+                star_arg=None,
+                kwonly_params=None,
+                star_kwarg=None,
+                posonly_params=None,
+            )
+        else:
+            return v
 
-    def _convert_returns_to_metadata(self) -> str:
-        """Converts the returns to a metadata string."""
-        return f"{self.returns}" if self.returns else ""
+    @field_validator("returns")
+    def _check_returns(cls, v) -> str:
+        if v is None:
+            return ""
+        else:
+            return v
 
-    def _convert_function_attributes_to_metadata_dict(self) -> dict[str, str | bool]:
+    def _convert_function_attributes_to_metadata(self) -> dict[str, str | int | bool]:
         """Converts the function attributes to a metadata dictionary for ChromaDB."""
+
+        decorators: str = json.dumps(
+            (
+                [
+                    decorator._convert_decorator_to_metadata()
+                    for decorator in self.decorators  # type: ignore
+                ]
+            ),
+            indent=4,
+        )
+        parameters: str = (
+            self.parameters._convert_parameters_to_metadata() if self.parameters else ""
+        )
 
         return {
             "function_name": self.function_name,
-            "docstring": self._convert_docstring_to_metadata(),
-            "decorators": self._convert_decorators_to_metadata(),
-            "parameters": self._convert_parameters_to_metadata(),
-            "returns": self._convert_returns_to_metadata(),
+            "docstring": self.docstring if self.docstring else "",
+            "decorators": decorators,
+            "parameters": parameters,
+            "returns": self.returns if self.returns else "",
             "is_method": self.is_method,
             "is_async": self.is_async,
         }
 
     @classmethod
-    def _build_from_meta(
-        cls, metadata: dict[str, str | bool]
+    def _build_function_specific_attributes_from_metadata(
+        cls, metadata: dict
     ) -> "FunctionSpecificAttributes":
-        """Builds a FunctionSpecificAttributes from a metadata dictionary."""
+        """Builds function specific attributes from metadata."""
 
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
+        decorators: list[DecoratorModel] | None = []
+        if metadata["decorators"]:
+            for decorator_data in json.loads(metadata["decorators"]):
+                decorators.append(DecoratorModel(**json.loads(decorator_data)))
+            if decorators is []:
+                decorators = None
 
-            function_name = metadata.get("function_name")
-            if not isinstance(function_name, str):
-                raise ValueError("Function name must be a string.")
-
-            docstring = metadata.get("docstring")
-            if not isinstance(docstring, str):
-                raise ValueError("Docstring must be a string.")
-
-            decorators_data = metadata.get("decorators", [])
-            if not isinstance(decorators_data, list):
-                raise ValueError("Decorators must be a list.")
-
-            decorators: list[DecoratorModel] = []
-            for decorator_data in decorators_data:
-                if not isinstance(decorator_data, dict):
-                    raise ValueError("Each decorator must be a dictionary.")
-                decorator: DecoratorModel = DecoratorModel._build_from_metadata(
-                    decorator_data
-                )
-                decorators.append(decorator)
-
-            parameters_data = metadata.get("parameters")
-            if not isinstance(parameters_data, dict):
-                raise ValueError("Parameters must be a dictionary.")
-
-            parameters: ParameterListModel = ParameterListModel._build_from_metadata(
-                parameters_data
+        parameters: ParameterListModel | None = (
+            ParameterListModel._build_parameter_list_model_from_metadata(
+                metadata["parameters"]
             )
+        )
+        if parameters is None:
+            parameters = None
 
-            returns = metadata.get("returns")
-            if not isinstance(returns, str):
-                raise ValueError("Returns must be a string.")
+        returns: str = metadata["returns"]
 
-            is_method = metadata.get("is_method")
-            if not isinstance(is_method, bool):
-                raise ValueError("is_method must be a boolean.")
-
-            is_async = metadata.get("is_async")
-            if not isinstance(is_async, bool):
-                raise ValueError("is_async must be a boolean.")
-
-            return cls(
-                function_name=function_name,
-                docstring=docstring,
-                decorators=decorators,
-                parameters=parameters,
-                returns=returns,
-                is_method=is_method,
-                is_async=is_async,
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        return cls(
+            function_name=metadata["function_name"],
+            docstring=metadata["docstring"],
+            decorators=decorators,
+            parameters=parameters,
+            returns=returns,
+            is_method=metadata["is_method"],
+            is_async=metadata["is_async"],
+        )
 
 
 class FunctionModel(BaseCodeBlockModel, FunctionSpecificAttributes):
     """
-    A model for a function.
+    Pydantic model for a function code block.
 
     Attributes:
-        - id (str): The unique identifier for the function.
-        - file_path (str): The path to the Python file that the function represents.
-        - parent_id (str | None): The identifier of the parent (usually a module or class).
-        - block_type (BlockType): The type of code block that the function represents.
-        - start_line_num (int): The line number of the first line of the function.
-        - end_line_num (int): The line number of the last line of the function.
-        - code_content (str): The string content of the function.
-        - important_comments (list[CommentModel] | None): A list of important comments in the function.
-        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the function.
-        - summary (str | None): A summary of the function.
-        - children_ids (list[str] | None): A list of the identifiers of the children of the function.
-        - function_name (str): The name of the function.
-        - docstring (str | None): The docstring of the function.
-        - decorators (list[DecoratorModel] | None): A list of decorators for the function.
-        - parameters (ParameterListModel | None): A model representing the function's parameters.
-        - returns (str | None): A string representing the function's return annotation.
-        - is_method (bool): True if the function is a method, False otherwise.
-        - is_async (bool): True if the function is asynchronous, False otherwise.
+        - `id` (str): The unique identifier for the function.
+        - `file_path` (str): The path to the Python file that the function represents.
+        - `parent_id` (str | None): The identifier of the parent (usually a module or class).
+        - `block_type` (BlockType): The type of code block that the function represents.
+        - `start_line_num` (int): The line number of the first line of the function.
+        - `end_line_num` (int): The line number of the last line of the function.
+        - `code_content` (str): The string content of the function.
+        - `important_comments` (list[CommentModel] | None): A list of important comments in the function.
+        - `dependencies` (list[ImportModel | DependencyModel] | None): A list of dependencies for the function.
+        - `summary` (str | None): A summary of the function.
+        - `children_ids` (list[str] | None): A list of the identifiers of the children of the function.
+        - `function_name` (str): The name of the function.
+        - `docstring` (str | None): The docstring of the function.
+        - `decorators` (list[DecoratorModel] | None): A list of decorators for the function.
+        - `parameters` (ParameterListModel | None): A model representing the function's parameters.
+        - `returns` (str | None): A string representing the function's return annotation.
+        - `is_method` (bool): True if the function is a method, False otherwise.
+        - `is_async` (bool): True if the function is asynchronous, False otherwise.
 
     Methods:
         - `convert_to_metadata() -> dict[str, str | int]`
             - Converts the function model to a metadata dictionary for ChromaDB.
-        - `build_from_metadata(metadata_dict: dict[str, str | int | list[str]]) -> FunctionModel`
+        - `build_from_metadata(metadata: dict) -> FunctionModel`
             - Builds a FunctionModel from a metadata dictionary.
     """
 
     def convert_to_metadata(self) -> dict[str, str | int]:
-        """Converts the function model to a metadata dictionary for ChromaDB."""
+        """
+        Converts the function model to a metadata dictionary for ChromaDB.
+
+        ChromaDB uses an extremely flat, JSON-like schema that only accepts simple types, [str | int | float | bool]. Thus this method
+        flattens the function model's attributes and saves them in a dictionary to be stored in a ChromaDB collection.
+
+        Returns:
+            - `dict[str, str | int]`: A dictionary containing the function model's attributes.
+        """
 
         return {
-            **self._convert_base_attributes_to_metadata_dict(),
-            **self._convert_function_attributes_to_metadata_dict(),
+            **self._convert_base_attributes_to_metadata(),
+            **self._convert_function_attributes_to_metadata(),
         }
 
     @classmethod
-    def build_from_metadata(
-        cls, metadata_dict: dict[str, str | int | list[str] | bool]
-    ) -> "FunctionModel":
+    def build_from_metadata(cls, metadata: dict) -> "FunctionModel":
         """
         Builds a FunctionModel from a metadata dictionary.
 
+        This method uses the metadata dictionary from a ChromaDB collection to instantiate a FunctionModel object. It builds a
+        `BaseCodeBlockModel` and a `FunctionSpecificAttributes` object from the metadata, combing them into a `FunctionModel` object.
+
         Args:
-            - metadata_dict (dict[str, str | int | list[str]]): A dictionary containing metadata for a function.
+            - `metadata` (dict): A dictionary containing the metadata for the FunctionModel.
 
         Returns:
-            FunctionModel: An instance of FunctionModel.
-
-        Raises:
-            - ValueError: If the metadata is not a dictionary.
-            - ValueError: If the metadata is missing required keys.
-            - ValueError: If the metadata contains invalid values.
-            - Exception: If an unexpected error occurs.
+            - `FunctionModel`: A FunctionModel object with the attributes from the metadata dictionary.
         """
-        try:
-            if not isinstance(metadata_dict, dict):
-                raise ValueError("Metadata must be a dictionary.")
 
-            function_specific_attributes: FunctionSpecificAttributes = (
-                FunctionSpecificAttributes._build_from_meta(metadata_dict)  # type: ignore # FIXME: fix type hinting error
-            )  # type: ignore # FIXME: fix type hinting error
-            base_code_block_model: BaseCodeBlockModel = (
-                BaseCodeBlockModel._build_from_metadata(metadata_dict)
+        function_specific_attributes: FunctionSpecificAttributes = (
+            FunctionSpecificAttributes._build_function_specific_attributes_from_metadata(
+                metadata
             )
-
-            return cls(
-                **function_specific_attributes.model_dump(),
-                **base_code_block_model.model_dump(),
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        )
+        base_code_block_model: BaseCodeBlockModel = (
+            BaseCodeBlockModel._build_base_code_block_model_from_metadata(metadata)
+        )
+        return cls(
+            **function_specific_attributes.model_dump(),
+            **base_code_block_model.model_dump(),
+        )
 
 
 class StandaloneCodeBlockSpecificAttributes(BaseModel):
@@ -1091,47 +849,26 @@ class StandaloneCodeBlockSpecificAttributes(BaseModel):
 
     variable_assignments: list[str] | None = None
 
-    def _convert_variable_assignments_to_metadata(self) -> str:
-        """Converts the variable assignments to a metadata string."""
-        return self.model_dump_json() if self.variable_assignments else ""
+    @field_validator("variable_assignments")
+    def _check_variable_assignments(cls, v) -> list[str]:
+        if v is None:
+            return []
+        else:
+            return v
 
-    def _convert_standalone_block_attributes_to_metadata_dict(
-        self,
-    ) -> dict[str, str | int]:
-        """Converts the standalone code block attributes to a metadata dictionary for ChromaDB."""
+    def _convert_standalone_block_attributes_to_metadata(self) -> dict[str, str | int]:
+        """Converts the standalone block attributes to a metadata dictionary."""
         return {
-            "variable_assignments": self._convert_variable_assignments_to_metadata(),
+            "variable_assignments": json.dumps(self.variable_assignments, indent=4),
         }
 
     @classmethod
-    def _build_from_meta(
-        cls, metadata: dict[str, str | int | list[str]]
+    def _build_standalone_block_specific_attributes_from_metadata(
+        cls, metadata: dict
     ) -> "StandaloneCodeBlockSpecificAttributes":
-        """Builds a StandaloneCodeBlockSpecificAttributes from a metadata dictionary."""
-
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            variable_assignments_data = metadata.get("variable_assignments", [])
-            if not isinstance(variable_assignments_data, list):
-                raise ValueError("Variable assignments must be a list.")
-
-            variable_assignments: list[str] = []
-            for variable_assignment_data in variable_assignments_data:
-                if not isinstance(variable_assignment_data, str):
-                    raise ValueError("Each variable assignment must be a string.")
-                variable_assignments.append(variable_assignment_data)
-
-            return cls(
-                variable_assignments=variable_assignments,
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        """Builds standalone block specific attributes from metadata."""
+        variable_assignments: list[str] = json.loads(metadata["variable_assignments"])
+        return cls(variable_assignments=variable_assignments)
 
 
 class StandaloneCodeBlockModel(
@@ -1141,75 +878,70 @@ class StandaloneCodeBlockModel(
     Model for a standalone code block.
 
     Attributes:
-        - id (str): The unique identifier for the standalone code block.
-        - file_path (str): The path to the Python file that the standalone code block represents.
-        - parent_id (str | None): The identifier of the parent (usually a module or class).
-        - block_type (BlockType): The type of code block that the standalone code block represents.
-        - start_line_num (int): The line number of the first line of the standalone code block.
-        - end_line_num (int): The line number of the last line of the standalone code block.
-        - code_content (str): The string content of the standalone code block.
-        - important_comments (list[CommentModel] | None): A list of important comments in the standalone code block.
-        - dependencies (list[ImportModel | DependencyModel] | None): A list of dependencies for the standalone code block.
-        - summary (str | None): A summary of the standalone code block.
-        - children_ids (list[str] | None): A list of the identifiers of the children of the standalone code block.
-        - variable_assignments (list[str] | None): A list of variable assignments in the standalone code block.
+        - `id` (str): The unique identifier for the standalone code block.
+        - `file_path` (str): The path to the Python file that the standalone code block represents.
+        - `parent_id` (str | None): The identifier of the parent (usually a module or class).
+        - `block_type` (BlockType): The type of code block that the standalone code block represents.
+        - `start_line_num` (int): The line number of the first line of the standalone code block.
+        - `end_line_num` (int): The line number of the last line of the standalone code block.
+        - `code_content` (str): The string content of the standalone code block.
+        - `important_comments` (list[CommentModel] | None): A list of important comments in the standalone code block.
+        - `dependencies` (list[ImportModel | DependencyModel] | None): A list of dependencies for the standalone code block.
+        - `summary` (str | None): A summary of the standalone code block.
+        - `children_ids` (list[str] | None): A list of the identifiers of the children of the standalone code block.
+        - `variable_assignments` (list[str] | None): A list of variable assignments in the standalone code block.
 
     Methods:
         - `convert_to_metadata() -> dict[str, str | int]`
             - Converts the standalone code block model to a metadata dictionary for ChromaDB.
-        - `build_from_metadata(metadata_dict: dict[str, str | int | list[str]]) -> StandaloneCodeBlockModel`
+        - `build_from_metadata(metadata: dict) -> StandaloneCodeBlockModel`
             - Builds a StandaloneCodeBlockModel from a metadata dictionary.
     """
 
     def convert_to_metadata(self) -> dict[str, str | int]:
-        """Converts the standalone code block model to a metadata dictionary for ChromaDB."""
+        """
+        Converts the standalone code block model to a metadata dictionary for ChromaDB.
+
+        ChromaDB uses an extremely flat, JSON-like schema that only accepts simple types, [str | int | float | bool]. Thus this method
+        flattens the standalone code block model's attributes and saves them in a dictionary to be stored in a ChromaDB collection.
+
+        Returns:
+            - `dict[str, str | int]`: A dictionary containing the standalone code block model's attributes.
+        """
 
         return {
-            **self._convert_base_attributes_to_metadata_dict(),
-            **self._convert_standalone_block_attributes_to_metadata_dict(),
+            **self._convert_base_attributes_to_metadata(),
+            **self._convert_standalone_block_attributes_to_metadata(),
         }
 
     @classmethod
-    def _build_from_meta(
-        cls, metadata: dict[str, str | int | list[str]]
-    ) -> "StandaloneCodeBlockModel":
+    def build_from_metadata(cls, metadata: dict) -> "StandaloneCodeBlockModel":
         """
         Builds a StandaloneCodeBlockModel from a metadata dictionary.
 
+        This method uses the metadata dictionary from a ChromaDB collection to instantiate a StandaloneCodeBlockModel object. It builds a
+        `BaseCodeBlockModel` and a `StandaloneCodeBlockSpecificAttributes` object from the metadata, combing them into a `StandaloneCodeBlockModel` object.
+
         Args:
-            - metadata_dict (dict[str, str | int | list[str]]): A dictionary containing metadata for a standalone code block.
+            - `metadata` (dict): A dictionary containing the metadata for the StandaloneCodeBlockModel.
 
         Returns:
-            - StandaloneCodeBlockModel: An instance of StandaloneCodeBlockModel.
-
-        Raises:
-            - ValueError: If the metadata is not a dictionary.
-            - ValueError: If the metadata is missing required keys.
-            - ValueError: If the metadata contains invalid values.
-            - Exception: If an unexpected error occurs.
+            - `StandaloneCodeBlockModel`: A StandaloneCodeBlockModel object with the attributes from the metadata dictionary.
         """
 
-        try:
-            if not isinstance(metadata, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            standalone_code_block_specific_attributes: (
-                StandaloneCodeBlockSpecificAttributes
-            ) = StandaloneCodeBlockSpecificAttributes._build_from_meta(metadata)
-            base_code_block_model: BaseCodeBlockModel = (
-                BaseCodeBlockModel._build_from_metadata(metadata)
+        standalone_block_specific_attributes: StandaloneCodeBlockSpecificAttributes = (
+            StandaloneCodeBlockSpecificAttributes._build_standalone_block_specific_attributes_from_metadata(
+                metadata
             )
+        )
+        base_code_block_model: BaseCodeBlockModel = (
+            BaseCodeBlockModel._build_base_code_block_model_from_metadata(metadata)
+        )
 
-            return cls(
-                **standalone_code_block_specific_attributes.model_dump(),
-                **base_code_block_model.model_dump(),
-            )
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        return cls(
+            **standalone_block_specific_attributes.model_dump(),
+            **base_code_block_model.model_dump(),
+        )
 
 
 class DirectoryModel(BaseModel):
@@ -1217,17 +949,19 @@ class DirectoryModel(BaseModel):
     Model for a directory.
 
     Attributes:
-        - id (str): The unique identifier for the directory.
-        - block_type (BlockType): The type of code block that the directory represents.
-        - directory_name (str): The name of the directory.
-        - sub_directories_ids (list[str]): A list of the identifiers of the sub-directories of the directory.
-        - children_ids (list[str]): A list of the identifiers of the children of the directory.
-        - parent_id (str | None): The identifier of the parent (usually a directory).
-        - summary (str | None): A summary of the directory.
+        - `id` (str): The unique identifier for the directory.
+        - `block_type` (BlockType): The type of code block that the directory represents.
+        - `directory_name` (str): The name of the directory.
+        - `sub_directories_ids` (list[str]): A list of the identifiers of the sub-directories of the directory.
+        - `children_ids` (list[str]): A list of the identifiers of the children of the directory.
+        - `parent_id` (str | None): The identifier of the parent (usually a directory).
+        - `summary` (str | None): A summary of the directory.
 
     Methods:
         - `convert_to_metadata() -> dict[str, str | int]`:
-            Converts the directory model to a metadata dictionary for ChromaDB.
+            - Converts the directory model to a metadata dictionary for ChromaDB.
+        - `build_from_metadata(metadata: dict) -> DirectoryModel`:
+            - Builds a DirectoryModel from a metadata dictionary.
     """
 
     id: str
@@ -1238,84 +972,49 @@ class DirectoryModel(BaseModel):
     parent_id: str | None
     summary: str | None = None
 
+    @field_validator("block_type")
+    def _check_block_type(cls, v) -> str:
+        if v != BlockType.DIRECTORY:
+            raise ValueError("Block type must be DIRECTORY")
+        return v
+
+    @field_validator("parent_id")
+    def _check_parent_id(cls, v) -> str:
+        if v is None:
+            return ""
+        else:
+            return v
+
+    @field_validator("summary")
+    def _check_summary(cls, v) -> str:
+        if v is None:
+            return ""
+        else:
+            return v
+
     def convert_to_metadata(self) -> dict[str, str | int]:
         """Converts the directory model to a metadata dictionary for ChromaDB."""
 
+        sub_directories_ids: str = json.dumps(self.sub_directories_ids, indent=4)
+        children_ids: str = json.dumps(self.children_ids, indent=4)
         return {
             "directory_name": self.directory_name,
-            "sub_directories": (
-                str(self.sub_directories_ids) if self.sub_directories_ids else ""
-            ),
-            "children_ids": self.model_dump_json() if self.children_ids else "",
-            "parent_id": self.parent_id if self.parent_id else "",
-            "summary": self.summary if self.summary else "",
+            "sub_directories_ids": sub_directories_ids,
+            "children_ids": children_ids,
+            "parent_id": self.parent_id,  # type: ignore
+            "summary": self.summary,
         }
 
     @classmethod
-    def build_from_metadata(
-        cls, metadata_dict: dict[str, str | list[str]]
-    ) -> "DirectoryModel":
-        """
-        Builds a DirectoryModel from a metadata dictionary.
+    def build_from_metadata(cls, metadata: dict) -> "DirectoryModel":
+        sub_directories_ids: list[str] = json.loads(metadata["sub_directories_ids"])
+        children_ids: list[str] = json.loads(metadata["children_ids"])
 
-        Args:
-            - metadata_dict (dict[str, str | int | list[str]]): A dictionary containing metadata for a directory.
-
-        Returns:
-            - DirectoryModel: An instance of DirectoryModel.
-
-        Raises:
-            - ValueError: If the metadata is not a dictionary.
-            - ValueError: If the metadata is missing required keys.
-            - ValueError: If the metadata contains invalid values.
-            - Exception: If an unexpected error occurs.
-        """
-
-        try:
-            if not isinstance(metadata_dict, dict):
-                raise ValueError("Metadata must be a dictionary.")
-
-            id = metadata_dict.get("id")
-            if not isinstance(id, str):
-                raise ValueError("ID must be a string.")
-
-            directory_name = metadata_dict.get("directory_name")
-            if not isinstance(directory_name, str):
-                raise ValueError("Directory name must be a string.")
-
-            sub_directories_ids = metadata_dict.get("sub_directories")
-            if not isinstance(sub_directories_ids, list) or not all(
-                isinstance(sub_directory_id, str)
-                for sub_directory_id in sub_directories_ids
-            ):
-                raise ValueError("Sub-directories must be a list of strings.")
-
-            children_ids = metadata_dict.get("children_ids")
-            if not isinstance(children_ids, list) or not all(
-                isinstance(child_id, str) for child_id in children_ids
-            ):
-                raise ValueError("Children IDs must be a list of strings.")
-
-            parent_id = metadata_dict.get("parent_id")
-            if not isinstance(parent_id, str):
-                raise ValueError("Parent ID must be a string.")
-
-            summary = metadata_dict.get("summary")
-            if not isinstance(summary, str):
-                raise ValueError("Summary must be a string.")
-
-            return cls(
-                id=id,
-                directory_name=directory_name,
-                sub_directories_ids=sub_directories_ids,
-                children_ids=children_ids,
-                parent_id=parent_id if parent_id else None,
-                summary=summary if summary else None,
-            )
-
-        except ValueError as ve:
-            logging.error(f"Error building from metadata: {ve}")
-            raise ve
-        except Exception as e:
-            logging.error(f"An unexpected error occurred: {e}")
-            raise e
+        return cls(
+            id=metadata["id"],
+            directory_name=metadata["directory_name"],
+            sub_directories_ids=sub_directories_ids,
+            children_ids=children_ids,
+            parent_id=metadata["parent_id"],
+            summary=metadata["summary"],
+        )

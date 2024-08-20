@@ -1,14 +1,22 @@
+# import json
 import logging
 from typing import Any, Callable
+from rich import print
+
+# from rich.json import JSON
+# from rich.panel import Panel
 
 from arango.result import Result
 from arango.cursor import Cursor
 from arango.graph import Graph
 from arango.collection import StandardCollection
 from arango.typings import Json
+from chromadb import GetResult
 
 from fenec.databases.arangodb.arangodb_connector import ArangoDBConnector
 
+from fenec.databases.chroma.chromadb_collection_manager import ChromaCollectionManager
+from fenec.models.enums import BlockType
 from fenec.types.fenec import ModelType
 from fenec.models.models import (
     ClassModel,
@@ -29,8 +37,8 @@ class ArangoDBManager:
     This class provides methods for upserting models into ArangoDB, creating edges, processing imports and dependencies, deleting vertices, and querying the graph for related models.
 
     Attributes:
-        - db_connector (ArangoDBConnector): The ArangoDB connector instance used for database interactions.
-        - default_graph_name (str): The default graph name used for graph-related operations.
+        - `db_connector` (ArangoDBConnector): The ArangoDB connector instance used for database interactions.
+        - `default_graph_name` (str): The default graph name used for graph-related operations.
 
     Example:
         ```python
@@ -42,18 +50,19 @@ class ArangoDBManager:
         ```
 
     Methods:
-        - upsert_models(module_models): Upserts a list of models into the ArangoDB database.
-        - process_imports_and_dependencies(): Processes the imports and dependencies in the ArangoDB database, creating edges accordingly.
-        - delete_vertex_by_id(vertex_key, graph_name=None): Deletes a vertex from the graph by its key.
-        - get_graph(graph_name=None): Retrieves a graph instance by its name.
-        - get_or_create_graph(graph_name=None): Retrieves an existing graph or creates a new one if not present.
-        - delete_graph(graph_name=None): Deletes a graph by its name.
-        - get_outbound_models(start_key): Retrieves all outbound models from a given starting key.
-        - get_inbound_models(end_key): Retrieves all inbound models to a given ending key.
-        - get_vertex_model_by_id(id): Retrieves a vertex model by its ID.
-        - update_vertex_summary_by_id(id, new_summary): Updates the summary of a vertex by its ID.
-        - get_all_modules(): Retrieves all modules from the graph.
-        - get_all_vertices(): Retrieves all vertices from the graph.
+        - `upsert_models(module_models)`: Upserts a list of models into the ArangoDB database.
+        - `process_imports_and_dependencies()`: Processes the imports and dependencies in the ArangoDB database, creating edges accordingly.
+        - `delete_vertex_by_id(vertex_key, graph_name=None)`: Deletes a vertex from the graph by its key.
+        - `get_graph(graph_name=None)`: Retrieves a graph instance by its name.
+        - `get_or_create_graph(graph_name=None)`: Retrieves an existing graph or creates a new one if not present.
+        - `delete_graph(graph_name=None)`: Deletes a graph by its name.
+        - `get_outbound_models(start_key)`: Retrieves all outbound models from a given starting key.
+        - `get_inbound_models(end_key)`: Retrieves all inbound models to a given ending key.
+        - `get_vertex_model_by_id(id)`: Retrieves a vertex model by its ID.
+        - `update_vertex_summary_by_id(id, new_summary)`: Updates the summary of a vertex by its ID.
+        - `get_all_modules()`: Retrieves all modules from the graph.
+        - `get_all_vertices()`: Retrieves all vertices from the graph.
+        - `construct_graph_from_chromadb(chroma_manager)`: Constructs an ArangoDB database from a ChromaDB database.
     """
 
     def __init__(
@@ -71,10 +80,10 @@ class ArangoDBManager:
         Upserts a list of models into the ArangoDB database.
 
         Args:
-            - module_models (list[ModelType]): The list of models to be upserted.
+            - `module_models` (list[ModelType]): The list of models to be upserted.
 
         Returns:
-            - ArangoDBManager: The ArangoDBManager instance.
+            - `ArangoDBManager`: The ArangoDBManager instance.
         """
 
         for model in module_models:
@@ -86,7 +95,7 @@ class ArangoDBManager:
         Upserts a single model into the ArangoDB database.
 
         Args:
-            - model (ModelType): The model to be upserted.
+            - `model` (ModelType): The model to be upserted.
         """
 
         collection_name: str = self._get_collection_name_from_id(model.id)
@@ -97,8 +106,8 @@ class ArangoDBManager:
         Upserts a vertex (document) into the specified collection in the ArangoDB database.
 
         Args:
-            - model (ModelType): The model representing the vertex.
-            - collection_name (str): The name of the collection.
+            - `model` (ModelType): The model representing the vertex.
+            - `collection_name` (str): The name of the collection.
         """
 
         model_data: dict[str, Any] = model.model_dump()
@@ -132,10 +141,10 @@ class ArangoDBManager:
         Upserts an edge between two vertices in the ArangoDB database.
 
         Args:
-            - from_key (str): The key of the source vertex.
-            - to_key (str): The key of the target vertex.
-            - source_type (str): The type of the source vertex.
-            - target_type (str): The type of the target vertex.
+            - `from_key` (str): The key of the source vertex.
+            - `to_key` (str): The key of the target vertex.
+            - `source_type` (str): The type of the source vertex.
+            - `target_type` (str): The type of the target vertex.
         """
 
         source_string: str = f"{source_type}/{from_key}"
@@ -170,10 +179,10 @@ class ArangoDBManager:
         Gets the collection name based on the block ID.
 
         Args:
-            - block_id (str): The ID of the block.
+            - `block_id` (str): The ID of the block.
 
         Returns:
-            - str: The name of the collection.
+            - `str`: The name of the collection.
         """
 
         block_id_parts: list[str] = block_id.split("__*__")
@@ -183,7 +192,7 @@ class ArangoDBManager:
             "MODULE": lambda: "modules",
             "CLASS": lambda: "classes",
             "FUNCTION": lambda: "functions",
-            "STANDALONE_BLOCK": lambda: "standalone_blocks",
+            "STANDALONE_CODE_BLOCK": lambda: "standalone_code_blocks",
             "DIRECTORY": lambda: "directories",
         }
 
@@ -198,7 +207,7 @@ class ArangoDBManager:
         Processes the imports and dependencies in the ArangoDB database, creating edges accordingly.
 
         Returns:
-            - ArangoDBManager: The ArangoDBManager instance.
+            - `ArangoDBManager`: The ArangoDBManager instance.
         """
 
         for vertex_collection in helper_functions.pluralized_and_lowered_block_types():
@@ -229,8 +238,8 @@ class ArangoDBManager:
         Creates edges in the graph for the given module's imports.
 
         Args:
-            - module_key (str): The key of the module for which imports are processed.
-            - imports (list[dict[str, Any]]): The list of import information.
+            - `module_key` (str): The key of the module for which imports are processed.
+            - `imports` (list[dict[str, Any]]): The list of import information.
         """
 
         if not imports:
@@ -275,8 +284,8 @@ class ArangoDBManager:
         Creates edges in the graph for the given block's dependencies.
 
         Args:
-            - block_key (str): The key of the block for which dependencies are processed.
-            - dependencies (list[dict[str, Any]]): The list of dependency information.
+            - `block_key` (str): The key of the block for which dependencies are processed.
+            - `dependencies` (list[dict[str, Any]]): The list of dependency information.
         """
 
         if not dependencies:
@@ -306,8 +315,8 @@ class ArangoDBManager:
         Deletes a vertex from the graph by its key.
 
         Args:
-            - vertex_key (str): The key of the vertex to be deleted.
-            - graph_name (str, optional): The name of the graph. Defaults to None.
+            - `vertex_key` (str): The key of the vertex to be deleted.
+            - `graph_name` (str, optional): The name of the graph. Defaults to None.
         """
 
         collection_name: str = self._get_collection_name_from_id(vertex_key)
@@ -339,10 +348,10 @@ class ArangoDBManager:
         Retrieves a graph instance by its name.
 
         Args:
-            - graph_name (str, optional): The name of the graph. Defaults to None.
+            - `graph_name` (str, optional): The name of the graph. Defaults to None.
 
         Returns:
-            - Graph | None: The graph instance or None if not found.
+            - `Graph | None`: The graph instance or None if not found.
         """
 
         if not graph_name:
@@ -358,10 +367,10 @@ class ArangoDBManager:
         Retrieves an existing graph or creates a new one if not present.
 
         Args:
-            - graph_name (str, optional): The name of the graph. Defaults to None.
+            - `graph_name` (str, optional): The name of the graph. Defaults to None.
 
         Returns:
-            - Result[Graph]: The result of the operation.
+            - `Result[Graph]`: The result of the operation.
         """
 
         if not graph_name:
@@ -393,7 +402,7 @@ class ArangoDBManager:
         Deletes a graph by its name.
 
         Args:
-            - graph_name (str, optional): The name of the graph. Defaults to None.
+            - `graph_name` (str, optional): The name of the graph. Defaults to None.
         """
 
         if not graph_name:
@@ -409,10 +418,10 @@ class ArangoDBManager:
         Retrieves all outbound models from a given starting key.
 
         Args:
-            - start_key (str): The key of the starting vertex.
+            - `start_key` (str): The key of the starting vertex.
 
         Returns:
-            - list[ModelType] | None: List of outbound models or None if an error occurs.
+            - `list[ModelType] | None`: List of outbound models or None if an error occurs.
         """
 
         vertex_type: str = self._get_collection_name_from_id(start_key)
@@ -440,10 +449,10 @@ class ArangoDBManager:
         Retrieves all inbound models to a given ending key.
 
         Args:
-            - end_key (str): The key of the ending vertex.
+            - `end_key` (str): The key of the ending vertex.
 
         Returns:
-            - list[ModelType] | None: List of inbound models or None if an error occurs.
+            - `list[ModelType] | None`: List of inbound models or None if an error occurs.
         """
 
         vertex_type: str = self._get_collection_name_from_id(end_key)
@@ -471,10 +480,10 @@ class ArangoDBManager:
         Retrieves a vertex model by its ID.
 
         Args:
-            - id (str): The ID of the vertex.
+            - `id` (str): The ID of the vertex.
 
         Returns:
-            - ModelType | None: The vertex model or None if not found or an error occurs.
+            - `ModelType | None`: The vertex model or None if not found or an error occurs.
         """
 
         try:
@@ -514,17 +523,17 @@ class ArangoDBManager:
         Retrieves a vertex model by its ID.
 
         Args:
-            - id (str): The ID of the vertex.
+            - `id` (str): The ID of the vertex.
 
         Returns:
-            - ModelType | None: The vertex model or None if not found or an error occurs.
+            - `ModelType | None`: The vertex model or None if not found or an error occurs.
         """
 
         model_class_map: dict = {
             "modules": ModuleModel,
             "classes": ClassModel,
             "functions": FunctionModel,
-            "standalone_blocks": StandaloneCodeBlockModel,
+            "standalone_code_blocks": StandaloneCodeBlockModel,
             "directories": DirectoryModel,
         }
         return model_class_map.get(collection_name)
@@ -534,8 +543,8 @@ class ArangoDBManager:
         Updates the summary of a vertex by its ID.
 
         Args:
-            - id (str): The ID of the vertex.
-            - new_summary (str): The new summary to be set.
+            - `id` (str): The ID of the vertex.
+            - `new_summary` (str): The new summary to be set.
         """
 
         try:
@@ -572,7 +581,7 @@ class ArangoDBManager:
         Retrieves all modules from the graph.
 
         Returns:
-            list[ModuleModel] | None: List of modules or None if an error occurs.
+            `list[ModuleModel] | None`: List of modules or None if an error occurs.
         """
 
         try:
@@ -603,7 +612,7 @@ class ArangoDBManager:
         Retrieves all vertices from the graph.
 
         Returns:
-            list[ModelType] | None: List of vertices or None if an error occurs.
+            `list[ModelType] | None`: List of vertices or None if an error occurs.
         """
 
         all_vertices: list[ModelType] = []
@@ -634,3 +643,77 @@ class ArangoDBManager:
                 logging.error(f"Error fetching vertices from {collection_name}: {e}")
 
         return all_vertices
+
+    def construct_graph_from_chromadb(
+        self, chroma_manager: ChromaCollectionManager
+    ) -> None:
+        """
+        Constructs an ArangoDB database from a ChromaDB database.
+
+        Args:
+            - `chroma_manager` (ChromaCollectionManager): The ChromaDB collection manager.
+
+        Raises:
+            - `ValueError`: If no data is found in ChromaDB.
+            - `Exception`: If an unexpected error occurs.
+        """
+
+        # Step 1: Retrieve all documents from ChromaDB
+        chroma_data: GetResult | None = chroma_manager.get_embeddings(
+            ids=None,  # Retrieve all documents
+            include_in_result=["metadatas", "documents"],
+        )
+
+        if not chroma_data:
+            raise ValueError("No data found in ChromaDB")
+
+        # Step 2: Convert ChromaDB data to model instances
+        models = []
+        for i, id in enumerate(chroma_data["ids"]):
+            metadata = chroma_data["metadatas"][i]  # type: ignore
+            summary = chroma_data["documents"][i]  # type: ignore
+
+            # Determine the model type based on the metadata
+            model_class: type[ModelType] = self._get_model_class(metadata["block_type"])  # type: ignore
+
+            # print(
+            #     Panel(
+            #         JSON(json.dumps(metadata, indent=2)), title="Metadata", expand=False
+            #     )
+            # )
+            if "block_type" not in metadata:
+                logging.error(f"WARNING: No block_type in metadata for id {id}")
+                continue
+
+            if not metadata:
+                raise ValueError(f"Metadata is empty for id {id}")
+            model: ModelType = model_class.build_from_metadata(metadata)  # type: ignore
+            model.summary = summary
+            models.append(model)
+
+        self.upsert_models(models)
+        self.process_imports_and_dependencies()
+        self.get_or_create_graph()
+
+    def _get_model_class(self, block_type: str) -> type[ModelType] | None:
+        """
+        Gets the model class for a given block type.
+
+        Args:
+            - `block_type` (str): The block type.
+
+        Returns:
+            - `type[ModelType] | None`: The model class for the given block type.
+        """
+
+        model_map: dict[str, type[ModelType]] = {
+            BlockType.MODULE: ModuleModel,
+            BlockType.CLASS: ClassModel,
+            BlockType.FUNCTION: FunctionModel,
+            BlockType.STANDALONE_CODE_BLOCK: StandaloneCodeBlockModel,
+            BlockType.DIRECTORY: DirectoryModel,
+        }
+        if block_type not in model_map:
+            logging.error(f"Unknown block type: {block_type}")
+            return None
+        return model_map.get(block_type)

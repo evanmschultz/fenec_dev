@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from pathlib import Path
 
 from fenec.ai_services.summarizer.graph_db_summarization_manager import (
     GraphDBSummarizationManager,
@@ -29,7 +30,7 @@ from fenec.python_parser.visitor_manager.visitor_manager import (
 from fenec.types.fenec import ModelType
 from fenec.updaters.change_detector import ChangeDetector
 import fenec.updaters.git_updater as git_updater
-from fenec.utilities.configs.configs import (
+from fenec.configs import (
     OllamaSummarizationConfigs,
     OpenAISummarizationConfigs,
 )
@@ -69,7 +70,7 @@ class GraphDBUpdater:
 
     def __init__(
         self,
-        directory: str = ".",
+        directory: Path = Path("."),
         *,
         summarization_configs: (
             OpenAISummarizationConfigs | OllamaSummarizationConfigs
@@ -77,7 +78,7 @@ class GraphDBUpdater:
         output_directory: str = "pc_output_json",
         graph_connector: ArangoDBConnector = ArangoDBConnector(),
     ) -> None:
-        self.directory: str = directory
+        self.directory: str = str(directory)
         self.summarization_configs: (
             OpenAISummarizationConfigs | OllamaSummarizationConfigs
         ) = summarization_configs

@@ -5,7 +5,7 @@ from typing import Any, Generator
 import pytest
 from unittest.mock import patch, MagicMock
 
-from fenec.ai_services.librarians.chroma_librarians import ChromaLibrarian
+from fenec.ai_services.librarian.chroma_librarian import ChromaLibrarian
 from fenec.databases.chroma.chromadb_collection_manager import (
     ChromaCollectionManager,
 )

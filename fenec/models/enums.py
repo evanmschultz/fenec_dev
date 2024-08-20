@@ -36,7 +36,7 @@ class CommentType(str, Enum):
 class BlockType(str, Enum):
     """Enum of code block types."""
 
-    STANDALONE_CODE_BLOCK = "STANDALONE_BLOCK"
+    STANDALONE_CODE_BLOCK = "STANDALONE_CODE_BLOCK"
     CLASS = "CLASS"
     FUNCTION = "FUNCTION"
     MODULE = "MODULE"

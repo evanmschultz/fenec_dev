@@ -1,6 +1,8 @@
 from pathlib import Path
 
 from fenec.ai_services.summarizer.summarizer_protocol import Summarizer
+from fenec.databases.arangodb.arangodb_connector import ArangoDBConnector
+from fenec.databases.arangodb.arangodb_manager import ArangoDBManager
 from fenec.updaters.graph_db_updater import GraphDBUpdater
 from fenec.databases.chroma.chromadb_collection_manager import (
     ChromaCollectionManager,
@@ -12,7 +14,7 @@ from fenec.configs import (
     OllamaSummarizationConfigs,
 )
 from fenec.ai_services.chat.openai_agents import OpenAIChatAgent
-from fenec.ai_services.librarians.chroma_librarians import ChromaLibrarian
+from fenec.ai_services.librarian.chroma_librarian import ChromaLibrarian
 from fenec.databases.chroma.chroma_setup import setup_chroma
 from fenec.utilities.logger.logging_config import setup_logging
 
@@ -24,8 +26,17 @@ class Fenec:
     This class provides methods to process a codebase and interact with it through a chat interface.
 
     Attributes:
+        - `path` (Path): The path to the codebase.
+        - `summarization_configs` (SummarizationConfigs): The summarization configurations.
+        - `chat_configs` (ChatCompletionConfigs): The chat configurations.
         - `updater` (GraphDBUpdater): The updater for the graph database.
-            - default: GraphDBUpdater()
+            - default: `GraphDBUpdater()`
+        - `arangodb_connector` (ArangoDBConnector): The ArangoDB connector.
+            - default: `ArangoDBConnector()`
+        - `arangodb_manager` (ArangoDBManager): The ArangoDB manager.
+            - default: `None`; if `None` = `ArangoDBManager(db_connector=self.arangodb_connector)`
+
+
 
     Methods:
         - `process_entire_codebase`(updater: GraphDBUpdater = GraphDBUpdater()): Process the entire codebase using the GraphDBUpdater.
@@ -50,6 +61,8 @@ class Fenec:
             OpenAISummarizationConfigs | OllamaSummarizationConfigs
         ) = OpenAISummarizationConfigs(),
         chat_configs: OpenAIChatConfigs = OpenAIChatConfigs(),
+        arangodb_connector: ArangoDBConnector = ArangoDBConnector(),
+        arangodb_manager: ArangoDBManager | None = None,
     ) -> None:
         self.path: Path = path
         self.summarization_configs: (
@@ -57,8 +70,15 @@ class Fenec:
         ) = summarization_configs
         self.chat_configs: OpenAIChatConfigs = chat_configs
         self.updater: GraphDBUpdater = GraphDBUpdater(
-            summarization_configs=self.summarization_configs
+            directory=self.path, summarization_configs=self.summarization_configs
         )
+        self.arangodb_connector: ArangoDBConnector = arangodb_connector
+        if not arangodb_manager:
+            self.arangodb_manager: ArangoDBManager = ArangoDBManager(
+                db_connector=self.arangodb_connector
+            )
+        else:
+            self.arangodb_manager: ArangoDBManager = arangodb_manager
         setup_logging()
 
     def process_codebase(
@@ -111,6 +131,12 @@ class Fenec:
                 chromadb_name
             )
             self.chroma_librarian = ChromaLibrarian(self.chroma_collection_manager)
+
+            if not self.arangodb_manager.get_graph():
+                print("Graph not found. Constructing graph from ChromaDB...")
+                self.construct_graph_from_chromadb()
+            else:
+                print("Connected to existing graph.")
         except Exception as e:
             raise Exception(f"Error connecting to ChromaDB: {str(e)}")
 
@@ -144,3 +170,19 @@ class Fenec:
         )
         response: str | None = openai_chat_agent.get_response(message)
         return response if response else "I'm sorry, I couldn't generate a response."
+
+    def construct_graph_from_chromadb(self, force: bool = False) -> None:
+        """
+        Constructs a graph in ArangoDB from the ChromaDB collection.
+
+        Args:
+            - `force` (bool): Whether to force the construction of the graph.
+        """
+        if force:
+            self.arangodb_manager.delete_graph()
+            self.arangodb_manager.construct_graph_from_chromadb(
+                self.chroma_collection_manager
+            )
+            print("Graph constructed from ChromaDB collection.")
+        else:
+            print("Graph already exists. Use force=True to reconstruct.")
