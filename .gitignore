@@ -176,5 +176,5 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python
 
 aggregate_files.sh
-aggregated_contents.txt
+aggregated_contents_fenec.txt
 .DS_Store
