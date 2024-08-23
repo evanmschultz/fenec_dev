@@ -83,7 +83,7 @@ class JSONHandler:
 
     @logging_decorator(message="Saving visited directories")
     def save_visited_directories(
-        self, directory_mape_name: str = "directory_map.json"
+        self, directory_map_name: str = "directory_map.json"
     ) -> None:
         """
         Saves a JSON file mapping each visited directory to its Python files.
@@ -101,7 +101,7 @@ class JSONHandler:
             ```
         """
 
-        output_path: str = self._get_directory_map_output_path(directory_mape_name)
+        output_path: str = self._get_directory_map_output_path(directory_map_name)
         self._write_json_directory_map(output_path)
 
     def _create_output_directory(self) -> None:
@@ -132,6 +132,10 @@ class JSONHandler:
         Returns:
             str: The output path for the JSON file.
         """
+
+        # TODO: Find better solution, only if json output will remain in the future for debugging
+        if len(file_path) > 50:
+            file_path = file_path[:50]
 
         if "DIRECTORY" in file_path:
             safe_file_path: str = file_path.replace("/", ":")
