@@ -48,7 +48,7 @@ class GraphDBUpdater:
         - `summarization_configs` (OpenAISummarizationConfigs | OllamaSummarizationConfigs) - The configs for the summarizer that will
             be used to create the summarizer and set its configurations.
         - `output_directory` (str) - The directory to save the JSON files.
-            - default - "pc_output_json"
+            - default - "output_json"
         - `graph_connector` (ArangoDBConnector) - The ArangoDB connector to use for connecting to the graph database.
             - default - ArangoDBConnector() - instantiates a new ArangoDBConnector with its default values
 
@@ -75,7 +75,7 @@ class GraphDBUpdater:
         summarization_configs: (
             OpenAISummarizationConfigs | OllamaSummarizationConfigs
         ) = OllamaSummarizationConfigs(),
-        output_directory: str = "pc_output_json",
+        output_directory: str = "output_json",
         graph_connector: ArangoDBConnector = ArangoDBConnector(),
     ) -> None:
         self.directory: str = str(directory)
