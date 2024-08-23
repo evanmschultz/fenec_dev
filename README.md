@@ -10,9 +10,9 @@ Fenec is an experimental Python library aimed at enhancing code comprehension an
 
 <!-- ## 🎥 Fenec Example Screen Cast
 
-![Fenec Screen Cast Example](assets/imgs/Fenec_Screen_Cast.GIF) -->
+![Fenec Screen Cast Example](assets/imgs/Fenec_Screen_Cast.GIF)
 
-##
+## -->
 
 ## 🎯 Project Vision
 
